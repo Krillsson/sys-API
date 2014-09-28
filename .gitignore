@@ -1,0 +1,12 @@
+.idea
+target
+atlassian-ide-plugin.xml
+dependency-reduced-pom.xml
+logs
+*.iml
+*.ipr
+#Eclipse-specific
+.settings/
+.classpath
+.project
+nb-configuration.xml
