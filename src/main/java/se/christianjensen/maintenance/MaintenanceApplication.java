@@ -3,7 +3,8 @@ package se.christianjensen.maintenance;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import se.christianjensen.maintenance.resources.InfoResource;
+import se.christianjensen.maintenance.metrics.SigarWrapper;
+import se.christianjensen.maintenance.resources.CpuResource;
 
 
 public class MaintenanceApplication extends Application<MaintenanceConfiguration> {
@@ -24,6 +25,6 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
 
     @Override
     public void run(MaintenanceConfiguration maintenanceConfiguration, Environment environment) throws Exception {
-        environment.jersey().register(new InfoResource());
+        environment.jersey().register(new CpuResource(new SigarWrapper()));
     }
 }

@@ -6,23 +6,26 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
+import java.util.ArrayList;
 
 @Path("info")
 @Produces(MediaType.APPLICATION_JSON)
-public class InfoResource {
+public class CpuResource {
 
-    @GET
-    @Path("osname")
-    public String osName(){
-        SigarWrapper sigarWrapper = new SigarWrapper();
-        return sigarWrapper.osName();
+    private SigarWrapper sigarWrapper;
+
+    public CpuResource(SigarWrapper sigarWrapper) {
+    this.sigarWrapper = sigarWrapper;
     }
 
     @GET
-    @Path("cpumodel")
-    public String cpuModel(){
-        SigarWrapper sigarWrapper = new SigarWrapper();
+    @Path("model")
+    public String Model(){
         return sigarWrapper.CpuModel();
+    }
+
+    @GET
+    public ArrayList<String> All(){
+        return new ArrayList<>();
     }
 }
