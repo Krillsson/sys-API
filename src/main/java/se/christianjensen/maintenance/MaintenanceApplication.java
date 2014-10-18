@@ -3,11 +3,13 @@ package se.christianjensen.maintenance;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import se.christianjensen.maintenance.resources.FilesystemResource;
+import se.christianjensen.maintenance.resources.MemoryResource;
 import se.christianjensen.maintenance.resources.SystemResource;
-import se.christianjensen.maintenance.sigar.CpuSigar;
-import se.christianjensen.maintenance.sigar.SigarWrapper;
+import se.christianjensen.maintenance.sigar.SigarMetrics;
+import se.christianjensen.maintenance.sigar.old.CpuSigar;
 import se.christianjensen.maintenance.resources.CpuResource;
-import se.christianjensen.maintenance.sigar.SystemSigar;
+import se.christianjensen.maintenance.sigar.old.SystemSigar;
 
 
 public class MaintenanceApplication extends Application<MaintenanceConfiguration> {
@@ -28,10 +30,11 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
 
     @Override
     public void run(MaintenanceConfiguration maintenanceConfiguration, Environment environment) throws Exception {
-        CpuSigar cpuSigar = new CpuSigar();
-        SystemSigar systemSigar = new SystemSigar();
-        environment.jersey().register(new CpuResource(cpuSigar));
-        environment.jersey().register(new SystemResource(systemSigar));
+        SigarMetrics sigarMetrics = SigarMetrics.getInstance();
+
+        environment.jersey().register(new CpuResource(sigarMetrics.cpu()));
+        environment.jersey().register(new FilesystemResource(sigarMetrics.filesystems()));
+        environment.jersey().register(new MemoryResource(sigarMetrics.memory()));
 
     }
 }

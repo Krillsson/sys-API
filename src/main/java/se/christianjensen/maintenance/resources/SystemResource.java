@@ -1,7 +1,7 @@
 package se.christianjensen.maintenance.resources;
 
 
-import se.christianjensen.maintenance.sigar.SystemSigar;
+import se.christianjensen.maintenance.sigar.old.SystemSigar;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

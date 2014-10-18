@@ -1,10 +1,7 @@
-package se.christianjensen.maintenance.sigar;
+package se.christianjensen.maintenance.sigar.old;
 
 import org.hyperic.sigar.OperatingSystem;
 
-/**
- * Created by christian on 2014-10-07.
- */
 public class SystemSigar extends SigarWrapper {
 
     @Override

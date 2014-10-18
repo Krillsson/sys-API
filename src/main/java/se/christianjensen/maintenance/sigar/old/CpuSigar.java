@@ -1,4 +1,4 @@
-package se.christianjensen.maintenance.sigar;
+package se.christianjensen.maintenance.sigar.old;
 
 
 import org.hyperic.sigar.CpuInfo;
