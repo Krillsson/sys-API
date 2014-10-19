@@ -135,7 +135,6 @@ public class CpuMetrics extends AbstractSigarMetric {
             return null;
         }
     }
-    @JsonProperty
     private CpuPerc[] cpuPercList() {
         CpuPerc[] cpus = null;
         try {

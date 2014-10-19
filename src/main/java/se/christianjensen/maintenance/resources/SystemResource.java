@@ -1,7 +1,7 @@
 package se.christianjensen.maintenance.resources;
 
 
-import se.christianjensen.maintenance.sigar.old.SystemSigar;
+import se.christianjensen.maintenance.sigar.SystemMetrics;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -11,15 +11,15 @@ import javax.ws.rs.core.MediaType;
 @Path("system")
 @Produces(MediaType.APPLICATION_JSON)
 public class SystemResource {
-    private SystemSigar systemSigar;
+    private SystemMetrics systemMetrics;
 
-    public SystemResource(SystemSigar systemSigar) {
-        this.systemSigar = systemSigar;
+    public SystemResource(SystemMetrics systemMetrics) {
+        this.systemMetrics = systemMetrics;
     }
 
     @GET
-    @Path("os")
-    public String model(){
-        return systemSigar.osName();
+    public SystemMetrics.Machine all(){
+        return systemMetrics.machineInfo();
     }
+
 }

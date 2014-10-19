@@ -1,11 +1,8 @@
 package se.christianjensen.maintenance.sigar;
 
-import com.codahale.metrics.Gauge;
-import com.codahale.metrics.MetricRegistry;
-
 import org.hyperic.sigar.Sigar;
 
-public class SigarMetrics{
+public class SigarMetrics {
     private static final SigarMetrics instance = new SigarMetrics();
 
     public static SigarMetrics getInstance() {
@@ -13,9 +10,10 @@ public class SigarMetrics{
     }
 
     private final Sigar sigar = new Sigar();
-    private final CpuMetrics cpu = new CpuMetrics(sigar); 
-    private final MemoryMetrics memory = new MemoryMetrics(sigar); 
-    private final FilesystemMetrics fs = new FilesystemMetrics(sigar); 
+    private final CpuMetrics cpu = new CpuMetrics(sigar);
+    private final MemoryMetrics memory = new MemoryMetrics(sigar);
+    private final FilesystemMetrics fs = new FilesystemMetrics(sigar);
+    private final SystemMetrics system = new SystemMetrics(sigar);
 
     private SigarMetrics() {
         // singleton
@@ -38,5 +36,7 @@ public class SigarMetrics{
         return fs;
     }
 
-
+    public SystemMetrics system() {
+        return system;
+    }
 }

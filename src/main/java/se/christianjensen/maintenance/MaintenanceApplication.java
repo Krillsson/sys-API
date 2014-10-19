@@ -7,9 +7,8 @@ import se.christianjensen.maintenance.resources.FilesystemResource;
 import se.christianjensen.maintenance.resources.MemoryResource;
 import se.christianjensen.maintenance.resources.SystemResource;
 import se.christianjensen.maintenance.sigar.SigarMetrics;
-import se.christianjensen.maintenance.sigar.old.CpuSigar;
 import se.christianjensen.maintenance.resources.CpuResource;
-import se.christianjensen.maintenance.sigar.old.SystemSigar;
+
 
 
 public class MaintenanceApplication extends Application<MaintenanceConfiguration> {
@@ -35,6 +34,7 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         environment.jersey().register(new CpuResource(sigarMetrics.cpu()));
         environment.jersey().register(new FilesystemResource(sigarMetrics.filesystems()));
         environment.jersey().register(new MemoryResource(sigarMetrics.memory()));
+        environment.jersey().register(new SystemResource(sigarMetrics.system()));
 
     }
 }
