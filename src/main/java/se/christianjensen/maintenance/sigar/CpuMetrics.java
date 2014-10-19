@@ -59,8 +59,6 @@ public class CpuMetrics extends AbstractSigarMetric {
         public double irq() { return irq; }
     }
 
-
-
     public double cpuTimeSysPercent(){
         List<CpuTime> cpus = cpus();
         double userTime = 0.0;
@@ -135,6 +133,7 @@ public class CpuMetrics extends AbstractSigarMetric {
             return null;
         }
     }
+    
     private CpuPerc[] cpuPercList() {
         CpuPerc[] cpus = null;
         try {

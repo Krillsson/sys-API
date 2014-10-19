@@ -1,7 +1,7 @@
 package se.christianjensen.maintenance.resources;
 
 import se.christianjensen.maintenance.sigar.CpuMetrics;
-import se.christianjensen.maintenance.sigar.old.CpuSigar;
+
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
