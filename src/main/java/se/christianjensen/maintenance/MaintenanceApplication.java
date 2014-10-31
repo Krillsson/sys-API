@@ -3,12 +3,8 @@ package se.christianjensen.maintenance;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import se.christianjensen.maintenance.resources.FilesystemResource;
-import se.christianjensen.maintenance.resources.MemoryResource;
-import se.christianjensen.maintenance.resources.SystemResource;
+import se.christianjensen.maintenance.resources.*;
 import se.christianjensen.maintenance.sigar.SigarMetrics;
-import se.christianjensen.maintenance.resources.CpuResource;
-
 
 
 public class MaintenanceApplication extends Application<MaintenanceConfiguration> {
@@ -35,6 +31,7 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         environment.jersey().register(new FilesystemResource(sigarMetrics.filesystems()));
         environment.jersey().register(new MemoryResource(sigarMetrics.memory()));
         environment.jersey().register(new SystemResource(sigarMetrics.system()));
+        environment.jersey().register(new NetworkResource(sigarMetrics.network()));
 
     }
 }

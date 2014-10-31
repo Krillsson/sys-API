@@ -133,7 +133,7 @@ public class CpuMetrics extends AbstractSigarMetric {
             return null;
         }
     }
-    
+
     private CpuPerc[] cpuPercList() {
         CpuPerc[] cpus = null;
         try {

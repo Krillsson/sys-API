@@ -14,6 +14,7 @@ public class SigarMetrics {
     private final MemoryMetrics memory = new MemoryMetrics(sigar);
     private final FilesystemMetrics fs = new FilesystemMetrics(sigar);
     private final SystemMetrics system = new SystemMetrics(sigar);
+    private final NetworkMetrics network = new NetworkMetrics(sigar);
 
     private SigarMetrics() {
         // singleton
@@ -38,5 +39,9 @@ public class SigarMetrics {
 
     public SystemMetrics system() {
         return system;
+    }
+
+    public NetworkMetrics network(){
+        return network;
     }
 }

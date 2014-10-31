@@ -177,9 +177,7 @@ public class SystemMetrics extends AbstractSigarMetric {
             return null;
         }
 
-        if (os == null) {
-            return null;
-        }
+
         return (new Machine(hostname, uptime, OperatingSystem.fromSigarBean(os)));
 
     }

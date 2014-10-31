@@ -95,6 +95,7 @@ public class MemoryMetrics extends AbstractSigarMetric {
 
         public long pagesOut() { return pagesOut; }
     }
+
     @JsonProperty
     public MainMemory mem() {
         try {
