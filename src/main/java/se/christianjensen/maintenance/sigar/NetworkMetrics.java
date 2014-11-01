@@ -20,13 +20,16 @@ public class NetworkMetrics extends AbstractSigarMetric {
                 address, destination,
                 broadcast, netmask;
         private final long flags, mtu, metric;
+        private NetworkInterfaceStatistics networkInterfaceStatistics;
+        private NetworkInterfaceSpeed networkInterfaceSpeed;
 
 
         public NetworkInterfaceConfig(String name, String hwaddr,
                                       String type, String description,
                                       String address, String destination,
                                       String broadcast, String netmask,
-                                      long flags, long mtu, long metric) {
+                                      long flags, long mtu, long metric
+) {
             this.name = name;
             this.hwaddr = hwaddr;
             this.type = type;
@@ -102,6 +105,24 @@ public class NetworkMetrics extends AbstractSigarMetric {
         public long getMetric() {
             return metric;
         }
+
+        @JsonProperty
+        public NetworkInterfaceStatistics getNetworkInterfaceStatistics() {
+            return networkInterfaceStatistics;
+        }
+
+        @JsonProperty
+        public NetworkInterfaceSpeed getNetworkInterfaceSpeed() {
+            return networkInterfaceSpeed;
+        }
+
+        public void setNetworkInterfaceStatistics(NetworkInterfaceStatistics networkInterfaceStatistics) {
+            this.networkInterfaceStatistics = networkInterfaceStatistics;
+        }
+
+        public void setNetworkInterfaceSpeed(NetworkInterfaceSpeed networkInterfaceSpeed) {
+            this.networkInterfaceSpeed = networkInterfaceSpeed;
+        }
     }
 
     public static final class NetworkInfo {
@@ -161,11 +182,12 @@ public class NetworkMetrics extends AbstractSigarMetric {
     }
 
     public static final class NetworkInterfaceStatistics {
-        private final long rxBytes, rxPackets,
-                rxErrors, rxDropped, rxOverruns,
-                rxFrame, txBytes, txPackets,
-                txErrors, txDropped, txOverruns,
-                txCollisions, txCarrier, speed;
+        private final long rxBytes, txBytes;
+        private final long rxPackets, txPackets;
+        private final long rxErrors, txErrors;
+        private final long rxDropped, txDropped;
+        private final long rxOverruns, txOverruns;
+        private final long rxFrame, txCollisions, txCarrier, speed; //speed == bit/s
 
         public NetworkInterfaceStatistics(long rxBytes, long rxPackets,
                                           long rxErrors, long rxDropped,
@@ -190,7 +212,7 @@ public class NetworkMetrics extends AbstractSigarMetric {
             this.speed = speed;
         }
 
-        public NetworkInterfaceStatistics fromSigarBean(NetInterfaceStat nIS) {
+        public static NetworkInterfaceStatistics fromSigarBean(NetInterfaceStat nIS) {
 
             return new NetworkInterfaceStatistics(nIS.getRxBytes(), nIS.getRxPackets(),
                     nIS.getRxErrors(), nIS.getRxDropped(),
@@ -272,13 +294,35 @@ public class NetworkMetrics extends AbstractSigarMetric {
         }
     }
 
+    public static final class NetworkInterfaceSpeed{
+        private final long rxbps, txbps;
+
+        public NetworkInterfaceSpeed(long rxbps, long txbps) {
+            this.rxbps = rxbps;
+            this.txbps = txbps;
+        }
+
+        @JsonProperty
+        public long getRxbps() {
+            return rxbps;
+        }
+
+        @JsonProperty
+        public long getTxbps() {
+            return txbps;
+        }
+    }
+
     public List<NetworkInterfaceConfig> getConfigs() {
         String[] netIfs = null;
         ArrayList<NetworkInterfaceConfig> configs = new ArrayList<>();
         try {
             netIfs = sigar.getNetInterfaceList();
             for (String name : netIfs) {
-                configs.add(NetworkInterfaceConfig.fromSigarBean(sigar.getNetInterfaceConfig(name)));
+                NetworkInterfaceConfig networkInterfaceConfig = NetworkInterfaceConfig.fromSigarBean(sigar.getNetInterfaceConfig(name));
+                networkInterfaceConfig.setNetworkInterfaceStatistics(NetworkInterfaceStatistics.fromSigarBean(sigar.getNetInterfaceStat(name)));
+                networkInterfaceConfig.setNetworkInterfaceSpeed(getSpeed(name));
+                configs.add(networkInterfaceConfig);
             }
         } catch (SigarException e) {
             //derp
@@ -290,7 +334,6 @@ public class NetworkMetrics extends AbstractSigarMetric {
         }
     }
 
-    @JsonProperty
     public NetworkInfo getNetworkInfo(){
         NetInfo sigarNetInfo = null;
         NetworkInfo networkInfo = null;
@@ -304,6 +347,35 @@ public class NetworkMetrics extends AbstractSigarMetric {
             e.printStackTrace();
         }
         return networkInfo;
+    }
+
+    public NetworkInterfaceSpeed getSpeed(String networkInterfaceConfigName){
+        long rxbps, txbps;
+        long start = 0;
+        long end = 0;
+        long rxBytesStart = 0;
+        long rxBytesEnd = 0;
+        long txBytesStart = 0;
+        long txBytesEnd = 0;
+
+        start = System.currentTimeMillis();
+        try {
+            NetInterfaceStat statStart = sigar.getNetInterfaceStat(networkInterfaceConfigName);
+            rxBytesStart = statStart.getRxBytes();
+            txBytesStart = statStart.getTxBytes();
+            Thread.sleep(100);
+            end = System.currentTimeMillis();
+            NetInterfaceStat statEnd = sigar.getNetInterfaceStat(networkInterfaceConfigName);
+            rxBytesEnd = statEnd.getRxBytes();
+            txBytesEnd = statEnd.getTxBytes();
+        }
+        catch (InterruptedException | SigarException ie){
+            //give up
+        }
+
+        rxbps = (rxBytesEnd - rxBytesStart) * 8 / (end - start) * 100;
+        txbps = (txBytesEnd - txBytesStart) * 8 / (end - start) * 100;
+        return new NetworkInterfaceSpeed(rxbps,txbps);
     }
 
 
