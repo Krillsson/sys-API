@@ -2,6 +2,7 @@ package se.christianjensen.maintenance.sigar;
 
 import org.junit.Before;
 import org.junit.Test;
+import se.christianjensen.maintenance.representation.cpu.CpuTime;
 
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.equalTo;
@@ -36,7 +37,7 @@ public class CpuMetricsTest {
 
     @Test
     public void cpuTimesAddUpToApproximatelyOne() throws Exception {
-        CpuMetrics.CpuTime t = cm.cpus().get(0);
+        CpuTime t = cm.cpus().get(0);
         assertThat(t.user() + t.sys() + t.nice() + t.waiting() + t.idle() + t.irq(),
                 is(closeTo(1.0, 0.05)));
     }

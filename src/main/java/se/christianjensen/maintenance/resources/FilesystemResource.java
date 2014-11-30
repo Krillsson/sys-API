@@ -1,5 +1,6 @@
 package se.christianjensen.maintenance.resources;
 
+import se.christianjensen.maintenance.representation.filesystem.FileSystem;
 import se.christianjensen.maintenance.sigar.FilesystemMetrics;
 
 import javax.ws.rs.GET;
@@ -18,7 +19,7 @@ public class FilesystemResource {
     }
 
     @GET
-    public List<FilesystemMetrics.FileSystem> filesystem(){
+    public List<FileSystem> filesystem(){
         return filesystemMetrics.filesystems();
     }
 }

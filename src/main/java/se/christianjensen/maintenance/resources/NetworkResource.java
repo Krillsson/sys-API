@@ -1,6 +1,7 @@
 package se.christianjensen.maintenance.resources;
 
 
+import se.christianjensen.maintenance.representation.network.NetworkInfo;
 import se.christianjensen.maintenance.sigar.NetworkMetrics;
 
 import javax.ws.rs.GET;
@@ -18,7 +19,7 @@ public class NetworkResource {
     }
 
     @GET
-    public NetworkMetrics.NetworkInfo all(){
+    public NetworkInfo all(){
         return NetworkMetrics.getNetworkInfo();
     }
 }

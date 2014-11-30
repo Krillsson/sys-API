@@ -1,6 +1,7 @@
 package se.christianjensen.maintenance.resources;
 
 
+import se.christianjensen.maintenance.representation.system.Machine;
 import se.christianjensen.maintenance.sigar.SystemMetrics;
 
 import javax.ws.rs.GET;
@@ -18,7 +19,7 @@ public class SystemResource {
     }
 
     @GET
-    public SystemMetrics.Machine all(){
+    public Machine all(){
         return systemMetrics.machineInfo();
     }
 

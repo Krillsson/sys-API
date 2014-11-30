@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import se.christianjensen.maintenance.representation.filesystem.FileSystem;
 
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
@@ -25,9 +26,9 @@ public class FilesystemMetricsTest extends CheckSigarLoadsOk {
     @Test
     public void usageNumbersApproximatelyMatchThoseReturnedByJavaFile() throws Exception {
         File[] roots = File.listRoots();
-        List<FilesystemMetrics.FileSystem> fss = fsm.filesystems();
+        List<FileSystem> fss = fsm.filesystems();
         for (File root: roots) {
-            for (FilesystemMetrics.FileSystem fs: fss) {
+            for (FileSystem fs: fss) {
                 if (new File(fs.mountPoint()).equals(root)) {
                     System.out.println("Testing filesystem mounted at " + fs.mountPoint());
                     assertThat((double) (root.getTotalSpace()), //

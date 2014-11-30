@@ -3,61 +3,17 @@ package se.christianjensen.maintenance.sigar;
 import java.util.List;
 import java.util.ArrayList;
 
-import com.codahale.metrics.Gauge;
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.RatioGauge;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hyperic.sigar.CpuInfo;
 import org.hyperic.sigar.CpuPerc;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
+import se.christianjensen.maintenance.representation.cpu.CpuTime;
 
 public class CpuMetrics extends AbstractSigarMetric {
     private static final long HACK_DELAY_MILLIS = 1000;
 
     private final CpuInfo info;
-
-    public static final class CpuTime {
-
-        private final double user;
-        private final double sys;
-        private final double nice;
-        private final double waiting;
-        private final double idle;
-        private final double irq;
-    
-        public CpuTime( //
-                double user, double sys, //
-                double nice, double waiting, //
-                double idle, double irq) {
-            this.user = user;
-            this.sys = sys;
-            this.nice = nice;
-            this.waiting = waiting;
-            this.idle = idle;
-            this.irq = irq;
-        }
-
-        public static CpuTime fromSigarBean(CpuPerc cp) {
-            return new CpuTime( //
-                    cp.getUser(), cp.getSys(), //
-                    cp.getNice(), cp.getWait(), //
-                    cp.getIdle(), cp.getIrq());
-        }
-        @JsonProperty
-        public double user() { return user; }
-        @JsonProperty
-        public double sys() { return sys; }
-        @JsonProperty
-        public double nice() { return nice; }
-        @JsonProperty
-        public double waiting() { return waiting; }
-        @JsonProperty
-        public double idle() { return idle; }
-        @JsonProperty
-        public double irq() { return irq; }
-    }
 
     public double cpuTimeSysPercent(){
         List<CpuTime> cpus = cpus();
