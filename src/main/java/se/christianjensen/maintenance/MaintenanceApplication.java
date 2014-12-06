@@ -32,6 +32,5 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         environment.jersey().register(new MemoryResource(sigarMetrics.memory()));
         environment.jersey().register(new SystemResource(sigarMetrics.system()));
         environment.jersey().register(new NetworkResource(sigarMetrics.network()));
-
     }
 }
