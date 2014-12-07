@@ -12,8 +12,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <sigar.version>1.6.5.132</sigar.version>
         <sigar-dist.version.output>1.6.5</sigar-dist.version.output>
-        <sigar-dist.unpack.directory>${project.build.directory}/dependency/sigar</sigar-dist.unpack.directory>
-        <sigar-dist.classpath.directory>/hyperic-sigar-${sigar-dist.version.output}/sigar-bin/lib</sigar-dist.classpath.directory>
+        <sigar-dist.unpack.directory>${project.build.directory}\dependency\sigar</sigar-dist.unpack.directory>
+        <sigar-dist.classpath.directory>/hyperic-sigar-${sigar-dist.version.output}\sigar-bin\lib
+        </sigar-dist.classpath.directory>
         <dropwizard.version>0.7.1</dropwizard.version>
     </properties>
     <repositories>
