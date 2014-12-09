@@ -136,9 +136,13 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.18</version>
                 <configuration>
-                    <forkMode>once</forkMode>
+                    <!--<forkMode>once</forkMode>
                     <workingDirectory>target</workingDirectory>
-                    <argLine>-Djava.library.path=${sigar-dist.unpack.directory}${sigar-dist.classpath.directory}</argLine>
+                    <argLine>-Djava.library.path=${sigar-dist.unpack.directory}${sigar-dist.classpath.directory}</argLine>-->
+                    <systemPropertyVariables>
+                        <java.library.path>${sigar-dist.unpack.directory}${sigar-dist.classpath.directory}
+                        </java.library.path>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
             <plugin>
