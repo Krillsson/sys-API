@@ -2,16 +2,18 @@ package se.christianjensen.maintenance.representation.system;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
-* Created by christian on 2014-11-30.
-*/
+import java.util.List;
+
 public class Machine {
+
     private String hostname;
     private double uptime;
     private OperatingSystem operatingSystem;
+    private List<UserInfo> users;
 
-    public Machine(String hostname, double uptime, OperatingSystem operatingSystem) {
+    public Machine(String hostname, List<UserInfo> userInfo, double uptime, OperatingSystem operatingSystem) {
         this.hostname = hostname;
+        this.users = userInfo;
         this.operatingSystem = operatingSystem;
         this.uptime = uptime;
     }
@@ -19,6 +21,11 @@ public class Machine {
     @JsonProperty
     public String getHostname() {
         return hostname;
+    }
+
+    @JsonProperty
+    public List<UserInfo> getUsers() {
+        return users;
     }
 
     @JsonProperty
