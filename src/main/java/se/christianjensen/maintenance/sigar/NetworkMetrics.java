@@ -1,7 +1,10 @@
 package se.christianjensen.maintenance.sigar;
 
 
-import org.hyperic.sigar.*;
+import org.hyperic.sigar.NetInfo;
+import org.hyperic.sigar.NetInterfaceStat;
+import org.hyperic.sigar.Sigar;
+import org.hyperic.sigar.SigarException;
 import se.christianjensen.maintenance.representation.network.NetworkInfo;
 import se.christianjensen.maintenance.representation.network.NetworkInterfaceConfig;
 import se.christianjensen.maintenance.representation.network.NetworkInterfaceSpeed;
@@ -68,8 +71,8 @@ public class NetworkMetrics extends AbstractSigarMetric {
             rxBytesStart = statStart.getRxBytes();
             txBytesStart = statStart.getTxBytes();
             Thread.sleep(100);
-            end = System.currentTimeMillis();
             NetInterfaceStat statEnd = sigar.getNetInterfaceStat(networkInterfaceConfigName);
+            end = System.currentTimeMillis();
             rxBytesEnd = statEnd.getRxBytes();
             txBytesEnd = statEnd.getTxBytes();
         }

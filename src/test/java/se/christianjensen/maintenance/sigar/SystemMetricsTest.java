@@ -1,14 +1,10 @@
 package se.christianjensen.maintenance.sigar;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-
-import java.util.Properties;
-
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class SystemMetricsTest extends CheckSigarLoadsOk{
     private SystemMetrics sm;
@@ -30,7 +26,7 @@ public class SystemMetricsTest extends CheckSigarLoadsOk{
     }
 
     @Test
-    public void hostNameIsEqualToJava() throws Exception {
+    public void hostNameIsEqualToWhatJvmThinks() throws Exception {
         String javaHostname =  java.net.InetAddress.getLocalHost().getHostName();
         assertThat(sm.machineInfo().getHostname(), containsString(javaHostname));
     }

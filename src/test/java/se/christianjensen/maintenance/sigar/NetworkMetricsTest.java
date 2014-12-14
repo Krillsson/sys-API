@@ -3,9 +3,10 @@ package se.christianjensen.maintenance.sigar;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
 
-public class NetworkMetricsTest extends CheckSigarLoadsOk{
+public class NetworkMetricsTest extends CheckSigarLoadsOk {
     NetworkMetrics nm;
 
     @Before
@@ -14,12 +15,13 @@ public class NetworkMetricsTest extends CheckSigarLoadsOk{
     }
 
     @Test
-    public void testGetConfigs() throws Exception {
-
+    public void networkConfigsIsGreaterThanZero() throws Exception {
+        assertThat(nm.getConfigs().size(), is(greaterThan(0)));
     }
 
     @Test
-    public void testGetNetworkInfo() throws Exception {
-        
+    public void jvmAndSigarIsReportingTheSameDomainName() throws Exception {
+        String fullHostName = java.net.InetAddress.getLocalHost().getCanonicalHostName();
+        assertThat(fullHostName, containsString(nm.getNetworkInfo().getDomainName()));
     }
 }
