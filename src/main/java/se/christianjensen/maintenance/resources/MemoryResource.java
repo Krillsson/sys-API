@@ -12,15 +12,16 @@ import javax.ws.rs.core.MediaType;
 
 @Path("memory")
 @Produces(MediaType.APPLICATION_JSON)
-public class MemoryResource {
+public class MemoryResource extends Resource {
     private MemoryMetrics memoryMetrics;
 
     public MemoryResource(MemoryMetrics memoryMetrics) {
         this.memoryMetrics = memoryMetrics;
     }
 
+    @Override
     @GET
-    public MemoryInfo getMemoryInfo() {
+    public MemoryInfo getRoot() {
         return memoryMetrics.getMemoryInfo();
     }
 

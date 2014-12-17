@@ -2,7 +2,7 @@ package se.christianjensen.maintenance.sigar;
 
 import org.hyperic.sigar.Sigar;
 
-abstract class AbstractSigarMetric{
+public abstract class AbstractSigarMetric {
     protected final Sigar sigar;
 
     protected AbstractSigarMetric(Sigar sigar) {

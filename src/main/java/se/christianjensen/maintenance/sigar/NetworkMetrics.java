@@ -14,7 +14,7 @@ public class NetworkMetrics extends AbstractSigarMetric {
 
     final int SPEED_MEASUREMENT_PERIOD = 100;
     final int BYTE_TO_BIT = 8;
-
+    final static String NOT_FOUND_STRING = "No %s with id '%s' were found";
 
     protected NetworkMetrics(Sigar sigar) {
         super(sigar);
@@ -50,7 +50,7 @@ public class NetworkMetrics extends AbstractSigarMetric {
             config.setNetworkInterfaceStatistics(NetworkInterfaceStatistics.fromSigarBean(sigar.getNetInterfaceStat(id)));
             config.setNetworkInterfaceSpeed(getSpeed(id));
         } catch (SigarException | InterruptedException | IllegalArgumentException e) {
-            throw new IllegalArgumentException("No NetworkInterfaceConfig with id " + id + " were found", e);
+            throw new IllegalArgumentException(String.format(NOT_FOUND_STRING, NetworkInterfaceConfig.class.getSimpleName(), id), e);
         }
 
         return config;
@@ -71,7 +71,7 @@ public class NetworkMetrics extends AbstractSigarMetric {
         return networkInfo;
     }
 
-    public NetworkInterfaceSpeed getSpeed(String networkInterfaceConfigName) throws InterruptedException, SigarException {
+    public NetworkInterfaceSpeed getSpeed(String networkInterfaceConfigName) throws InterruptedException {
         long rxbps, txbps;
         long start = 0;
         long end = 0;
@@ -80,15 +80,19 @@ public class NetworkMetrics extends AbstractSigarMetric {
         long txBytesStart = 0;
         long txBytesEnd = 0;
 
-        start = System.currentTimeMillis();
-        NetInterfaceStat statStart = sigar.getNetInterfaceStat(networkInterfaceConfigName);
-        rxBytesStart = statStart.getRxBytes();
-        txBytesStart = statStart.getTxBytes();
-        Thread.sleep(SPEED_MEASUREMENT_PERIOD);
-        NetInterfaceStat statEnd = sigar.getNetInterfaceStat(networkInterfaceConfigName);
-        end = System.currentTimeMillis();
-        rxBytesEnd = statEnd.getRxBytes();
-        txBytesEnd = statEnd.getTxBytes();
+        try {
+            start = System.currentTimeMillis();
+            NetInterfaceStat statStart = sigar.getNetInterfaceStat(networkInterfaceConfigName);
+            rxBytesStart = statStart.getRxBytes();
+            txBytesStart = statStart.getTxBytes();
+            Thread.sleep(SPEED_MEASUREMENT_PERIOD);
+            NetInterfaceStat statEnd = sigar.getNetInterfaceStat(networkInterfaceConfigName);
+            end = System.currentTimeMillis();
+            rxBytesEnd = statEnd.getRxBytes();
+            txBytesEnd = statEnd.getTxBytes();
+        } catch (SigarException e) {
+            throw new IllegalArgumentException(String.format(NOT_FOUND_STRING, NetworkInterfaceConfig.class.getSimpleName(), networkInterfaceConfigName));
+        }
 
         rxbps = measureSpeed(start, end, rxBytesStart, rxBytesEnd);
         txbps = measureSpeed(start, end, txBytesStart, txBytesEnd);
@@ -98,6 +102,4 @@ public class NetworkMetrics extends AbstractSigarMetric {
     private long measureSpeed(long start, long end, long rxBytesStart, long rxBytesEnd) {
         return (rxBytesEnd - rxBytesStart) * BYTE_TO_BIT / (end - start) * SPEED_MEASUREMENT_PERIOD;
     }
-
-
 }
