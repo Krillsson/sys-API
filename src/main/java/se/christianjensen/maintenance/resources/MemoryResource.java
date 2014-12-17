@@ -1,5 +1,8 @@
 package se.christianjensen.maintenance.resources;
 
+import se.christianjensen.maintenance.representation.memory.MainMemory;
+import se.christianjensen.maintenance.representation.memory.MemoryInfo;
+import se.christianjensen.maintenance.representation.memory.SwapSpace;
 import se.christianjensen.maintenance.sigar.MemoryMetrics;
 
 import javax.ws.rs.GET;
@@ -17,7 +20,19 @@ public class MemoryResource {
     }
 
     @GET
-    public MemoryMetrics all(){
-        return memoryMetrics;
+    public MemoryInfo getMemoryInfo() {
+        return memoryMetrics.getMemoryInfo();
+    }
+
+    @Path("ram")
+    @GET
+    public MainMemory getRam() {
+        return memoryMetrics.getRam();
+    }
+
+    @Path("swap")
+    @GET
+    public SwapSpace getSwap() {
+        return memoryMetrics.getSwap();
     }
 }

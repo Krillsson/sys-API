@@ -15,10 +15,13 @@ public abstract class MemSegment {
         this.used = used;
         this.free = free;
     }
+
     @JsonProperty
     public long total() { return total; }
+
     @JsonProperty
     public long used() { return used; }
+
     @JsonProperty
     public long free() { return free; }
 }

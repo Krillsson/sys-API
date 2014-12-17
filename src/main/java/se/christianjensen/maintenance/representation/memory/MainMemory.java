@@ -2,7 +2,6 @@ package se.christianjensen.maintenance.representation.memory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hyperic.sigar.Mem;
-import se.christianjensen.maintenance.sigar.MemoryMetrics;
 
 /**
 * Created by christian on 2014-11-30.
@@ -32,12 +31,16 @@ public final class MainMemory extends MemSegment {
     public static MainMemory undef() {
         return new MainMemory(-1L, -1L, -1L, -1L, -1L, -1, -1);
     }
+
     @JsonProperty
     public long actualUsed() { return actualUsed; }
+
     @JsonProperty
     public long actualFree() { return actualFree; }
+
     @JsonProperty
     public double usedPercent() { return usedPercent; }
+
     @JsonProperty
     public double freePercent() { return freePercent; }
 }

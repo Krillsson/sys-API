@@ -12,6 +12,9 @@ import java.util.List;
 
 public class NetworkMetrics extends AbstractSigarMetric {
 
+    final int SPEED_MEASUREMENT_PERIOD = 100;
+    final int BYTE_TO_BIT = 8;
+
 
     protected NetworkMetrics(Sigar sigar) {
         super(sigar);
@@ -28,8 +31,8 @@ public class NetworkMetrics extends AbstractSigarMetric {
                 networkInterfaceConfig.setNetworkInterfaceSpeed(getSpeed(name));
                 configs.add(networkInterfaceConfig);
             }
-        } catch (SigarException e) {
-            //derp
+        } catch (SigarException | InterruptedException e) {
+            throw new IllegalArgumentException(e);
         }
         if (!configs.isEmpty()) {
             return configs;
@@ -38,8 +41,23 @@ public class NetworkMetrics extends AbstractSigarMetric {
         }
     }
 
+    public NetworkInterfaceConfig getConfigById(String id) {
+        NetworkInterfaceConfig config;
+
+        try {
+            NetInterfaceConfig sigarConfig = sigar.getNetInterfaceConfig(id);
+            config = NetworkInterfaceConfig.fromSigarBean(sigarConfig);
+            config.setNetworkInterfaceStatistics(NetworkInterfaceStatistics.fromSigarBean(sigar.getNetInterfaceStat(id)));
+            config.setNetworkInterfaceSpeed(getSpeed(id));
+        } catch (SigarException | InterruptedException | IllegalArgumentException e) {
+            throw new IllegalArgumentException("No NetworkInterfaceConfig with id " + id + " were found", e);
+        }
+
+        return config;
+    }
+
     public NetworkInfo getNetworkInfo() {
-        NetInfo sigarNetInfo = null;
+        NetInfo sigarNetInfo;
         NetworkInfo networkInfo = null;
         List<NetworkInterfaceConfig> configs;
 
@@ -48,27 +66,12 @@ public class NetworkMetrics extends AbstractSigarMetric {
             configs = getConfigs();
             networkInfo = NetworkInfo.fromSigarBean(sigarNetInfo, configs);
         } catch (SigarException e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException(e.getCause());
         }
         return networkInfo;
     }
 
-    public NetworkInterfaceConfig getConfigById(String id) throws SigarException {
-        NetworkInterfaceConfig config;
-
-        try {
-            NetInterfaceConfig sigarConfig = sigar.getNetInterfaceConfig(id);
-            config = NetworkInterfaceConfig.fromSigarBean(sigarConfig);
-            config.setNetworkInterfaceStatistics(NetworkInterfaceStatistics.fromSigarBean(sigar.getNetInterfaceStat(id)));
-            config.setNetworkInterfaceSpeed(getSpeed(id));
-        } catch (SigarException e) {
-            throw new IllegalArgumentException("No networkinterfaceconfig with id " + id + "where found");
-        }
-
-        return config;
-    }
-
-    public NetworkInterfaceSpeed getSpeed(String networkInterfaceConfigName) {
+    public NetworkInterfaceSpeed getSpeed(String networkInterfaceConfigName) throws InterruptedException, SigarException {
         long rxbps, txbps;
         long start = 0;
         long end = 0;
@@ -78,22 +81,22 @@ public class NetworkMetrics extends AbstractSigarMetric {
         long txBytesEnd = 0;
 
         start = System.currentTimeMillis();
-        try {
-            NetInterfaceStat statStart = sigar.getNetInterfaceStat(networkInterfaceConfigName);
-            rxBytesStart = statStart.getRxBytes();
-            txBytesStart = statStart.getTxBytes();
-            Thread.sleep(100);
-            NetInterfaceStat statEnd = sigar.getNetInterfaceStat(networkInterfaceConfigName);
-            end = System.currentTimeMillis();
-            rxBytesEnd = statEnd.getRxBytes();
-            txBytesEnd = statEnd.getTxBytes();
-        } catch (InterruptedException | SigarException ie) {
-            //give up
-        }
+        NetInterfaceStat statStart = sigar.getNetInterfaceStat(networkInterfaceConfigName);
+        rxBytesStart = statStart.getRxBytes();
+        txBytesStart = statStart.getTxBytes();
+        Thread.sleep(SPEED_MEASUREMENT_PERIOD);
+        NetInterfaceStat statEnd = sigar.getNetInterfaceStat(networkInterfaceConfigName);
+        end = System.currentTimeMillis();
+        rxBytesEnd = statEnd.getRxBytes();
+        txBytesEnd = statEnd.getTxBytes();
 
-        rxbps = (rxBytesEnd - rxBytesStart) * 8 / (end - start) * 100;
-        txbps = (txBytesEnd - txBytesStart) * 8 / (end - start) * 100;
+        rxbps = measureSpeed(start, end, rxBytesStart, rxBytesEnd);
+        txbps = measureSpeed(start, end, txBytesStart, txBytesEnd);
         return new NetworkInterfaceSpeed(rxbps, txbps);
+    }
+
+    private long measureSpeed(long start, long end, long rxBytesStart, long rxBytesEnd) {
+        return (rxBytesEnd - rxBytesStart) * BYTE_TO_BIT / (end - start) * SPEED_MEASUREMENT_PERIOD;
     }
 
 

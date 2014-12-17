@@ -2,11 +2,7 @@ package se.christianjensen.maintenance.representation.memory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hyperic.sigar.Swap;
-import se.christianjensen.maintenance.sigar.MemoryMetrics;
 
-/**
-* Created by christian on 2014-11-30.
-*/
 public final class SwapSpace extends MemSegment {
     private final long pagesIn, pagesOut;
 
@@ -27,10 +23,10 @@ public final class SwapSpace extends MemSegment {
     public static SwapSpace undef() {
         return new SwapSpace(-1L, -1L, -1L, -1L, -1L);
     }
-    @JsonProperty
 
+    @JsonProperty
     public long pagesIn() { return pagesIn; }
-    @JsonProperty
 
+    @JsonProperty
     public long pagesOut() { return pagesOut; }
 }
