@@ -5,9 +5,6 @@ import org.hyperic.sigar.NetInfo;
 
 import java.util.List;
 
-/**
-* Created by christian on 2014-11-30.
-*/
 public final class NetworkInfo {
     private final String defaultGateway, hostName, domainName, primaryDns, secondaryDns;
 

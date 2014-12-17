@@ -1,22 +1,41 @@
 package se.christianjensen.maintenance.sigar;
 
-import java.util.List;
-import java.util.ArrayList;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hyperic.sigar.CpuInfo;
 import org.hyperic.sigar.CpuPerc;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
+import se.christianjensen.maintenance.representation.cpu.Cpu;
+import se.christianjensen.maintenance.representation.cpu.CpuInfo;
 import se.christianjensen.maintenance.representation.cpu.CpuTime;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CpuMetrics extends AbstractSigarMetric {
-    private static final long HACK_DELAY_MILLIS = 1000;
+    private static final long HACK_DELAY_MILLIS = 500;
 
     private final CpuInfo info;
 
-    public double cpuTimeSysPercent(){
-        List<CpuTime> cpus = cpus();
+    protected CpuMetrics(Sigar sigar) {
+        super(sigar);
+        info = cpuInfo();
+    }
+
+    public Cpu getCpu() {
+        return new Cpu(cpuInfo(), cpuTimeSysPercent(), cpuTimesPerCore(cpuPercList()));
+    }
+
+    public CpuTime getCpuTimeByCoreIndex(int id) throws IllegalArgumentException {
+        CpuPerc[] cpuPercs = cpuPercList();
+        if (id > cpuPercs.length) {
+            throw new IllegalArgumentException("No core with id " + Integer.toString(id) + " were found");
+        }
+
+        List<CpuTime> result = cpuTimesPerCore(new CpuPerc[]{cpuPercs[id]});
+        return result.get(0);
+    }
+
+    protected double cpuTimeSysPercent() {
+        List<CpuTime> cpus = cpuTimesPerCore(cpuPercList());
         double userTime = 0.0;
         for (CpuTime cpu : cpus) {
             userTime += cpu.sys();
@@ -24,27 +43,8 @@ public class CpuMetrics extends AbstractSigarMetric {
         return userTime / 1.0;
     }
 
-    protected CpuMetrics(Sigar sigar) {
-        super(sigar);
-        info = cpuInfo();
-    }
-    @JsonProperty
-    public int totalCoreCount() {
-        if (info == null) {
-            return -1;
-        }
-        return info.getTotalCores(); 
-    }
-    @JsonProperty
-    public int physicalCpuCount() {
-        if (info == null) {
-            return -1;
-        }
-       return info.getTotalSockets();
-    }
-    @JsonProperty
-    public List<CpuTime> cpus() {
-        List<CpuTime> result = new ArrayList<CpuTime>();
+    protected List<CpuTime> cpuTimesPerCore(CpuPerc[] percList) {
+        List<CpuTime> result = new ArrayList<>();
         CpuPerc[] cpus = cpuPercList();
         if (cpus == null) {
             return result;
@@ -66,7 +66,7 @@ public class CpuMetrics extends AbstractSigarMetric {
                 Thread.currentThread().interrupt();
                 return result;
             }
-            cpus = cpuPercList();
+            cpus = percList;
             if (cpus == null) {
                 return result;
             }
@@ -76,21 +76,21 @@ public class CpuMetrics extends AbstractSigarMetric {
         }
         return result;
    }
-    @JsonProperty
-    private CpuInfo cpuInfo() {
+
+    protected CpuInfo cpuInfo() {
         try {
-            CpuInfo[] infos = sigar.getCpuInfoList();
+            org.hyperic.sigar.CpuInfo[] infos = sigar.getCpuInfoList();
             if (infos == null || infos.length == 0) {
                 return null;
             }
-            return infos[0];
+            return CpuInfo.fromSigarBean(infos[0]);
         } catch (SigarException e) {
             // give up
             return null;
         }
     }
 
-    private CpuPerc[] cpuPercList() {
+    protected CpuPerc[] cpuPercList() {
         CpuPerc[] cpus = null;
         try {
             cpus = sigar.getCpuPercList();

@@ -2,11 +2,7 @@ package se.christianjensen.maintenance.representation.network;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hyperic.sigar.NetInterfaceStat;
-import se.christianjensen.maintenance.sigar.NetworkMetrics;
 
-/**
-* Created by christian on 2014-11-30.
-*/
 public final class NetworkInterfaceStatistics {
     private final long rxBytes, txBytes;
     private final long rxPackets, txPackets;

@@ -4,11 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import se.christianjensen.maintenance.representation.cpu.CpuTime;
 
-import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 public class CpuMetricsTest {
@@ -22,24 +18,28 @@ public class CpuMetricsTest {
 
     @Test
     public void cpuCoreCountIsGreaterThanZero() throws Exception {
-        assertThat(cm.totalCoreCount(), is(greaterThan(0)));
-    }
-
-    @Test
-    public void coreCountIsAtLeastPhysicalCpuCount() throws Exception {
-        assertThat(cm.totalCoreCount(), is(greaterThanOrEqualTo(cm.physicalCpuCount())));
+        assertThat(cm.getCpu().getCpuInfo().getTotalCores(), is(greaterThan(0)));
     }
 
     @Test
     public void lengthOfCpuListMatchesCoreCount() throws Exception {
-        assertThat(cm.cpus().size(), is(equalTo(cm.totalCoreCount())));
+        assertThat(cm.cpuTimesPerCore(cm.cpuPercList()).size(), is(equalTo(cm.getCpu().getCpuInfo().getTotalCores())));
     }
 
     @Test
     public void cpuTimesAddUpToApproximatelyOne() throws Exception {
-        CpuTime t = cm.cpus().get(0);
+        CpuTime t = cm.cpuTimesPerCore(cm.cpuPercList()).get(0);
         assertThat(t.user() + t.sys() + t.nice() + t.waiting() + t.idle() + t.irq(),
                 is(closeTo(1.0, 0.05)));
     }
 
+    @Test
+    public void gettingCpuTimeByExistingCore() throws Exception {
+        cm.getCpuTimeByCoreIndex(0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void gettingCpuTimeByNonExistentCore() throws Exception {
+        cm.getCpuTimeByCoreIndex(100);
+    }
 }

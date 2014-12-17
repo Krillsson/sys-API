@@ -17,6 +17,7 @@ public class FilesystemMetrics extends AbstractSigarMetric {
     public List<FileSystem> filesystems() {
         List<FileSystem> result = new ArrayList<FileSystem>();
         org.hyperic.sigar.FileSystem[] fss = null;
+
         try {
             fss = sigar.getFileSystemList(); 
         } catch (SigarException e) {
