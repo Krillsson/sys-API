@@ -1,12 +1,12 @@
 package se.christianjensen.maintenance.sigar;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import org.hyperic.sigar.FileSystemUsage;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 import se.christianjensen.maintenance.representation.filesystem.FileSystem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FilesystemMetrics extends AbstractSigarMetric {
 
@@ -42,5 +42,6 @@ public class FilesystemMetrics extends AbstractSigarMetric {
         } 
         return result;
    }
+
 
 }

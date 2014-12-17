@@ -24,4 +24,18 @@ public class NetworkMetricsTest extends CheckSigarLoadsOk {
         String fullHostName = java.net.InetAddress.getLocalHost().getCanonicalHostName();
         assertThat(fullHostName, containsString(nm.getNetworkInfo().getDomainName()));
     }
+
+    @Test
+    public void queryingForExistingConfigShouldWork() throws Exception {
+        String existingConfig = "eth0";
+
+        nm.getConfigById(existingConfig);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void queryingForNonExistenConfigShouldThrowException() throws Exception {
+        String nonExistentConfig = "derp";
+
+        nm.getConfigById(nonExistentConfig);
+    }
 }

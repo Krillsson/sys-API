@@ -1,10 +1,7 @@
 package se.christianjensen.maintenance.sigar;
 
 
-import org.hyperic.sigar.NetInfo;
-import org.hyperic.sigar.NetInterfaceStat;
-import org.hyperic.sigar.Sigar;
-import org.hyperic.sigar.SigarException;
+import org.hyperic.sigar.*;
 import se.christianjensen.maintenance.representation.network.NetworkInfo;
 import se.christianjensen.maintenance.representation.network.NetworkInterfaceConfig;
 import se.christianjensen.maintenance.representation.network.NetworkInterfaceSpeed;
@@ -21,7 +18,7 @@ public class NetworkMetrics extends AbstractSigarMetric {
     }
 
     public List<NetworkInterfaceConfig> getConfigs() {
-        String[] netIfs = null;
+        String[] netIfs;
         ArrayList<NetworkInterfaceConfig> configs = new ArrayList<>();
         try {
             netIfs = sigar.getNetInterfaceList();
@@ -41,7 +38,7 @@ public class NetworkMetrics extends AbstractSigarMetric {
         }
     }
 
-    public NetworkInfo getNetworkInfo(){
+    public NetworkInfo getNetworkInfo() {
         NetInfo sigarNetInfo = null;
         NetworkInfo networkInfo = null;
         List<NetworkInterfaceConfig> configs;
@@ -49,14 +46,29 @@ public class NetworkMetrics extends AbstractSigarMetric {
         try {
             sigarNetInfo = sigar.getNetInfo();
             configs = getConfigs();
-            networkInfo = NetworkInfo.fromSigarBean(sigarNetInfo,configs);
+            networkInfo = NetworkInfo.fromSigarBean(sigarNetInfo, configs);
         } catch (SigarException e) {
             e.printStackTrace();
         }
         return networkInfo;
     }
 
-    public NetworkInterfaceSpeed getSpeed(String networkInterfaceConfigName){
+    public NetworkInterfaceConfig getConfigById(String id) throws SigarException {
+        NetworkInterfaceConfig config;
+
+        try {
+            NetInterfaceConfig sigarConfig = sigar.getNetInterfaceConfig(id);
+            config = NetworkInterfaceConfig.fromSigarBean(sigarConfig);
+            config.setNetworkInterfaceStatistics(NetworkInterfaceStatistics.fromSigarBean(sigar.getNetInterfaceStat(id)));
+            config.setNetworkInterfaceSpeed(getSpeed(id));
+        } catch (SigarException e) {
+            throw new IllegalArgumentException("No networkinterfaceconfig with id " + id + "where found");
+        }
+
+        return config;
+    }
+
+    public NetworkInterfaceSpeed getSpeed(String networkInterfaceConfigName) {
         long rxbps, txbps;
         long start = 0;
         long end = 0;
@@ -75,14 +87,13 @@ public class NetworkMetrics extends AbstractSigarMetric {
             end = System.currentTimeMillis();
             rxBytesEnd = statEnd.getRxBytes();
             txBytesEnd = statEnd.getTxBytes();
-        }
-        catch (InterruptedException | SigarException ie){
+        } catch (InterruptedException | SigarException ie) {
             //give up
         }
 
         rxbps = (rxBytesEnd - rxBytesStart) * 8 / (end - start) * 100;
         txbps = (txBytesEnd - txBytesStart) * 8 / (end - start) * 100;
-        return new NetworkInterfaceSpeed(rxbps,txbps);
+        return new NetworkInterfaceSpeed(rxbps, txbps);
     }
 
 
