@@ -1,13 +1,12 @@
 package se.christianjensen.maintenance.sigar;
 
 
-import java.io.File;
-import java.util.List;
-
-
 import org.junit.Before;
 import org.junit.Test;
 import se.christianjensen.maintenance.representation.filesystem.FileSystem;
+
+import java.io.File;
+import java.util.List;
 
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
@@ -26,7 +25,7 @@ public class FilesystemMetricsTest extends CheckSigarLoadsOk {
     @Test
     public void usageNumbersApproximatelyMatchThoseReturnedByJavaFile() throws Exception {
         File[] roots = File.listRoots();
-        List<FileSystem> fss = fsm.filesystems();
+        List<FileSystem> fss = fsm.getFilesystems();
         for (File root: roots) {
             for (FileSystem fs: fss) {
                 if (new File(fs.mountPoint()).equals(root)) {

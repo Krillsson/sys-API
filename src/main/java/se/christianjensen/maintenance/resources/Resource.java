@@ -12,9 +12,19 @@ abstract public class Resource<T extends AbstractSigarMetric> {
     protected WebApplicationException buildWebException(Response.Status status, String message) {
         return new WebApplicationException(
                 Response.status(status)
-                        .entity(new Object() {
-                            String errorMessage = message;
-                        })
+                        .entity(new MessageObject(message))
                         .build());
+    }
+
+    public static class MessageObject {
+        private final String errorMessage;
+
+        public MessageObject(String errorMessage) {
+            this.errorMessage = errorMessage;
+        }
+
+        public String getErrorMessage() {
+            return errorMessage;
+        }
     }
 }
