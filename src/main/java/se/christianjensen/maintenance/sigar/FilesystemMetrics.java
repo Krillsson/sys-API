@@ -20,7 +20,11 @@ public class FilesystemMetrics extends AbstractSigarMetric {
 
     public List<FileSystem> getFilesystems() {
         org.hyperic.sigar.FileSystem[] fss = getSigarFilesystems();
-        return convertSigarFilesystemsToInternalFilesystems(fss);
+        List<FileSystem> result = new ArrayList<>();
+        for (org.hyperic.sigar.FileSystem fs : fss) {
+            result.add(convertToInternal(fs));
+        }
+        return result;
    }
 
     public List<FileSystem> getFileSystemsWithCategory(FSType fsType) {
@@ -47,14 +51,6 @@ public class FilesystemMetrics extends AbstractSigarMetric {
             throw new IllegalArgumentException("No FS named: '" + name + "' were found");
         }
         return fileSystem;
-    }
-
-    private List<FileSystem> convertSigarFilesystemsToInternalFilesystems(org.hyperic.sigar.FileSystem[] fss) {
-        List<FileSystem> result = new ArrayList<>();
-        for (org.hyperic.sigar.FileSystem fs : fss) {
-            result.add(convertToInternal(fs));
-        }
-        return result;
     }
 
     private FileSystem convertToInternal(org.hyperic.sigar.FileSystem fs) {
