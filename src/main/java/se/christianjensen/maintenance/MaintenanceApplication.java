@@ -3,6 +3,7 @@ package se.christianjensen.maintenance;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import se.christianjensen.maintenance.preferences.JsonPreferences;
 import se.christianjensen.maintenance.resources.*;
 import se.christianjensen.maintenance.sigar.SigarMetrics;
 
@@ -25,6 +26,8 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
 
     @Override
     public void run(MaintenanceConfiguration maintenanceConfiguration, Environment environment) throws Exception {
+
+
         SigarMetrics sigarMetrics = SigarMetrics.getInstance();
 
         environment.jersey().register(new CpuResource(sigarMetrics.cpu()));
