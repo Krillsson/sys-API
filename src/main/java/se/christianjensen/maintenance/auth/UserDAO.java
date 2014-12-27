@@ -1,14 +1,14 @@
-package se.christianjensen.maintenance.preferences;
+package se.christianjensen.maintenance.auth;
 
 import org.mindrot.jbcrypt.BCrypt;
+import se.christianjensen.maintenance.preferences.JsonPreferences;
+import se.christianjensen.maintenance.representation.internal.Preferences;
 import se.christianjensen.maintenance.representation.internal.User;
-import util.MixedKey;
 
 import java.util.List;
 
 public class UserDAO {
     private JsonPreferences jsonPreferences;
-    private MixedKey<User> key = new MixedKey<>(User.class, "Users");
 
     public UserDAO() {
         jsonPreferences = JsonPreferences.getInstance();
@@ -30,7 +30,7 @@ public class UserDAO {
             User user = new User(name);
             user.setPasswordHash(BCrypt.hashpw(password, BCrypt.gensalt()));
 
-            JsonPreferences.Preferences preferences = jsonPreferences.getPreferences();
+            Preferences preferences = jsonPreferences.getPreferences();
             preferences.getUsers().add(user);
             jsonPreferences.savePreferences(preferences);
         }

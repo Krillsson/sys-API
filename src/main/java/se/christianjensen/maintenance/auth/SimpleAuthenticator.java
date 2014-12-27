@@ -6,7 +6,6 @@ import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
 import org.mindrot.jbcrypt.BCrypt;
-import se.christianjensen.maintenance.preferences.UserDAO;
 import se.christianjensen.maintenance.representation.internal.User;
 
 public class SimpleAuthenticator implements Authenticator<BasicCredentials, User> {

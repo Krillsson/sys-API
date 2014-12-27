@@ -2,9 +2,9 @@ package se.christianjensen.maintenance.preferences;
 
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+import se.christianjensen.maintenance.auth.UserDAO;
 
 public class UserDAOTest {
 
