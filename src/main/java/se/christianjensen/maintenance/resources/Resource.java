@@ -1,12 +1,11 @@
 package se.christianjensen.maintenance.resources;
 
+import io.dropwizard.auth.Auth;
 import se.christianjensen.maintenance.sigar.AbstractSigarMetric;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-
 abstract public class Resource<T extends AbstractSigarMetric> {
-
     public abstract <T extends Object> T getRoot();
 
     protected WebApplicationException buildWebException(Response.Status status, String message) {

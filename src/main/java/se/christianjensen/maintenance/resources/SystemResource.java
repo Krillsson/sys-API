@@ -1,6 +1,8 @@
 package se.christianjensen.maintenance.resources;
 
 
+import io.dropwizard.auth.Auth;
+import se.christianjensen.maintenance.representation.internal.User;
 import se.christianjensen.maintenance.representation.system.Machine;
 import se.christianjensen.maintenance.sigar.SystemMetrics;
 
@@ -19,7 +21,7 @@ public class SystemResource {
     }
 
     @GET
-    public Machine all(){
+    public Machine all(@Auth User user){
         return systemMetrics.machineInfo();
     }
 

@@ -4,5 +4,4 @@ import io.dropwizard.Configuration;
 
 public class MaintenanceConfiguration extends Configuration {
 
-
 }

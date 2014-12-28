@@ -1,5 +1,6 @@
 package se.christianjensen.maintenance.auth;
 
+import io.dropwizard.Configuration;
 import org.mindrot.jbcrypt.BCrypt;
 import se.christianjensen.maintenance.preferences.JsonPreferences;
 import se.christianjensen.maintenance.representation.internal.Preferences;
