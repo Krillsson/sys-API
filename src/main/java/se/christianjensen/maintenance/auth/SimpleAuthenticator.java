@@ -5,9 +5,9 @@ import com.google.common.base.Optional;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
-import org.apache.log4j.spi.LoggerFactory;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
+import se.christianjensen.maintenance.db.UserDAO;
 import se.christianjensen.maintenance.representation.internal.User;
 
 public class SimpleAuthenticator implements Authenticator<BasicCredentials, User> {

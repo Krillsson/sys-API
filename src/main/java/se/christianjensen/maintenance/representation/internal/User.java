@@ -13,7 +13,7 @@ public class User {
     }
 
     @JsonCreator
-    public User(@JsonProperty("name") String name, @JsonProperty("passwordHash") String passwordHash) {
+    public User(@JsonProperty("name") String name, @JsonProperty("password") String passwordHash) {
         this.name = name;
         this.passwordHash = passwordHash;
     }
@@ -23,12 +23,30 @@ public class User {
         return name;
     }
 
-    @JsonProperty
+    @JsonProperty("password")
     public String getPasswordHash() {
         return passwordHash;
     }
 
+    @JsonProperty("password")
     public void setPasswordHash(String passwordHash){
         this.passwordHash = passwordHash;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        if (!name.equalsIgnoreCase(user.name)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
     }
 }

@@ -1,20 +1,14 @@
-package se.christianjensen.maintenance.preferences;
+package se.christianjensen.maintenance.db;
 
-import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.type.CollectionType;
+import com.fasterxml.jackson.databind.*;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-
+import de.undercouch.bson4jackson.BsonFactory;
+import de.undercouch.bson4jackson.BsonModule;
+import se.christianjensen.maintenance.representation.internal.Preferences;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class FileHelper {
 
@@ -46,8 +40,7 @@ public class FileHelper {
             object = mapper.readValue(Files.toString(file, Charsets.UTF_8), type);
         } catch (FileNotFoundException exception) {
             //exception.printStackTrace();
-        } catch (JsonMappingException exception)
-        {
+        } catch (JsonMappingException exception) {
             //
         } catch (IOException exception) {
             //exception.printStackTrace();
@@ -55,28 +48,55 @@ public class FileHelper {
         return object;
     }
 
-    public static <ReturnedObject> List<ReturnedObject> readObjectListFromFile(String fileName, Class<ReturnedObject> returnedObjectClass) {
-        List<ReturnedObject> objectList = new ArrayList<>();
-        ObjectMapper mapper = new ObjectMapper();
-        final CollectionType collectionType = mapper.getTypeFactory().constructCollectionType(List.class, returnedObjectClass);
+    public static void savePreferencesToBsonFile(Preferences preferences, String fileName) {
+        File outputFile = new File(fileName);
+        if (outputFile.isFile()) {
+            outputFile.delete();
+        }
+        OutputStream outputStream = null;
         try {
-            objectList = mapper.readValue(Files.toString(new File(fileName), Charsets.UTF_8), collectionType);
+            outputStream = new FileOutputStream(outputFile);
+
+            ObjectMapper mapper = new ObjectMapper(new BsonFactory());
+            mapper.registerModule(new BsonModule());
+            mapper.writeValue(outputStream, preferences);
+
         } catch (FileNotFoundException exception) {
             exception.printStackTrace();
         } catch (IOException exception) {
             exception.printStackTrace();
         }
-        return objectList;
+    }
+
+    public static Preferences readPreferencesFromBsonFile(String fileName) {
+        ObjectMapper mapper = new ObjectMapper(new BsonFactory());
+        mapper.registerModule(new BsonModule());
+
+        ObjectReader reader = mapper.reader(Preferences.class);
+
+        File inputFile = new File(fileName);
+        InputStream inputStream;
+        try {
+            inputFile.createNewFile();
+            inputStream = new FileInputStream(inputFile);
+            return (Preferences) reader.readValue(inputStream);
+        } catch (FileNotFoundException exception) {
+            //exception.printStackTrace();
+        } catch (JsonMappingException exception) {
+            //
+        } catch (IOException exception) {
+            //exception.printStackTrace();
+        }
+        return null;
     }
 
     public static boolean fileExists(String fileName) {
-        File file =  new File(fileName);
+        File file = new File(fileName);
         return file.exists();
     }
 
     public static void deleteFile(String fileName) {
-        if(fileExists(fileName))
-        {
+        if (fileExists(fileName)) {
             File file = new File(fileName);
             file.delete();
         }

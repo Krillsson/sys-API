@@ -1,7 +1,9 @@
 package se.christianjensen.maintenance.resources;
 
+import io.dropwizard.auth.Auth;
 import se.christianjensen.maintenance.representation.filesystem.FSType;
 import se.christianjensen.maintenance.representation.filesystem.FileSystem;
+import se.christianjensen.maintenance.representation.internal.User;
 import se.christianjensen.maintenance.sigar.FilesystemMetrics;
 
 import javax.ws.rs.GET;
@@ -23,13 +25,13 @@ public class FilesystemResource extends Resource {
 
     @GET
     @Override
-    public List<FileSystem> getRoot() {
+    public List<FileSystem> getRoot(@Auth User user) {
         return filesystemMetrics.getFilesystems();
     }
 
     @GET
     @Path("type/{fsTypeName}")
-    public List<FileSystem> getFsByType(@PathParam("fsTypeName") String fsTypeName) {
+    public List<FileSystem> getFsByType(@Auth User user, @PathParam("fsTypeName") String fsTypeName) {
         FSType fsType;
         List<FileSystem> fileSystems;
         try {
@@ -38,13 +40,12 @@ public class FilesystemResource extends Resource {
         } catch (IllegalArgumentException e) {
             throw buildWebException(Response.Status.NOT_FOUND, e.getMessage());
         }
-
         return fileSystems;
     }
 
     @GET
     @Path("{id}")
-    public FileSystem getFsById(@PathParam("id") String id) {
+    public FileSystem getFsById(@Auth User user, @PathParam("id") String id) {
         FileSystem fileSystem;
         try {
             fileSystem = filesystemMetrics.getFileSystemById(id);

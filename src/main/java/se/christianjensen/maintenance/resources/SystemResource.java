@@ -13,7 +13,7 @@ import javax.ws.rs.core.MediaType;
 
 @Path("system")
 @Produces(MediaType.APPLICATION_JSON)
-public class SystemResource {
+public class SystemResource extends Resource {
     private SystemMetrics systemMetrics;
 
     public SystemResource(SystemMetrics systemMetrics) {
@@ -21,8 +21,8 @@ public class SystemResource {
     }
 
     @GET
-    public Machine all(@Auth User user){
+    @Override
+    public Machine getRoot(@Auth User user) {
         return systemMetrics.machineInfo();
     }
-
 }

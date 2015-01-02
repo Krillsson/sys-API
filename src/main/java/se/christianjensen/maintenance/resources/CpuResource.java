@@ -1,7 +1,9 @@
 package se.christianjensen.maintenance.resources;
 
+import io.dropwizard.auth.Auth;
 import se.christianjensen.maintenance.representation.cpu.Cpu;
 import se.christianjensen.maintenance.representation.cpu.CpuTime;
+import se.christianjensen.maintenance.representation.internal.User;
 import se.christianjensen.maintenance.sigar.CpuMetrics;
 
 import javax.ws.rs.GET;
@@ -23,13 +25,13 @@ public class CpuResource extends Resource {
 
     @GET
     @Override
-    public Cpu getRoot() {
+    public Cpu getRoot(@Auth User user) {
         return cpuMetrics.getCpu();
     }
 
     @Path("{id}")
     @GET
-    public CpuTime getCpuTimeByCore(@PathParam("id") int id) {
+    public CpuTime getCpuTimeByCore(@Auth User user, @PathParam("id") int id) {
         try {
             return cpuMetrics.getCpuTimeByCoreIndex(id);
         } catch (IllegalArgumentException e) {

@@ -1,5 +1,7 @@
 package se.christianjensen.maintenance.resources;
 
+import io.dropwizard.auth.Auth;
+import se.christianjensen.maintenance.representation.internal.User;
 import se.christianjensen.maintenance.representation.memory.MainMemory;
 import se.christianjensen.maintenance.representation.memory.MemoryInfo;
 import se.christianjensen.maintenance.representation.memory.SwapSpace;
@@ -21,19 +23,19 @@ public class MemoryResource extends Resource {
 
     @Override
     @GET
-    public MemoryInfo getRoot() {
+    public MemoryInfo getRoot(@Auth User user) {
         return memoryMetrics.getMemoryInfo();
     }
 
     @Path("ram")
     @GET
-    public MainMemory getRam() {
+    public MainMemory getRam(@Auth User user) {
         return memoryMetrics.getRam();
     }
 
     @Path("swap")
     @GET
-    public SwapSpace getSwap() {
+    public SwapSpace getSwap(@Auth User user) {
         return memoryMetrics.getSwap();
     }
 }
