@@ -12,7 +12,7 @@ public class UserDAO {
     List<User> users;
 
     public UserDAO() {
-        users = JsonPreferences.getInstance().getPreferences().getUsers();
+        users = BsonPreferences.getInstance().getPreferences().getUsers();
         if (users.isEmpty()) {
             createUser(DEFAULT_USERNAME, DEFAULT_PASSWORD);
         }
@@ -32,7 +32,7 @@ public class UserDAO {
             User user = new User(name);
             user.setPasswordHash(BCrypt.hashpw(password, BCrypt.gensalt()));
             users.add(user);
-            JsonPreferences.getInstance().persistPreferences();
+            BsonPreferences.getInstance().persistPreferences();
         }
     }
 }
