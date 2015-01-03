@@ -20,7 +20,7 @@ public class SimpleAuthenticator implements Authenticator<BasicCredentials, User
     @Override
     public com.google.common.base.Optional<User> authenticate(BasicCredentials credentials) throws AuthenticationException
     {
-        User user = this.userDao.getUserByName(credentials.getUsername());
+        User user = this.userDao.getByName(credentials.getUsername());
         if (user!=null &&
                 user.getName().equalsIgnoreCase(credentials.getUsername()) &&
                 BCrypt.checkpw(credentials.getPassword(), user.getPasswordHash())) {
