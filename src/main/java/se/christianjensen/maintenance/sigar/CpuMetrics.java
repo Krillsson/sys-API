@@ -21,7 +21,7 @@ public class CpuMetrics extends AbstractSigarMetric {
     }
 
     public Cpu getCpu() {
-        return new Cpu(cpuInfo(), cpuTimeSysPercent(), cpuTimesPerCore(cpuPercList()));
+        return new Cpu(cpuInfo(), cpuTimeSysPercent(), totalCpuTime(), cpuTimesPerCore(cpuPercList()));
     }
 
     public CpuTime getCpuTimeByCoreIndex(int id) throws IllegalArgumentException {
@@ -43,39 +43,33 @@ public class CpuMetrics extends AbstractSigarMetric {
         return userTime / 1.0;
     }
 
+    protected CpuTime totalCpuTime() {
+        CpuPerc cpuPerc;
+        try {
+            cpuPerc = sigar.getCpuPerc();
+            if (Double.isNaN(cpuPerc.getIdle())) {
+                try {
+                    Thread.sleep(HACK_DELAY_MILLIS);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return CpuTime.fromSigarBean(cpuPerc);
+                }
+                cpuPerc = sigar.getCpuPerc();
+            }
+            return CpuTime.fromSigarBean(cpuPerc);
+        } catch (SigarException e) {
+            //swallow
+        }
+        return null;
+    }
+
     protected List<CpuTime> cpuTimesPerCore(CpuPerc[] percList) {
         List<CpuTime> result = new ArrayList<>();
-        CpuPerc[] cpus = cpuPercList();
-        if (cpus == null) {
-            return result;
-        }
-
-        if (Double.isNaN(cpus[0].getIdle())) {
-            /*
-             * XXX: Hacky workaround for strange Sigar behaviour.
-             * If you call sigar.getCpuPerfList() too often(?), 
-             * it returns a steaming pile of NaNs. 
-             *
-             * See suspicious code here:
-             * https://github.com/hyperic/sigar/blob/master/bindings/java/src/org/hyperic/sigar/Sigar.java#L345-348
-             *
-             */ 
-            try {
-                Thread.sleep(HACK_DELAY_MILLIS);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                return result;
-            }
-            cpus = percList;
-            if (cpus == null) {
-                return result;
-            }
-        }
-        for (CpuPerc cp : cpus) {
-            result.add(CpuTime.fromSigarBean(cp)); 
+        for (CpuPerc cp : percList) {
+            result.add(CpuTime.fromSigarBean(cp));
         }
         return result;
-   }
+    }
 
     protected CpuInfo cpuInfo() {
         try {
@@ -94,12 +88,34 @@ public class CpuMetrics extends AbstractSigarMetric {
         CpuPerc[] cpus = null;
         try {
             cpus = sigar.getCpuPercList();
+            if (Double.isNaN(cpus[0].getIdle())) {
+            /*
+             * XXX: Hacky workaround for strange Sigar behaviour.
+             * If you call sigar.getCpuPerfList() too often(?),
+             * it returns a steaming pile of NaNs.
+             *
+             * See suspicious code here:
+             * https://github.com/hyperic/sigar/blob/master/bindings/java/src/org/hyperic/sigar/Sigar.java#L345-348
+             *
+             */
+                try {
+                    Thread.sleep(HACK_DELAY_MILLIS);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return cpus;
+                }
+                cpus = sigar.getCpuPercList();
+                if (cpus == null) {
+                    return cpus;
+                }
+            }
         } catch (SigarException e) {
             // give up
         }
         if (cpus == null || cpus.length == 0) {
             return null;
         }
+
         return cpus;
     }
 

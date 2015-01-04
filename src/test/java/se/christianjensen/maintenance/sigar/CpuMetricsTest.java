@@ -35,7 +35,7 @@ public class CpuMetricsTest {
 
     @Test
     public void gettingCpuTimeByExistingCore() throws Exception {
-        cm.getCpuTimeByCoreIndex(0);
+        cm.getCpuTimeByCoreIndex(1);
     }
 
     @Test(expected = IllegalArgumentException.class)

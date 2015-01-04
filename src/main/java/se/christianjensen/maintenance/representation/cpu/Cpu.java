@@ -7,12 +7,14 @@ import java.util.List;
 public class Cpu {
     private CpuInfo cpuInfo;
     private double systemUsagePercent;
-    private List<CpuTime> cpuTime;
+    private CpuTime totalCpuTime;
+    private List<CpuTime> cpuTimePerCore;
 
-    public Cpu(CpuInfo cpuInfo, double systemUsagePercent, List<CpuTime> cpuTime) {
+    public Cpu(CpuInfo cpuInfo, double systemUsagePercent, CpuTime totalCpuTime, List<CpuTime> cpuTimePerCore) {
         this.cpuInfo = cpuInfo;
         this.systemUsagePercent = systemUsagePercent;
-        this.cpuTime = cpuTime;
+        this.totalCpuTime = totalCpuTime;
+        this.cpuTimePerCore = cpuTimePerCore;
     }
 
     @JsonProperty
@@ -26,7 +28,12 @@ public class Cpu {
     }
 
     @JsonProperty
-    public List<CpuTime> getCpuTime() {
-        return cpuTime;
+    public CpuTime getTotalCpuTime() {
+        return totalCpuTime;
+    }
+
+    @JsonProperty
+    public List<CpuTime> getCpuTimePerCore() {
+        return cpuTimePerCore;
     }
 }

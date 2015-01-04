@@ -12,8 +12,8 @@ import se.christianjensen.maintenance.representation.internal.User;
 
 public class SimpleAuthenticator implements Authenticator<BasicCredentials, User> {
 
-    UserDAO userDao;
-    Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SimpleAuthenticator.class.getSimpleName());
+    private UserDAO userDao;
+    private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SimpleAuthenticator.class.getSimpleName());
 
     public SimpleAuthenticator(UserDAO userDao) {this.userDao = userDao;}
 

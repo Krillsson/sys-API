@@ -67,6 +67,9 @@ public class User {
 
     @Override
     public int hashCode() {
-        return uuid.hashCode();
+        int result = uuid != null ? uuid.hashCode() : 0;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + (passwordHash != null ? passwordHash.hashCode() : 0);
+        return result;
     }
 }

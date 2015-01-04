@@ -4,6 +4,8 @@ import org.mindrot.jbcrypt.BCrypt;
 import se.christianjensen.maintenance.representation.internal.User;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.UUID;
 
 public class UserDAO {
     private static final String DEFAULT_USERNAME = "admin";
@@ -19,12 +21,25 @@ public class UserDAO {
     }
 
     public User getByName(String name) {
-        for (User user : users) {
-            if (user.getName().equalsIgnoreCase(name)) {
-                return user;
-            }
+        try {
+            return users.stream()
+                    .filter(u -> u.getName().equalsIgnoreCase(name))
+                    .findFirst()
+                    .get();
+        } catch (NoSuchElementException e) {
+            throw new IllegalArgumentException("No user with name: " + name + " where found.");
         }
-        return null;
+    }
+
+    public User getById(UUID id) {
+        try {
+            return users.stream()
+                    .filter(u -> u.getUuid().equals(id))
+                    .findFirst()
+                    .get();
+        } catch (NoSuchElementException e) {
+            throw new IllegalArgumentException("No user with id: " + id.toString() + " where found.");
+        }
     }
 
     public void create(String name, String password) {

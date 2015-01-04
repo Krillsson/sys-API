@@ -1,10 +1,10 @@
 package se.christianjensen.maintenance.db;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import de.undercouch.bson4jackson.BsonFactory;
 import de.undercouch.bson4jackson.BsonModule;
+import org.slf4j.Logger;
 import se.christianjensen.maintenance.representation.internal.Preferences;
 
 import java.io.*;
@@ -12,8 +12,10 @@ import java.util.Date;
 
 public class BsonPreferences {
 
+    private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(BsonPreferences.class.getSimpleName());
+
     private static final String PATH = "db.bson";
-    private Preferences preferences;
+    protected Preferences preferences;
 
     private BsonPreferences() {
         //Singleton
@@ -22,23 +24,19 @@ public class BsonPreferences {
     private static final BsonPreferences instance = new BsonPreferences();
 
     public static BsonPreferences getInstance() {
-
         return instance;
     }
 
-    public Preferences getPreferences()
-    {
+    public Preferences getPreferences() {
         if (preferences == null) {
             readPreferences();
         }
         return preferences;
     }
 
-    private void readPreferences()
-    {
+    private void readPreferences() {
         preferences = readPreferencesFromBsonFile(PATH);
-        if(preferences == null)
-        {
+        if (preferences == null) {
             preferences = new Preferences();
         }
     }
@@ -57,36 +55,26 @@ public class BsonPreferences {
         OutputStream outputStream = null;
         try {
             outputStream = new FileOutputStream(outputFile);
-
             ObjectMapper mapper = new ObjectMapper(new BsonFactory());
             mapper.registerModule(new BsonModule());
             mapper.writeValue(outputStream, preferences);
-
-        } catch (FileNotFoundException exception) {
-            exception.printStackTrace();
         } catch (IOException exception) {
-            exception.printStackTrace();
+            LOGGER.error("Unable to save preferences: " + exception.getMessage(), exception);
         }
     }
 
     private Preferences readPreferencesFromBsonFile(String fileName) {
         ObjectMapper mapper = new ObjectMapper(new BsonFactory());
         mapper.registerModule(new BsonModule());
-
         ObjectReader reader = mapper.reader(Preferences.class);
-
         File inputFile = new File(fileName);
         InputStream inputStream;
         try {
             inputFile.createNewFile();
             inputStream = new FileInputStream(inputFile);
             return (Preferences) reader.readValue(inputStream);
-        } catch (FileNotFoundException exception) {
-            //exception.printStackTrace();
-        } catch (JsonMappingException exception) {
-            //
         } catch (IOException exception) {
-            //exception.printStackTrace();
+            //Swallow exception. If the file does not exist we just create a new instance in memory
         }
         return null;
     }
