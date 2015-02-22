@@ -10,6 +10,7 @@ public class User {
     private UUID uuid;
     private String name;
     private String passwordHash;
+    private Device device;
 
     public User(String name) {
         this.name = name;
@@ -22,10 +23,11 @@ public class User {
     }
 
     @JsonCreator
-    public User(@JsonProperty("uuid") UUID uuid, @JsonProperty("name") String name, @JsonProperty("password") String passwordHash) {
+    public User(@JsonProperty("uuid") UUID uuid, @JsonProperty("name") String name, @JsonProperty("password") String passwordHash, @JsonProperty("device") Device device) {
         this.uuid = uuid;
         this.name = name;
         this.passwordHash = passwordHash;
+        this.device = device;
     }
 
     @JsonProperty
@@ -51,6 +53,11 @@ public class User {
     @JsonProperty("password")
     public void setPasswordHash(String passwordHash){
         this.passwordHash = passwordHash;
+    }
+
+    @JsonProperty
+    public Device getDevice() {
+        return device;
     }
 
     @Override

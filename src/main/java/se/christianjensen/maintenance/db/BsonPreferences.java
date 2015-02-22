@@ -74,7 +74,7 @@ public class BsonPreferences {
             inputStream = new FileInputStream(inputFile);
             return (Preferences) reader.readValue(inputStream);
         } catch (IOException exception) {
-            //Swallow exception. If the file does not exist we just create a new instance in memory
+            //Swallow exception. If the file does not exist yet, we just create a new instance in memory
         }
         return null;
     }

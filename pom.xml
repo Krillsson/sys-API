@@ -22,6 +22,10 @@
             <id>JBoss Thirdparty Uploads</id>
             <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads</url>
         </repository>
+        <repository>
+            <id>gcm-server-repository</id>
+            <url>https://raw.github.com/whispersystems/maven/master/gcm-server/releases/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -41,6 +45,11 @@
             <version>0.7.0-1</version>
         </dependency>
         <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-client</artifactId>
+            <version>${dropwizard.version}</version>
+        </dependency>
+        <dependency>
             <groupId>de.undercouch</groupId>
             <artifactId>bson4jackson</artifactId>
             <version>2.4.0</version>
@@ -54,6 +63,11 @@
             <groupId>org.hyperic</groupId>
             <artifactId>sigar</artifactId>
             <version>${sigar.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.phonedeck</groupId>
+            <artifactId>gcm4j</artifactId>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
