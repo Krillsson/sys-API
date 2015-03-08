@@ -15,8 +15,8 @@ public final class SwapSpace extends MemSegment {
     }
 
     public static SwapSpace fromSigarBean(Swap swap) {
-        return new SwapSpace( //
-                swap.getTotal(), swap.getUsed(), swap.getFree(), //
+        return new SwapSpace(
+                swap.getTotal(), swap.getUsed(), swap.getFree(),
                 swap.getPageIn(), swap.getPageOut());
     }
 

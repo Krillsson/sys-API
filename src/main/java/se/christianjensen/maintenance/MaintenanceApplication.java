@@ -1,9 +1,7 @@
 package se.christianjensen.maintenance;
 
-import com.sun.jersey.api.client.Client;
 import io.dropwizard.Application;
 import io.dropwizard.auth.basic.BasicAuthProvider;
-import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import se.christianjensen.maintenance.auth.SimpleAuthenticator;
@@ -33,10 +31,6 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
     public void run(MaintenanceConfiguration config, Environment environment) throws Exception {
         UserDAO userDAO = new UserDAO();
         SigarMetrics sigarMetrics = SigarMetrics.getInstance();
-
-        Client httpClient = new JerseyClientBuilder(environment).using(config.getJerseyClientConfiguration())
-                .build(getName());
-
 
         environment.jersey().register(new BasicAuthProvider<User>(new SimpleAuthenticator(userDAO), "Maintenance-API"));
         environment.jersey().register(new CpuResource(sigarMetrics.cpu()));

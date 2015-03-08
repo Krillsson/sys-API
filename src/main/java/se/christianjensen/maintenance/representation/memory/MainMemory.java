@@ -3,9 +3,6 @@ package se.christianjensen.maintenance.representation.memory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hyperic.sigar.Mem;
 
-/**
-* Created by christian on 2014-11-30.
-*/
 public final class MainMemory extends MemSegment {
     private final long actualUsed, actualFree;
     private final double usedPercent, freePercent;

@@ -18,7 +18,6 @@ public class MaintenanceConfiguration extends Configuration {
         return httpClient;
     }
 
-    @NotNull
     @Valid
     @JsonProperty
     private PushConfiguration push;

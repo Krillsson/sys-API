@@ -82,6 +82,11 @@
             <version>0.7.1</version>
         </dependency>
         <dependency>
+            <groupId>net.sf.jni4net</groupId>
+            <artifactId>jni4net.j-generics</artifactId>
+            <version>0.8.7.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.phonedeck</groupId>
             <artifactId>gcm4j</artifactId>
             <version>1.0</version>
@@ -198,12 +203,12 @@
                         <id>01</id>
                         <configuration>
                             <tasks>
-                                <move todir="${library-dir}">
+                                <copy todir="${library-dir}">
                                     <fileset dir="${project.basedir}/lib/">
                                         <include name="**/*.dll"/>
                                         <exclude name="**/*.jar"/>
                                     </fileset>
-                                </move>
+                                </copy>
                             </tasks>
                         </configuration>
                     </execution>

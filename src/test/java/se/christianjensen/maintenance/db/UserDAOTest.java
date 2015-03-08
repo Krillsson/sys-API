@@ -12,6 +12,7 @@ import java.util.Objects;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 public class UserDAOTest {
@@ -51,9 +52,9 @@ public class UserDAOTest {
         assertThat(user, equalTo(user1));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void nonExistentUserShouldReturnNothing() throws Exception {
-        userDAO.getByName("nada");
+        assertNull(userDAO.getByName("nada"));
     }
 
     @Test(expected = IllegalArgumentException.class)

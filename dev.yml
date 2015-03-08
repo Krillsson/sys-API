@@ -6,13 +6,3 @@ logging:
   level: INFO
   appenders:
     - type: console
-push:
-  host: https://android.googleapis.com/gcm/send
-  port:
-  username:
-  password: AIzaSyCF55vrueOfqB7QDbjW-uWuZfe-8gKKcP0
-jerseyClient:
-  minThreads: 1
-  maxThreads: 128
-  gzipEnabled: true
-  gzipEnabledForRequests: true

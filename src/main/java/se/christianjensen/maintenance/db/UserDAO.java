@@ -27,7 +27,8 @@ public class UserDAO {
                     .findFirst()
                     .get();
         } catch (NoSuchElementException e) {
-            throw new IllegalArgumentException("No user with name: " + name + " where found.");
+            return null;
+            //throw new IllegalArgumentException("No user with name: " + name + " where found.");
         }
     }
 
