@@ -277,9 +277,9 @@
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 
                                     <manifestEntries>
-                                        <Main-Class>se.christianjensen.maintenance.MaintenanceApplication</Main-Class>
-                                        <Class-Path>${project.build.finalName}.${project.packaging};${library-dir}
-                                        </Class-Path>
+                                        <!--<Main-Class>se.christianjensen.maintenance.MaintenanceApplication</Main-Class>
+                                        <Class-Path>${project.build.finalName}.${project.packaging};lib/*;.
+                                        </Class-Path>-->
                                     </manifestEntries>
                                 </transformer>
                             </transformers>
@@ -308,6 +308,15 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${library-dir}</outputDirectory>
                                     <destFileName>jni4net.n.w64.v40-generics-0.8.7.0.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.openhardwaremonitor</groupId>
+                                    <artifactId>hardware-jni-bridge</artifactId>
+                                    <version>0.7.1</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${library-dir}</outputDirectory>
+                                    <destFileName>hardware-jni-bridge-0.7.1.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>

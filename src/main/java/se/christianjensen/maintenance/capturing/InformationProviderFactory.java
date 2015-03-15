@@ -41,7 +41,7 @@ public class InformationProviderFactory {
                             + SystemUtils.FILE_SEPARATOR
                             + "lib"
                             + SystemUtils.FILE_SEPARATOR
-                            + "OpenHardwareMonitorLib.j4n.dll"));
+                            + "hardware-jni-bridge-0.7.1"));
                     return new WindowsInformationProvider(SigarMetrics.getInstance(), new Computer());
                 } catch (IOException | URISyntaxException e) {
                     e.printStackTrace();
