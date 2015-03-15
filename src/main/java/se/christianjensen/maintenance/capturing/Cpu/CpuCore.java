@@ -3,26 +3,42 @@ package se.christianjensen.maintenance.capturing.Cpu;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CpuCore {
-    private double load, clock, temp;
+    public float load, clock, temp;
 
-    public CpuCore(double load, double clock, double temp) {
+    public CpuCore(float load, float clock, float temp) {
         this.load = load;
         this.clock = clock;
         this.temp = temp;
     }
 
+    public CpuCore() {
+
+    }
+
     @JsonProperty
-    public double getLoad() {
+    public float getLoad() {
         return load;
     }
 
     @JsonProperty
-    public double getClock() {
+    public float getClock() {
         return clock;
     }
 
     @JsonProperty
-    public double getTemp() {
+    public float getTemp() {
         return temp;
+    }
+
+    public void setLoad(float load) {
+        this.load = load;
+    }
+
+    public void setClock(float clock) {
+        this.clock = clock;
+    }
+
+    public void setTemp(float temp) {
+        this.temp = temp;
     }
 }

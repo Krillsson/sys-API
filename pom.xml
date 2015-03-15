@@ -249,6 +249,11 @@
                 <version>1.6</version>
                 <configuration>
                     <createDependencyReducedPom>true</createDependencyReducedPom>
+                    <artifactSet>
+                        <excludes>
+                            <exclude>net.sf.jni4net:jni4net.j-generics</exclude>
+                        </excludes>
+                    </artifactSet>
                     <filters>
                         <filter>
                             <artifact>*:*</artifact>
@@ -270,9 +275,41 @@
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>se.christianjensen.maintenance.MaintenanceApplication</mainClass>
+
+                                    <manifestEntries>
+                                        <Main-Class>se.christianjensen.maintenance.MaintenanceApplication</Main-Class>
+                                        <Class-Path>${project.build.finalName}.${project.packaging};${library-dir}
+                                        </Class-Path>
+                                    </manifestEntries>
                                 </transformer>
                             </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>net.sf.jni4net</groupId>
+                                    <artifactId>jni4net.j-generics</artifactId>
+                                    <version>0.8.7.0</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${library-dir}</outputDirectory>
+                                    <destFileName>jni4net.n.w64.v40-generics-0.8.7.0.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
                         </configuration>
                     </execution>
                 </executions>

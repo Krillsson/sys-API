@@ -1,1 +1,1 @@
-java -Dorg.hyperic.sigar.path="target\dependency\sigar\hyperic-sigar-1.6.5\sigar-bin\lib" -jar "target/maintenance-rest-api-1.0-SNAPSHOT.jar" server dev.yml
+java -Dorg.hyperic.sigar.path="target\lib" -jar "target/maintenance-rest-api-1.0-SNAPSHOT.jar" server dev.yml

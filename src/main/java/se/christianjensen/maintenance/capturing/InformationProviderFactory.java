@@ -25,7 +25,7 @@ public class InformationProviderFactory {
         determineOs();
     }
 
-    InformationProviderInterface getInformationProvider() {
+    public InformationProviderInterface getInformationProvider() {
 
         switch (os) {
             case WINDOWS:
