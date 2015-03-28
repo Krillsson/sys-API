@@ -82,7 +82,7 @@ public class WindowsInformationProvider implements InformationProviderInterface 
         cpu.setName(ohmcpu.getName());
         cpu.setCores(new ArrayList<>());
         int cores = Arrays.asList(ohmcpu.getSensors()).stream().mapToInt(ISensor::getIndex).max().getAsInt();
-        for (int i = 0; i <= cores; i++) {
+        for (int i = 1; i <= cores; i++) {
             final int finalI = i;
             List<ISensor> coreSensors = Arrays.asList(ohmcpu.getSensors()).stream().filter(s -> s.getName().contains("Core") && s.getName().contains(String.valueOf(finalI))).collect(Collectors.toList());
             CpuCore cpuCore = new CpuCore();
@@ -91,6 +91,8 @@ public class WindowsInformationProvider implements InformationProviderInterface 
             }
             cpu.getCores().add(cpuCore);
         }
+        cpu.setLoad(Arrays.asList(ohmcpu.getSensors()).stream().filter(s -> s.getName().contains("CPU Total")).findFirst().get().getValue());
+
         return cpu;
     }
 

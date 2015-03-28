@@ -5,4 +5,5 @@ server:
 logging:
   level: INFO
   appenders:
-    - type: console
+       - type: console
+         threshold: DEBUG

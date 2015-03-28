@@ -3,6 +3,8 @@ package se.christianjensen.maintenance.capturing;
 import net.sf.jni4net.Bridge;
 import openhardwaremonitor.hardware.Computer;
 import org.apache.commons.lang.SystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.christianjensen.maintenance.capturing.Windows.WindowsInformationProvider;
 import se.christianjensen.maintenance.sigar.SigarMetrics;
 
@@ -11,6 +13,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 public class InformationProviderFactory {
+    private static final Logger LOGGER = LoggerFactory.getLogger(InformationProviderFactory.class);
+
+
     public enum OsType {
         WINDOWS, MAC, LINUX, UNKNOWN
     }
@@ -29,24 +34,7 @@ public class InformationProviderFactory {
 
         switch (os) {
             case WINDOWS:
-                try {
-                    Bridge.setVerbose(true);
-                    Bridge.init();
-                    Bridge.LoadAndRegisterAssemblyFrom(new File(getClass()
-                            .getProtectionDomain()
-                            .getCodeSource()
-                            .getLocation()
-                            .toURI()
-                            .toString()
-                            + SystemUtils.FILE_SEPARATOR
-                            + "lib"
-                            + SystemUtils.FILE_SEPARATOR
-                            + "hardware-jni-bridge-0.7.1"));
-                    return new WindowsInformationProvider(SigarMetrics.getInstance(), new Computer());
-                } catch (IOException | URISyntaxException e) {
-                    e.printStackTrace();
-                }
-                break;
+                return initWindowsInformationProvider();
             case MAC:
                 break;
             case LINUX:
@@ -67,5 +55,29 @@ public class InformationProviderFactory {
         } else {
             os = OsType.UNKNOWN;
         }
+        LOGGER.debug("Determined os: %s", os.name());
+    }
+
+    private InformationProviderInterface initWindowsInformationProvider() {
+        try {
+            Bridge.setVerbose(true);
+            Bridge.init();
+            File hardwareLib = new File(getClass()
+                    .getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .toURI()
+                    .toString()
+                    + SystemUtils.FILE_SEPARATOR
+                    + "lib"
+                    + SystemUtils.FILE_SEPARATOR
+                    + "OpenHardwareMonitorLib.j4n.dll");
+            LOGGER.debug("Attempting to load OHM at: %s", hardwareLib.getAbsolutePath());
+            Bridge.LoadAndRegisterAssemblyFrom(new File("C:/Users/christian/IdeaProjects/maintenance-api/target/lib/OpenHardwareMonitorLib.j4n.dll"));
+            return new WindowsInformationProvider(SigarMetrics.getInstance(), new Computer());
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

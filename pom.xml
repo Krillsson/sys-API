@@ -307,7 +307,7 @@
                                     <type>jar</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${library-dir}</outputDirectory>
-                                    <destFileName>jni4net.n.w64.v40-generics-0.8.7.0.jar</destFileName>
+                                    <destFileName>jni4net.n.w64.v40-0.8.7.0.jar</destFileName>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.openhardwaremonitor</groupId>
@@ -316,7 +316,7 @@
                                     <type>jar</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${library-dir}</outputDirectory>
-                                    <destFileName>hardware-jni-bridge-0.7.1.jar</destFileName>
+                                    <destFileName>OpenHardwareMonitorLib.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
