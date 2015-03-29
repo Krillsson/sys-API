@@ -7,14 +7,15 @@ import java.util.List;
 
 public class Cpu {
     private String name;
-    private float load, clock, temp, fanRpm;
+    private float load;
+    private float averageTemp;
+    private float fanRpm;
     private List<CpuCore> cores;
 
-    public Cpu(String name, float load, float clock, float temp, float fanRpm, List<CpuCore> cores) {
+    public Cpu(String name, float load, float clock, float averageTemp, float fanRpm, List<CpuCore> cores) {
         this.name = name;
         this.load = load;
-        this.clock = clock;
-        this.temp = temp;
+        this.averageTemp = averageTemp;
         this.fanRpm = fanRpm;
         this.cores = cores;
     }
@@ -34,13 +35,8 @@ public class Cpu {
     }
 
     @JsonProperty
-    public float getClock() {
-        return clock;
-    }
-
-    @JsonProperty
-    public float getTemp() {
-        return temp;
+    public float getAverageTemp() {
+        return averageTemp;
     }
 
     @JsonProperty
@@ -61,12 +57,8 @@ public class Cpu {
         this.load = load;
     }
 
-    public void setClock(float clock) {
-        this.clock = clock;
-    }
-
-    public void setTemp(float temp) {
-        this.temp = temp;
+    public void setAverageTemp(float averageTemp) {
+        this.averageTemp = averageTemp;
     }
 
     public void setFanRpm(float fanRpm) {

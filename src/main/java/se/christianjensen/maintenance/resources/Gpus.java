@@ -1,6 +1,6 @@
 package se.christianjensen.maintenance.resources;
 
-import se.christianjensen.maintenance.capturing.Cpu.Cpu;
+import se.christianjensen.maintenance.capturing.Gpu.Gpu;
 import se.christianjensen.maintenance.capturing.InformationProvider;
 
 import javax.ws.rs.GET;
@@ -9,17 +9,17 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@Path("cpus")
+@Path("gpus")
 @Produces(MediaType.APPLICATION_JSON)
-public class cpus {
+public class Gpus {
     private InformationProvider provider;
 
-    public cpus(InformationProvider provider) {
+    public Gpus(InformationProvider provider) {
         this.provider = provider;
     }
 
     @GET
-    public List<Cpu> getCpus() {
-        return provider.getCpus();
+    public List<Gpu> getGpus() {
+        return provider.getGpus();
     }
 }
