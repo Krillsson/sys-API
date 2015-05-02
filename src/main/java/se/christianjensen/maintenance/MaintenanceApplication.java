@@ -5,7 +5,7 @@ import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import se.christianjensen.maintenance.auth.SimpleAuthenticator;
-import se.christianjensen.maintenance.capturing.InformationProvider;
+import se.christianjensen.maintenance.capturing.InformationProviderDerp;
 import se.christianjensen.maintenance.capturing.InformationProviderFactory;
 import se.christianjensen.maintenance.db.UserDAO;
 import se.christianjensen.maintenance.representation.internal.User;
@@ -35,7 +35,7 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         SigarMetrics sigarMetrics = SigarMetrics.getInstance();
 
         InformationProviderFactory informationProviderFactory = new InformationProviderFactory();
-        InformationProvider provider = informationProviderFactory.getInformationProvider();
+        InformationProviderDerp provider = informationProviderFactory.getInformationProvider();
         environment.jersey().register(new cpus(provider));
         environment.jersey().register(new Gpus(provider));
 

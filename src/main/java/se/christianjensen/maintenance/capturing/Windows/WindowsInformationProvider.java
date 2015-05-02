@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import se.christianjensen.maintenance.capturing.Cpu.Cpu;
 import se.christianjensen.maintenance.capturing.Cpu.CpuCore;
 import se.christianjensen.maintenance.capturing.Gpu.Gpu;
-import se.christianjensen.maintenance.capturing.InformationProvider;
+import se.christianjensen.maintenance.capturing.InformationProviderDerp;
 import se.christianjensen.maintenance.representation.filesystem.FileSystem;
 import se.christianjensen.maintenance.representation.memory.MainMemory;
 import se.christianjensen.maintenance.representation.network.NetworkInfo;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 import static se.christianjensen.maintenance.capturing.Windows.SensorType.fromOHMSensorType;
 
-public class WindowsInformationProvider implements InformationProvider {
+public class WindowsInformationProvider implements InformationProviderDerp {
     private static final Logger LOGGER = LoggerFactory.getLogger(WindowsInformationProvider.class);
 
 

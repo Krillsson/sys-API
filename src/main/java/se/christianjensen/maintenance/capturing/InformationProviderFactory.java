@@ -30,7 +30,7 @@ public class InformationProviderFactory {
         determineOs();
     }
 
-    public InformationProvider getInformationProvider() {
+    public InformationProviderDerp getInformationProvider() {
 
         switch (os) {
             case WINDOWS:
@@ -58,7 +58,7 @@ public class InformationProviderFactory {
         LOGGER.debug("Determined os: %s", os.name());
     }
 
-    private InformationProvider initWindowsInformationProvider() {
+    private InformationProviderDerp initWindowsInformationProvider() {
         try {
             Bridge.setVerbose(true);
             Bridge.init();
