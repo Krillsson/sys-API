@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<jni4net-proxygen xmlns="http://jni4net.sf.net/0.8.7.0/toolConfig.xsd">
+    <TargetDirJvm>work\jvm</TargetDirJvm>
+    <TargetDirClr>work\clr</TargetDirClr>
+    <AssemblyReference Assembly="OpenHardwareMonitorLib.dll" Generate="true"/>
+    <AssemblyReference Assembly="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
+
+    <ClrType TypeName="System.Collections.IList"/>
+</jni4net-proxygen>
