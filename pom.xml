@@ -154,23 +154,6 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
-                        <id>01</id>
-                        <configuration>
-                            <tasks>
-                                <copy todir="${library-dir}">
-                                    <fileset dir="${project.basedir}/lib/">
-                                        <include name="**/*.dll"/>
-                                        <exclude name="**/*.jar"/>
-                                    </fileset>
-                                </copy>
-                            </tasks>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
                         <id>02</id>
                         <configuration>
                             <tasks>
