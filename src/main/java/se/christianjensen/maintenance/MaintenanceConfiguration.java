@@ -19,15 +19,6 @@ public class MaintenanceConfiguration extends Configuration {
     @JsonProperty
     private UserConfiguration user;
 
-    @Valid
-    @NotNull
-    @JsonProperty
-    private JerseyClientConfiguration httpClient = new JerseyClientConfiguration();
-
-    public JerseyClientConfiguration getJerseyClientConfiguration() {
-        return httpClient;
-    }
-
     public String getSigarLocation() {
         return sigarLocation;
     }

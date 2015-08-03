@@ -3,7 +3,6 @@ package se.christianjensen.maintenance.resources;
 
 import io.dropwizard.auth.Auth;
 import se.christianjensen.maintenance.representation.config.UserConfiguration;
-import se.christianjensen.maintenance.representation.internal.User;
 import se.christianjensen.maintenance.representation.network.NetworkInfo;
 import se.christianjensen.maintenance.representation.network.NetworkInterfaceConfig;
 import se.christianjensen.maintenance.representation.network.NetworkInterfaceSpeed;

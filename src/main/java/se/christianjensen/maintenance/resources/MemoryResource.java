@@ -2,7 +2,6 @@ package se.christianjensen.maintenance.resources;
 
 import io.dropwizard.auth.Auth;
 import se.christianjensen.maintenance.representation.config.UserConfiguration;
-import se.christianjensen.maintenance.representation.internal.User;
 import se.christianjensen.maintenance.representation.memory.MainMemory;
 import se.christianjensen.maintenance.representation.memory.MemoryInfo;
 import se.christianjensen.maintenance.representation.memory.SwapSpace;

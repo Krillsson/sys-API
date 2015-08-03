@@ -4,7 +4,6 @@ import io.dropwizard.auth.Auth;
 import se.christianjensen.maintenance.representation.config.UserConfiguration;
 import se.christianjensen.maintenance.representation.filesystem.FSType;
 import se.christianjensen.maintenance.representation.filesystem.FileSystem;
-import se.christianjensen.maintenance.representation.internal.User;
 import se.christianjensen.maintenance.sigar.FilesystemMetrics;
 
 import javax.ws.rs.GET;
