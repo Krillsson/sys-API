@@ -7,14 +7,16 @@ public class Process {
     private String[] args;
     private ProcessExecutable executable;
     private ProcessCreator creator;
+    private ProcessState state;
     private ProcessCpu cpu;
     private ProcessMemory memory;
 
-    public Process(long pid, String[] args, ProcessExecutable executable, ProcessCreator creator, ProcessCpu cpu, ProcessMemory memory) {
+    public Process(long pid, String[] args, ProcessExecutable executable, ProcessCreator creator, ProcessState state, ProcessCpu cpu, ProcessMemory memory) {
         this.pid = pid;
         this.args = args;
         this.executable = executable;
         this.creator = creator;
+        this.state = state;
         this.cpu = cpu;
         this.memory = memory;
     }
@@ -37,6 +39,11 @@ public class Process {
     @JsonProperty
     public ProcessCreator getCreator() {
         return creator;
+    }
+
+    @JsonProperty
+    public ProcessState getState() {
+        return state;
     }
 
     @JsonProperty

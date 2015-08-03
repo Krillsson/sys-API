@@ -43,7 +43,16 @@ public class ProcessMetrics extends AbstractSigarMetric{
         ProcessCreator creator = getProcessCreator(pid);
         ProcessCpu cpu = getProcessCpu(pid);
         ProcessMemory memory = getMemory(pid);
-        return new Process(pid, args, executable, creator, cpu, memory);
+        ProcessState state = getState(pid);
+        return new Process(pid, args, executable, creator, state, cpu, memory);
+    }
+
+    private ProcessState getState(long pid) {
+        try {
+            return ProcessState.fromSigarBean(sigar.getProcState(pid));
+        } catch (SigarException e) {
+            return new ProcessState();
+        }
     }
 
     private boolean pidExists(long pid) {

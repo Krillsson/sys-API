@@ -26,7 +26,7 @@ public class ProcessMetricsTest {
     public void setUp() throws Exception {
         sigar = mock(Sigar.class);
         processMetrics = new ProcessMetrics(sigar);
-        process1 = new Process(123L, new String[0], new ProcessExecutable(), new ProcessCreator(), new ProcessCpu(), new ProcessMemory());
+        process1 = new Process(123L, new String[0], new ProcessExecutable(), new ProcessCreator(), new ProcessState(), new ProcessCpu(), new ProcessMemory());
 
     }
 
@@ -45,5 +45,6 @@ public class ProcessMetricsTest {
         when(sigar.getProcCredName(anyLong())).thenThrow(new SigarException());
         when(sigar.getProcCpu(anyLong())).thenThrow(new SigarException());
         when(sigar.getProcMem(anyLong())).thenThrow(new SigarException());
+        when(sigar.getProcState(anyLong())).thenThrow(new SigarException());
     }
 }
