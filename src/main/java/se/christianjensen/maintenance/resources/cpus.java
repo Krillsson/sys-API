@@ -1,7 +1,7 @@
 package se.christianjensen.maintenance.resources;
 
 import se.christianjensen.maintenance.capturing.Cpu.Cpu;
-import se.christianjensen.maintenance.capturing.InformationProviderDerp;
+import se.christianjensen.maintenance.capturing.InformationProvider;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -12,9 +12,9 @@ import java.util.List;
 @Path("cpus")
 @Produces(MediaType.APPLICATION_JSON)
 public class cpus {
-    private InformationProviderDerp provider;
+    private InformationProvider provider;
 
-    public cpus(InformationProviderDerp provider) {
+    public cpus(InformationProvider provider) {
         this.provider = provider;
     }
 

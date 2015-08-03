@@ -9,7 +9,7 @@ import se.christianjensen.maintenance.representation.system.OperatingSystem;
 
 import java.util.List;
 
-public interface InformationProviderDerp {
+public interface InformationProvider {
     List<FileSystem> getFilesystems();
 
     List<Cpu> getCpus();
