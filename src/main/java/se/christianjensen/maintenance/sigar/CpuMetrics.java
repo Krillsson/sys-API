@@ -89,15 +89,6 @@ public class CpuMetrics extends AbstractSigarMetric {
         try {
             cpus = sigar.getCpuPercList();
             if (Double.isNaN(cpus[0].getIdle())) {
-            /*
-             * XXX: Hacky workaround for strange Sigar behaviour.
-             * If you call sigar.getCpuPerfList() too often(?),
-             * it returns a steaming pile of NaNs.
-             *
-             * See suspicious code here:
-             * https://github.com/hyperic/sigar/blob/master/bindings/java/src/org/hyperic/sigar/Sigar.java#L345-348
-             *
-             */
                 try {
                     Thread.sleep(HACK_DELAY_MILLIS);
                 } catch (InterruptedException e) {
