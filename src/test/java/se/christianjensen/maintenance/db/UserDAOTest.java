@@ -3,7 +3,6 @@ package se.christianjensen.maintenance.db;
 
 import org.junit.Before;
 import org.junit.Test;
-import se.christianjensen.maintenance.representation.internal.Device;
 import se.christianjensen.maintenance.representation.internal.User;
 
 import java.util.Arrays;
@@ -64,7 +63,7 @@ public class UserDAOTest {
 
     @Test
     public void updateUserThatExists() throws Exception {
-        User user = new User(user1.getUuid(), "derp", "derp", new Device());
+        User user = new User(user1.getUuid(), "derp", "derp");
         userDAO.update(user);
         Boolean pass = false;
 

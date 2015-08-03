@@ -75,7 +75,6 @@
             <version>3.3.2</version>
         </dependency>
 
-        <!--This is wrong!! Fix this: http://stackoverflow.com/questions/364114/can-i-add-jars-to-maven-2-build-classpath-without-installing-them-->
         <dependency>
             <groupId>org.openhardwaremonitor</groupId>
             <artifactId>hardware-jni-bridge</artifactId>
@@ -85,11 +84,6 @@
             <groupId>net.sf.jni4net</groupId>
             <artifactId>jni4net.j-generics</artifactId>
             <version>0.8.7.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.phonedeck</groupId>
-            <artifactId>gcm4j</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
