@@ -5,8 +5,6 @@ import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import se.christianjensen.maintenance.auth.SimpleAuthenticator;
-import se.christianjensen.maintenance.capturing.InformationProvider;
-import se.christianjensen.maintenance.capturing.InformationProviderFactory;
 import se.christianjensen.maintenance.db.UserDAO;
 import se.christianjensen.maintenance.representation.internal.User;
 import se.christianjensen.maintenance.resources.*;
@@ -33,11 +31,6 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
     public void run(MaintenanceConfiguration config, Environment environment) throws Exception {
         UserDAO userDAO = new UserDAO();
         SigarMetrics sigarMetrics = SigarMetrics.getInstance();
-
-        InformationProviderFactory informationProviderFactory = new InformationProviderFactory();
-        InformationProvider provider = informationProviderFactory.getInformationProvider();
-        environment.jersey().register(new cpus(provider));
-        environment.jersey().register(new Gpus(provider));
 
         environment.jersey().register(new BasicAuthProvider<User>(new SimpleAuthenticator(userDAO), "Maintenance-API"));
         environment.jersey().register(new CpuResource(sigarMetrics.cpu()));
