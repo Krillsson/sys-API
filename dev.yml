@@ -1,3 +1,4 @@
+sigarLocation: /Users/christian/IdeaProjects/maintenance-server/target/lib
 server:
   applicationConnectors:
     - type: http

@@ -8,6 +8,11 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 public class MaintenanceConfiguration extends Configuration {
+
+    @NotNull
+    @JsonProperty
+    private String sigarLocation;
+
     @Valid
     @NotNull
     @JsonProperty
@@ -15,5 +20,9 @@ public class MaintenanceConfiguration extends Configuration {
 
     public JerseyClientConfiguration getJerseyClientConfiguration() {
         return httpClient;
+    }
+
+    public String getSigarLocation() {
+        return sigarLocation;
     }
 }

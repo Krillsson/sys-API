@@ -30,6 +30,7 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
     @Override
     public void run(MaintenanceConfiguration config, Environment environment) throws Exception {
         UserDAO userDAO = new UserDAO();
+        System.setProperty("org.hyperic.sigar.path", config.getSigarLocation());
         SigarMetrics sigarMetrics = SigarMetrics.getInstance();
 
         environment.jersey().register(new BasicAuthProvider<User>(new SimpleAuthenticator(userDAO), "Maintenance-API"));
