@@ -1,6 +1,7 @@
 package se.christianjensen.maintenance.resources;
 
 import io.dropwizard.auth.Auth;
+import se.christianjensen.maintenance.representation.config.UserConfiguration;
 import se.christianjensen.maintenance.representation.cpu.Cpu;
 import se.christianjensen.maintenance.representation.cpu.CpuTime;
 import se.christianjensen.maintenance.representation.internal.User;
@@ -25,7 +26,7 @@ public class CpuResource extends Resource {
 
     @GET
     @Override
-    public Cpu getRoot(@Auth User user) {
+    public Cpu getRoot(@Auth UserConfiguration user) {
         return cpuMetrics.getCpu();
     }
 

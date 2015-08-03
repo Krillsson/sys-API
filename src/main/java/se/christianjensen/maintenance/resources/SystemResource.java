@@ -2,6 +2,7 @@ package se.christianjensen.maintenance.resources;
 
 
 import io.dropwizard.auth.Auth;
+import se.christianjensen.maintenance.representation.config.UserConfiguration;
 import se.christianjensen.maintenance.representation.internal.User;
 import se.christianjensen.maintenance.representation.system.Machine;
 import se.christianjensen.maintenance.sigar.SystemMetrics;
@@ -22,7 +23,7 @@ public class SystemResource extends Resource {
 
     @GET
     @Override
-    public Machine getRoot(@Auth User user) {
+    public Machine getRoot(@Auth UserConfiguration user) {
         return systemMetrics.machineInfo();
     }
 }

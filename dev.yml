@@ -1,4 +1,7 @@
 sigarLocation: /Users/christian/IdeaProjects/maintenance-server/target/lib
+user:
+  username: krillsson
+  password: supersafepassword
 server:
   applicationConnectors:
     - type: http

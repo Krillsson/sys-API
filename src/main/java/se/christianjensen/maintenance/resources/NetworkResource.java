@@ -2,6 +2,7 @@ package se.christianjensen.maintenance.resources;
 
 
 import io.dropwizard.auth.Auth;
+import se.christianjensen.maintenance.representation.config.UserConfiguration;
 import se.christianjensen.maintenance.representation.internal.User;
 import se.christianjensen.maintenance.representation.network.NetworkInfo;
 import se.christianjensen.maintenance.representation.network.NetworkInterfaceConfig;
@@ -26,13 +27,13 @@ public class NetworkResource extends Resource {
 
     @GET
     @Override
-    public NetworkInfo getRoot(@Auth User user) {
+    public NetworkInfo getRoot(@Auth UserConfiguration user) {
         return networkMetrics.getNetworkInfo();
     }
 
     @Path("{id}")
     @GET
-    public NetworkInterfaceConfig getConfigById(@Auth User user, @PathParam("id") String id) {
+    public NetworkInterfaceConfig getConfigById(@Auth UserConfiguration user, @PathParam("id") String id) {
         try {
             return networkMetrics.getConfigById(id);
         } catch (IllegalArgumentException e) {
@@ -42,7 +43,7 @@ public class NetworkResource extends Resource {
 
     @Path("{id}/speed")
     @GET
-    public NetworkInterfaceSpeed getNetworkInterfaceSpeedById(@Auth User user, @PathParam("id") String id) {
+    public NetworkInterfaceSpeed getNetworkInterfaceSpeedById(@Auth UserConfiguration user, @PathParam("id") String id) {
         try {
             return networkMetrics.getSpeed(id);
         } catch (IllegalArgumentException e) {

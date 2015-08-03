@@ -50,7 +50,7 @@ public class UserDAO {
             users.add(user);
             persistUserStore();
         } else {
-            throw new IllegalArgumentException("User already exists");
+            throw new IllegalArgumentException("UserConfiguration already exists");
         }
     }
 
@@ -68,7 +68,7 @@ public class UserDAO {
             }
         }
         if (found == false) {
-            throw new IllegalArgumentException("User not found");
+            throw new IllegalArgumentException("UserConfiguration not found");
         }
     }
 

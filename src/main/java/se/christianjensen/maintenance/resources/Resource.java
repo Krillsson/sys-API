@@ -1,13 +1,14 @@
 package se.christianjensen.maintenance.resources;
 
 import io.dropwizard.auth.Auth;
+import se.christianjensen.maintenance.representation.config.UserConfiguration;
 import se.christianjensen.maintenance.representation.internal.User;
 import se.christianjensen.maintenance.sigar.AbstractSigarMetric;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 abstract public class Resource<T extends AbstractSigarMetric> {
-    public abstract <T extends Object> T getRoot(@Auth User user);
+    public abstract <T extends Object> T getRoot(@Auth UserConfiguration user);
 
     protected WebApplicationException buildWebException(Response.Status status, String message) {
         return new WebApplicationException(
