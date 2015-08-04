@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 
 public class ProcessMetricsTest {
 
+    private static final long process1Pid = 123L;
     private Sigar sigar;
     private ProcessMetrics processMetrics;
     private Process process1;
@@ -26,7 +27,7 @@ public class ProcessMetricsTest {
     public void setUp() throws Exception {
         sigar = mock(Sigar.class);
         processMetrics = new ProcessMetrics(sigar);
-        process1 = new Process(123L, new String[0], new ProcessExecutable(), new ProcessCreator(), new ProcessState(), new ProcessCpu(), new ProcessMemory());
+        process1 = new Process(process1Pid, new String[0], new ProcessExecutable(), new ProcessCreator(), new ProcessState(), new ProcessCpu(), new ProcessMemory());
 
     }
 
@@ -34,7 +35,27 @@ public class ProcessMetricsTest {
     public void getProcessListHappyPath() throws Exception {
         setupProcessMock();
         List<se.christianjensen.maintenance.representation.processes.Process> processes = processMetrics.getProcesses();
-        assertThat(processes.get(0).getPid(), is(123L));
+        assertThat(processes.get(0).getPid(), is(process1Pid));
+    }
+
+    @Test
+    public void getProcessListNoProcesses() throws Exception {
+        when(sigar.getProcList()).thenReturn(new long[0]);
+        List<Process> processes = processMetrics.getProcesses();
+        assertTrue(processes.isEmpty());
+    }
+
+    @Test
+    public void getProcessByPidHappyPath() throws Exception {
+        setupProcessMock();
+        Process processByPid = processMetrics.getProcessByPid(process1Pid);
+        assertEquals(processByPid.getPid(), process1.getPid());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getProcessByPidNonExistingProcessShouldThrowException() throws Exception {
+        when(sigar.getProcList()).thenReturn(new long[0]);
+        processMetrics.getProcessByPid(124L);
     }
 
     private void setupProcessMock() throws SigarException {
