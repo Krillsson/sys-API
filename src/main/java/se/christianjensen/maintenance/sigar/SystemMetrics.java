@@ -3,12 +3,14 @@ package se.christianjensen.maintenance.sigar;
 
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
+import se.christianjensen.maintenance.representation.system.JvmProperties;
 import se.christianjensen.maintenance.representation.system.Machine;
 import se.christianjensen.maintenance.representation.system.OperatingSystem;
 import se.christianjensen.maintenance.representation.system.UserInfo;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 public class SystemMetrics extends AbstractSigarMetric {
@@ -32,9 +34,26 @@ public class SystemMetrics extends AbstractSigarMetric {
             return null;
         }
 
+        JvmProperties jvmProperties = getJvmProperties();
 
-        return (new Machine(hostname, users, uptime, OperatingSystem.fromSigarBean(os)));
+        return (new Machine(hostname, users, uptime, OperatingSystem.fromSigarBean(os), jvmProperties));
 
+    }
+
+    private JvmProperties getJvmProperties() {
+        Properties p = System.getProperties();
+        return new JvmProperties(
+                p.getProperty("java.home"),
+                p.getProperty("java.class.path"),
+                p.getProperty("java.vendor"),
+                p.getProperty("java.vendor.url"),
+                p.getProperty("java.version"),
+                p.getProperty("os.arch"),
+                p.getProperty("os.name"),
+                p.getProperty("os.version"),
+                p.getProperty("user.dir"),
+                p.getProperty("user.home"),
+                p.getProperty("user.name"));
     }
 
 

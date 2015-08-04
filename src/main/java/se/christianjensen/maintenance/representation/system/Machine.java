@@ -10,12 +10,14 @@ public class Machine {
     private double uptime;
     private OperatingSystem operatingSystem;
     private List<UserInfo> users;
+    private JvmProperties jvmProperties;
 
-    public Machine(String hostname, List<UserInfo> userInfo, double uptime, OperatingSystem operatingSystem) {
+    public Machine(String hostname, List<UserInfo> userInfo, double uptime, OperatingSystem operatingSystem, JvmProperties jvmProperties) {
         this.hostname = hostname;
         this.users = userInfo;
         this.operatingSystem = operatingSystem;
         this.uptime = uptime;
+        this.jvmProperties = jvmProperties;
     }
 
     @JsonProperty
@@ -38,5 +40,8 @@ public class Machine {
         return operatingSystem;
     }
 
-
+    @JsonProperty
+    public JvmProperties getJvmProperties() {
+        return jvmProperties;
+    }
 }

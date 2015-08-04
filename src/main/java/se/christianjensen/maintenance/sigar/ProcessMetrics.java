@@ -34,7 +34,7 @@ public class ProcessMetrics extends AbstractSigarMetric{
         {
             return getProcess(pid);
         }
-        else throw new IllegalArgumentException("No process with pid: " + Long.toString(pid) + " where found");
+        else throw new IllegalArgumentException("No process with pid: " + Long.toString(pid) + " were found");
     }
 
     private Process getProcess(long pid) {
