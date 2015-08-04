@@ -5,7 +5,7 @@ import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import com.krillsson.sysapi.auth.SimpleAuthenticator;
-import com.krillsson.sysapi.health.SigarHealthCheck;
+import com.krillsson.sysapi.health.SigarLoadingHealthCheck;
 import com.krillsson.sysapi.resources.*;
 import com.krillsson.sysapi.sigar.SigarKeeper;
 
@@ -39,6 +39,6 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         environment.jersey().register(new NetworkResource(sigarKeeper.network()));
         environment.jersey().register(new ProcessResource(sigarKeeper.process()));
 
-        environment.healthChecks().register("Sigar", new SigarHealthCheck());
+        environment.healthChecks().register("Sigar", new SigarLoadingHealthCheck());
     }
 }

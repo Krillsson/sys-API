@@ -1,1 +1,1 @@
-java -Dorg.hyperic.sigar.path="target\lib" -cp "target/maintenance-rest-api-1.0-SNAPSHOT.jar;target/lib/*" com.krillsson.sysapi.MaintenanceApplication server dev.yml
+java -cp "target/maintenance-rest-api-1.0-SNAPSHOT.jar;" com.krillsson.sysapi.MaintenanceApplication server dev.yml
