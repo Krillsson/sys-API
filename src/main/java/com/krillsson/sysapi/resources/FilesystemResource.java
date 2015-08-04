@@ -4,7 +4,7 @@ import io.dropwizard.auth.Auth;
 import com.krillsson.sysapi.representation.config.UserConfiguration;
 import com.krillsson.sysapi.representation.filesystem.FSType;
 import com.krillsson.sysapi.representation.filesystem.FileSystem;
-import com.krillsson.sysapi.sigar.FilesystemMetrics;
+import com.krillsson.sysapi.sigar.FilesystemSigar;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -17,16 +17,16 @@ import java.util.List;
 @Path("filesystems")
 @Produces(MediaType.APPLICATION_JSON)
 public class FilesystemResource extends Resource {
-    FilesystemMetrics filesystemMetrics;
+    FilesystemSigar filesystemSigar;
 
-    public FilesystemResource(FilesystemMetrics filesystemMetrics) {
-        this.filesystemMetrics = filesystemMetrics;
+    public FilesystemResource(FilesystemSigar filesystemSigar) {
+        this.filesystemSigar = filesystemSigar;
     }
 
     @GET
     @Override
     public List<FileSystem> getRoot(@Auth UserConfiguration user) {
-        return filesystemMetrics.getFilesystems();
+        return filesystemSigar.getFilesystems();
     }
 
     @GET
@@ -36,7 +36,7 @@ public class FilesystemResource extends Resource {
         List<FileSystem> fileSystems;
         try {
             fsType = FSType.valueOf(fsTypeName);
-            fileSystems = filesystemMetrics.getFileSystemsWithCategory(fsType);
+            fileSystems = filesystemSigar.getFileSystemsWithCategory(fsType);
         } catch (IllegalArgumentException e) {
             throw buildWebException(Response.Status.NOT_FOUND, e.getMessage());
         }
@@ -48,7 +48,7 @@ public class FilesystemResource extends Resource {
     public FileSystem getFsById(@Auth UserConfiguration user, @PathParam("id") String id) {
         FileSystem fileSystem;
         try {
-            fileSystem = filesystemMetrics.getFileSystemById(id);
+            fileSystem = filesystemSigar.getFileSystemById(id);
         } catch (IllegalArgumentException e) {
             throw buildWebException(Response.Status.NOT_FOUND, e.getMessage());
         }

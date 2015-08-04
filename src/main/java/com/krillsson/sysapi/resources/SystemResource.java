@@ -4,7 +4,7 @@ package com.krillsson.sysapi.resources;
 import io.dropwizard.auth.Auth;
 import com.krillsson.sysapi.representation.config.UserConfiguration;
 import com.krillsson.sysapi.representation.system.Machine;
-import com.krillsson.sysapi.sigar.SystemMetrics;
+import com.krillsson.sysapi.sigar.SystemSigar;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -14,15 +14,15 @@ import javax.ws.rs.core.MediaType;
 @Path("system")
 @Produces(MediaType.APPLICATION_JSON)
 public class SystemResource extends Resource {
-    private SystemMetrics systemMetrics;
+    private SystemSigar systemSigar;
 
-    public SystemResource(SystemMetrics systemMetrics) {
-        this.systemMetrics = systemMetrics;
+    public SystemResource(SystemSigar systemSigar) {
+        this.systemSigar = systemSigar;
     }
 
     @GET
     @Override
     public Machine getRoot(@Auth UserConfiguration user) {
-        return systemMetrics.machineInfo();
+        return systemSigar.machineInfo();
     }
 }

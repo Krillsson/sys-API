@@ -4,13 +4,13 @@ import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import com.krillsson.sysapi.sigar.CpuMetrics;
+import com.krillsson.sysapi.sigar.CpuSigar;
 
 import static org.mockito.Mockito.mock;
 
 public class CpuResourceTest {
 
-    private static final CpuMetrics cpuMock = mock(CpuMetrics.class);
+    private static final CpuSigar cpuMock = mock(CpuSigar.class);
 
     @Rule
     public ResourceTestRule resources = ResourceTestRule.builder()

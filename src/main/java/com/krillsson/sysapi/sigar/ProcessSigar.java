@@ -9,12 +9,12 @@ import org.slf4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProcessMetrics extends SigarWrapper {
+public class ProcessSigar extends SigarWrapper {
 
-    private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ProcessMetrics.class.getSimpleName());
+    private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ProcessSigar.class.getSimpleName());
 
 
-    protected ProcessMetrics(Sigar sigar) {
+    protected ProcessSigar(Sigar sigar) {
         super(sigar);
     }
 

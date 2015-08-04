@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-public class FilesystemMetrics extends AbstractSigarMetric {
+public class FilesystemSigar extends SigarWrapper {
 
-    protected FilesystemMetrics(Sigar sigar) {
+    protected FilesystemSigar(Sigar sigar) {
         super(sigar);
     }
 

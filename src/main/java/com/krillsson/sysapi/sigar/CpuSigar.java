@@ -10,12 +10,12 @@ import com.krillsson.sysapi.representation.cpu.CpuTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CpuMetrics extends AbstractSigarMetric {
+public class CpuSigar extends SigarWrapper {
     private static final long HACK_DELAY_MILLIS = 500;
 
     private final CpuInfo info;
 
-    protected CpuMetrics(Sigar sigar) {
+    protected CpuSigar(Sigar sigar) {
         super(sigar);
         info = cpuInfo();
     }

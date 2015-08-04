@@ -4,13 +4,13 @@ import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import com.krillsson.sysapi.sigar.MemoryMetrics;
+import com.krillsson.sysapi.sigar.MemorySigar;
 
 import static org.mockito.Mockito.mock;
 
 public class MemoryResourceTest {
 
-    private static final MemoryMetrics memoryMock = mock(MemoryMetrics.class);
+    private static final MemorySigar memoryMock = mock(MemorySigar.class);
 
     @Rule
     public ResourceTestRule resources = ResourceTestRule.builder()

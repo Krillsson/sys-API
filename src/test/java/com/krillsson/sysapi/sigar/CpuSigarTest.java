@@ -7,13 +7,13 @@ import com.krillsson.sysapi.representation.cpu.CpuTime;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
-public class CpuMetricsTest {
+public class CpuSigarTest {
 
-    private CpuMetrics cm;
+    private CpuSigar cm;
 
     @Before
     public void setUp() {
-        cm = SigarMetrics.getInstance().cpu();
+        cm = SigarKeeper.getInstance().cpu();
     }
 
     @Test

@@ -5,7 +5,7 @@ import com.krillsson.sysapi.representation.config.UserConfiguration;
 import com.krillsson.sysapi.representation.memory.MainMemory;
 import com.krillsson.sysapi.representation.memory.MemoryInfo;
 import com.krillsson.sysapi.representation.memory.SwapSpace;
-import com.krillsson.sysapi.sigar.MemoryMetrics;
+import com.krillsson.sysapi.sigar.MemorySigar;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -15,27 +15,27 @@ import javax.ws.rs.core.MediaType;
 @Path("memory")
 @Produces(MediaType.APPLICATION_JSON)
 public class MemoryResource extends Resource {
-    private MemoryMetrics memoryMetrics;
+    private MemorySigar memorySigar;
 
-    public MemoryResource(MemoryMetrics memoryMetrics) {
-        this.memoryMetrics = memoryMetrics;
+    public MemoryResource(MemorySigar memorySigar) {
+        this.memorySigar = memorySigar;
     }
 
     @Override
     @GET
     public MemoryInfo getRoot(@Auth UserConfiguration user) {
-        return memoryMetrics.getMemoryInfo();
+        return memorySigar.getMemoryInfo();
     }
 
     @Path("ram")
     @GET
     public MainMemory getRam(@Auth UserConfiguration user) {
-        return memoryMetrics.getRam();
+        return memorySigar.getRam();
     }
 
     @Path("swap")
     @GET
     public SwapSpace getSwap(@Auth UserConfiguration user) {
-        return memoryMetrics.getSwap();
+        return memorySigar.getSwap();
     }
 }

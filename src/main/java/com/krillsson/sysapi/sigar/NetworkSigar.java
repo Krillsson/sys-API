@@ -10,13 +10,13 @@ import com.krillsson.sysapi.representation.network.NetworkInterfaceStatistics;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NetworkMetrics extends AbstractSigarMetric {
+public class NetworkSigar extends SigarWrapper {
 
     final int SPEED_MEASUREMENT_PERIOD = 100;
     final int BYTE_TO_BIT = 8;
     final static String NOT_FOUND_STRING = "No %s with id '%s' were found";
 
-    protected NetworkMetrics(Sigar sigar) {
+    protected NetworkSigar(Sigar sigar) {
         super(sigar);
     }
 

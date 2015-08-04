@@ -12,14 +12,14 @@ import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class FilesystemMetricsTest extends CheckSigarLoadsOk {
+public class FilesystemSigarTest extends CheckSigarLoadsOk {
     private final double MARGIN_BYTES = 1024 * 1024 * 50; // 50MB
 
-    private FilesystemMetrics fsm;
+    private FilesystemSigar fsm;
 
     @Before
     public void setUp() {
-        fsm = SigarMetrics.getInstance().filesystems();
+        fsm = SigarKeeper.getInstance().filesystems();
     }
 
     @Test

@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-public class SystemMetrics extends AbstractSigarMetric {
-    protected SystemMetrics(Sigar sigar) {
+public class SystemSigar extends SigarWrapper {
+    protected SystemSigar(Sigar sigar) {
         super(sigar);
     }
 

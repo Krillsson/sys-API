@@ -6,12 +6,12 @@ import org.junit.Test;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
-public class NetworkMetricsTest extends CheckSigarLoadsOk {
-    NetworkMetrics nm;
+public class NetworkSigarTest extends CheckSigarLoadsOk {
+    NetworkSigar nm;
 
     @Before
     public void setUp() {
-        nm = SigarMetrics.getInstance().network();
+        nm = SigarKeeper.getInstance().network();
     }
 
     @Test

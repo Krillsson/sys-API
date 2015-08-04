@@ -7,7 +7,7 @@ import io.dropwizard.setup.Environment;
 import com.krillsson.sysapi.auth.SimpleAuthenticator;
 import com.krillsson.sysapi.health.SigarHealthCheck;
 import com.krillsson.sysapi.resources.*;
-import com.krillsson.sysapi.sigar.SigarMetrics;
+import com.krillsson.sysapi.sigar.SigarKeeper;
 
 
 public class MaintenanceApplication extends Application<MaintenanceConfiguration> {
@@ -29,15 +29,15 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
     @Override
     public void run(MaintenanceConfiguration config, Environment environment) throws Exception {
         System.setProperty("org.hyperic.sigar.path", config.getSigarLocation());
-        SigarMetrics sigarMetrics = SigarMetrics.getInstance();
+        SigarKeeper sigarKeeper = SigarKeeper.getInstance();
 
-        environment.jersey().register(new BasicAuthProvider<>(new SimpleAuthenticator(config.getUser()), "Maintenance-API"));
-        environment.jersey().register(new CpuResource(sigarMetrics.cpu()));
-        environment.jersey().register(new FilesystemResource(sigarMetrics.filesystems()));
-        environment.jersey().register(new MemoryResource(sigarMetrics.memory()));
-        environment.jersey().register(new SystemResource(sigarMetrics.system()));
-        environment.jersey().register(new NetworkResource(sigarMetrics.network()));
-        environment.jersey().register(new ProcessResource(sigarMetrics.process()));
+        environment.jersey().register(new BasicAuthProvider<>(new SimpleAuthenticator(config.getUser()), "System-Api"));
+        environment.jersey().register(new CpuResource(sigarKeeper.cpu()));
+        environment.jersey().register(new FilesystemResource(sigarKeeper.filesystems()));
+        environment.jersey().register(new MemoryResource(sigarKeeper.memory()));
+        environment.jersey().register(new SystemResource(sigarKeeper.system()));
+        environment.jersey().register(new NetworkResource(sigarKeeper.network()));
+        environment.jersey().register(new ProcessResource(sigarKeeper.process()));
 
         environment.healthChecks().register("Sigar", new SigarHealthCheck());
     }

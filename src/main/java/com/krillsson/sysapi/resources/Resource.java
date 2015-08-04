@@ -2,11 +2,11 @@ package com.krillsson.sysapi.resources;
 
 import io.dropwizard.auth.Auth;
 import com.krillsson.sysapi.representation.config.UserConfiguration;
-import com.krillsson.sysapi.sigar.AbstractSigarMetric;
+import com.krillsson.sysapi.sigar.SigarWrapper;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-abstract public class Resource<T extends AbstractSigarMetric> {
+abstract public class Resource<T extends SigarWrapper> {
     public abstract <T extends Object> T getRoot(@Auth UserConfiguration user);
 
     protected WebApplicationException buildWebException(Response.Status status, String message) {

@@ -4,7 +4,7 @@ import io.dropwizard.auth.Auth;
 import com.krillsson.sysapi.representation.config.UserConfiguration;
 import com.krillsson.sysapi.representation.cpu.Cpu;
 import com.krillsson.sysapi.representation.cpu.CpuTime;
-import com.krillsson.sysapi.sigar.CpuMetrics;
+import com.krillsson.sysapi.sigar.CpuSigar;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -17,23 +17,23 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class CpuResource extends Resource {
 
-    private CpuMetrics cpuMetrics;
+    private CpuSigar cpuSigar;
 
-    public CpuResource(CpuMetrics cpuMetrics) {
-    this.cpuMetrics = cpuMetrics;
+    public CpuResource(CpuSigar cpuSigar) {
+    this.cpuSigar = cpuSigar;
     }
 
     @GET
     @Override
     public Cpu getRoot(@Auth UserConfiguration user) {
-        return cpuMetrics.getCpu();
+        return cpuSigar.getCpu();
     }
 
     @Path("cpu/{core}")
     @GET
     public CpuTime getCpuTimeByCore(@Auth UserConfiguration user, @PathParam("core") int core) {
         try {
-            return cpuMetrics.getCpuTimeByCoreIndex(core);
+            return cpuSigar.getCpuTimeByCoreIndex(core);
         } catch (IllegalArgumentException e) {
             throw buildWebException(Response.Status.NOT_FOUND, e.getMessage());
         }

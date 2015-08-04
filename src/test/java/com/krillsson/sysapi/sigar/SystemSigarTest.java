@@ -6,12 +6,12 @@ import org.junit.Test;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
-public class SystemMetricsTest extends CheckSigarLoadsOk{
-    private SystemMetrics sm;
+public class SystemSigarTest extends CheckSigarLoadsOk{
+    private SystemSigar sm;
 
     @Before
     public void setUp() {
-        sm = SigarMetrics.getInstance().system();
+        sm = SigarKeeper.getInstance().system();
     }
 
     @Test

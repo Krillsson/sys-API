@@ -6,9 +6,9 @@ import com.krillsson.sysapi.representation.memory.MainMemory;
 import com.krillsson.sysapi.representation.memory.MemoryInfo;
 import com.krillsson.sysapi.representation.memory.SwapSpace;
 
-public class MemoryMetrics extends AbstractSigarMetric {
+public class MemorySigar extends SigarWrapper {
 
-    protected MemoryMetrics(Sigar sigar) {
+    protected MemorySigar(Sigar sigar) {
         super(sigar);
     }
 

@@ -6,7 +6,7 @@ import com.krillsson.sysapi.representation.config.UserConfiguration;
 import com.krillsson.sysapi.representation.network.NetworkInfo;
 import com.krillsson.sysapi.representation.network.NetworkInterfaceConfig;
 import com.krillsson.sysapi.representation.network.NetworkInterfaceSpeed;
-import com.krillsson.sysapi.sigar.NetworkMetrics;
+import com.krillsson.sysapi.sigar.NetworkSigar;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -18,23 +18,23 @@ import javax.ws.rs.core.Response;
 @Path("networks")
 @Produces(MediaType.APPLICATION_JSON)
 public class NetworkResource extends Resource {
-    private NetworkMetrics networkMetrics;
+    private NetworkSigar networkSigar;
 
-    public NetworkResource(NetworkMetrics NetworkMetrics) {
-        this.networkMetrics = NetworkMetrics;
+    public NetworkResource(NetworkSigar NetworkSigar) {
+        this.networkSigar = NetworkSigar;
     }
 
     @GET
     @Override
     public NetworkInfo getRoot(@Auth UserConfiguration user) {
-        return networkMetrics.getNetworkInfo();
+        return networkSigar.getNetworkInfo();
     }
 
     @Path("{id}")
     @GET
     public NetworkInterfaceConfig getConfigById(@Auth UserConfiguration user, @PathParam("id") String id) {
         try {
-            return networkMetrics.getConfigById(id);
+            return networkSigar.getConfigById(id);
         } catch (IllegalArgumentException e) {
             throw buildWebException(Response.Status.NOT_FOUND, e.getMessage());
         }
@@ -44,7 +44,7 @@ public class NetworkResource extends Resource {
     @GET
     public NetworkInterfaceSpeed getNetworkInterfaceSpeedById(@Auth UserConfiguration user, @PathParam("id") String id) {
         try {
-            return networkMetrics.getSpeed(id);
+            return networkSigar.getSpeed(id);
         } catch (IllegalArgumentException e) {
             throw buildWebException(Response.Status.NOT_FOUND, e.getMessage());
         } catch (InterruptedException e) {

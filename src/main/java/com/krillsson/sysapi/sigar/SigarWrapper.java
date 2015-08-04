@@ -2,10 +2,10 @@ package com.krillsson.sysapi.sigar;
 
 import org.hyperic.sigar.Sigar;
 
-public abstract class AbstractSigarMetric {
+public abstract class SigarWrapper {
     protected final Sigar sigar;
 
-    protected AbstractSigarMetric(Sigar sigar) {
+    protected SigarWrapper(Sigar sigar) {
         this.sigar = sigar;
     }
 }
