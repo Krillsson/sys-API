@@ -7,11 +7,11 @@ import javax.validation.constraints.NotNull;
 public class UserConfiguration {
     @NotNull
     @JsonProperty
-    private String username = "admin";
+    private String username;
 
     @NotNull
     @JsonProperty
-    private String password = "password";
+    private String password;
 
     public UserConfiguration(String username, String password) {
         this.username = username;
