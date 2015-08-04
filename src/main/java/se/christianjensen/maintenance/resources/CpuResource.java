@@ -29,11 +29,11 @@ public class CpuResource extends Resource {
         return cpuMetrics.getCpu();
     }
 
-    @Path("{id}")
+    @Path("{core}")
     @GET
-    public CpuTime getCpuTimeByCore(@Auth UserConfiguration user, @PathParam("id") int id) {
+    public CpuTime getCpuTimeByCore(@Auth UserConfiguration user, @PathParam("core") int core) {
         try {
-            return cpuMetrics.getCpuTimeByCoreIndex(id);
+            return cpuMetrics.getCpuTimeByCoreIndex(core);
         } catch (IllegalArgumentException e) {
             throw buildWebException(Response.Status.NOT_FOUND, e.getMessage());
         }
