@@ -1,7 +1,7 @@
-sigarLocation: /Users/christian/IdeaProjects/maintenance-server/target/lib
+sigarLocation: [full path to project folder]/target/lib
 user:
-  username: krillsson
-  password: supersafepassword
+  username: user
+  password: password
 server:
   applicationConnectors:
     - type: http
