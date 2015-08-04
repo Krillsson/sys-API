@@ -9,8 +9,17 @@ public class UserConfiguration {
     @JsonProperty
     private String username = "admin";
 
+    @NotNull
+    @JsonProperty
     private String password = "password";
 
+    public UserConfiguration(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public UserConfiguration() {
+    }
 
     public String getUsername() {
         return username;
