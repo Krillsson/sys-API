@@ -1,5 +1,7 @@
 package se.christianjensen.maintenance.representation.system;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class UserInfo {
     private String user;
     private String device;
@@ -17,18 +19,22 @@ public class UserInfo {
         this.time = time;
     }
 
+    @JsonProperty
     public String getUser() {
         return user;
     }
 
+    @JsonProperty
     public String getDevice() {
         return device;
     }
 
+    @JsonProperty
     public String getHost() {
         return host;
     }
 
+    @JsonProperty
     public long getTime() {
         return time;
     }
