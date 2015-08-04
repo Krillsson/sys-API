@@ -4,11 +4,15 @@ import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 import com.krillsson.sysapi.representation.processes.*;
 import com.krillsson.sysapi.representation.processes.Process;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProcessMetrics extends AbstractSigarMetric{
+public class ProcessMetrics extends SigarWrapper {
+
+    private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ProcessMetrics.class.getSimpleName());
+
 
     protected ProcessMetrics(Sigar sigar) {
         super(sigar);
@@ -35,6 +39,15 @@ public class ProcessMetrics extends AbstractSigarMetric{
             return getProcess(pid);
         }
         else throw new IllegalArgumentException("No process with pid: " + Long.toString(pid) + " were found");
+    }
+
+    public ProcessStatistics getStatistics() {
+        try {
+            return ProcessStatistics.fromSigarBean(sigar.getProcStat());
+        } catch (SigarException e) {
+            LOGGER.warn("Getting statistics failed", e);
+            return new ProcessStatistics();
+        }
     }
 
     private Process getProcess(long pid) {
