@@ -35,7 +35,7 @@ public class ProcessResource extends Resource {
         try {
             return processMetrics.getProcessByPid(pid);
         } catch (IllegalArgumentException e) {
-            throw buildWebException(Response.Status.BAD_REQUEST, e.getMessage());
+            throw buildWebException(Response.Status.NOT_FOUND, e.getMessage());
         }
     }
 }
