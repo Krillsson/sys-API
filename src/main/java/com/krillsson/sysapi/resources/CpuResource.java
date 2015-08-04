@@ -13,7 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("cpu")
+@Path("cpus")
 @Produces(MediaType.APPLICATION_JSON)
 public class CpuResource extends Resource {
 
@@ -29,7 +29,7 @@ public class CpuResource extends Resource {
         return cpuMetrics.getCpu();
     }
 
-    @Path("{core}")
+    @Path("cpu/{core}")
     @GET
     public CpuTime getCpuTimeByCore(@Auth UserConfiguration user, @PathParam("core") int core) {
         try {
