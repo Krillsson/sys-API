@@ -27,9 +27,7 @@ public class NetworkMetricsTest extends CheckSigarLoadsOk {
 
     @Test
     public void queryingForExistingConfigShouldWork() throws Exception {
-        String existingConfig = "eth0";
-
-        nm.getConfigById(existingConfig);
+        nm.getConfigById(nm.getConfigs().get(0).getName());
     }
 
     @Test(expected = IllegalArgumentException.class)

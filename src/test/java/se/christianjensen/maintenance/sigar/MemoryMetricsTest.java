@@ -30,11 +30,6 @@ public class MemoryMetricsTest extends CheckSigarLoadsOk {
     }
 
     @Test
-    public void totalSwapIsGreaterThanZero() throws Exception {
-        assertThat(mm.getSwap().total(), is(greaterThan(0L)));
-    }
-
-    @Test
     public void usedSwapIsLessThanOrEqualToTotalSwap() throws Exception {
         assertThat(mm.getSwap().used(), is(lessThanOrEqualTo(mm.getSwap().total())));
     }

@@ -21,24 +21,8 @@ public class SystemMetricsTest extends CheckSigarLoadsOk{
     }
 
     @Test
-    public void osIsEqualToJavaOs(){
-        String javaOs = System.getProperty("sun.desktop").toLowerCase();
-        assertThat(sm.machineInfo().getOperatingSystem().getDescription().toLowerCase(), containsString(javaOs));
-    }
-
-    @Test
     public void hostNameIsEqualToWhatJvmThinks() throws Exception {
         String javaHostname =  java.net.InetAddress.getLocalHost().getHostName();
         assertThat(sm.machineInfo().getHostname(), containsString(javaHostname));
-    }
-
-    @Test
-    public void atLeastOneUserShouldHaveUptime() throws Exception {
-        long result = 0L;
-
-        for (UserInfo u : sm.machineInfo().getUsers()) {
-            result += u.getTime();
-        }
-        assertThat(result, is(greaterThan(0L)));
     }
 }
