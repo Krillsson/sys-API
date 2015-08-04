@@ -13,7 +13,6 @@ public class ProcessSigar extends SigarWrapper {
 
     private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ProcessSigar.class.getSimpleName());
 
-
     protected ProcessSigar(Sigar sigar) {
         super(sigar);
     }
