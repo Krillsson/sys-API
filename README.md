@@ -14,11 +14,12 @@ git clone [this repo] sys-api
 mvn clean install
 ```
 
-This will download the necessary Sigar native files and extract them under /target/lib
+This will download the necessary Sigar native files and extract them under server/target/lib
 
 You should now be able to:
 
 ```sh
+cd server
 java -jar target/system-api.jar server dev.yml
 ```
 
@@ -27,6 +28,8 @@ If you want to package everything needed to run this application in a *.zip*, *t
 ```sh
 mvn clean package
 ```
+
+And the resulting files should be located in */server/target/*
 
 ## Configuration reference
 The dev.yml file is a Dropwizard configuration file. Have a look at the [Dropwizard configuration reference](https://dropwizard.github.io/dropwizard/manual/configuration.html).
