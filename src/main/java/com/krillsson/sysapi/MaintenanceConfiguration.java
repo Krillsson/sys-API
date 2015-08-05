@@ -13,7 +13,15 @@ public class MaintenanceConfiguration extends Configuration {
     @JsonProperty
     private UserConfiguration user;
 
+    @Valid
+    @JsonProperty
+    private String sigarLocation;
+
     public UserConfiguration getUser() {
         return user;
+    }
+
+    public String getSigarLocation() {
+        return sigarLocation;
     }
 }

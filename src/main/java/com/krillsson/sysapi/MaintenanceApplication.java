@@ -37,7 +37,7 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
 
     @Override
     public void run(MaintenanceConfiguration config, Environment environment) throws Exception {
-        System.setProperty("org.hyperic.sigar.path", libLocation());
+        System.setProperty("org.hyperic.sigar.path", libLocation(config));
         SigarKeeper sigarKeeper = SigarKeeper.getInstance();
 
         environment.jersey().register(new BasicAuthProvider<>(new SimpleAuthenticator(config.getUser()), "System-Api"));
@@ -51,8 +51,13 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         environment.healthChecks().register("Sigar", new SigarLoadingHealthCheck());
     }
 
-    private String libLocation()
+    private String libLocation(MaintenanceConfiguration config)
     {
+        if(config.getSigarLocation() != null)
+        {
+            return config.getSigarLocation();
+        }
+
         File thisJar = new File(MaintenanceApplication.class.getProtectionDomain().getCodeSource().getLocation().getFile());
 
         String separator = System.getProperty("file.separator");
