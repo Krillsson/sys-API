@@ -22,7 +22,7 @@ You should now be able to:
 java -jar target/system-api.jar server dev.yml
 ```
 
-If you want to package everything needed to run this application in a *.zip*, *tar.gz* and a *tar.bz2*:
+If you want to package everything needed to run this application in a *.zip*, *tar.gz* and *tar.bz2*:
 
 ```sh
 mvn clean package
