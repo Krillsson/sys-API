@@ -21,6 +21,13 @@ You should now be able to:
 ```sh
 java -jar target/system-api.jar server dev.yml
 ```
+
+If you want to package everything needed to run this application in a *.zip*, *tar.gz* and a *tar.bz2*:
+
+```sh
+mvn clean package
+```
+
 ## Configuration reference
 The dev.yml file is a Dropwizard configuration file. Have a look at the [Dropwizard configuration reference](https://dropwizard.github.io/dropwizard/manual/configuration.html).
 
@@ -34,6 +41,10 @@ The application will attempt to resolve the location of the Sigar native files b
 This has been tested on Mac OSX Yosemite and Windows 8.1. However, if you get *UnsatisfiedLinkError*'s you can override the location by specifying:
 
     sigarLocation: [absolute path to lib folder]
+
+### Want HTTPS?
+
+Take a look at this guide: [Dropwizard and SSL](http://clearthehaze.com/2014/09/dropwizard-ssl/)
 
 ## What can you do with it?
 As of now you can query _sys-api_ for
@@ -66,7 +77,8 @@ As of now you can query _sys-api_ for
     GET     /processes/{pid}
 
 
-# Requirements
+# Prerequisites
+- [Maven 3](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html)
 - [Java 8 JRE](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 
 # Credits
