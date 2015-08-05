@@ -29,7 +29,7 @@ public class CpuResource extends Resource {
         return cpuSigar.getCpu();
     }
 
-    @Path("cpu/{core}")
+    @Path("{core}")
     @GET
     public CpuTime getCpuTimeByCore(@Auth UserConfiguration user, @PathParam("core") int core) {
         try {

@@ -30,11 +30,11 @@ public class NetworkResource extends Resource {
         return networkSigar.getNetworkInfo();
     }
 
-    @Path("{id}")
+    @Path("{name}")
     @GET
-    public NetworkInterfaceConfig getConfigById(@Auth UserConfiguration user, @PathParam("id") String id) {
+    public NetworkInterfaceConfig getConfigById(@Auth UserConfiguration user, @PathParam("name") String name) {
         try {
-            return networkSigar.getConfigById(id);
+            return networkSigar.getConfigById(name);
         } catch (IllegalArgumentException e) {
             throw buildWebException(Response.Status.NOT_FOUND, e.getMessage());
         }
