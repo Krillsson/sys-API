@@ -1,13 +1,8 @@
-donotadd.yml
-.idea
-target
-atlassian-ide-plugin.xml
-dependency-reduced-pom.xml
-logs
+
+### JetBrains template
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion
+
 *.iml
-*.ipr
-#Eclipse-specific
-.settings/
-.classpath
-.project
-nb-configuration.xml
+
+## Directory-based project format:
+.idea/
