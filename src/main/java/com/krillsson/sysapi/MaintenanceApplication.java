@@ -1,7 +1,9 @@
 package com.krillsson.sysapi;
 
+import com.krillsson.sysapi.representation.config.UserConfiguration;
 import io.dropwizard.Application;
-import io.dropwizard.auth.basic.BasicAuthProvider;
+import io.dropwizard.auth.AuthFactory;
+import io.dropwizard.auth.basic.BasicAuthFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import com.krillsson.sysapi.auth.SimpleAuthenticator;
@@ -40,7 +42,7 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         System.setProperty("org.hyperic.sigar.path", libLocation(config));
         SigarKeeper sigarKeeper = SigarKeeper.getInstance();
 
-        environment.jersey().register(new BasicAuthProvider<>(new SimpleAuthenticator(config.getUser()), "System-Api"));
+        environment.jersey().register(AuthFactory.binder(new BasicAuthFactory<UserConfiguration>(new SimpleAuthenticator(config.getUser()), "System-Api", UserConfiguration.class)));
         environment.jersey().register(new CpuResource(sigarKeeper.cpu()));
         environment.jersey().register(new FilesystemResource(sigarKeeper.filesystems()));
         environment.jersey().register(new MemoryResource(sigarKeeper.memory()));
