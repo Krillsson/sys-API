@@ -18,9 +18,15 @@ This will download the necessary Sigar native files and extract them under serve
 
 You should now be able to:
 
+
 ```sh
 cd server
 java -jar target/system-api.jar server dev.yml
+```
+If you got everything working you should now be able to:
+
+```sh
+curl -i --user user:password -H "Accept: application/json" -X GET http://localhost:8080/system
 ```
 
 If you want to package everything needed to run this application in a *.zip*, *tar.gz* and *tar.bz2*:
@@ -45,7 +51,7 @@ This has been tested on Mac OSX Yosemite and Windows 8.1. However, if you get *U
 
     sigarLocation: [absolute path to lib folder]
 
-### Want HTTPS?
+### But I want HTTPS?
 
 Take a look at this guide: [Dropwizard and SSL](http://clearthehaze.com/2014/09/dropwizard-ssl/)
 
