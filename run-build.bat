@@ -1,1 +1,0 @@
-java -cp "target/maintenance-rest-api-1.0-SNAPSHOT.jar;" com.krillsson.sysapi.MaintenanceApplication server dev.yml
