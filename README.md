@@ -49,21 +49,21 @@ As of now you can query _sys-api_ for
 
 ## Endpoints
 
-    GET     /cpus (com.krillsson.sysapi.resources.CpuResource)
-    GET     /cpus/{core} (com.krillsson.sysapi.resources.CpuResource)
-    GET     /filesystems (com.krillsson.sysapi.resources.FilesystemResource)
-    GET     /filesystems/type/{fsTypeName} (com.krillsson.sysapi.resources.FilesystemResource)
-    GET     /filesystems/{id} (com.krillsson.sysapi.resources.FilesystemResource)
-    GET     /memory (com.krillsson.sysapi.resources.MemoryResource)
-    GET     /memory/ram (com.krillsson.sysapi.resources.MemoryResource)
-    GET     /memory/swap (com.krillsson.sysapi.resources.MemoryResource)
-    GET     /system (com.krillsson.sysapi.resources.SystemResource)
-    GET     /networks (com.krillsson.sysapi.resources.NetworkResource)
-    GET     /networks/{id} (com.krillsson.sysapi.resources.NetworkResource)
-    GET     /networks/{id}/speed (com.krillsson.sysapi.resources.NetworkResource)
-    GET     /processes (com.krillsson.sysapi.resources.ProcessResource)
-    GET     /processes/statistics (com.krillsson.sysapi.resources.ProcessResource)
-    GET     /processes/{pid} (com.krillsson.sysapi.resources.ProcessResource)
+    GET     /cpus
+    GET     /cpus/{core}
+    GET     /filesystems
+    GET     /filesystems/type/{fsTypeName}
+    GET     /filesystems/{id}
+    GET     /memory
+    GET     /memory/ram
+    GET     /memory/swap
+    GET     /system
+    GET     /networks
+    GET     /networks/{id}
+    GET     /networks/{id}/speed
+    GET     /processes
+    GET     /processes/statistics
+    GET     /processes/{pid}
 
 
 # Requirements
