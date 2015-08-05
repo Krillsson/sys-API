@@ -10,8 +10,10 @@ import com.krillsson.sysapi.resources.*;
 import com.krillsson.sysapi.sigar.SigarKeeper;
 import org.slf4j.Logger;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.file.Paths;
 
 
 public class MaintenanceApplication extends Application<MaintenanceConfiguration> {
@@ -51,12 +53,13 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
 
     private String libLocation()
     {
+        File thisJar = new File(MaintenanceApplication.class.getProtectionDomain().getCodeSource().getLocation().getFile());
+
         String separator = System.getProperty("file.separator");
-        String path = MaintenanceApplication.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        path = path.substring(0, path.lastIndexOf(separator));
+        String pathToJar = thisJar.getParent();
         try {
-            String jarlocation = URLDecoder.decode(path, "UTF-8");
-            return jarlocation + separator +"lib";
+            pathToJar = URLDecoder.decode(pathToJar, "UTF-8");
+            return pathToJar + separator + "lib";
         } catch (UnsupportedEncodingException e) {
             LOGGER.error("Unable to decode the path to UTF-8");
             return "";
