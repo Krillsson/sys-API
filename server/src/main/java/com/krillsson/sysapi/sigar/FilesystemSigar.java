@@ -54,16 +54,13 @@ public class FilesystemSigar extends SigarWrapper {
     }
 
     private FileSystem convertToInternal(org.hyperic.sigar.FileSystem fs) {
-        long totalSizeKB = 0L;
-        long freeSpaceKB = 0L;
         try {
             FileSystemUsage usage = sigar.getFileSystemUsage(fs.getDirName());
-            totalSizeKB = usage.getTotal();
-            freeSpaceKB = usage.getFree();
+            return FileSystem.fromSigarBean(fs, usage);
         } catch (SigarException e) {
             //Swallow this exception
+            return null;
         }
-        return FileSystem.fromSigarBean(fs, totalSizeKB, freeSpaceKB);
     }
 
     private org.hyperic.sigar.FileSystem[] getSigarFilesystems() {
@@ -83,6 +80,5 @@ public class FilesystemSigar extends SigarWrapper {
 
         return fss;
     }
-
 
 }

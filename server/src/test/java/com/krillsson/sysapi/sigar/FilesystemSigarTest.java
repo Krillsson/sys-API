@@ -31,9 +31,9 @@ public class FilesystemSigarTest extends CheckSigarLoadsOk {
                 if (new File(fs.mountPoint()).equals(root)) {
                     System.out.println("Testing filesystem mounted at " + fs.mountPoint());
                     assertThat((double) (root.getTotalSpace()), //
-                            is(closeTo((double) (fs.totalSizeKB() * 1024), MARGIN_BYTES)));
+                            is(closeTo((double) (fs.getUsage().getTotalSizeKB() * 1024), MARGIN_BYTES)));
                     assertThat((double) (root.getFreeSpace()), //
-                            is(closeTo((double) (fs.freeSpaceKB() * 1024), MARGIN_BYTES)));
+                            is(closeTo((double) (fs.getUsage().getFreeSpaceKB() * 1024), MARGIN_BYTES)));
                 }
             }
         }
