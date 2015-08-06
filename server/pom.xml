@@ -19,6 +19,7 @@
         <sigar-dist.classpath.directory>/hyperic-sigar-${sigar-dist.version.output}/sigar-bin/lib
         </sigar-dist.classpath.directory>
         <library-dir>${project.build.directory}/lib/</library-dir>
+        <sigar.versio>1.6.5.132</sigar.versio>
     </properties>
 
 
@@ -27,6 +28,11 @@
             <groupId>com.krillsson</groupId>
             <artifactId>sys-api-domain</artifactId>
             <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hyperic</groupId>
+            <artifactId>sigar</artifactId>
+            <version>${sigar.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

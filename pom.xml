@@ -15,7 +15,6 @@
     </modules>
 
     <properties>
-        <sigar.version>1.6.5.132</sigar.version>
         <dropwizard.version>0.8.2</dropwizard.version>
     </properties>
 
@@ -41,11 +40,6 @@
             <groupId>io.dropwizard.modules</groupId>
             <artifactId>dropwizard-java8</artifactId>
             <version>0.8.0-1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hyperic</groupId>
-            <artifactId>sigar</artifactId>
-            <version>${sigar.version}</version>
         </dependency>
     </dependencies>
 
