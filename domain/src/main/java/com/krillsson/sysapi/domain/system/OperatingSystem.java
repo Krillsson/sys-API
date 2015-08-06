@@ -16,22 +16,6 @@ public final class OperatingSystem extends SysInfo {
         this.cpuEndian = cpuEndian;
     }
 
-    public static OperatingSystem fromSigarBean(org.hyperic.sigar.OperatingSystem os) {
-        return new OperatingSystem(os.getName(),
-                os.getVersion(),
-                os.getArch(),
-                os.getMachine(),
-                os.getDescription(),
-                os.getPatchLevel(),
-                os.getVendor(),
-                os.getVendorVersion(),
-                os.getVendorName(),
-                os.getVendorCodeName(),
-                os.getCpuEndian(),
-                os.getDataModel()
-        );
-    }
-
     @JsonProperty
     public String getDataModel() {
         return dataModel;

@@ -22,16 +22,6 @@ public class CpuInfo {
         this.coresPerSocket = coresPerSocket;
     }
 
-    public static CpuInfo fromSigarBean(org.hyperic.sigar.CpuInfo sigarCpuInfo) {
-        return new CpuInfo(sigarCpuInfo.getVendor()
-                , sigarCpuInfo.getModel().trim()
-                , sigarCpuInfo.getMhz()
-                , sigarCpuInfo.getCacheSize()
-                , sigarCpuInfo.getTotalCores()
-                , sigarCpuInfo.getTotalSockets()
-                , sigarCpuInfo.getCoresPerSocket());
-    }
-
     @JsonProperty
     public String getVendor() {
         return vendor;

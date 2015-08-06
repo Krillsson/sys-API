@@ -1,7 +1,6 @@
 package com.krillsson.sysapi.domain.network;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hyperic.sigar.NetInfo;
 
 import java.util.List;
 
@@ -22,13 +21,6 @@ public final class NetworkInfo {
                        List<NetworkInterfaceConfig> networkInterfaceConfigs) {
         this(defaultGateway,hostName,domainName,primaryDns,secondaryDns);
         this.networkInterfaceConfigs = networkInterfaceConfigs;
-    }
-
-    public static NetworkInfo fromSigarBean(NetInfo ni, List<NetworkInterfaceConfig> configs) {
-        return new NetworkInfo(ni.getDefaultGateway()
-                , ni.getHostName(), ni.getDomainName()
-                , ni.getPrimaryDns(), ni.getSecondaryDns()
-                ,configs);
     }
 
     @JsonProperty

@@ -2,9 +2,6 @@ package com.krillsson.sysapi.domain.memory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
-* Created by christian on 2014-11-30.
-*/
 public abstract class MemSegment {
     protected final long total;
     protected final long used;

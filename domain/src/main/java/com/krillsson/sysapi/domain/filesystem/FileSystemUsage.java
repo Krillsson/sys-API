@@ -33,23 +33,6 @@ public class FileSystemUsage {
         this.usePercent = usePercent;
     }
 
-    public static FileSystemUsage fromSigarBean(org.hyperic.sigar.FileSystemUsage usage)
-    {
-        return new FileSystemUsage(usage.getTotal(),
-                usage.getFree(),
-                usage.getUsed(),
-                usage.getAvail(),
-                usage.getFiles(),
-                usage.getFreeFiles(),
-                usage.getDiskReads(),
-                usage.getDiskWrites(),
-                usage.getDiskReadBytes(),
-                usage.getDiskWriteBytes(),
-                usage.getDiskQueue(),
-                usage.getDiskServiceTime(),
-                usage.getUsePercent());
-    }
-
     @JsonProperty
     public long getTotalSizeKB() {
         return totalSizeKB;

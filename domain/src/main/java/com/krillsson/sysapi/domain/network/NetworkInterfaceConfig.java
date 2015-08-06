@@ -32,14 +32,6 @@ public final class NetworkInterfaceConfig {
         this.metric = metric;
     }
 
-    public static NetworkInterfaceConfig fromSigarBean(NetInterfaceConfig nIC) {
-        return new NetworkInterfaceConfig(nIC.getName(), nIC.getHwaddr(),
-                nIC.getType(), nIC.getDescription(),
-                nIC.getAddress(), nIC.getDestination(),
-                nIC.getBroadcast(), nIC.getNetmask(),
-                nIC.getFlags(), nIC.getMtu(), nIC.getMetric());
-    }
-
     @JsonProperty
     public String getName() {
         return name;

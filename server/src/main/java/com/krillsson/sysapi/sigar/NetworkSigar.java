@@ -5,7 +5,6 @@ import org.hyperic.sigar.*;
 import com.krillsson.sysapi.domain.network.NetworkInfo;
 import com.krillsson.sysapi.domain.network.NetworkInterfaceConfig;
 import com.krillsson.sysapi.domain.network.NetworkInterfaceSpeed;
-import com.krillsson.sysapi.domain.network.NetworkInterfaceStatistics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +25,8 @@ public class NetworkSigar extends SigarWrapper {
         try {
             netIfs = sigar.getNetInterfaceList();
             for (String name : netIfs) {
-                NetworkInterfaceConfig networkInterfaceConfig = NetworkInterfaceConfig.fromSigarBean(sigar.getNetInterfaceConfig(name));
-                networkInterfaceConfig.setNetworkInterfaceStatistics(NetworkInterfaceStatistics.fromSigarBean(sigar.getNetInterfaceStat(name)));
+                NetworkInterfaceConfig networkInterfaceConfig = SigarBeanConverter.fromSigarBean(sigar.getNetInterfaceConfig(name));
+                networkInterfaceConfig.setNetworkInterfaceStatistics(SigarBeanConverter.fromSigarBean(sigar.getNetInterfaceStat(name)));
                 networkInterfaceConfig.setNetworkInterfaceSpeed(getSpeed(name));
                 configs.add(networkInterfaceConfig);
             }
@@ -46,8 +45,8 @@ public class NetworkSigar extends SigarWrapper {
 
         try {
             NetInterfaceConfig sigarConfig = sigar.getNetInterfaceConfig(id);
-            config = NetworkInterfaceConfig.fromSigarBean(sigarConfig);
-            config.setNetworkInterfaceStatistics(NetworkInterfaceStatistics.fromSigarBean(sigar.getNetInterfaceStat(id)));
+            config = SigarBeanConverter.fromSigarBean(sigarConfig);
+            config.setNetworkInterfaceStatistics(SigarBeanConverter.fromSigarBean(sigar.getNetInterfaceStat(id)));
             config.setNetworkInterfaceSpeed(getSpeed(id));
         } catch (SigarException | InterruptedException | IllegalArgumentException e) {
             throw new IllegalArgumentException(String.format(NOT_FOUND_STRING, NetworkInterfaceConfig.class.getSimpleName(), id), e);
@@ -64,7 +63,7 @@ public class NetworkSigar extends SigarWrapper {
         try {
             sigarNetInfo = sigar.getNetInfo();
             configs = getConfigs();
-            networkInfo = NetworkInfo.fromSigarBean(sigarNetInfo, configs);
+            networkInfo = SigarBeanConverter.fromSigarBean(sigarNetInfo, configs);
         } catch (SigarException e) {
             throw new IllegalArgumentException(e.getCause());
         }

@@ -19,11 +19,6 @@ public final class FileSystem {
         this.usage = usage;
     }
 
-    public static FileSystem fromSigarBean(org.hyperic.sigar.FileSystem fs, org.hyperic.sigar.FileSystemUsage usage) {
-        return new FileSystem(fs.getDevName(), fs.getDirName(), //
-                FSType.values()[fs.getType()], fs.getSysTypeName(), FileSystemUsage.fromSigarBean(usage));
-    }
-
     @JsonProperty
     public String deviceName() {
         return deviceName;

@@ -24,10 +24,6 @@ public class ProcessMemory {
 
     }
 
-    public static ProcessMemory fromSigarBean(ProcMem procMem) {
-        return new ProcessMemory(procMem.getSize(), procMem.getResident(), procMem.getShare(), procMem.getMinorFaults(), procMem.getMajorFaults(), procMem.getPageFaults());
-    }
-
     @JsonProperty
     public long getSize() {
         return size;

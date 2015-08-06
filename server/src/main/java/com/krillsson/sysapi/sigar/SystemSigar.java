@@ -6,7 +6,6 @@ import com.krillsson.sysapi.domain.system.System;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 
-import java.lang.management.ManagementFactory;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -32,7 +31,7 @@ public class SystemSigar extends SigarWrapper {
     }
 
     public OperatingSystem getOperatingSystem() {
-        return OperatingSystem.fromSigarBean(org.hyperic.sigar.OperatingSystem.getInstance());
+        return SigarBeanConverter.fromSigarBean(org.hyperic.sigar.OperatingSystem.getInstance());
     }
 
     public System getSystem() {
@@ -54,7 +53,7 @@ public class SystemSigar extends SigarWrapper {
         List<UserInfo> users;
         try {
             List<org.hyperic.sigar.Who> who = Arrays.asList(sigar.getWhoList());
-            users = who.stream().map(UserInfo::fromSigarBean).collect(Collectors.toList()); //Stream magic
+            users = who.stream().map(SigarBeanConverter::fromSigarBean).collect(Collectors.toList()); //Stream magic
             return users;
         } catch (SigarException e) {
             // give up

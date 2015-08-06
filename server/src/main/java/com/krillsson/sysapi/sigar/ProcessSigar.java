@@ -42,7 +42,7 @@ public class ProcessSigar extends SigarWrapper {
 
     public ProcessStatistics getStatistics() {
         try {
-            return ProcessStatistics.fromSigarBean(sigar.getProcStat());
+            return SigarBeanConverter.fromSigarBean(sigar.getProcStat());
         } catch (SigarException e) {
             LOGGER.warn("Getting statistics failed", e);
             return new ProcessStatistics();
@@ -61,7 +61,7 @@ public class ProcessSigar extends SigarWrapper {
 
     private ProcessState getState(long pid) {
         try {
-            return ProcessState.fromSigarBean(sigar.getProcState(pid));
+            return SigarBeanConverter.fromSigarBean(sigar.getProcState(pid));
         } catch (SigarException e) {
             return new ProcessState();
         }
@@ -87,7 +87,7 @@ public class ProcessSigar extends SigarWrapper {
 
     private ProcessMemory getMemory(long pid){
         try {
-            return ProcessMemory.fromSigarBean(sigar.getProcMem(pid));
+            return SigarBeanConverter.fromSigarBean(sigar.getProcMem(pid));
         } catch (SigarException e) {
             return new ProcessMemory();
         }
@@ -95,7 +95,7 @@ public class ProcessSigar extends SigarWrapper {
 
     private ProcessCpu getProcessCpu(long pid) {
         try {
-            return ProcessCpu.fromSigarBean(sigar.getProcCpu(pid));
+            return SigarBeanConverter.fromSigarBean(sigar.getProcCpu(pid));
         } catch (SigarException e) {
             return new ProcessCpu();
         }
@@ -103,7 +103,7 @@ public class ProcessSigar extends SigarWrapper {
 
     private ProcessCreator getProcessCreator(long pid) {
         try {
-            return ProcessCreator.fromSigarBean(sigar.getProcCredName(pid));
+            return SigarBeanConverter.fromSigarBean(sigar.getProcCredName(pid));
         } catch (SigarException e) {
             return new ProcessCreator();
         }
@@ -119,7 +119,7 @@ public class ProcessSigar extends SigarWrapper {
 
     private ProcessExecutable getExecutable(long pid) {
         try {
-            return ProcessExecutable.fromSigarBean(sigar.getProcExe(pid));
+            return SigarBeanConverter.fromSigarBean(sigar.getProcExe(pid));
         } catch (SigarException e) {
             return new ProcessExecutable();
         }

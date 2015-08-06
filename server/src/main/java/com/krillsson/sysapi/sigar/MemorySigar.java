@@ -18,7 +18,7 @@ public class MemorySigar extends SigarWrapper {
 
     public MainMemory getRam() {
         try {
-            return MainMemory.fromSigarBean(sigar.getMem());
+            return SigarBeanConverter.fromSigarBean(sigar.getMem());
         } catch (SigarException e) {
             return MainMemory.undef();
         }
@@ -26,7 +26,7 @@ public class MemorySigar extends SigarWrapper {
 
     public SwapSpace getSwap() {
         try {
-            return SwapSpace.fromSigarBean(sigar.getSwap());
+            return SigarBeanConverter.fromSigarBean(sigar.getSwap());
         } catch (SigarException e) {
             return SwapSpace.undef();
         }

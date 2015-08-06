@@ -34,17 +34,6 @@ public final class NetworkInterfaceStatistics {
         this.speed = speed;
     }
 
-    public static NetworkInterfaceStatistics fromSigarBean(NetInterfaceStat nIS) {
-
-        return new NetworkInterfaceStatistics(nIS.getRxBytes(), nIS.getRxPackets(),
-                nIS.getRxErrors(), nIS.getRxDropped(),
-                nIS.getRxOverruns(), nIS.getRxFrame(),
-                nIS.getTxBytes(), nIS.getTxPackets(),
-                nIS.getTxErrors(), nIS.getTxDropped(),
-                nIS.getTxOverruns(), nIS.getTxCollisions(),
-                nIS.getTxCarrier(), nIS.getSpeed());
-    }
-
     @JsonProperty
     public long getRxBytes() {
         return rxBytes;

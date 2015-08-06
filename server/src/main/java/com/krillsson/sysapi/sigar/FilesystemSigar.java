@@ -56,7 +56,7 @@ public class FilesystemSigar extends SigarWrapper {
     private FileSystem convertToInternal(org.hyperic.sigar.FileSystem fs) {
         try {
             FileSystemUsage usage = sigar.getFileSystemUsage(fs.getDirName());
-            return FileSystem.fromSigarBean(fs, usage);
+            return SigarBeanConverter.fromSigarBean(fs, usage);
         } catch (SigarException e) {
             //Swallow this exception
             return null;

@@ -27,12 +27,6 @@ public final class CpuTime {
         this.irq = irq;
     }
 
-    public static CpuTime fromSigarBean(CpuPerc cp) {
-        return new CpuTime( //
-                cp.getUser(), cp.getSys(), //
-                cp.getNice(), cp.getWait(), //
-                cp.getIdle(), cp.getIrq());
-    }
     @JsonProperty
     public double user() { return user; }
     @JsonProperty

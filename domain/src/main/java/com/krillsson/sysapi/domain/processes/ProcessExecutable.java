@@ -17,10 +17,6 @@ public class ProcessExecutable {
         this.cwd = "N/A";
     }
 
-    public static ProcessExecutable fromSigarBean(ProcExe procExe) {
-        return new ProcessExecutable(procExe.getName(), procExe.getCwd());
-    }
-
     @JsonProperty
     public String getName() {
         return name;

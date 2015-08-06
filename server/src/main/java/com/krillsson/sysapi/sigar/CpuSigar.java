@@ -52,11 +52,11 @@ public class CpuSigar extends SigarWrapper {
                     Thread.sleep(HACK_DELAY_MILLIS);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    return CpuTime.fromSigarBean(cpuPerc);
+                    return SigarBeanConverter.fromSigarBean(cpuPerc);
                 }
                 cpuPerc = sigar.getCpuPerc();
             }
-            return CpuTime.fromSigarBean(cpuPerc);
+            return SigarBeanConverter.fromSigarBean(cpuPerc);
         } catch (SigarException e) {
             //swallow
         }
@@ -66,7 +66,7 @@ public class CpuSigar extends SigarWrapper {
     protected List<CpuTime> cpuTimesPerCore(CpuPerc[] percList) {
         List<CpuTime> result = new ArrayList<>();
         for (CpuPerc cp : percList) {
-            result.add(CpuTime.fromSigarBean(cp));
+            result.add(SigarBeanConverter.fromSigarBean(cp));
         }
         return result;
     }
@@ -77,7 +77,7 @@ public class CpuSigar extends SigarWrapper {
             if (infos == null || infos.length == 0) {
                 return null;
             }
-            return CpuInfo.fromSigarBean(infos[0]);
+            return SigarBeanConverter.fromSigarBean(infos[0]);
         } catch (SigarException e) {
             // give up
             return null;

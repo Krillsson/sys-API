@@ -17,10 +17,6 @@ public class ProcessCreator {
         this.group = "N/A";
     }
 
-    public static ProcessCreator fromSigarBean(ProcCredName procCredName){
-        return new ProcessCreator(procCredName.getUser(), procCredName.getGroup());
-    }
-
     @JsonProperty
     public String getUser() {
         return user;

@@ -20,10 +20,6 @@ public class ProcessCpu {
 
     }
 
-    public static ProcessCpu fromSigarBean(ProcCpu procCpu){
-        return new ProcessCpu(procCpu.getPercent(), procCpu.getLastTime(), procCpu.getStartTime(), procCpu.getUser(), procCpu.getSys(), procCpu.getTotal());
-    }
-
     @JsonProperty
     public double getPercent() {
         return percent;

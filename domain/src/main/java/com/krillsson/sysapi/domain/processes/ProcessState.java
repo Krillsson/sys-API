@@ -39,25 +39,6 @@ public class ProcessState {
         this.state = State.UNKOWN;
     }
 
-    public static ProcessState fromSigarBean(ProcState procState)
-    {
-        State state = State.UNKOWN;
-        switch (procState.getState())
-        {
-            case 'S': state = State.SLEEP;
-                break;
-            case 'R': state = State.RUN;
-                break;
-            case 'T': state = State.STOP;
-                break;
-            case 'Z': state = State.ZOMBIE;
-                break;
-            case 'D': state = State.IDLE;
-                break;
-        }
-        return new ProcessState(state, procState.getName(), procState.getPpid(), procState.getTty(), procState.getNice(), procState.getPriority(), procState.getThreads(), procState.getProcessor());
-    }
-
     @JsonProperty
     public State getState() {
         return state;

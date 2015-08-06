@@ -1,13 +1,12 @@
 package com.krillsson.sysapi.domain.memory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hyperic.sigar.Mem;
 
 public final class MainMemory extends MemSegment {
     private final long actualUsed, actualFree;
     private final double usedPercent, freePercent;
 
-    private MainMemory(//
+    public MainMemory(//
                        long total, long used, long free, //
                        long actualUsed, long actualFree,
                        double usedPercent, double freePercent) {
@@ -16,13 +15,6 @@ public final class MainMemory extends MemSegment {
         this.actualFree = actualFree;
         this.usedPercent = usedPercent;
         this.freePercent = freePercent;
-    }
-
-    public static MainMemory fromSigarBean(Mem mem) {
-        return new MainMemory( //
-                mem.getTotal(), mem.getUsed(), mem.getFree(), //
-                mem.getActualUsed(), mem.getActualFree(),
-                mem.getUsedPercent(), mem.getFreePercent());
     }
 
     public static MainMemory undef() {

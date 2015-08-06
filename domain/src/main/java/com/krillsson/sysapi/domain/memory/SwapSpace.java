@@ -6,18 +6,12 @@ import org.hyperic.sigar.Swap;
 public final class SwapSpace extends MemSegment {
     private final long pagesIn, pagesOut;
 
-    private SwapSpace( //
+    public SwapSpace( //
                        long total, long used, long free, //
                        long pagesIn, long pagesOut) {
         super(total, used, free);
         this.pagesIn = pagesIn;
         this.pagesOut = pagesOut;
-    }
-
-    public static SwapSpace fromSigarBean(Swap swap) {
-        return new SwapSpace(
-                swap.getTotal(), swap.getUsed(), swap.getFree(),
-                swap.getPageIn(), swap.getPageOut());
     }
 
     public static SwapSpace undef() {

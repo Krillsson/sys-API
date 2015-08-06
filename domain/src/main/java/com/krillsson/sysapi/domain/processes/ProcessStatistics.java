@@ -32,16 +32,6 @@ public class ProcessStatistics {
 
     }
 
-    public static ProcessStatistics fromSigarBean(ProcStat procStat) {
-        return new ProcessStatistics(procStat.getTotal(),
-                procStat.getIdle(),
-                procStat.getRunning(),
-                procStat.getSleeping(),
-                procStat.getStopped(),
-                procStat.getZombie(),
-                procStat.getThreads());
-    }
-
     @JsonProperty
     public long getTotal() {
         return total;
