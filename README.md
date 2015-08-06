@@ -69,21 +69,24 @@ As of now you can query _sys-api_ for
 
 ## Endpoints
 
-    GET     /cpus
-    GET     /cpus/{core}
     GET     /filesystems
     GET     /filesystems/type/{fsTypeName}
     GET     /filesystems/{id}
+    GET     /networks
+    GET     /networks/{id}/speed
+    GET     /networks/{name}
     GET     /memory
     GET     /memory/ram
     GET     /memory/swap
     GET     /system
-    GET     /networks
-    GET     /networks/{id}
-    GET     /networks/{id}/speed
+    GET     /system/jvm
+    GET     /system/operatingsystem
+    GET     /system/uptime
     GET     /processes
     GET     /processes/statistics
     GET     /processes/{pid}
+    GET     /cpu
+    GET     /cpu/{core}
 
 
 # Prerequisites

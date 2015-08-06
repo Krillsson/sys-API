@@ -13,7 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("cpus")
+@Path("cpu")
 @Produces(MediaType.APPLICATION_JSON)
 public class CpuResource extends Resource {
 
