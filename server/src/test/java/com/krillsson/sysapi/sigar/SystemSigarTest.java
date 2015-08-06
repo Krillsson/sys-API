@@ -16,12 +16,7 @@ public class SystemSigarTest extends CheckSigarLoadsOk{
 
     @Test
     public void uptimeIsGreaterThanZero(){
-        assertThat(sm.machineInfo().getUptime(), is(greaterThan(0.0)));
+        assertThat(sm.getUptime(), is(greaterThan(0.0)));
     }
 
-    @Test
-    public void hostNameIsEqualToWhatJvmThinks() throws Exception {
-        String javaHostname =  java.net.InetAddress.getLocalHost().getHostName();
-        assertThat(sm.machineInfo().getHostname(), containsString(javaHostname));
-    }
 }

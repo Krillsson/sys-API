@@ -2,9 +2,6 @@ package com.krillsson.sysapi.domain.system;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
-* Created by christian on 2014-11-30.
-*/
 public class SysInfo {
     private final String name;
     private final String version;
@@ -59,7 +56,6 @@ public class SysInfo {
     }
 
     @JsonProperty
-
     public String getDescription() {
         return description;
     }

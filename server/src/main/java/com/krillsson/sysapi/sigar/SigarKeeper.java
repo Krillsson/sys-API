@@ -13,7 +13,7 @@ public class SigarKeeper {
     private final CpuSigar cpu = new CpuSigar(sigar);
     private final MemorySigar memory = new MemorySigar(sigar);
     private final FilesystemSigar fs = new FilesystemSigar(sigar);
-    private final SystemSigar system = new SystemSigar(sigar);
+    private final SystemSigar system = new SystemSigar(sigar, this);
     private final NetworkSigar network = new NetworkSigar(sigar);
     private final ProcessSigar process = new ProcessSigar(sigar);
 

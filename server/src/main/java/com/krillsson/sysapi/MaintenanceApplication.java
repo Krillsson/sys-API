@@ -47,6 +47,7 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         environment.jersey().register(new SystemResource(sigarKeeper.system()));
         environment.jersey().register(new NetworkResource(sigarKeeper.network()));
         environment.jersey().register(new ProcessResource(sigarKeeper.process()));
+        environment.jersey().register(new UsersResource(sigarKeeper.system()));
 
         environment.healthChecks().register("Sigar", new SigarLoadingHealthCheck());
     }

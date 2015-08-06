@@ -1,47 +1,69 @@
 package com.krillsson.sysapi.sigar;
 
 
+import com.krillsson.sysapi.domain.system.*;
+import com.krillsson.sysapi.domain.system.System;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
-import com.krillsson.sysapi.domain.system.JvmProperties;
-import com.krillsson.sysapi.domain.system.Machine;
-import com.krillsson.sysapi.domain.system.OperatingSystem;
-import com.krillsson.sysapi.domain.system.UserInfo;
 
+import java.lang.management.ManagementFactory;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
 public class SystemSigar extends SigarWrapper {
-    protected SystemSigar(Sigar sigar) {
+
+    private SigarKeeper sigarKeeper;
+    private final JvmProperties jvmProperties;
+
+    protected SystemSigar(Sigar sigar, SigarKeeper sigarKeeper) {
         super(sigar);
+        this.sigarKeeper = sigarKeeper;
+        this.jvmProperties = getJvmProperties();
     }
 
-    public Machine machineInfo() {
-        double uptime = 0.0;
-        org.hyperic.sigar.OperatingSystem os;
-        List<UserInfo> users;
-        String hostname = "";
+    public double getUptime() {
         try {
-            os = org.hyperic.sigar.OperatingSystem.getInstance();
-            uptime = sigar.getUptime().getUptime();
-            List<org.hyperic.sigar.Who> who = Arrays.asList(sigar.getWhoList());
-            users = who.stream().map(UserInfo::fromSigarBean).collect(Collectors.toList()); //Stream magic
-            hostname = sigar.getNetInfo().getHostName();
+            return sigar.getUptime().getUptime();
+        } catch (SigarException e) {
+            return 0.0;
+        }
+    }
+
+    public OperatingSystem getOperatingSystem() {
+        return OperatingSystem.fromSigarBean(org.hyperic.sigar.OperatingSystem.getInstance());
+    }
+
+    public System getSystem() {
+        try {
+            return new System(sigar.getNetInfo().getHostName(),
+                    sigar.getUptime().getUptime(),
+                    jvmProperties.getOsName(),
+                    jvmProperties.getOsVersion(),
+                    sigarKeeper.cpu().totalCpuTime(),
+                    sigarKeeper.memory().getRam(),
+                    sigarKeeper.process().getStatistics());
         } catch (SigarException e) {
             // give up
             return null;
         }
-
-        JvmProperties jvmProperties = getJvmProperties();
-
-        return (new Machine(hostname, users, uptime, OperatingSystem.fromSigarBean(os), jvmProperties));
-
     }
 
-    private JvmProperties getJvmProperties() {
-        Properties p = System.getProperties();
+    public List<UserInfo> getUsers() {
+        List<UserInfo> users;
+        try {
+            List<org.hyperic.sigar.Who> who = Arrays.asList(sigar.getWhoList());
+            users = who.stream().map(UserInfo::fromSigarBean).collect(Collectors.toList()); //Stream magic
+            return users;
+        } catch (SigarException e) {
+            // give up
+            return null;
+        }
+    }
+
+    public JvmProperties getJvmProperties() {
+        Properties p = java.lang.System.getProperties();
         return new JvmProperties(
                 p.getProperty("java.home"),
                 p.getProperty("java.class.path"),
