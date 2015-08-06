@@ -19,7 +19,7 @@
         <sigar-dist.classpath.directory>/hyperic-sigar-${sigar-dist.version.output}/sigar-bin/lib
         </sigar-dist.classpath.directory>
         <library-dir>${project.build.directory}/lib/</library-dir>
-        <sigar.versio>1.6.5.132</sigar.versio>
+        <sigar.version>1.6.5.132</sigar.version>
     </properties>
 
 
