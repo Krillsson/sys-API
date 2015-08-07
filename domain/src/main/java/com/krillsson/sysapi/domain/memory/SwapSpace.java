@@ -1,7 +1,6 @@
 package com.krillsson.sysapi.domain.memory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hyperic.sigar.Swap;
 
 public final class SwapSpace extends MemSegment {
     private final long pagesIn, pagesOut;

@@ -1,8 +1,6 @@
 package com.krillsson.sysapi.domain.cpu;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hyperic.sigar.CpuPerc;
-
 /**
 * Created by christian on 2014-11-30.
 */

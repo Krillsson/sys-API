@@ -1,7 +1,6 @@
 package com.krillsson.sysapi.domain.processes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hyperic.sigar.ProcStat;
 
 public class ProcessStatistics {
     long total,

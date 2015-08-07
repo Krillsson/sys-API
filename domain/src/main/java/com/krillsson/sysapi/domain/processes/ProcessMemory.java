@@ -1,7 +1,6 @@
 package com.krillsson.sysapi.domain.processes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hyperic.sigar.ProcMem;
 
 public class ProcessMemory {
     long size,

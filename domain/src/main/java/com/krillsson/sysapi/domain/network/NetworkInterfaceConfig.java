@@ -1,7 +1,6 @@
 package com.krillsson.sysapi.domain.network;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hyperic.sigar.NetInterfaceConfig;
 
 public final class NetworkInterfaceConfig {
     private final String name, hwaddr,

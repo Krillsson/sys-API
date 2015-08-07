@@ -1,7 +1,6 @@
 package com.krillsson.sysapi.domain.network;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hyperic.sigar.NetInterfaceStat;
 
 public final class NetworkInterfaceStatistics {
     private final long rxBytes, txBytes;
