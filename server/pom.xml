@@ -20,10 +20,26 @@
         </sigar-dist.classpath.directory>
         <library-dir>${project.build.directory}/lib/</library-dir>
         <sigar.version>1.6.5.132</sigar.version>
+        <dropwizard.version>0.8.2</dropwizard.version>
     </properties>
 
 
     <dependencies>
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-core</artifactId>
+            <version>${dropwizard.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-auth</artifactId>
+            <version>${dropwizard.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.dropwizard.modules</groupId>
+            <artifactId>dropwizard-java8</artifactId>
+            <version>0.8.0-1</version>
+        </dependency>
         <dependency>
             <groupId>com.krillsson</groupId>
             <artifactId>sys-api-domain</artifactId>

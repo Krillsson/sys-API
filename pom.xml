@@ -14,33 +14,11 @@
         <module>domain</module>
     </modules>
 
-    <properties>
-        <dropwizard.version>0.8.2</dropwizard.version>
-    </properties>
-
     <repositories>
         <repository>
             <id>JBoss Thirdparty Uploads</id>
             <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads</url>
         </repository>
     </repositories>
-
-    <dependencies>
-        <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-core</artifactId>
-            <version>${dropwizard.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-auth</artifactId>
-            <version>${dropwizard.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.dropwizard.modules</groupId>
-            <artifactId>dropwizard-java8</artifactId>
-            <version>0.8.0-1</version>
-        </dependency>
-    </dependencies>
 
 </project>
