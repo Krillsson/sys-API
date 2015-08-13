@@ -28,7 +28,7 @@ public class FilesystemSigarTest extends CheckSigarLoadsOk {
         List<FileSystem> fss = fsm.getFilesystems();
         for (File root: roots) {
             for (FileSystem fs: fss) {
-                if (new File(fs.mountPoint()).equals(root)) {
+                if (fs.getUsage() != null && new File(fs.mountPoint()).equals(root)) {
                     System.out.println("Testing filesystem mounted at " + fs.mountPoint());
                     assertThat((double) (root.getTotalSpace()), //
                             is(closeTo((double) (fs.getUsage().getTotalSizeKB() * 1024), MARGIN_BYTES)));

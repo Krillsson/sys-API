@@ -19,15 +19,15 @@ import java.util.List;
 
 public class SigarBeanConverter {
     public static CpuTime fromSigarBean(CpuPerc cp) {
-        return new CpuTime( //
-                cp.getUser(), cp.getSys(), //
-                cp.getNice(), cp.getWait(), //
+        return new CpuTime(
+                cp.getUser(), cp.getSys(),
+                cp.getNice(), cp.getWait(),
                 cp.getIdle(), cp.getIrq());
     }
 
-    public static FileSystem fromSigarBean(org.hyperic.sigar.FileSystem fs, org.hyperic.sigar.FileSystemUsage usage) {
+    public static FileSystem fromSigarBean(org.hyperic.sigar.FileSystem fs, FileSystemUsage usage) {
         return new FileSystem(fs.getDevName(), fs.getDirName(), //
-                FSType.values()[fs.getType()], fs.getSysTypeName(), fromSigarBean(usage));
+                FSType.values()[fs.getType()], fs.getSysTypeName(), usage);
     }
 
     public static CpuInfo fromSigarBean(org.hyperic.sigar.CpuInfo sigarCpuInfo) {
@@ -86,7 +86,6 @@ public class SigarBeanConverter {
     }
 
     public static NetworkInterfaceStatistics fromSigarBean(NetInterfaceStat nIS) {
-
         return new NetworkInterfaceStatistics(nIS.getRxBytes(), nIS.getRxPackets(),
                 nIS.getRxErrors(), nIS.getRxDropped(),
                 nIS.getRxOverruns(), nIS.getRxFrame(),
