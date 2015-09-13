@@ -49,6 +49,25 @@ public class SystemSigar extends SigarWrapper {
         }
     }
 
+    public System getExtendedSystem(String filesystemId, String nicId) {
+        try {
+            return new System(
+                    sigar.getNetInfo().getHostName(),
+                    sigar.getUptime().getUptime(),
+                    jvmProperties.getOsName(),
+                    jvmProperties.getOsVersion(),
+                    sigarKeeper.cpu().totalCpuTime(),
+                    sigarKeeper.memory().getRam(),
+                    sigarKeeper.process().getStatistics(),
+                    sigarKeeper.filesystems().getFileSystemById(filesystemId),
+                    sigarKeeper.network().getConfigById(nicId)
+            );
+        } catch (SigarException e) {
+            // give up
+            return null;
+        }
+    }
+
     public List<UserInfo> getUsers() {
         List<UserInfo> users;
         try {
