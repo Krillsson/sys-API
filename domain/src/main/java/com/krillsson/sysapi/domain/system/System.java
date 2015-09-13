@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.domain.system;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.krillsson.sysapi.domain.cpu.CpuTime;
 import com.krillsson.sysapi.domain.filesystem.FileSystem;
@@ -7,6 +8,7 @@ import com.krillsson.sysapi.domain.memory.MainMemory;
 import com.krillsson.sysapi.domain.network.NetworkInterfaceConfig;
 import com.krillsson.sysapi.domain.processes.ProcessStatistics;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class System {
     private final String hostname;
     private final double uptime;
