@@ -2,10 +2,12 @@ package com.krillsson.sysapi.resources;
 
 import io.dropwizard.auth.Auth;
 import com.krillsson.sysapi.UserConfiguration;
+import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.domain.cpu.Cpu;
 import com.krillsson.sysapi.domain.cpu.CpuTime;
 import com.krillsson.sysapi.sigar.CpuSigar;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -24,12 +26,14 @@ public class CpuResource extends Resource {
     }
 
     @GET
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     @Override
     public Cpu getRoot(@Auth UserConfiguration user) {
         return cpuSigar.getCpu();
     }
 
     @Path("{core}")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     @GET
     public CpuTime getCpuTimeByCore(@Auth UserConfiguration user, @PathParam("core") int core) {
         try {

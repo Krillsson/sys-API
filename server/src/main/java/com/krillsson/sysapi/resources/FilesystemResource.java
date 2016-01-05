@@ -2,10 +2,12 @@ package com.krillsson.sysapi.resources;
 
 import io.dropwizard.auth.Auth;
 import com.krillsson.sysapi.UserConfiguration;
+import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.domain.filesystem.FSType;
 import com.krillsson.sysapi.domain.filesystem.FileSystem;
 import com.krillsson.sysapi.sigar.FilesystemSigar;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -24,12 +26,14 @@ public class FilesystemResource extends Resource {
     }
 
     @GET
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     @Override
     public List<FileSystem> getRoot(@Auth UserConfiguration user) {
         return filesystemSigar.getFilesystems();
     }
 
     @GET
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     @Path("type/{fsTypeName}")
     public List<FileSystem> getFsByType(@Auth UserConfiguration user, @PathParam("fsTypeName") String fsTypeName) {
         FSType fsType;
@@ -44,6 +48,7 @@ public class FilesystemResource extends Resource {
     }
 
     @GET
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     @Path("{id}")
     public FileSystem getFsById(@Auth UserConfiguration user, @PathParam("id") String id) {
         FileSystem fileSystem;

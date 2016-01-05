@@ -2,9 +2,11 @@ package com.krillsson.sysapi;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.security.Principal;
+
 import javax.validation.constraints.NotNull;
 
-public class UserConfiguration {
+public class UserConfiguration implements Principal {
     @NotNull
     @JsonProperty
     private String username;
@@ -27,5 +29,10 @@ public class UserConfiguration {
 
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getName() {
+        return username;
     }
 }

@@ -3,11 +3,13 @@ package com.krillsson.sysapi.resources;
 
 import io.dropwizard.auth.Auth;
 import com.krillsson.sysapi.UserConfiguration;
+import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.domain.network.NetworkInfo;
 import com.krillsson.sysapi.domain.network.NetworkInterfaceConfig;
 import com.krillsson.sysapi.domain.network.NetworkInterfaceSpeed;
 import com.krillsson.sysapi.sigar.NetworkSigar;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -26,12 +28,15 @@ public class NetworkResource extends Resource {
 
     @GET
     @Override
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+
     public NetworkInfo getRoot(@Auth UserConfiguration user) {
         return networkSigar.getNetworkInfo();
     }
 
     @Path("{name}")
     @GET
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public NetworkInterfaceConfig getConfigById(@Auth UserConfiguration user, @PathParam("name") String name) {
         try {
             return networkSigar.getConfigById(name);
@@ -42,6 +47,7 @@ public class NetworkResource extends Resource {
 
     @Path("{id}/speed")
     @GET
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public NetworkInterfaceSpeed getNetworkInterfaceSpeedById(@Auth UserConfiguration user, @PathParam("id") String id) {
         try {
             return networkSigar.getSpeed(id);

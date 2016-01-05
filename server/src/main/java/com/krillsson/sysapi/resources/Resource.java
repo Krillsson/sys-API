@@ -2,8 +2,10 @@ package com.krillsson.sysapi.resources;
 
 import io.dropwizard.auth.Auth;
 import com.krillsson.sysapi.UserConfiguration;
+import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.sigar.SigarWrapper;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 abstract public class Resource<T extends SigarWrapper> {
