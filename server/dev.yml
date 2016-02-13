@@ -2,6 +2,7 @@ user:
   username: user
   password: password
 server:
+  applicationContextPath: /v1
   applicationConnectors:
     - type: http
       port: 8080
