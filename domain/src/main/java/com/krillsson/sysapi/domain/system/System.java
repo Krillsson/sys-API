@@ -2,8 +2,8 @@ package com.krillsson.sysapi.domain.system;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.krillsson.sysapi.domain.cpu.CpuTime;
-import com.krillsson.sysapi.domain.filesystem.FileSystem;
+import com.krillsson.sysapi.domain.cpu.CpuLoad;
+import com.krillsson.sysapi.domain.filesystem.Drive;
 import com.krillsson.sysapi.domain.memory.MainMemory;
 import com.krillsson.sysapi.domain.network.NetworkInterfaceConfig;
 import com.krillsson.sysapi.domain.processes.ProcessStatistics;
@@ -13,24 +13,24 @@ public class System {
     private final String hostname;
     private final double uptime;
     private final String osName, osVersion;
-    private final CpuTime totalCpuTime;
+    private final CpuLoad totalCpuLoad;
     private final MainMemory mainMemory;
     private final ProcessStatistics processStatistics;
     private NetworkInterfaceConfig mainNetworkInterface;
-    private FileSystem mainFileSystem;
+    private Drive mainFileSystem;
 
     public System(String hostname,
                   double uptime,
                   String osName,
                   String osVersion,
-                  CpuTime totalCpuTime,
+                  CpuLoad totalCpuLoad,
                   MainMemory mainMemory,
                   ProcessStatistics processStatistics) {
         this.hostname = hostname;
         this.uptime = uptime;
         this.osName = osName;
         this.osVersion = osVersion;
-        this.totalCpuTime = totalCpuTime;
+        this.totalCpuLoad = totalCpuLoad;
         this.mainMemory = mainMemory;
         this.processStatistics = processStatistics;
     }
@@ -39,16 +39,16 @@ public class System {
                   double uptime,
                   String osName,
                   String osVersion,
-                  CpuTime totalCpuTime,
+                  CpuLoad totalCpuLoad,
                   MainMemory mainMemory,
                   ProcessStatistics processStatistics,
-                  FileSystem mainFileSystem,
+                  Drive mainFileSystem,
                   NetworkInterfaceConfig mainNetworkInterface) {
         this.mainFileSystem = mainFileSystem;
         this.mainNetworkInterface = mainNetworkInterface;
         this.processStatistics = processStatistics;
         this.mainMemory = mainMemory;
-        this.totalCpuTime = totalCpuTime;
+        this.totalCpuLoad = totalCpuLoad;
         this.osVersion = osVersion;
         this.osName = osName;
         this.uptime = uptime;
@@ -78,8 +78,8 @@ public class System {
     }
 
     @JsonProperty
-    public CpuTime getTotalCpuTime() {
-        return totalCpuTime;
+    public CpuLoad getTotalCpuLoad() {
+        return totalCpuLoad;
     }
 
     @JsonProperty
@@ -98,7 +98,7 @@ public class System {
     }
 
     @JsonProperty
-    public FileSystem getMainFileSystem() {
+    public Drive getMainFileSystem() {
         return mainFileSystem;
     }
 }

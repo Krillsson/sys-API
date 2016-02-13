@@ -2,16 +2,17 @@ package com.krillsson.sysapi.domain.filesystem;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public final class FileSystem {
+public final class Drive
+{
     private final String deviceName;
     private final String mountPoint;
     private final FSType genericFSType;
     private final String osSpecificFSType;
     private final FileSystemUsage usage;
 
-    public FileSystem(String deviceName, String mountPoint,
-                       FSType genericFSType, String osSpecificFSType,
-                      FileSystemUsage usage) {
+    public Drive(String deviceName, String mountPoint,
+                 FSType genericFSType, String osSpecificFSType,
+                 FileSystemUsage usage) {
         this.deviceName = deviceName;
         this.mountPoint = mountPoint;
         this.genericFSType = genericFSType;

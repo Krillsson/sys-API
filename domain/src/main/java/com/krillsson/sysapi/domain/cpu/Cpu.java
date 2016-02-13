@@ -5,16 +5,48 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public class Cpu {
-    private CpuInfo cpuInfo;
     private double systemUsagePercent;
-    private CpuTime totalCpuTime;
-    private List<CpuTime> cpuTimePerCore;
+    private double voltage;
+    private double temperature;
+    private double fanRpm;
+    private double fanPercent;
+    private CpuInfo cpuInfo;
+    private CpuLoad totalCpuLoad;
+    private List<CpuLoad> cpuLoadPerCore;
 
-    public Cpu(CpuInfo cpuInfo, double systemUsagePercent, CpuTime totalCpuTime, List<CpuTime> cpuTimePerCore) {
+    public Cpu(CpuInfo cpuInfo, double systemUsagePercent, double voltage, double temperature, double fanRpm, double fanPercent, CpuLoad totalCpuLoad, List<CpuLoad> cpuLoadPerCore) {
         this.cpuInfo = cpuInfo;
         this.systemUsagePercent = systemUsagePercent;
-        this.totalCpuTime = totalCpuTime;
-        this.cpuTimePerCore = cpuTimePerCore;
+        this.voltage = voltage;
+        this.temperature = temperature;
+        this.fanRpm = fanRpm;
+        this.fanPercent = fanPercent;
+        this.totalCpuLoad = totalCpuLoad;
+        this.cpuLoadPerCore = cpuLoadPerCore;
+    }
+
+    @JsonProperty
+    public double getVoltage()
+    {
+        return voltage;
+    }
+
+    @JsonProperty
+    public double getTemperature()
+    {
+        return temperature;
+    }
+
+    @JsonProperty
+    public double getFanRpm()
+    {
+        return fanRpm;
+    }
+
+    @JsonProperty
+    public double getFanPercent()
+    {
+        return fanPercent;
     }
 
     @JsonProperty
@@ -28,12 +60,12 @@ public class Cpu {
     }
 
     @JsonProperty
-    public CpuTime getTotalCpuTime() {
-        return totalCpuTime;
+    public CpuLoad getTotalCpuLoad() {
+        return totalCpuLoad;
     }
 
     @JsonProperty
-    public List<CpuTime> getCpuTimePerCore() {
-        return cpuTimePerCore;
+    public List<CpuLoad> getCpuLoadPerCore() {
+        return cpuLoadPerCore;
     }
 }
