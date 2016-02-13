@@ -80,6 +80,8 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         environment.jersey().register(new NetworkResource(provider));
         environment.jersey().register(new ProcessResource(provider));
         environment.jersey().register(new UsersResource(provider));
+        environment.jersey().register(new GpuResource(provider));
+        environment.jersey().register(new MotherboardResource(provider));
 
         environment.healthChecks().register("Sigar", new SigarLoadingHealthCheck());
     }

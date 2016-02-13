@@ -45,7 +45,7 @@ public interface InfoProvider
     ProcessStatistics statistics();
     Process getProcessByPid(long pid);
 
-    List<Gpu> gpu();
+    List<Gpu> gpus();
 
     List<UserInfo> users();
 

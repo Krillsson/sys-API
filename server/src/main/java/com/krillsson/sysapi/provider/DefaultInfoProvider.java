@@ -128,7 +128,7 @@ public class DefaultInfoProvider implements InfoProvider
     }
 
     @Override
-    public List<Gpu> gpu()
+    public List<Gpu> gpus()
     {
         return null;
     }
