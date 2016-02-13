@@ -2,6 +2,7 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.domain.processes.ProcessStatistics;
+import com.krillsson.sysapi.provider.InfoProvider;
 import io.dropwizard.auth.Auth;
 import com.krillsson.sysapi.UserConfiguration;
 import com.krillsson.sysapi.domain.processes.Process;
@@ -20,17 +21,17 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class ProcessResource extends Resource {
 
-    ProcessSigar processSigar;
+    InfoProvider provider;
 
-    public ProcessResource(ProcessSigar processSigar) {
-        this.processSigar = processSigar;
+    public ProcessResource(InfoProvider provider) {
+        this.provider = provider;
     }
 
     @Override
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public List<Process> getRoot(@Auth UserConfiguration user) {
-        return processSigar.getProcesses();
+        return provider.processes();
     }
 
     @Path("{pid}")
@@ -38,7 +39,7 @@ public class ProcessResource extends Resource {
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public Process getProcessByPid(@Auth UserConfiguration user, @PathParam("pid") long pid) {
         try {
-            return processSigar.getProcessByPid(pid);
+            return provider.getProcessByPid(pid);
         } catch (IllegalArgumentException e) {
             throw buildWebException(Response.Status.NOT_FOUND, e.getMessage());
         }
@@ -48,6 +49,6 @@ public class ProcessResource extends Resource {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public ProcessStatistics getProcessStatistics(@Auth UserConfiguration user){
-        return processSigar.getStatistics();
+        return provider.statistics();
     }
 }

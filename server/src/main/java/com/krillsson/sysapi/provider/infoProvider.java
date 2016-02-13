@@ -11,8 +11,11 @@ import com.krillsson.sysapi.domain.memory.SwapSpace;
 import com.krillsson.sysapi.domain.motherboard.Motherboard;
 import com.krillsson.sysapi.domain.network.NetworkInfo;
 import com.krillsson.sysapi.domain.network.NetworkInterfaceConfig;
+import com.krillsson.sysapi.domain.network.NetworkInterfaceSpeed;
 import com.krillsson.sysapi.domain.processes.Process;
 import com.krillsson.sysapi.domain.processes.ProcessStatistics;
+import com.krillsson.sysapi.domain.system.JvmProperties;
+import com.krillsson.sysapi.domain.system.OperatingSystem;
 import com.krillsson.sysapi.domain.system.System;
 import com.krillsson.sysapi.domain.system.UserInfo;
 
@@ -21,12 +24,13 @@ import java.util.List;
 public interface InfoProvider
 {
     System systemSummary(String filesystemId, String nicId);
+    System system();
     Motherboard motherboard();
 
     Cpu cpu();
     CpuLoad getCpuTimeByCoreIndex(int id);
 
-    List<Drive> filesystems();
+    List<Drive> drives();
     List<Drive> getFileSystemsWithCategory(FileSystemType fsType);
     Drive getFileSystemById(String name);
 
@@ -43,5 +47,13 @@ public interface InfoProvider
 
     List<Gpu> gpu();
 
-    List<UserInfo> getUsers();
+    List<UserInfo> users();
+
+    JvmProperties jvmProperties();
+
+    OperatingSystem operatingSystem();
+
+    double uptime();
+
+    NetworkInterfaceSpeed networkSpeedById(String id);
 }

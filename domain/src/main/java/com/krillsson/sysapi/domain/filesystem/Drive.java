@@ -56,6 +56,12 @@ public final class Drive
         return usage;
     }
 
+    @JsonProperty
+    public DriveHealth getHealth()
+    {
+        return health;
+    }
+
     public void setHealth(DriveHealth health)
     {
         this.health = health;

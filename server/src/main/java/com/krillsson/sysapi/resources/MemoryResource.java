@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.resources;
 
+import com.krillsson.sysapi.provider.InfoProvider;
 import io.dropwizard.auth.Auth;
 import com.krillsson.sysapi.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
@@ -17,30 +18,30 @@ import javax.ws.rs.core.MediaType;
 @Path("memory")
 @Produces(MediaType.APPLICATION_JSON)
 public class MemoryResource extends Resource {
-    private MemorySigar memorySigar;
+    private InfoProvider provider;
 
-    public MemoryResource(MemorySigar memorySigar) {
-        this.memorySigar = memorySigar;
+    public MemoryResource(InfoProvider provider) {
+        this.provider = provider;
     }
 
     @Override
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public MemoryInfo getRoot(@Auth UserConfiguration user) {
-        return memorySigar.getMemoryInfo();
+        return provider.memoryInfo();
     }
 
     @Path("ram")
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public MainMemory getRam(@Auth UserConfiguration user) {
-        return memorySigar.getRam();
+        return provider.ram();
     }
 
     @Path("swap")
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public SwapSpace getSwap(@Auth UserConfiguration user) {
-        return memorySigar.getSwap();
+        return provider.swap();
     }
 }

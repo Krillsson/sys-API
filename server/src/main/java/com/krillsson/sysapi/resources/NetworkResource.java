@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.resources;
 
 
+import com.krillsson.sysapi.provider.InfoProvider;
 import io.dropwizard.auth.Auth;
 import com.krillsson.sysapi.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
@@ -20,10 +21,10 @@ import javax.ws.rs.core.Response;
 @Path("networks")
 @Produces(MediaType.APPLICATION_JSON)
 public class NetworkResource extends Resource {
-    private NetworkSigar networkSigar;
+    private InfoProvider provider;
 
-    public NetworkResource(NetworkSigar NetworkSigar) {
-        this.networkSigar = NetworkSigar;
+    public NetworkResource(InfoProvider provider) {
+        this.provider = provider;
     }
 
     @GET
@@ -31,7 +32,7 @@ public class NetworkResource extends Resource {
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
 
     public NetworkInfo getRoot(@Auth UserConfiguration user) {
-        return networkSigar.getNetworkInfo();
+        return provider.networkInfo();
     }
 
     @Path("{name}")
@@ -39,7 +40,7 @@ public class NetworkResource extends Resource {
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public NetworkInterfaceConfig getConfigById(@Auth UserConfiguration user, @PathParam("name") String name) {
         try {
-            return networkSigar.getConfigById(name);
+            return provider.getConfigById(name);
         } catch (IllegalArgumentException e) {
             throw buildWebException(Response.Status.NOT_FOUND, e.getMessage());
         }
@@ -50,11 +51,9 @@ public class NetworkResource extends Resource {
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public NetworkInterfaceSpeed getNetworkInterfaceSpeedById(@Auth UserConfiguration user, @PathParam("id") String id) {
         try {
-            return networkSigar.getSpeed(id);
+            return provider.networkSpeedById(id);
         } catch (IllegalArgumentException e) {
             throw buildWebException(Response.Status.NOT_FOUND, e.getMessage());
-        } catch (InterruptedException e) {
-            throw buildWebException(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
     }

@@ -1,11 +1,11 @@
 package com.krillsson.sysapi.resources;
 
+import com.krillsson.sysapi.provider.InfoProvider;
 import io.dropwizard.auth.Auth;
 import com.krillsson.sysapi.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.domain.filesystem.FileSystemType;
 import com.krillsson.sysapi.domain.filesystem.Drive;
-import com.krillsson.sysapi.sigar.FilesystemSigar;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
@@ -16,20 +16,20 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-@Path("filesystems")
+@Path("drives")
 @Produces(MediaType.APPLICATION_JSON)
-public class FilesystemResource extends Resource {
-    FilesystemSigar filesystemSigar;
+public class DriveResource extends Resource {
+    InfoProvider provider;
 
-    public FilesystemResource(FilesystemSigar filesystemSigar) {
-        this.filesystemSigar = filesystemSigar;
+    public DriveResource(InfoProvider provider) {
+        this.provider = provider;
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     @Override
     public List<Drive> getRoot(@Auth UserConfiguration user) {
-        return filesystemSigar.getFilesystems();
+        return provider.drives();
     }
 
     @GET
@@ -40,7 +40,7 @@ public class FilesystemResource extends Resource {
         List<Drive> fileSystems;
         try {
             fsType = FileSystemType.valueOf(fsTypeName);
-            fileSystems = filesystemSigar.getFileSystemsWithCategory(fsType);
+            fileSystems = provider.getFileSystemsWithCategory(fsType);
         } catch (IllegalArgumentException e) {
             throw buildWebException(Response.Status.NOT_FOUND, e.getMessage());
         }
@@ -53,7 +53,7 @@ public class FilesystemResource extends Resource {
     public Drive getFsById(@Auth UserConfiguration user, @PathParam("id") String id) {
         Drive fileSystem;
         try {
-            fileSystem = filesystemSigar.getFileSystemById(id);
+            fileSystem = provider.getFileSystemById(id);
         } catch (IllegalArgumentException e) {
             throw buildWebException(Response.Status.NOT_FOUND, e.getMessage());
         }

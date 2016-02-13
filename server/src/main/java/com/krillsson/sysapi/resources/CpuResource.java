@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.resources;
 
+import com.krillsson.sysapi.provider.InfoProvider;
 import io.dropwizard.auth.Auth;
 
 import com.krillsson.sysapi.UserConfiguration;
@@ -24,17 +25,17 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class CpuResource extends Resource {
 
-    private CpuSigar cpuSigar;
+    private InfoProvider provider;
 
-    public CpuResource(CpuSigar cpuSigar) {
-        this.cpuSigar = cpuSigar;
+    public CpuResource(InfoProvider provider) {
+        this.provider = provider;
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     @Override
     public Cpu getRoot(@Auth UserConfiguration user) {
-        return cpuSigar.getCpu();
+        return provider.cpu();
     }
 
     @Path("{core}")
@@ -42,7 +43,7 @@ public class CpuResource extends Resource {
     @GET
     public CpuLoad getCpuTimeByCore(@Auth UserConfiguration user, @PathParam("core") int core) {
         try {
-            return cpuSigar.getCpuTimeByCoreIndex(core);
+            return provider.getCpuTimeByCoreIndex(core);
         } catch (IllegalArgumentException e) {
             throw buildWebException(Response.Status.NOT_FOUND, e.getMessage());
         }

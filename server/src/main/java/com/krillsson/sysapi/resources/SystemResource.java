@@ -5,7 +5,7 @@ import com.google.common.base.Optional;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.domain.system.*;
 import com.krillsson.sysapi.domain.system.System;
-import com.krillsson.sysapi.sigar.SystemSigar;
+import com.krillsson.sysapi.provider.InfoProvider;
 import io.dropwizard.auth.Auth;
 import com.krillsson.sysapi.UserConfiguration;
 
@@ -20,16 +20,16 @@ import javax.ws.rs.core.Response;
 @Path("system")
 @Produces(MediaType.APPLICATION_JSON)
 public class SystemResource extends Resource {
-    private SystemSigar systemSigar;
+    private InfoProvider provider;
 
-    public SystemResource(SystemSigar systemSigar) {
-        this.systemSigar = systemSigar;
+    public SystemResource(InfoProvider provider) {
+        this.provider = provider;
     }
 
     @Override
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public System getRoot(@Auth UserConfiguration user) {
-        return systemSigar.getSystem();
+        return provider.system();
     }
 
     @GET
@@ -39,14 +39,14 @@ public class SystemResource extends Resource {
         if(filesystemId.isPresent() && nicId.isPresent())
         {
             try {
-                return systemSigar.getExtendedSystem(filesystemId.get(), nicId.get());
+                return provider.systemSummary(filesystemId.get(), nicId.get());
             } catch (IllegalArgumentException e) {
                 throw buildWebException(Response.Status.NOT_FOUND, e.getMessage());
             }
         }
         else
         {
-            return systemSigar.getSystem();
+            return provider.system();
         }
     }
 
@@ -54,20 +54,20 @@ public class SystemResource extends Resource {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public JvmProperties getJvmProperties(@Auth UserConfiguration user) {
-        return systemSigar.getJvmProperties();
+        return provider.jvmProperties();
     }
 
     @Path("operatingsystem")
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public OperatingSystem getOperatingSystem(@Auth UserConfiguration user) {
-        return systemSigar.getOperatingSystem();
+        return provider.operatingSystem();
     }
 
     @Path("uptime")
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public double getUptime(@Auth UserConfiguration user) {
-        return systemSigar.getUptime();
+        return provider.uptime();
     }
 }

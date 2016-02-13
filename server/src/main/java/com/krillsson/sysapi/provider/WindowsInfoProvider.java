@@ -1,17 +1,24 @@
 package com.krillsson.sysapi.provider;
 
 import com.krillsson.sysapi.domain.cpu.Cpu;
-import com.krillsson.sysapi.util.NullSafeOhmMonitor;
+import com.krillsson.sysapi.domain.cpu.CpuLoad;
+import com.krillsson.sysapi.domain.filesystem.Drive;
+import com.krillsson.sysapi.domain.filesystem.DriveHealth;
+import com.krillsson.sysapi.domain.filesystem.FileSystemType;
 import net.sf.jni4net.Bridge;
-import ohmwrapper.CpuMonitor;
-import ohmwrapper.MonitorManager;
-import ohmwrapper.OHMManagerFactory;
+import ohmwrapper.*;
 import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.krillsson.sysapi.util.NullSafeOhmMonitor.*;
+import static java.util.Collections.singletonList;
 
 public class WindowsInfoProvider extends DefaultInfoProvider
 {
@@ -35,13 +42,104 @@ public class WindowsInfoProvider extends DefaultInfoProvider
     public Cpu cpu()
     {
         Cpu cpu = super.cpu();
-        if(monitorManager.CpuMonitors().length > 0){
+        monitorManager.Update();
+        if (monitorManager.CpuMonitors().length > 0)
+        {
             CpuMonitor cpuMonitor = monitorManager.CpuMonitors()[0];
             cpu.setFanPercent(nullSafe(cpuMonitor.getFanPercent()).getValue());
             cpu.setFanRpm(nullSafe(cpuMonitor.getFanRPM()).getValue());
             cpu.setTemperature(nullSafe(cpuMonitor.getPackageTemperature()).getValue());
+            cpu.setVoltage(nullSafe(cpuMonitor.getVoltage()).getValue());
+            if (nullSafe(cpuMonitor.getTemperatures()).length >= 1 &&
+                    cpuMonitor.getTemperatures().length == cpu.getCpuLoadPerCore().size())
+            {
+                final List<CpuLoad> cpuLoadPerCore = cpu.getCpuLoadPerCore();
+                final OHMSensor[] temperatures = cpuMonitor.getTemperatures();
+                for (int i = 0; i < cpuLoadPerCore.size(); i++)
+                {
+                    cpuLoadPerCore.get(i).setTemperature(temperatures[i].getValue());
+                }
+            }
         }
         return cpu;
+    }
+
+    @Override
+    public CpuLoad getCpuTimeByCoreIndex(int id)
+    {
+        CpuLoad cpuLoad = super.getCpuTimeByCoreIndex(id);
+        monitorManager.Update();
+        if (monitorManager.CpuMonitors().length > 0)
+        {
+            CpuMonitor cpuMonitor = monitorManager.CpuMonitors()[0];
+            if (nullSafe(cpuMonitor.getTemperatures()).length >= 1 &&
+                    cpuMonitor.getTemperatures().length - 1 <= id)
+            {
+                final OHMSensor[] temperatures = cpuMonitor.getTemperatures();
+                cpuLoad.setTemperature(temperatures[id].getValue());
+            }
+        }
+        return cpuLoad;
+    }
+
+    @Override
+    public List<Drive> drives()
+    {
+        List<Drive> drives = super.drives();
+        monitorManager.Update();
+        DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
+        matchDriveProperties(drives, driveMonitors);
+        return drives;
+    }
+
+    @Override
+    public List<Drive> getFileSystemsWithCategory(FileSystemType fsType)
+    {
+        List<Drive> drives = super.getFileSystemsWithCategory(fsType);
+        monitorManager.Update();
+        DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
+        matchDriveProperties(drives, driveMonitors);
+        return drives;
+    }
+
+    @Override
+    public Drive getFileSystemById(String name)
+    {
+        Drive fileSystemById = super.getFileSystemById(name);
+        monitorManager.Update();
+        DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
+        matchDriveProperties(singletonList(fileSystemById), driveMonitors);
+        return fileSystemById;
+    }
+
+    private void matchDriveProperties(List<Drive> drives, DriveMonitor[] driveMonitors)
+    {
+        if (driveMonitors != null && driveMonitors.length > 0)
+        {
+            for (DriveMonitor driveMonitor : driveMonitors)
+            {
+                for (Drive drive : drives)
+                {
+                    if (driveMonitor.getLogicalName() != null)
+                    {
+                        String driveMonitorName = driveMonitor.getLogicalName().toLowerCase().replace(":", "").replace(
+                                "\\",
+                                "");
+                        String driveName = drive.deviceName().toLowerCase().replace(":", "").replace("\\", "");
+                        LOGGER.info("Drivename: {} sigarName: {}", driveMonitorName, driveName);
+                        if (driveMonitorName.equals(driveName))
+                        {
+                            drive.setHealth(new DriveHealth(nullSafe(driveMonitor.getTemperature()).getValue(),
+                                    nullSafe(driveMonitor.getRemainingLife()).getValue(),
+                                    Arrays.asList(nullSafe(driveMonitor.getLifecycleData())).stream().collect(Collectors.toMap(
+                                            OHMSensor::getLabel,
+                                            OHMSensor::getValue)))
+                            );
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void initBridge() throws IOException

@@ -5,11 +5,14 @@ import org.hyperic.sigar.*;
 import com.krillsson.sysapi.domain.network.NetworkInfo;
 import com.krillsson.sysapi.domain.network.NetworkInterfaceConfig;
 import com.krillsson.sysapi.domain.network.NetworkInterfaceSpeed;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class NetworkSigar extends SigarWrapper {
+    private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(NetworkSigar.class.getSimpleName());
+
 
     final int SPEED_MEASUREMENT_PERIOD = 100;
     final int BYTE_TO_BIT = 8;
@@ -30,7 +33,7 @@ public class NetworkSigar extends SigarWrapper {
                 networkInterfaceConfig.setNetworkInterfaceSpeed(getSpeed(name));
                 configs.add(networkInterfaceConfig);
             }
-        } catch (SigarException | InterruptedException e) {
+        } catch (SigarException e) {
             throw new IllegalArgumentException(e);
         }
         if (!configs.isEmpty()) {
@@ -48,7 +51,7 @@ public class NetworkSigar extends SigarWrapper {
             config = SigarBeanConverter.fromSigarBean(sigarConfig);
             config.setNetworkInterfaceStatistics(SigarBeanConverter.fromSigarBean(sigar.getNetInterfaceStat(id)));
             config.setNetworkInterfaceSpeed(getSpeed(id));
-        } catch (SigarException | InterruptedException | IllegalArgumentException e) {
+        } catch (SigarException | IllegalArgumentException e) {
             throw new IllegalArgumentException(String.format(NOT_FOUND_STRING, NetworkInterfaceConfig.class.getSimpleName(), id), e);
         }
 
@@ -70,7 +73,7 @@ public class NetworkSigar extends SigarWrapper {
         return networkInfo;
     }
 
-    public NetworkInterfaceSpeed getSpeed(String networkInterfaceConfigName) throws InterruptedException {
+    public NetworkInterfaceSpeed getSpeed(String networkInterfaceConfigName) {
         long rxbps, txbps;
         long start = 0;
         long end = 0;
@@ -91,6 +94,10 @@ public class NetworkSigar extends SigarWrapper {
             txBytesEnd = statEnd.getTxBytes();
         } catch (SigarException e) {
             throw new IllegalArgumentException(String.format(NOT_FOUND_STRING, NetworkInterfaceConfig.class.getSimpleName(), networkInterfaceConfigName));
+        }
+        catch (InterruptedException e)
+        {
+            LOGGER.error("Interrupted while measuring networkspeed", e);
         }
 
         rxbps = measureSpeed(start, end, rxBytesStart, rxBytesEnd);

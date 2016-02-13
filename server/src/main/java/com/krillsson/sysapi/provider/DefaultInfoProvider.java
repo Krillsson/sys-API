@@ -11,8 +11,11 @@ import com.krillsson.sysapi.domain.memory.SwapSpace;
 import com.krillsson.sysapi.domain.motherboard.Motherboard;
 import com.krillsson.sysapi.domain.network.NetworkInfo;
 import com.krillsson.sysapi.domain.network.NetworkInterfaceConfig;
+import com.krillsson.sysapi.domain.network.NetworkInterfaceSpeed;
 import com.krillsson.sysapi.domain.processes.Process;
 import com.krillsson.sysapi.domain.processes.ProcessStatistics;
+import com.krillsson.sysapi.domain.system.JvmProperties;
+import com.krillsson.sysapi.domain.system.OperatingSystem;
 import com.krillsson.sysapi.domain.system.System;
 import com.krillsson.sysapi.domain.system.UserInfo;
 import com.krillsson.sysapi.sigar.SigarKeeper;
@@ -35,6 +38,12 @@ public class DefaultInfoProvider implements InfoProvider
     }
 
     @Override
+    public System system()
+    {
+        return sigar.system().getSystem();
+    }
+
+    @Override
     public Motherboard motherboard()
     {
         return null;
@@ -53,7 +62,7 @@ public class DefaultInfoProvider implements InfoProvider
     }
 
     @Override
-    public List<Drive> filesystems()
+    public List<Drive> drives()
     {
         return sigar.filesystems().getFilesystems();
     }
@@ -125,8 +134,32 @@ public class DefaultInfoProvider implements InfoProvider
     }
 
     @Override
-    public List<UserInfo> getUsers()
+    public List<UserInfo> users()
     {
         return sigar.system().getUsers();
+    }
+
+    @Override
+    public JvmProperties jvmProperties()
+    {
+        return sigar.system().getJvmProperties();
+    }
+
+    @Override
+    public OperatingSystem operatingSystem()
+    {
+        return sigar.system().getOperatingSystem();
+    }
+
+    @Override
+    public double uptime()
+    {
+        return sigar.system().getUptime();
+    }
+
+    @Override
+    public NetworkInterfaceSpeed networkSpeedById(String id)
+    {
+        return sigar.network().getSpeed(id);
     }
 }
