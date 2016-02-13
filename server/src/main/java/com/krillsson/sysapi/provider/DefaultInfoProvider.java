@@ -15,15 +15,23 @@ import com.krillsson.sysapi.domain.processes.Process;
 import com.krillsson.sysapi.domain.processes.ProcessStatistics;
 import com.krillsson.sysapi.domain.system.System;
 import com.krillsson.sysapi.domain.system.UserInfo;
+import com.krillsson.sysapi.sigar.SigarKeeper;
 
 import java.util.List;
 
 public class DefaultInfoProvider implements InfoProvider
 {
+    private SigarKeeper sigar;
+
+    protected DefaultInfoProvider()
+    {
+        sigar = SigarKeeper.getInstance();
+    }
+
     @Override
     public System systemSummary(String filesystemId, String nicId)
     {
-        return null;
+        return sigar.system().getExtendedSystem(filesystemId, nicId);
     }
 
     @Override
@@ -33,81 +41,81 @@ public class DefaultInfoProvider implements InfoProvider
     }
 
     @Override
-    public List<Cpu> cpu()
+    public Cpu cpu()
     {
-        return null;
+        return sigar.cpu().getCpu();
     }
 
     @Override
     public CpuLoad getCpuTimeByCoreIndex(int id)
     {
-        return null;
+        return sigar.cpu().getCpuTimeByCoreIndex(id);
     }
 
     @Override
     public List<Drive> filesystems()
     {
-        return null;
+        return sigar.filesystems().getFilesystems();
     }
 
     @Override
     public List<Drive> getFileSystemsWithCategory(FileSystemType fsType)
     {
-        return null;
+        return sigar.filesystems().getFileSystemsWithCategory(fsType);
     }
 
     @Override
     public Drive getFileSystemById(String name)
     {
-        return null;
+        return sigar.filesystems().getFileSystemById(name);
     }
 
     @Override
     public MemoryInfo memoryInfo()
     {
-        return null;
+        return sigar.memory().getMemoryInfo();
     }
 
     @Override
     public MainMemory ram()
     {
-        return null;
+        return sigar.memory().getRam();
     }
 
     @Override
     public SwapSpace swap()
     {
-        return null;
+        return sigar.memory().getSwap();
     }
 
     @Override
     public NetworkInfo networkInfo()
     {
-        return null;
+        return sigar.network().getNetworkInfo();
     }
 
     @Override
     public NetworkInterfaceConfig getConfigById(String id)
     {
-        return null;
+        return sigar.network().getConfigById(id);
     }
 
     @Override
     public List<Process> processes()
     {
-        return null;
+        return sigar.process().getProcesses();
     }
 
     @Override
     public ProcessStatistics statistics()
     {
-        return null;
+        return sigar.process().getStatistics();
     }
 
     @Override
     public Process getProcessByPid(long pid)
     {
-        return null;
+        return sigar.process().getProcessByPid(pid);
     }
 
     @Override
@@ -119,6 +127,6 @@ public class DefaultInfoProvider implements InfoProvider
     @Override
     public List<UserInfo> getUsers()
     {
-        return null;
+        return sigar.system().getUsers();
     }
 }

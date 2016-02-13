@@ -25,6 +25,14 @@ public class Cpu {
         this.cpuLoadPerCore = cpuLoadPerCore;
     }
 
+    public Cpu(CpuInfo cpuInfo, double v, CpuLoad cpuLoad, List<CpuLoad> cpuLoads)
+    {
+        this.cpuInfo = cpuInfo;
+        this.systemUsagePercent = v;
+        this.totalCpuLoad = cpuLoad;
+        this.cpuLoadPerCore = cpuLoads;
+    }
+
     @JsonProperty
     public double getVoltage()
     {
@@ -67,5 +75,25 @@ public class Cpu {
     @JsonProperty
     public List<CpuLoad> getCpuLoadPerCore() {
         return cpuLoadPerCore;
+    }
+
+    public void setVoltage(double voltage)
+    {
+        this.voltage = voltage;
+    }
+
+    public void setTemperature(double temperature)
+    {
+        this.temperature = temperature;
+    }
+
+    public void setFanRpm(double fanRpm)
+    {
+        this.fanRpm = fanRpm;
+    }
+
+    public void setFanPercent(double fanPercent)
+    {
+        this.fanPercent = fanPercent;
     }
 }

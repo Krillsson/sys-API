@@ -22,10 +22,6 @@ public class CpuSigar extends SigarWrapper {
 
     public Cpu getCpu() {
         return new Cpu(cpuInfo(), cpuTimeSysPercent(),
-                voltage,
-                temperature,
-                fanRpm,
-                fanPercent,
                 totalCpuTime(), cpuTimesPerCore(cpuPercList()));
     }
 

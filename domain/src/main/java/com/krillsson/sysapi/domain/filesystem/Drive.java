@@ -9,10 +9,21 @@ public final class Drive
     private final FileSystemType genericFSType;
     private final String osSpecificFSType;
     private final FileSystemUsage usage;
+    private DriveHealth health;
 
     public Drive(String deviceName, String mountPoint,
                  FileSystemType genericFSType, String osSpecificFSType,
-                 FileSystemUsage usage) {
+                 FileSystemUsage usage, DriveHealth health) {
+        this.deviceName = deviceName;
+        this.mountPoint = mountPoint;
+        this.genericFSType = genericFSType;
+        this.osSpecificFSType = osSpecificFSType;
+        this.usage = usage;
+        this.health = health;
+    }
+
+    public Drive(String deviceName, String mountPoint, FileSystemType genericFSType, String osSpecificFSType, FileSystemUsage usage)
+    {
         this.deviceName = deviceName;
         this.mountPoint = mountPoint;
         this.genericFSType = genericFSType;
@@ -43,5 +54,10 @@ public final class Drive
     @JsonProperty
     public FileSystemUsage getUsage() {
         return usage;
+    }
+
+    public void setHealth(DriveHealth health)
+    {
+        this.health = health;
     }
 }

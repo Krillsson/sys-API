@@ -19,8 +19,7 @@ import java.util.List;
 
 public class SigarBeanConverter {
     public static CpuLoad fromSigarBean(CpuPerc cp) {
-        return new CpuLoad(
-                temperature, cp.getUser(), cp.getSys(),
+        return new CpuLoad(cp.getUser(), cp.getSys(),
                 cp.getNice(), cp.getWait(),
                 cp.getIdle(), cp.getIrq());
     }
