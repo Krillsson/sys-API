@@ -8,6 +8,10 @@ import com.krillsson.sysapi.resources.*;
 import com.krillsson.sysapi.sigar.SigarKeeper;
 
 
+import net.sf.jni4net.Bridge;
+import ohmwrapper.DriveMonitor;
+import ohmwrapper.MonitorManager;
+import ohmwrapper.OHMManagerFactory;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
@@ -21,7 +25,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.List;
 
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
@@ -74,8 +80,39 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         environment.jersey().register(new SystemResource(sigarKeeper.system()));
         environment.jersey().register(new NetworkResource(sigarKeeper.network()));
         environment.jersey().register(new ProcessResource(sigarKeeper.process()));
+        environment.jersey().register(new UsersResource(sigarKeeper.system()));
 
         environment.healthChecks().register("Sigar", new SigarLoadingHealthCheck());
+        ohmjniwrapper();
+    }
+
+    private void ohmjniwrapper() throws IOException {
+        Bridge.setVerbose(true);
+        Bridge.init();
+        //For testing
+        //File file = new File("server/lib/OhmJniWrapper.dll");
+        //File anotherFile = new File("server/lib/OhmJniWrapper.j4n.dll");
+        //File anotherFileAgain = new File("server/lib/OpenHardwareMonitorLib.dll");
+
+        //For deploying
+        File file = new File("lib/OhmJniWrapper.dll");
+        File anotherFile = new File("lib/OhmJniWrapper.j4n.dll");
+        File anotherFileAgain = new File("lib/OpenHardwareMonitorLib.dll");
+
+        Bridge.LoadAndRegisterAssemblyFrom(file);
+        Bridge.LoadAndRegisterAssemblyFrom(anotherFile);
+        Bridge.LoadAndRegisterAssemblyFrom(anotherFileAgain);
+        OHMManagerFactory factory = new OHMManagerFactory();
+        factory.init();
+        MonitorManager monitorManager = factory.GetManager();
+        monitorManager.Update();
+        List<DriveMonitor> drivemonitors = Arrays.asList(monitorManager.DriveMonitors());
+        for (DriveMonitor drive :
+                drivemonitors) {
+            LOGGER.info("Drive temp: {}", drive.getTemperature().getValue());
+            LOGGER.info("Drive name: {}", drive.getName());
+            LOGGER.info("Drive logicalname: {}", drive.getLogicalName());
+        }
     }
 
     private String libLocation(MaintenanceConfiguration config) {

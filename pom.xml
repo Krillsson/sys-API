@@ -23,6 +23,11 @@
             <id>JBoss Thirdparty Uploads</id>
             <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads</url>
         </repository>
+        <repository>
+            <id>net.sf.jni4net</id>
+            <name>jni4net release repository</name>
+            <url>http://jni4net.googlecode.com/svn/mvnrepo</url>
+        </repository>
     </repositories>
 <build>
     <plugins>
