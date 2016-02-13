@@ -3,8 +3,8 @@ package com.krillsson.sysapi.sigar;
 import org.hyperic.sigar.FileSystemUsage;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
-import com.krillsson.sysapi.domain.filesystem.FSType;
-import com.krillsson.sysapi.domain.filesystem.FileSystem;
+import com.krillsson.sysapi.domain.filesystem.FileSystemType;
+import com.krillsson.sysapi.domain.filesystem.Drive;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,16 +18,16 @@ public class FilesystemSigar extends SigarWrapper {
         super(sigar);
     }
 
-    public List<FileSystem> getFilesystems() {
+    public List<Drive> getFilesystems() {
         org.hyperic.sigar.FileSystem[] fss = getSigarFilesystems();
-        List<FileSystem> result = new ArrayList<>();
+        List<Drive> result = new ArrayList<>();
         for (org.hyperic.sigar.FileSystem fs : fss) {
             result.add(convertToInternal(fs));
         }
         return result;
    }
 
-    public List<FileSystem> getFileSystemsWithCategory(FSType fsType) {
+    public List<Drive> getFileSystemsWithCategory(FileSystemType fsType) {
         org.hyperic.sigar.FileSystem[] fss = getSigarFilesystems();
         return Arrays.asList(fss)
                 .stream()
@@ -36,9 +36,9 @@ public class FilesystemSigar extends SigarWrapper {
                 .collect(Collectors.toList());
     }
 
-    public FileSystem getFileSystemById(String name) {
+    public Drive getFileSystemById(String name) {
         org.hyperic.sigar.FileSystem[] fss = getSigarFilesystems();
-        FileSystem fileSystem;
+        Drive fileSystem;
 
         try {
             fileSystem = Arrays.asList(fss)
@@ -53,7 +53,7 @@ public class FilesystemSigar extends SigarWrapper {
         return fileSystem;
     }
 
-    private FileSystem convertToInternal(org.hyperic.sigar.FileSystem fs) {
+    private Drive convertToInternal(org.hyperic.sigar.FileSystem fs) {
         try {
             FileSystemUsage usage = sigar.getFileSystemUsage(fs.getDirName());
             return SigarBeanConverter.fromSigarBean(fs, SigarBeanConverter.fromSigarBean(usage));

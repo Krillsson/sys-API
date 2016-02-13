@@ -2,7 +2,7 @@ package com.krillsson.sysapi.sigar;
 
 import org.junit.Before;
 import org.junit.Test;
-import com.krillsson.sysapi.domain.cpu.CpuTime;
+import com.krillsson.sysapi.domain.cpu.CpuLoad;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -28,7 +28,7 @@ public class CpuSigarTest {
 
     @Test
     public void cpuTimesAddUpToApproximatelyOne() throws Exception {
-        CpuTime t = cm.cpuTimesPerCore(cm.cpuPercList()).get(0);
+        CpuLoad t = cm.cpuTimesPerCore(cm.cpuPercList()).get(0);
         assertThat(t.user() + t.sys() + t.nice() + t.waiting() + t.idle() + t.irq(),
                 is(closeTo(1.0, 0.05)));
     }

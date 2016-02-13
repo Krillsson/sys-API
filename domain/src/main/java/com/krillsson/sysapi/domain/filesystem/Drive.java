@@ -6,12 +6,12 @@ public final class Drive
 {
     private final String deviceName;
     private final String mountPoint;
-    private final FSType genericFSType;
+    private final FileSystemType genericFSType;
     private final String osSpecificFSType;
     private final FileSystemUsage usage;
 
     public Drive(String deviceName, String mountPoint,
-                 FSType genericFSType, String osSpecificFSType,
+                 FileSystemType genericFSType, String osSpecificFSType,
                  FileSystemUsage usage) {
         this.deviceName = deviceName;
         this.mountPoint = mountPoint;
@@ -31,7 +31,7 @@ public final class Drive
     }
 
     @JsonProperty
-    public FSType genericFSType() {
+    public FileSystemType genericFSType() {
         return genericFSType;
     }
 

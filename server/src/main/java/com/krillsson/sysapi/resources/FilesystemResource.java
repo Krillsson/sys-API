@@ -3,8 +3,8 @@ package com.krillsson.sysapi.resources;
 import io.dropwizard.auth.Auth;
 import com.krillsson.sysapi.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
-import com.krillsson.sysapi.domain.filesystem.FSType;
-import com.krillsson.sysapi.domain.filesystem.FileSystem;
+import com.krillsson.sysapi.domain.filesystem.FileSystemType;
+import com.krillsson.sysapi.domain.filesystem.Drive;
 import com.krillsson.sysapi.sigar.FilesystemSigar;
 
 import javax.annotation.security.RolesAllowed;
@@ -28,18 +28,18 @@ public class FilesystemResource extends Resource {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     @Override
-    public List<FileSystem> getRoot(@Auth UserConfiguration user) {
+    public List<Drive> getRoot(@Auth UserConfiguration user) {
         return filesystemSigar.getFilesystems();
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     @Path("type/{fsTypeName}")
-    public List<FileSystem> getFsByType(@Auth UserConfiguration user, @PathParam("fsTypeName") String fsTypeName) {
-        FSType fsType;
-        List<FileSystem> fileSystems;
+    public List<Drive> getFsByType(@Auth UserConfiguration user, @PathParam("fsTypeName") String fsTypeName) {
+        FileSystemType fsType;
+        List<Drive> fileSystems;
         try {
-            fsType = FSType.valueOf(fsTypeName);
+            fsType = FileSystemType.valueOf(fsTypeName);
             fileSystems = filesystemSigar.getFileSystemsWithCategory(fsType);
         } catch (IllegalArgumentException e) {
             throw buildWebException(Response.Status.NOT_FOUND, e.getMessage());
@@ -50,8 +50,8 @@ public class FilesystemResource extends Resource {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     @Path("{id}")
-    public FileSystem getFsById(@Auth UserConfiguration user, @PathParam("id") String id) {
-        FileSystem fileSystem;
+    public Drive getFsById(@Auth UserConfiguration user, @PathParam("id") String id) {
+        Drive fileSystem;
         try {
             fileSystem = filesystemSigar.getFileSystemById(id);
         } catch (IllegalArgumentException e) {

@@ -87,7 +87,7 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
     }
 
     private void ohmjniwrapper() throws IOException {
-        Bridge.setVerbose(true);
+        /*Bridge.setVerbose(true);
         Bridge.init();
         //For testing
         //File file = new File("server/lib/OhmJniWrapper.dll");
@@ -112,7 +112,7 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
             LOGGER.info("Drive temp: {}", drive.getTemperature().getValue());
             LOGGER.info("Drive name: {}", drive.getName());
             LOGGER.info("Drive logicalname: {}", drive.getLogicalName());
-        }
+        }*/
     }
 
     private String libLocation(MaintenanceConfiguration config) {
