@@ -13,16 +13,15 @@ import java.util.List;
 public class CpuSigar extends SigarWrapper {
     private static final long HACK_DELAY_MILLIS = 500;
 
-    private final CpuInfo info;
-
     protected CpuSigar(Sigar sigar) {
         super(sigar);
-        info = cpuInfo();
     }
 
     public Cpu getCpu() {
-        return new Cpu(cpuInfo(), cpuTimeSysPercent(),
-                totalCpuTime(), cpuTimesPerCore(cpuPercList()));
+
+        List<CpuLoad> cpuLoads = cpuTimesPerCore(cpuPercList());
+        return new Cpu(cpuInfo(), cpuTimeSysPercent(cpuLoads),
+                totalCpuTime(), cpuLoads);
     }
 
     public CpuLoad getCpuTimeByCoreIndex(int id) throws IllegalArgumentException {
@@ -35,10 +34,9 @@ public class CpuSigar extends SigarWrapper {
         return result.get(0);
     }
 
-    protected double cpuTimeSysPercent() {
-        List<CpuLoad> cpus = cpuTimesPerCore(cpuPercList());
+    protected double cpuTimeSysPercent(List<CpuLoad> cpuLoads) {
         double userTime = 0.0;
-        for (CpuLoad cpu : cpus) {
+        for (CpuLoad cpu : cpuLoads) {
             userTime += cpu.sys();
         }
         return userTime / 1.0;
