@@ -24,43 +24,32 @@ import java.util.stream.Collectors;
 import static com.krillsson.sysapi.util.NullSafeOhmMonitor.nullSafe;
 import static java.util.Collections.singletonList;
 
-public class WindowsInfoProvider extends DefaultInfoProvider
-{
+public class WindowsInfoProvider extends DefaultInfoProvider {
     private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(WindowsInfoProvider.class.getSimpleName());
 
     MonitorManager monitorManager;
 
-    protected WindowsInfoProvider()
-    {
-        try
-        {
-            initBridge();
-        }
-        catch (Exception e)
-        {
-            LOGGER.error("Unable to initialize JNI4Net Bridge. Do I have admin privileges?", e);
-        }
+    protected WindowsInfoProvider() {
+
+        initBridge();
+
     }
 
     @Override
-    public Cpu cpu()
-    {
+    public Cpu cpu() {
         Cpu cpu = super.cpu();
         monitorManager.Update();
-        if (monitorManager.CpuMonitors().length > 0)
-        {
+        if (monitorManager.CpuMonitors().length > 0) {
             CpuMonitor cpuMonitor = monitorManager.CpuMonitors()[0];
             cpu.setFanPercent(nullSafe(cpuMonitor.getFanPercent()).getValue());
             cpu.setFanRpm(nullSafe(cpuMonitor.getFanRPM()).getValue());
             cpu.setTemperature(nullSafe(cpuMonitor.getPackageTemperature()).getValue());
             cpu.setVoltage(nullSafe(cpuMonitor.getVoltage()).getValue());
             if (nullSafe(cpuMonitor.getTemperatures()).length >= 1 &&
-                    cpuMonitor.getTemperatures().length == cpu.getCpuLoadPerCore().size())
-            {
+                    cpuMonitor.getTemperatures().length == cpu.getCpuLoadPerCore().size()) {
                 final List<CpuLoad> cpuLoadPerCore = cpu.getCpuLoadPerCore();
                 final OHMSensor[] temperatures = cpuMonitor.getTemperatures();
-                for (int i = 0; i < cpuLoadPerCore.size(); i++)
-                {
+                for (int i = 0; i < cpuLoadPerCore.size(); i++) {
                     cpuLoadPerCore.get(i).setTemperature(temperatures[i].getValue());
                 }
             }
@@ -69,16 +58,13 @@ public class WindowsInfoProvider extends DefaultInfoProvider
     }
 
     @Override
-    public CpuLoad getCpuTimeByCoreIndex(int id)
-    {
+    public CpuLoad getCpuTimeByCoreIndex(int id) {
         CpuLoad cpuLoad = super.getCpuTimeByCoreIndex(id);
         monitorManager.Update();
-        if (monitorManager.CpuMonitors().length > 0)
-        {
+        if (monitorManager.CpuMonitors().length > 0) {
             CpuMonitor cpuMonitor = monitorManager.CpuMonitors()[0];
             if (nullSafe(cpuMonitor.getTemperatures()).length >= 1 &&
-                    cpuMonitor.getTemperatures().length - 1 <= id)
-            {
+                    cpuMonitor.getTemperatures().length - 1 <= id) {
                 final OHMSensor[] temperatures = cpuMonitor.getTemperatures();
                 cpuLoad.setTemperature(temperatures[id].getValue());
             }
@@ -87,8 +73,7 @@ public class WindowsInfoProvider extends DefaultInfoProvider
     }
 
     @Override
-    public List<Drive> drives()
-    {
+    public List<Drive> drives() {
         List<Drive> drives = super.drives();
         monitorManager.Update();
         DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
@@ -97,8 +82,7 @@ public class WindowsInfoProvider extends DefaultInfoProvider
     }
 
     @Override
-    public List<Drive> getFileSystemsWithCategory(FileSystemType fsType)
-    {
+    public List<Drive> getFileSystemsWithCategory(FileSystemType fsType) {
         List<Drive> drives = super.getFileSystemsWithCategory(fsType);
         monitorManager.Update();
         DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
@@ -107,8 +91,7 @@ public class WindowsInfoProvider extends DefaultInfoProvider
     }
 
     @Override
-    public Drive getFileSystemById(String name)
-    {
+    public Drive getFileSystemById(String name) {
         Drive fileSystemById = super.getFileSystemById(name);
         monitorManager.Update();
         DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
@@ -117,21 +100,18 @@ public class WindowsInfoProvider extends DefaultInfoProvider
     }
 
     @Override
-    public List<Gpu> gpus()
-    {
+    public List<Gpu> gpus() {
         List<Gpu> gpus = new ArrayList<>();
         monitorManager.Update();
         final GpuMonitor[] gpuMonitors = monitorManager.GpuMonitors();
-        if(gpuMonitors != null && gpuMonitors.length > 0)
-        {
-            for (GpuMonitor gpuMonitor : gpuMonitors)
-            {
+        if (gpuMonitors != null && gpuMonitors.length > 0) {
+            for (GpuMonitor gpuMonitor : gpuMonitors) {
                 GpuLoad gpuLoad = new GpuLoad(
                         nullSafe(gpuMonitor.getTemperature()).getValue(),
                         nullSafe(gpuMonitor.getCoreLoad()).getValue(),
                         nullSafe(gpuMonitor.getMemoryClock()).getValue());
                 GpuInfo gpuInfo = new GpuInfo("",
-                gpuMonitor.getName(),
+                        gpuMonitor.getName(),
                         nullSafe(gpuMonitor.getCoreClock()).getValue(),
                         nullSafe(gpuMonitor.getMemoryClock()).getValue()
                 );
@@ -139,7 +119,7 @@ public class WindowsInfoProvider extends DefaultInfoProvider
                         nullSafe(gpuMonitor.getFanPercent()).getValue(),
                         gpuInfo,
                         gpuLoad
-                        );
+                );
                 gpus.add(gpu);
             }
         }
@@ -147,12 +127,10 @@ public class WindowsInfoProvider extends DefaultInfoProvider
     }
 
     @Override
-    public Motherboard motherboard()
-    {
+    public Motherboard motherboard() {
         monitorManager.Update();
         MainboardMonitor mainboardMonitor = monitorManager.getMainboardMonitor();
-        if(mainboardMonitor != null)
-        {
+        if (mainboardMonitor != null) {
             Map<String, Double> boardTemperatures = Arrays.asList(nullSafe(mainboardMonitor.getBoardTemperatures())).stream().collect(Collectors.toMap(
                     OHMSensor::getLabel,
                     OHMSensor::getValue));
@@ -168,16 +146,11 @@ public class WindowsInfoProvider extends DefaultInfoProvider
         return null;
     }
 
-    private void matchDriveProperties(List<Drive> drives, DriveMonitor[] driveMonitors)
-    {
-        if (driveMonitors != null && driveMonitors.length > 0)
-        {
-            for (DriveMonitor driveMonitor : driveMonitors)
-            {
-                for (Drive drive : drives)
-                {
-                    if (driveNamesAreEqual(driveMonitor, drive))
-                    {
+    private void matchDriveProperties(List<Drive> drives, DriveMonitor[] driveMonitors) {
+        if (driveMonitors != null && driveMonitors.length > 0) {
+            for (DriveMonitor driveMonitor : driveMonitors) {
+                for (Drive drive : drives) {
+                    if (driveNamesAreEqual(driveMonitor, drive)) {
                         drive.setHealth(new DriveHealth(nullSafe(driveMonitor.getTemperature()).getValue(),
                                 nullSafe(driveMonitor.getRemainingLife()).getValue(),
                                 Arrays.asList(nullSafe(driveMonitor.getLifecycleData())).stream().collect(Collectors.toMap(
@@ -190,10 +163,8 @@ public class WindowsInfoProvider extends DefaultInfoProvider
         }
     }
 
-    private boolean driveNamesAreEqual(DriveMonitor driveMonitor, Drive drive)
-    {
-        if (driveMonitor.getLogicalName() != null)
-        {
+    private boolean driveNamesAreEqual(DriveMonitor driveMonitor, Drive drive) {
+        if (driveMonitor.getLogicalName() != null) {
             String driveMonitorName = driveMonitor
                     .getLogicalName()
                     .toLowerCase()
@@ -205,29 +176,28 @@ public class WindowsInfoProvider extends DefaultInfoProvider
                     .replace(":", "")
                     .replace("\\", "");
             return driveMonitorName.equals(driveName);
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
 
-    private void initBridge() throws IOException
-    {
+    private void initBridge() {
         Bridge.setVerbose(true);
-        Bridge.init();
+        try {
+            Bridge.init();
+        } catch (IOException e) {
+            LOGGER.error("Trouble while initializing JNI4Net Bridge. Do I have admin privileges?");
+            throw new RuntimeException("Unable to initialize JNI4Net Bridge.", e);
+        }
         File ohmJniWrapperDll;
         File ohmJniWrapperJ4nDll;
         File openHardwareMonitorLibDll;
-        if (new File("server/lib/OhmJniWrapper.dll").exists())
-        {
+        if (new File("server/lib/OhmJniWrapper.dll").exists()) {
             //For testing
             ohmJniWrapperDll = new File("server/lib/OhmJniWrapper.dll");
             ohmJniWrapperJ4nDll = new File("server/lib/OhmJniWrapper.j4n.dll");
             openHardwareMonitorLibDll = new File("server/lib/OpenHardwareMonitorLib.dll");
-        }
-        else
-        {
+        } else {
             //For deployment
             ohmJniWrapperDll = new File("lib/OhmJniWrapper.dll");
             ohmJniWrapperJ4nDll = new File("lib/OhmJniWrapper.j4n.dll");
@@ -237,8 +207,12 @@ public class WindowsInfoProvider extends DefaultInfoProvider
         Bridge.LoadAndRegisterAssemblyFrom(ohmJniWrapperDll);
         Bridge.LoadAndRegisterAssemblyFrom(ohmJniWrapperJ4nDll);
         Bridge.LoadAndRegisterAssemblyFrom(openHardwareMonitorLibDll);
-        OHMManagerFactory factory = new OHMManagerFactory();
-        factory.init();
-        this.monitorManager = factory.GetManager();
+        try {
+            OHMManagerFactory factory = new OHMManagerFactory();
+            factory.init();
+            this.monitorManager = factory.GetManager();
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to initialize JNI4Net Bridge. Do I have admin privileges? Crashing now", e);
+        }
     }
 }
