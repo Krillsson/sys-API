@@ -3,7 +3,7 @@ package com.krillsson.sysapi.domain.system;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.krillsson.sysapi.domain.cpu.CpuLoad;
-import com.krillsson.sysapi.domain.filesystem.Drive;
+import com.krillsson.sysapi.domain.drive.Drive;
 import com.krillsson.sysapi.domain.memory.MainMemory;
 import com.krillsson.sysapi.domain.network.NetworkInterfaceConfig;
 import com.krillsson.sysapi.domain.processes.ProcessStatistics;

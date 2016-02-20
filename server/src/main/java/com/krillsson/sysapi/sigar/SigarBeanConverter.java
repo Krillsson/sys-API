@@ -2,9 +2,9 @@ package com.krillsson.sysapi.sigar;
 
 import com.krillsson.sysapi.domain.cpu.CpuInfo;
 import com.krillsson.sysapi.domain.cpu.CpuLoad;
-import com.krillsson.sysapi.domain.filesystem.Drive;
-import com.krillsson.sysapi.domain.filesystem.FileSystemType;
-import com.krillsson.sysapi.domain.filesystem.FileSystemUsage;
+import com.krillsson.sysapi.domain.drive.Drive;
+import com.krillsson.sysapi.domain.drive.FileSystemType;
+import com.krillsson.sysapi.domain.drive.FileSystemUsage;
 import com.krillsson.sysapi.domain.memory.MainMemory;
 import com.krillsson.sysapi.domain.memory.SwapSpace;
 import com.krillsson.sysapi.domain.network.NetworkInfo;

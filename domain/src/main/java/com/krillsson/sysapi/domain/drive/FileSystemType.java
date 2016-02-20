@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.domain.filesystem;
+package com.krillsson.sysapi.domain.drive;
 
 public enum FileSystemType
 {

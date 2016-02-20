@@ -4,8 +4,8 @@ import com.krillsson.sysapi.provider.InfoProvider;
 import io.dropwizard.auth.Auth;
 import com.krillsson.sysapi.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
-import com.krillsson.sysapi.domain.filesystem.FileSystemType;
-import com.krillsson.sysapi.domain.filesystem.Drive;
+import com.krillsson.sysapi.domain.drive.FileSystemType;
+import com.krillsson.sysapi.domain.drive.Drive;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;

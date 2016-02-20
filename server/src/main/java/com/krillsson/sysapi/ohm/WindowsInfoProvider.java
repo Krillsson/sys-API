@@ -2,10 +2,10 @@ package com.krillsson.sysapi.ohm;
 
 import com.krillsson.sysapi.domain.cpu.Cpu;
 import com.krillsson.sysapi.domain.cpu.CpuLoad;
-import com.krillsson.sysapi.domain.filesystem.Drive;
-import com.krillsson.sysapi.domain.filesystem.DriveHealth;
-import com.krillsson.sysapi.domain.filesystem.DriveLoad;
-import com.krillsson.sysapi.domain.filesystem.FileSystemType;
+import com.krillsson.sysapi.domain.drive.Drive;
+import com.krillsson.sysapi.domain.drive.DriveHealth;
+import com.krillsson.sysapi.domain.drive.DriveLoad;
+import com.krillsson.sysapi.domain.drive.FileSystemType;
 import com.krillsson.sysapi.domain.gpu.Gpu;
 import com.krillsson.sysapi.domain.gpu.GpuInfo;
 import com.krillsson.sysapi.domain.gpu.GpuLoad;

@@ -3,8 +3,8 @@ package com.krillsson.sysapi.sigar;
 import org.hyperic.sigar.FileSystemUsage;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
-import com.krillsson.sysapi.domain.filesystem.FileSystemType;
-import com.krillsson.sysapi.domain.filesystem.Drive;
+import com.krillsson.sysapi.domain.drive.FileSystemType;
+import com.krillsson.sysapi.domain.drive.Drive;
 
 import java.util.ArrayList;
 import java.util.Arrays;
