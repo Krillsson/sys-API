@@ -35,7 +35,7 @@ public class NetworkResource extends Resource {
         return provider.networkInfo();
     }
 
-    @Path("{name}")
+    @Path("{id}")
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public NetworkInterfaceConfig getConfigById(@Auth UserConfiguration user, @PathParam("name") String name) {
