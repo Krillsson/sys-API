@@ -44,9 +44,8 @@ public class DefaultInfoProvider implements InfoProvider
     }
 
     @Override
-    public Motherboard motherboard()
-    {
-        return null;
+    public Motherboard motherboard()    {
+        throw new RuntimeException("Sorry, not implemented");
     }
 
     @Override
@@ -100,13 +99,20 @@ public class DefaultInfoProvider implements InfoProvider
     @Override
     public NetworkInfo networkInfo()
     {
-        return sigar.network().getNetworkInfo();
+        NetworkInfo info = sigar.network().getNetworkInfo();
+        for(NetworkInterfaceConfig conf : info.getNetworkInterfaceConfigs())
+        {
+            conf.setNetworkInterfaceSpeed(sigar.network().getSpeed(conf.getName()));
+        }
+        return info;
     }
 
     @Override
     public NetworkInterfaceConfig getConfigById(String id)
     {
-        return sigar.network().getConfigById(id);
+        NetworkInterfaceConfig config = sigar.network().getConfigById(id);
+        config.setNetworkInterfaceSpeed(sigar.network().getSpeed(id));
+        return config;
     }
 
     @Override
@@ -130,7 +136,7 @@ public class DefaultInfoProvider implements InfoProvider
     @Override
     public List<Gpu> gpus()
     {
-        return null;
+       throw new RuntimeException("Sorry, not implemented");
     }
 
     @Override

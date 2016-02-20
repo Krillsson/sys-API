@@ -13,7 +13,6 @@ import java.util.List;
 public class NetworkSigar extends SigarWrapper {
     private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(NetworkSigar.class.getSimpleName());
 
-
     final int SPEED_MEASUREMENT_PERIOD = 100;
     final int BYTE_TO_BIT = 8;
     final static String NOT_FOUND_STRING = "No %s with id '%s' were found";
@@ -28,10 +27,12 @@ public class NetworkSigar extends SigarWrapper {
         try {
             netIfs = sigar.getNetInterfaceList();
             for (String name : netIfs) {
-                NetworkInterfaceConfig networkInterfaceConfig = SigarBeanConverter.fromSigarBean(sigar.getNetInterfaceConfig(name));
-                networkInterfaceConfig.setNetworkInterfaceStatistics(SigarBeanConverter.fromSigarBean(sigar.getNetInterfaceStat(name)));
-                networkInterfaceConfig.setNetworkInterfaceSpeed(getSpeed(name));
-                configs.add(networkInterfaceConfig);
+                NetInterfaceConfig netInterfaceConfig = sigar.getNetInterfaceConfig(name);
+                if(((netInterfaceConfig.getFlags() & 1 << NetFlags.IFF_UP) != 0)  && ((netInterfaceConfig.getFlags() & 1 << NetFlags.IFF_RUNNING) != 0)){
+                    NetworkInterfaceConfig networkInterfaceConfig = SigarBeanConverter.fromSigarBean(netInterfaceConfig);
+                    networkInterfaceConfig.setNetworkInterfaceStatistics(SigarBeanConverter.fromSigarBean(sigar.getNetInterfaceStat(name)));
+                    configs.add(networkInterfaceConfig);
+                }
             }
         } catch (SigarException e) {
             throw new IllegalArgumentException(e);
@@ -45,16 +46,18 @@ public class NetworkSigar extends SigarWrapper {
 
     public NetworkInterfaceConfig getConfigById(String id) {
         NetworkInterfaceConfig config;
-
         try {
             NetInterfaceConfig sigarConfig = sigar.getNetInterfaceConfig(id);
-            config = SigarBeanConverter.fromSigarBean(sigarConfig);
-            config.setNetworkInterfaceStatistics(SigarBeanConverter.fromSigarBean(sigar.getNetInterfaceStat(id)));
-            config.setNetworkInterfaceSpeed(getSpeed(id));
+            if(((sigarConfig.getFlags() & 1 << NetFlags.IFF_UP) != 0)  && ((sigarConfig.getFlags() & 1 << NetFlags.IFF_RUNNING) != 0)) {
+                config = SigarBeanConverter.fromSigarBean(sigarConfig);
+                config.setNetworkInterfaceStatistics(SigarBeanConverter.fromSigarBean(sigar.getNetInterfaceStat(id)));
+            }
+            else{
+                throw new IllegalArgumentException(String.format(NOT_FOUND_STRING, NetworkInterfaceConfig.class.getSimpleName(), id));
+            }
         } catch (SigarException | IllegalArgumentException e) {
             throw new IllegalArgumentException(String.format(NOT_FOUND_STRING, NetworkInterfaceConfig.class.getSimpleName(), id), e);
         }
-
         return config;
     }
 

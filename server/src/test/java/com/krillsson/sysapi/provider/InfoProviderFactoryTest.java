@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.provider;
 
+import com.krillsson.sysapi.ohm.WindowsInfoProvider;
 import com.krillsson.sysapi.util.OperatingSystem;
 import org.junit.Test;
 

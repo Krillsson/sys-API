@@ -1,14 +1,19 @@
-package com.krillsson.sysapi.provider;
+package com.krillsson.sysapi.ohm;
 
 import com.krillsson.sysapi.domain.cpu.Cpu;
 import com.krillsson.sysapi.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.domain.filesystem.Drive;
 import com.krillsson.sysapi.domain.filesystem.DriveHealth;
+import com.krillsson.sysapi.domain.filesystem.DriveLoad;
 import com.krillsson.sysapi.domain.filesystem.FileSystemType;
 import com.krillsson.sysapi.domain.gpu.Gpu;
 import com.krillsson.sysapi.domain.gpu.GpuInfo;
 import com.krillsson.sysapi.domain.gpu.GpuLoad;
 import com.krillsson.sysapi.domain.motherboard.Motherboard;
+import com.krillsson.sysapi.domain.network.NetworkInfo;
+import com.krillsson.sysapi.domain.network.NetworkInterfaceConfig;
+import com.krillsson.sysapi.domain.network.NetworkInterfaceSpeed;
+import com.krillsson.sysapi.provider.DefaultInfoProvider;
 import net.sf.jni4net.Bridge;
 import ohmwrapper.*;
 import org.slf4j.Logger;
@@ -29,10 +34,8 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
 
     MonitorManager monitorManager;
 
-    protected WindowsInfoProvider() {
-
+    public WindowsInfoProvider() {
         initBridge();
-
     }
 
     @Override
@@ -45,6 +48,7 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
             cpu.setFanRpm(nullSafe(cpuMonitor.getFanRPM()).getValue());
             cpu.setTemperature(nullSafe(cpuMonitor.getPackageTemperature()).getValue());
             cpu.setVoltage(nullSafe(cpuMonitor.getVoltage()).getValue());
+            cpu.getTotalCpuLoad().setTemperature(nullSafe(cpuMonitor.getPackageTemperature()).getValue());
             if (nullSafe(cpuMonitor.getTemperatures()).length >= 1 &&
                     cpuMonitor.getTemperatures().length == cpu.getCpuLoadPerCore().size()) {
                 final List<CpuLoad> cpuLoadPerCore = cpu.getCpuLoadPerCore();
@@ -110,7 +114,7 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
                         nullSafe(gpuMonitor.getTemperature()).getValue(),
                         nullSafe(gpuMonitor.getCoreLoad()).getValue(),
                         nullSafe(gpuMonitor.getMemoryClock()).getValue());
-                GpuInfo gpuInfo = new GpuInfo("",
+                GpuInfo gpuInfo = new GpuInfo(gpuMonitor.getVendor(),
                         gpuMonitor.getName(),
                         nullSafe(gpuMonitor.getCoreClock()).getValue(),
                         nullSafe(gpuMonitor.getMemoryClock()).getValue()
@@ -127,6 +131,33 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
     }
 
     @Override
+    public NetworkInfo networkInfo() {
+        NetworkInfo info = super.networkInfo();
+        for (NetworkInterfaceConfig conf : info.getNetworkInterfaceConfigs()) {
+            setSpeed(conf);
+        }
+        return info;
+    }
+
+    @Override
+    public NetworkInterfaceConfig getConfigById(String id) {
+        NetworkInterfaceConfig config =  super.getConfigById(id);
+        setSpeed(config);
+        return config;
+    }
+
+    private void setSpeed(NetworkInterfaceConfig config) {
+        monitorManager.Update();
+        NetworkMonitor networkMonitor = monitorManager.getNetworkMonitor();
+        NicInfo[] nics = networkMonitor.getNics();
+        for (NicInfo info : nics) {
+            if (info.getPhysicalAddress().equals(config.getHwaddr())) {
+                config.setNetworkInterfaceSpeed(new NetworkInterfaceSpeed((long)(info.getInBandwidth().getValue() * 1000), (long)(info.getOutBandwidth().getValue() * 1000)));
+            }
+        }
+    }
+
+    @Override
     public Motherboard motherboard() {
         monitorManager.Update();
         MainboardMonitor mainboardMonitor = monitorManager.getMainboardMonitor();
@@ -140,8 +171,7 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
             Map<String, Double> boardFanPercents = Arrays.asList(nullSafe(mainboardMonitor.getBoardFanPercent())).stream().collect(Collectors.toMap(
                     OHMSensor::getLabel,
                     OHMSensor::getValue));
-            Motherboard motherboard = new Motherboard(mainboardMonitor.getName(), boardTemperatures, boardFanRpms, boardFanPercents);
-            return motherboard;
+            return new Motherboard(mainboardMonitor.getName(), boardTemperatures, boardFanRpms, boardFanPercents);
         }
         return null;
     }
@@ -155,8 +185,9 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
                                 nullSafe(driveMonitor.getRemainingLife()).getValue(),
                                 Arrays.asList(nullSafe(driveMonitor.getLifecycleData())).stream().collect(Collectors.toMap(
                                         OHMSensor::getLabel,
-                                        OHMSensor::getValue)))
-                        );
+                                        OHMSensor::getValue))));
+                        drive.setLoad(new DriveLoad(driveMonitor.getReadRate(), driveMonitor.getWriteRate()));
+                        drive.setDeviceName(driveMonitor.getName());
                     }
                 }
             }
