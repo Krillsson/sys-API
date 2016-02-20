@@ -8,28 +8,28 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class SimpleAuthenticatorTest {
+public class BasicAuthenticatorTest {
 
     private final String correctPw = "password";
     private final String correctUsr = "user";
     private UserConfiguration userConfiguration;
-    private SimpleAuthenticator simpleAuthenticator;
+    private BasicAuthenticator basicAuthenticator;
 
     @Before
     public void setUp() throws Exception {
         userConfiguration = new UserConfiguration(correctUsr, correctPw);
-        simpleAuthenticator = new SimpleAuthenticator(userConfiguration);
+        basicAuthenticator = new BasicAuthenticator(userConfiguration);
     }
 
     @Test
     public void correctUserNameAndPassword() throws Exception {
-        Optional<UserConfiguration> authenticate = simpleAuthenticator.authenticate(new BasicCredentials(correctUsr, correctPw));
+        Optional<UserConfiguration> authenticate = basicAuthenticator.authenticate(new BasicCredentials(correctUsr, correctPw));
         assertTrue(authenticate.isPresent());
     }
 
     @Test
     public void wrongUserNameAndPassword() throws Exception {
-        Optional<UserConfiguration> authenticate = simpleAuthenticator.authenticate(new BasicCredentials("Derp", "123"));
+        Optional<UserConfiguration> authenticate = basicAuthenticator.authenticate(new BasicCredentials("Derp", "123"));
         assertFalse(authenticate.isPresent());
     }
 }

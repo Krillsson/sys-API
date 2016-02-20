@@ -5,7 +5,7 @@ import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 import com.krillsson.sysapi.domain.cpu.Cpu;
 import com.krillsson.sysapi.domain.cpu.CpuInfo;
-import com.krillsson.sysapi.domain.cpu.CpuTime;
+import com.krillsson.sysapi.domain.cpu.CpuLoad;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,37 +13,36 @@ import java.util.List;
 public class CpuSigar extends SigarWrapper {
     private static final long HACK_DELAY_MILLIS = 500;
 
-    private final CpuInfo info;
-
     protected CpuSigar(Sigar sigar) {
         super(sigar);
-        info = cpuInfo();
     }
 
     public Cpu getCpu() {
-        return new Cpu(cpuInfo(), cpuTimeSysPercent(), totalCpuTime(), cpuTimesPerCore(cpuPercList()));
+
+        List<CpuLoad> cpuLoads = cpuTimesPerCore(cpuPercList());
+        return new Cpu(cpuInfo(), cpuTimeSysPercent(cpuLoads),
+                totalCpuTime(), cpuLoads);
     }
 
-    public CpuTime getCpuTimeByCoreIndex(int id) throws IllegalArgumentException {
+    public CpuLoad getCpuTimeByCoreIndex(int id) throws IllegalArgumentException {
         CpuPerc[] cpuPercs = cpuPercList();
         if (id > cpuPercs.length) {
             throw new IllegalArgumentException("No core with id " + Integer.toString(id) + " were found");
         }
 
-        List<CpuTime> result = cpuTimesPerCore(new CpuPerc[]{cpuPercs[id]});
+        List<CpuLoad> result = cpuTimesPerCore(new CpuPerc[]{cpuPercs[id]});
         return result.get(0);
     }
 
-    protected double cpuTimeSysPercent() {
-        List<CpuTime> cpus = cpuTimesPerCore(cpuPercList());
+    protected double cpuTimeSysPercent(List<CpuLoad> cpuLoads) {
         double userTime = 0.0;
-        for (CpuTime cpu : cpus) {
+        for (CpuLoad cpu : cpuLoads) {
             userTime += cpu.sys();
         }
         return userTime / 1.0;
     }
 
-    protected CpuTime totalCpuTime() {
+    protected CpuLoad totalCpuTime() {
         CpuPerc cpuPerc;
         try {
             cpuPerc = sigar.getCpuPerc();
@@ -63,8 +62,8 @@ public class CpuSigar extends SigarWrapper {
         return null;
     }
 
-    protected List<CpuTime> cpuTimesPerCore(CpuPerc[] percList) {
-        List<CpuTime> result = new ArrayList<>();
+    protected List<CpuLoad> cpuTimesPerCore(CpuPerc[] percList) {
+        List<CpuLoad> result = new ArrayList<>();
         for (CpuPerc cp : percList) {
             result.add(SigarBeanConverter.fromSigarBean(cp));
         }

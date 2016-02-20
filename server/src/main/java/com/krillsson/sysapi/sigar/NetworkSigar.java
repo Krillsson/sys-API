@@ -5,11 +5,13 @@ import org.hyperic.sigar.*;
 import com.krillsson.sysapi.domain.network.NetworkInfo;
 import com.krillsson.sysapi.domain.network.NetworkInterfaceConfig;
 import com.krillsson.sysapi.domain.network.NetworkInterfaceSpeed;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class NetworkSigar extends SigarWrapper {
+    private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(NetworkSigar.class.getSimpleName());
 
     final int SPEED_MEASUREMENT_PERIOD = 100;
     final int BYTE_TO_BIT = 8;
@@ -25,12 +27,14 @@ public class NetworkSigar extends SigarWrapper {
         try {
             netIfs = sigar.getNetInterfaceList();
             for (String name : netIfs) {
-                NetworkInterfaceConfig networkInterfaceConfig = SigarBeanConverter.fromSigarBean(sigar.getNetInterfaceConfig(name));
-                networkInterfaceConfig.setNetworkInterfaceStatistics(SigarBeanConverter.fromSigarBean(sigar.getNetInterfaceStat(name)));
-                networkInterfaceConfig.setNetworkInterfaceSpeed(getSpeed(name));
-                configs.add(networkInterfaceConfig);
+                NetInterfaceConfig netInterfaceConfig = sigar.getNetInterfaceConfig(name);
+                if(((netInterfaceConfig.getFlags() & 1 << NetFlags.IFF_UP) != 0)  && ((netInterfaceConfig.getFlags() & 1 << NetFlags.IFF_RUNNING) != 0)){
+                    NetworkInterfaceConfig networkInterfaceConfig = SigarBeanConverter.fromSigarBean(netInterfaceConfig);
+                    networkInterfaceConfig.setNetworkInterfaceStatistics(SigarBeanConverter.fromSigarBean(sigar.getNetInterfaceStat(name)));
+                    configs.add(networkInterfaceConfig);
+                }
             }
-        } catch (SigarException | InterruptedException e) {
+        } catch (SigarException e) {
             throw new IllegalArgumentException(e);
         }
         if (!configs.isEmpty()) {
@@ -42,16 +46,18 @@ public class NetworkSigar extends SigarWrapper {
 
     public NetworkInterfaceConfig getConfigById(String id) {
         NetworkInterfaceConfig config;
-
         try {
             NetInterfaceConfig sigarConfig = sigar.getNetInterfaceConfig(id);
-            config = SigarBeanConverter.fromSigarBean(sigarConfig);
-            config.setNetworkInterfaceStatistics(SigarBeanConverter.fromSigarBean(sigar.getNetInterfaceStat(id)));
-            config.setNetworkInterfaceSpeed(getSpeed(id));
-        } catch (SigarException | InterruptedException | IllegalArgumentException e) {
+            if(((sigarConfig.getFlags() & 1 << NetFlags.IFF_UP) != 0)  && ((sigarConfig.getFlags() & 1 << NetFlags.IFF_RUNNING) != 0)) {
+                config = SigarBeanConverter.fromSigarBean(sigarConfig);
+                config.setNetworkInterfaceStatistics(SigarBeanConverter.fromSigarBean(sigar.getNetInterfaceStat(id)));
+            }
+            else{
+                throw new IllegalArgumentException(String.format(NOT_FOUND_STRING, NetworkInterfaceConfig.class.getSimpleName(), id));
+            }
+        } catch (SigarException | IllegalArgumentException e) {
             throw new IllegalArgumentException(String.format(NOT_FOUND_STRING, NetworkInterfaceConfig.class.getSimpleName(), id), e);
         }
-
         return config;
     }
 
@@ -70,7 +76,7 @@ public class NetworkSigar extends SigarWrapper {
         return networkInfo;
     }
 
-    public NetworkInterfaceSpeed getSpeed(String networkInterfaceConfigName) throws InterruptedException {
+    public NetworkInterfaceSpeed getSpeed(String networkInterfaceConfigName) {
         long rxbps, txbps;
         long start = 0;
         long end = 0;
@@ -91,6 +97,10 @@ public class NetworkSigar extends SigarWrapper {
             txBytesEnd = statEnd.getTxBytes();
         } catch (SigarException e) {
             throw new IllegalArgumentException(String.format(NOT_FOUND_STRING, NetworkInterfaceConfig.class.getSimpleName(), networkInterfaceConfigName));
+        }
+        catch (InterruptedException e)
+        {
+            LOGGER.error("Interrupted while measuring networkspeed", e);
         }
 
         rxbps = measureSpeed(start, end, rxBytesStart, rxBytesEnd);

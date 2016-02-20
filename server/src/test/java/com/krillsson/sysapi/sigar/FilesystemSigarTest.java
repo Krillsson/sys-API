@@ -3,7 +3,7 @@ package com.krillsson.sysapi.sigar;
 
 import org.junit.Before;
 import org.junit.Test;
-import com.krillsson.sysapi.domain.filesystem.FileSystem;
+import com.krillsson.sysapi.domain.drive.Drive;
 
 import java.io.File;
 import java.util.List;
@@ -25,11 +25,11 @@ public class FilesystemSigarTest extends CheckSigarLoadsOk {
     @Test
     public void usageNumbersApproximatelyMatchThoseReturnedByJavaFile() throws Exception {
         File[] roots = File.listRoots();
-        List<FileSystem> fss = fsm.getFilesystems();
+        List<Drive> fss = fsm.getFilesystems();
         for (File root: roots) {
-            for (FileSystem fs: fss) {
+            for (Drive fs: fss) {
                 if (fs.getUsage() != null && new File(fs.mountPoint()).equals(root)) {
-                    System.out.println("Testing filesystem mounted at " + fs.mountPoint());
+                    System.out.println("Testing drive mounted at " + fs.mountPoint());
                     assertThat((double) (root.getTotalSpace()), //
                             is(closeTo((double) (fs.getUsage().getTotalSizeKB() * 1024), MARGIN_BYTES)));
                     assertThat((double) (root.getFreeSpace()), //

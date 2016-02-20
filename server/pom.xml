@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.krillsson</groupId>
         <artifactId>sys-api</artifactId>
-        <version>0.2</version>
+        <version>0.3</version>
     </parent>
 
     <properties>
@@ -20,9 +20,8 @@
         </sigar-dist.classpath.directory>
         <library-dir>${project.build.directory}/lib/</library-dir>
         <sigar.version>1.6.5.132</sigar.version>
-        <dropwizard.version>0.8.2</dropwizard.version>
+        <dropwizard.version>0.9.1</dropwizard.version>
     </properties>
-
 
     <dependencies>
         <dependency>
@@ -38,18 +37,39 @@
         <dependency>
             <groupId>io.dropwizard.modules</groupId>
             <artifactId>dropwizard-java8</artifactId>
-            <version>0.8.0-1</version>
+            <version>0.9.0-1</version>
         </dependency>
         <dependency>
             <groupId>com.krillsson</groupId>
             <artifactId>sys-api-domain</artifactId>
-            <version>0.2</version>
+            <version>0.3</version>
         </dependency>
         <dependency>
             <groupId>org.hyperic</groupId>
             <artifactId>sigar</artifactId>
             <version>${sigar.version}</version>
         </dependency>
+        <dependency>
+            <groupId>net.sf.jni4net</groupId>
+            <artifactId>jni4net.j</artifactId>
+            <version>0.8.8.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/jni4net.j-0.8.8.0.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.krillsson</groupId>
+            <artifactId>OhmJniWrapper</artifactId>
+            <version>0.0.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/OhmJniWrapper.j4n.jar</systemPath>
+        </dependency>
+        <!--<dependency>
+            <groupId>org.example</groupId>
+            <artifactId>iamajar</artifactId>
+            <version>0.8.8.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/ohmwrapper/jni4net.j-0.8.8.0.jar</systemPath>
+        </dependency>-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -159,6 +179,22 @@
                         <id>03</id>
                         <configuration>
                             <tasks>
+                                <copy todir="${library-dir}">
+                                    <fileset dir="lib">
+                                        <include name="**/*.*"/>
+                                    </fileset>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <id>04</id>
+                        <configuration>
+                            <tasks>
                                 <delete dir="${library-dir}/hyperic-sigar-${sigar-dist.version.output}"/>
                             </tasks>
                         </configuration>
@@ -197,6 +233,7 @@
 
                                     <manifestEntries>
                                         <Main-Class>com.krillsson.sysapi.MaintenanceApplication</Main-Class>
+                                        <Class-Path>lib/jni4net.j-0.8.8.0.jar lib/OhmJniWrapper.j4n.jar</Class-Path>
                                     </manifestEntries>
                                 </transformer>
                             </transformers>

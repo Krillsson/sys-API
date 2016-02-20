@@ -1,10 +1,10 @@
 package com.krillsson.sysapi.sigar;
 
 import com.krillsson.sysapi.domain.cpu.CpuInfo;
-import com.krillsson.sysapi.domain.cpu.CpuTime;
-import com.krillsson.sysapi.domain.filesystem.FSType;
-import com.krillsson.sysapi.domain.filesystem.FileSystem;
-import com.krillsson.sysapi.domain.filesystem.FileSystemUsage;
+import com.krillsson.sysapi.domain.cpu.CpuLoad;
+import com.krillsson.sysapi.domain.drive.Drive;
+import com.krillsson.sysapi.domain.drive.FileSystemType;
+import com.krillsson.sysapi.domain.drive.FileSystemUsage;
 import com.krillsson.sysapi.domain.memory.MainMemory;
 import com.krillsson.sysapi.domain.memory.SwapSpace;
 import com.krillsson.sysapi.domain.network.NetworkInfo;
@@ -18,16 +18,15 @@ import org.hyperic.sigar.OperatingSystem;
 import java.util.List;
 
 public class SigarBeanConverter {
-    public static CpuTime fromSigarBean(CpuPerc cp) {
-        return new CpuTime(
-                cp.getUser(), cp.getSys(),
+    public static CpuLoad fromSigarBean(CpuPerc cp) {
+        return new CpuLoad(cp.getUser(), cp.getSys(),
                 cp.getNice(), cp.getWait(),
                 cp.getIdle(), cp.getIrq());
     }
 
-    public static FileSystem fromSigarBean(org.hyperic.sigar.FileSystem fs, FileSystemUsage usage) {
-        return new FileSystem(fs.getDevName(), fs.getDirName(), //
-                FSType.values()[fs.getType()], fs.getSysTypeName(), usage);
+    public static Drive fromSigarBean(org.hyperic.sigar.FileSystem fs, FileSystemUsage usage) {
+        return new Drive(fs.getDevName(), fs.getDirName(), //
+                FileSystemType.values()[fs.getType()], fs.getSysTypeName(), usage);
     }
 
     public static CpuInfo fromSigarBean(org.hyperic.sigar.CpuInfo sigarCpuInfo) {

@@ -1,11 +1,9 @@
 package com.krillsson.sysapi.domain.cpu;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-/**
-* Created by christian on 2014-11-30.
-*/
-public final class CpuTime {
-
+public final class CpuLoad
+{
+    private double temperature;
     private final double user;
     private final double sys;
     private final double nice;
@@ -13,10 +11,11 @@ public final class CpuTime {
     private final double idle;
     private final double irq;
 
-    public CpuTime( //
-                    double user, double sys, //
+    public CpuLoad( //
+                    double temperature, double user, double sys, //
                     double nice, double waiting, //
                     double idle, double irq) {
+        this.temperature = temperature;
         this.user = user;
         this.sys = sys;
         this.nice = nice;
@@ -25,6 +24,18 @@ public final class CpuTime {
         this.irq = irq;
     }
 
+    public CpuLoad(double user, double sys, double nice, double waiting, double idle, double irq)
+    {
+        this.user = user;
+        this.sys = sys;
+        this.nice = nice;
+        this.waiting = waiting;
+        this.idle = idle;
+        this.irq = irq;
+    }
+
+    @JsonProperty
+    public double getTemperature() {return temperature;}
     @JsonProperty
     public double user() { return user; }
     @JsonProperty
@@ -35,6 +46,12 @@ public final class CpuTime {
     public double waiting() { return waiting; }
     @JsonProperty
     public double idle() { return idle; }
+
     @JsonProperty
     public double irq() { return irq; }
+
+    public void setTemperature(double temperature)
+    {
+        this.temperature = temperature;
+    }
 }

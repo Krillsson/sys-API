@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 public class MaintenanceConfiguration extends Configuration {
+
     @Valid
     @NotNull
     @JsonProperty
@@ -16,11 +17,19 @@ public class MaintenanceConfiguration extends Configuration {
     @JsonProperty
     private String sigarLocation;
 
+    @Valid
+    @JsonProperty
+    private boolean forwardHttps;
+
     public UserConfiguration getUser() {
         return user;
     }
 
     public String getSigarLocation() {
         return sigarLocation;
+    }
+
+    public boolean forwardHttps() {
+        return forwardHttps;
     }
 }
