@@ -13,6 +13,7 @@ import com.krillsson.sysapi.domain.motherboard.Motherboard;
 import com.krillsson.sysapi.domain.network.NetworkInfo;
 import com.krillsson.sysapi.domain.network.NetworkInterfaceConfig;
 import com.krillsson.sysapi.domain.network.NetworkInterfaceSpeed;
+import com.krillsson.sysapi.domain.system.System;
 import com.krillsson.sysapi.provider.DefaultInfoProvider;
 import net.sf.jni4net.Bridge;
 import ohmwrapper.*;
@@ -20,10 +21,7 @@ import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.krillsson.sysapi.util.NullSafeOhmMonitor.nullSafe;
@@ -59,6 +57,16 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
             }
         }
         return cpu;
+    }
+
+    @Override
+    public System systemSummary(String filesystemId, String nicId) {
+        System system =  super.systemSummary(filesystemId, nicId);
+        monitorManager.Update();
+        DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
+        matchDriveProperties(singletonList(system.getMainFileSystem()), driveMonitors);
+        setSpeed(system.getMainNetworkInterface());
+        return system;
     }
 
     @Override
@@ -132,6 +140,7 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
 
     @Override
     public NetworkInfo networkInfo() {
+        monitorManager.Update();
         NetworkInfo info = super.networkInfo();
         for (NetworkInterfaceConfig conf : info.getNetworkInterfaceConfigs()) {
             setSpeed(conf);
@@ -141,13 +150,13 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
 
     @Override
     public NetworkInterfaceConfig getConfigById(String id) {
+        monitorManager.Update();
         NetworkInterfaceConfig config =  super.getConfigById(id);
         setSpeed(config);
         return config;
     }
 
     private void setSpeed(NetworkInterfaceConfig config) {
-        monitorManager.Update();
         NetworkMonitor networkMonitor = monitorManager.getNetworkMonitor();
         NicInfo[] nics = networkMonitor.getNics();
         for (NicInfo info : nics) {
