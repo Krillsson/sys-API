@@ -35,7 +35,7 @@ java -jar target/system-api.jar server dev.yml
 If you got everything working you should now be able to:
 
 ```sh
-curl -i --user user:password -H "Accept: application/json" -X GET http://localhost:8080/system
+curl -i --user user:password -H "Accept: application/json" -X GET http://localhost:8080/v1/system
 ```
 
 If you want to package everything needed to run this application in a *.zip*, *tar.gz* and *tar.bz2*:

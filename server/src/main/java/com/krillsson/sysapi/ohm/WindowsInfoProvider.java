@@ -64,6 +64,10 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
         System system =  super.systemSummary(filesystemId, nicId);
         monitorManager.Update();
         DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
+        if (monitorManager.CpuMonitors().length > 0) {
+            CpuMonitor cpuMonitor = monitorManager.CpuMonitors()[0];
+            system.getTotalCpuLoad().setTemperature(nullSafe(cpuMonitor.getPackageTemperature()).getValue());
+        }
         matchDriveProperties(singletonList(system.getMainFileSystem()), driveMonitors);
         setSpeed(system.getMainNetworkInterface());
         return system;
