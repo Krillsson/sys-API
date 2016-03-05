@@ -27,7 +27,7 @@ public class ProcessSigarTest {
     public void setUp() throws Exception {
         sigar = mock(Sigar.class);
         processSigar = new ProcessSigar(sigar);
-        process1 = new Process(process1Pid, new String[0], new ProcessExecutable(), new ProcessCreator(), new ProcessState(), new ProcessCpu(), new ProcessMemory());
+        process1 = new Process(process1Pid, "", new String[0], new ProcessExecutable(), new ProcessCreator(), new ProcessState(), new ProcessCpu(), new ProcessMemory());
 
     }
 

@@ -2,6 +2,7 @@ package com.krillsson.sysapi.sigar;
 
 import com.krillsson.sysapi.domain.processes.*;
 import com.krillsson.sysapi.domain.processes.Process;
+import org.hyperic.sigar.ProcUtil;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 import org.slf4j.Logger;
@@ -56,7 +57,7 @@ public class ProcessSigar extends SigarWrapper {
         ProcessCpu cpu = getProcessCpu(pid);
         ProcessMemory memory = getMemory(pid);
         ProcessState state = getState(pid);
-        return new Process(pid, args, executable, creator, state, cpu, memory);
+        return new Process(pid, getDescription(pid), args, executable, creator, state, cpu, memory);
     }
 
     private ProcessState getState(long pid) {
@@ -64,6 +65,15 @@ public class ProcessSigar extends SigarWrapper {
             return SigarBeanConverter.fromSigarBean(sigar.getProcState(pid));
         } catch (SigarException e) {
             return new ProcessState();
+        }
+    }
+
+    private String getDescription(long pid)
+    {
+        try {
+            return ProcUtil.getDescription(sigar, pid);
+        } catch (SigarException e) {
+            return "N/A";
         }
     }
 

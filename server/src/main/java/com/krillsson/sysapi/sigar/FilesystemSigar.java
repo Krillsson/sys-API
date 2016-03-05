@@ -43,7 +43,7 @@ public class FilesystemSigar extends SigarWrapper {
         try {
             fileSystem = Arrays.asList(fss)
                     .stream()
-                    .filter(f -> f.getDevName().toLowerCase().replace(":", "").replace("\\", "").equals(name.toLowerCase()))
+                    .filter(f -> f.getDirName().toLowerCase().replace(":", "").replace("\\", "").equals(name.toLowerCase()))
                     .map(this::convertToInternal)
                     .findFirst()
                     .get();

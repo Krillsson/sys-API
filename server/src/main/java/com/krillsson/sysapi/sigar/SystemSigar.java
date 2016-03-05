@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.sigar;
 
 
+import com.krillsson.sysapi.domain.network.NetworkInterfaceConfig;
 import com.krillsson.sysapi.domain.system.*;
 import com.krillsson.sysapi.domain.system.System;
 import org.hyperic.sigar.Sigar;
@@ -51,6 +52,8 @@ public class SystemSigar extends SigarWrapper {
 
     public System getExtendedSystem(String filesystemId, String nicId) {
         try {
+            NetworkInterfaceConfig configById = sigarKeeper.network().getConfigById(nicId);
+            configById.setNetworkInterfaceSpeed(sigarKeeper.network().getSpeed(nicId));
             return new System(
                     sigar.getNetInfo().getHostName(),
                     sigar.getUptime().getUptime(),
@@ -60,7 +63,7 @@ public class SystemSigar extends SigarWrapper {
                     sigarKeeper.memory().getRam(),
                     sigarKeeper.process().getStatistics(),
                     sigarKeeper.filesystems().getFileSystemById(filesystemId),
-                    sigarKeeper.network().getConfigById(nicId)
+                    configById
             );
         } catch (SigarException e) {
             // give up

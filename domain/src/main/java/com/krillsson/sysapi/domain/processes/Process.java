@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Process {
     private long pid;
+    private String description;
     private String[] args;
     private ProcessExecutable executable;
     private ProcessCreator creator;
@@ -11,8 +12,9 @@ public class Process {
     private ProcessCpu cpu;
     private ProcessMemory memory;
 
-    public Process(long pid, String[] args, ProcessExecutable executable, ProcessCreator creator, ProcessState state, ProcessCpu cpu, ProcessMemory memory) {
+    public Process(long pid, String description, String[] args, ProcessExecutable executable, ProcessCreator creator, ProcessState state, ProcessCpu cpu, ProcessMemory memory) {
         this.pid = pid;
+        this.description = description;
         this.args = args;
         this.executable = executable;
         this.creator = creator;
@@ -24,6 +26,11 @@ public class Process {
     @JsonProperty
     public long getPid() {
         return pid;
+    }
+
+    @JsonProperty
+    public String getDescription() {
+        return description;
     }
 
     @JsonProperty
