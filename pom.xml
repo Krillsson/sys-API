@@ -28,6 +28,14 @@
             <name>jni4net release repository</name>
             <url>http://jni4net.googlecode.com/svn/mvnrepo</url>
         </repository>
+        <repository>
+            <id>Hyperic repo</id>
+            <url>http://maven.hyperic.org/</url>
+        </repository>
+        <repository>
+            <id>Hyperic repo external</id>
+            <url>http://maven.hyperic.org/external</url>
+        </repository>
     </repositories>
 <build>
     <plugins>
