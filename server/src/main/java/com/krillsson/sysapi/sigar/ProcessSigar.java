@@ -55,8 +55,8 @@ public class ProcessSigar extends SigarWrapper {
         ProcessExecutable executable = getExecutable(pid);
         ProcessCreator creator = getProcessCreator(pid);
         ProcessCpu cpu = getProcessCpu(pid);
-        ProcessMemory memory = getMemory(pid);
         ProcessState state = getState(pid);
+        ProcessMemory memory = getMemory(pid);
         return new Process(pid, getDescription(pid), args, executable, creator, state, cpu, memory);
     }
 

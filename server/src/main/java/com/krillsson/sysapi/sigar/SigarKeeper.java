@@ -15,7 +15,6 @@ public class SigarKeeper {
     private final FilesystemSigar fs = new FilesystemSigar(sigar);
     private final SystemSigar system = new SystemSigar(sigar, this);
     private final NetworkSigar network = new NetworkSigar(sigar);
-    private final ProcessSigar process = new ProcessSigar(sigar);
 
     private SigarKeeper() {
         // singleton
@@ -47,6 +46,6 @@ public class SigarKeeper {
     }
 
     public ProcessSigar process() {
-        return process;
+        return new ProcessSigar(new Sigar());
     }
 }
