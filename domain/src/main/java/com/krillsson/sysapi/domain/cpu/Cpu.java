@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.domain.cpu;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.krillsson.sysapi.domain.processes.ProcessStatistics;
 
 import java.util.List;
 
@@ -13,17 +14,7 @@ public class Cpu {
     private CpuInfo cpuInfo;
     private CpuLoad totalCpuLoad;
     private List<CpuLoad> cpuLoadPerCore;
-
-    public Cpu(CpuInfo cpuInfo, double systemUsagePercent, double voltage, double temperature, double fanRpm, double fanPercent, CpuLoad totalCpuLoad, List<CpuLoad> cpuLoadPerCore) {
-        this.cpuInfo = cpuInfo;
-        this.systemUsagePercent = systemUsagePercent;
-        this.voltage = voltage;
-        this.temperature = temperature;
-        this.fanRpm = fanRpm;
-        this.fanPercent = fanPercent;
-        this.totalCpuLoad = totalCpuLoad;
-        this.cpuLoadPerCore = cpuLoadPerCore;
-    }
+    private ProcessStatistics processStatistics;
 
     public Cpu(CpuInfo cpuInfo, double v, CpuLoad cpuLoad, List<CpuLoad> cpuLoads)
     {
@@ -73,6 +64,11 @@ public class Cpu {
     }
 
     @JsonProperty
+    public ProcessStatistics getProcessStatistics() {
+        return processStatistics;
+    }
+
+    @JsonProperty
     public List<CpuLoad> getCpuLoadPerCore() {
         return cpuLoadPerCore;
     }
@@ -95,5 +91,9 @@ public class Cpu {
     public void setFanPercent(double fanPercent)
     {
         this.fanPercent = fanPercent;
+    }
+
+    public void setStatistics(ProcessStatistics processStatistics) {
+        this.processStatistics = processStatistics;
     }
 }

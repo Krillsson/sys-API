@@ -20,7 +20,7 @@ public class CpuSigar extends SigarWrapper {
     public Cpu getCpu() {
 
         List<CpuLoad> cpuLoads = cpuTimesPerCore(cpuPercList());
-        return new Cpu(cpuInfo(), cpuTimeSysPercent(cpuLoads),
+        return  new Cpu(cpuInfo(), cpuTimeSysPercent(cpuLoads),
                 totalCpuTime(), cpuLoads);
     }
 

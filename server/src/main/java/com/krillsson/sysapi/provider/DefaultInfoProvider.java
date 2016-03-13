@@ -51,7 +51,9 @@ public class DefaultInfoProvider implements InfoProvider
     @Override
     public Cpu cpu()
     {
-        return sigar.cpu().getCpu();
+        Cpu cpu = sigar.cpu().getCpu();
+        cpu.setStatistics(statistics());
+        return cpu;
     }
 
     @Override
