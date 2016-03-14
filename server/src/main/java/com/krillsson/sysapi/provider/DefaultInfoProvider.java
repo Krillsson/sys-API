@@ -136,6 +136,11 @@ public class DefaultInfoProvider implements InfoProvider
     }
 
     @Override
+    public long getThisProcessPid() {
+        return sigar.pid();
+    }
+
+    @Override
     public List<Gpu> gpus()
     {
        throw new RuntimeException("Sorry, not implemented");

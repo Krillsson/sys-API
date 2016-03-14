@@ -51,4 +51,11 @@ public class ProcessResource extends Resource {
     public ProcessStatistics getProcessStatistics(@Auth UserConfiguration user){
         return provider.statistics();
     }
+
+    @Path("thispid")
+    @GET
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public long getThisPid(@Auth UserConfiguration user){
+        return provider.getThisProcessPid();
+    }
 }

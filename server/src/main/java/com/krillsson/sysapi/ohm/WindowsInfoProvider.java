@@ -2,10 +2,7 @@ package com.krillsson.sysapi.ohm;
 
 import com.krillsson.sysapi.domain.cpu.Cpu;
 import com.krillsson.sysapi.domain.cpu.CpuLoad;
-import com.krillsson.sysapi.domain.drive.Drive;
-import com.krillsson.sysapi.domain.drive.DriveHealth;
-import com.krillsson.sysapi.domain.drive.DriveLoad;
-import com.krillsson.sysapi.domain.drive.FileSystemType;
+import com.krillsson.sysapi.domain.drive.*;
 import com.krillsson.sysapi.domain.gpu.Gpu;
 import com.krillsson.sysapi.domain.gpu.GpuInfo;
 import com.krillsson.sysapi.domain.gpu.GpuLoad;
@@ -21,7 +18,10 @@ import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.krillsson.sysapi.util.NullSafeOhmMonitor.nullSafe;
@@ -39,6 +39,7 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
     @Override
     public Cpu cpu() {
         Cpu cpu = super.cpu();
+        cpu.setStatistics(statistics());
         monitorManager.Update();
         if (monitorManager.CpuMonitors().length > 0) {
             CpuMonitor cpuMonitor = monitorManager.CpuMonitors()[0];
@@ -196,9 +197,10 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
                     if (driveNamesAreEqual(driveMonitor, drive)) {
                         drive.setHealth(new DriveHealth(nullSafe(driveMonitor.getTemperature()).getValue(),
                                 nullSafe(driveMonitor.getRemainingLife()).getValue(),
-                                Arrays.asList(nullSafe(driveMonitor.getLifecycleData())).stream().collect(Collectors.toMap(
-                                        OHMSensor::getLabel,
-                                        OHMSensor::getValue))));
+                                Arrays.asList(nullSafe(driveMonitor.getLifecycleData()))
+                                        .stream()
+                                        .map(l -> new LifecycleData(l.getLabel(), l.getValue()))
+                                        .collect(Collectors.toList())));
                         drive.setLoad(new DriveLoad(driveMonitor.getReadRate(), driveMonitor.getWriteRate()));
                         drive.setDeviceName(driveMonitor.getName());
                     }

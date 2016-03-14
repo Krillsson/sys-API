@@ -2,15 +2,16 @@ package com.krillsson.sysapi.domain.drive;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
 import java.util.Map;
 
 public class DriveHealth
 {
     private double temperature;
     private double remainingLifePercent;
-    private Map<String, Double> lifecycleData;
+    private List<LifecycleData> lifecycleData;
 
-    public DriveHealth(double temperature, double remainingLifePercent, Map<String, Double> lifecycleData)
+    public DriveHealth(double temperature, double remainingLifePercent, List<LifecycleData> lifecycleData)
     {
         this.temperature = temperature;
         this.remainingLifePercent = remainingLifePercent;
@@ -28,7 +29,7 @@ public class DriveHealth
         return remainingLifePercent;
     }
     @JsonProperty
-    public Map<String, Double> getLifecycleData()
+    public List<LifecycleData> getLifecycleData()
     {
         return lifecycleData;
     }
