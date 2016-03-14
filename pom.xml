@@ -19,7 +19,7 @@
     </properties>
 
     <repositories>
-        <!--<repository>
+        <repository>
             <id>JBoss Thirdparty Uploads</id>
             <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads</url>
         </repository>
@@ -35,10 +35,6 @@
         <repository>
             <id>Hyperic repo external</id>
             <url>http://maven.hyperic.org/external</url>
-        </repository>-->
-        <repository>
-            <id>clojars.org</id>
-            <url>http://clojars.org/repo</url>
         </repository>
     </repositories>
 <build>
