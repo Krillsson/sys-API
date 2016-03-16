@@ -196,6 +196,7 @@
                                     <manifestEntries>
                                         <Main-Class>com.krillsson.sysapi.MaintenanceApplication</Main-Class>
                                         <Class-Path>lib/jni4net.j-0.8.8.0.jar lib/OhmJniWrapper.j4n.jar</Class-Path>
+                                        <Version>${project.version}</Version>
                                     </manifestEntries>
                                 </transformer>
                             </transformers>

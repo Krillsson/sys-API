@@ -23,8 +23,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.util.EnumSet;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
@@ -82,6 +86,7 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         environment.jersey().register(new UsersResource(provider));
         environment.jersey().register(new GpuResource(provider));
         environment.jersey().register(new MotherboardResource(provider));
+        environment.jersey().register(new MetaInfoResource(getVersionFromManifest(), provider));
 
         environment.healthChecks().register("Sigar", new SigarLoadingHealthCheck());
     }
@@ -126,5 +131,19 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         }), "/*", EnumSet.of(DispatcherType.REQUEST));
     }
 
-
+    String getVersionFromManifest() throws IOException {
+        Class clazz = MaintenanceApplication.class;
+        String className = clazz.getSimpleName() + ".class";
+        String classPath = clazz.getResource(className).toString();
+        if (!classPath.startsWith("jar")) {
+            // Class not from JAR
+            LOGGER.error("Unable to determine version");
+            return "";
+        }
+        String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1) +
+                "/META-INF/MANIFEST.MF";
+        Manifest manifest = new Manifest(new URL(manifestPath).openStream());
+        Attributes attr = manifest.getMainAttributes();
+        return attr.getValue("Version");
+    }
 }
