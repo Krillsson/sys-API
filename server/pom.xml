@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.krillsson</groupId>
         <artifactId>sys-api</artifactId>
-        <version>0.3</version>
+        <version>0.4</version>
     </parent>
 
     <properties>
@@ -38,7 +38,7 @@
         <dependency>
             <groupId>com.krillsson</groupId>
             <artifactId>sys-api-domain</artifactId>
-            <version>0.3</version>
+            <version>0.4</version>
         </dependency>
         <dependency>
             <groupId>org.hyperic</groupId>
