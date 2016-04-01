@@ -10,6 +10,7 @@ public class SigarKeeper {
     }
 
     private final Sigar sigar = new Sigar();
+    private Sigar secondSigar = new Sigar();
     private final CpuSigar cpu = new CpuSigar(sigar);
     private final MemorySigar memory = new MemorySigar(sigar);
     private final FilesystemSigar fs = new FilesystemSigar(sigar);
@@ -46,6 +47,6 @@ public class SigarKeeper {
     }
 
     public ProcessSigar process() {
-        return new ProcessSigar(new Sigar());
+        return new ProcessSigar(secondSigar);
     }
 }

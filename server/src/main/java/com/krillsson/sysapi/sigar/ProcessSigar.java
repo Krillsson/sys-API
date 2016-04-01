@@ -2,6 +2,7 @@ package com.krillsson.sysapi.sigar;
 
 import com.krillsson.sysapi.domain.processes.*;
 import com.krillsson.sysapi.domain.processes.Process;
+import org.hyperic.sigar.ProcCpu;
 import org.hyperic.sigar.ProcUtil;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
@@ -105,7 +106,8 @@ public class ProcessSigar extends SigarWrapper {
 
     private ProcessCpu getProcessCpu(long pid) {
         try {
-            return SigarBeanConverter.fromSigarBean(sigar.getProcCpu(pid));
+            ProcCpu procCpu = sigar.getProcCpu(pid);
+            return SigarBeanConverter.fromSigarBean(procCpu);
         } catch (SigarException e) {
             return new ProcessCpu();
         }
