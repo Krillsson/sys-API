@@ -173,12 +173,18 @@
                         <filter>
                             <artifact>*:*</artifact>
                             <excludes>
+                                <exclude>org.hyperic:sigar:zip:libs-a</exclude>
                                 <exclude>META-INF/*.SF</exclude>
                                 <exclude>META-INF/*.DSA</exclude>
                                 <exclude>META-INF/*.RSA</exclude>
                             </excludes>
                         </filter>
                     </filters>
+                    <artifactSet>
+                        <excludes>
+                            <exclude>org.hyperic:sigar:zip:libs-a</exclude>
+                        </excludes>
+                    </artifactSet>
                 </configuration>
                 <executions>
                     <execution>
