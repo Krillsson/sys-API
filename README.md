@@ -109,6 +109,8 @@ Due to the fact that OpenHardwareMonitor extend the functionality of the REST ap
     GET     /system/jvm
     GET     /system/operatingsystem
     GET     /system/uptime
+    GET     /meta/version
+    GET     /meta/pid
 
 ## Windows only:
 
