@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<BorderPane id="BorderPane" fx:controller="com.krillsson.sysapi.gui.Controller" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml">
+   <bottom>
+      <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: linear-gradient(to bottom, paleturquoise, azure, paleturquoise);&#10;" text="(56, 32)" textAlignment="LEFT" BorderPane.alignment="CENTER" />
+   </bottom>
+   <center>
+      <SplitPane focusTraversable="true" prefHeight="160.0" prefWidth="200.0">
+         <items>
+            <TextArea prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #3D3F40;" fx:id="loggingTextArea"/>
+         </items>
+      </SplitPane>
+   </center>
+   <top>
+      <VBox prefHeight="-1.0" prefWidth="-1.0">
+         <children>
+            <MenuBar>
+               <menus>
+                  <Menu mnemonicParsing="false" text="File">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Close" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Edit">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Delete" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Help">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="About" />
+                     </items>
+                  </Menu>
+               </menus>
+            </MenuBar>
+            <ToolBar>
+               <items>
+                  <Button mnemonicParsing="false" style="-fx-graphic: url('http://icons.iconarchive.com/icons/custom-icon-design/pretty-office-9/24/open-file-icon.png');" text="" />
+                  <Button mnemonicParsing="false" style="-fx-graphic: url('http://icons.iconarchive.com/icons/custom-icon-design/pretty-office-7/24/Save-icon.png');" text="" />
+               </items>
+            </ToolBar>
+         </children>
+      </VBox>
+   </top>
+</BorderPane>

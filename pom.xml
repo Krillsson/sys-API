@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>gui</module>
         <module>server</module>
         <module>domain</module>
     </modules>
