@@ -1,10 +1,15 @@
 package com.krillsson.sysapi.gui;
 
+import ch.qos.logback.classic.Logger;
 import com.krillsson.sysapi.MaintenanceApplication;
+import com.krillsson.sysapi.gui.logback.TextAreaAppender;
+import io.dropwizard.logging.DefaultLoggingFactory;
+import io.dropwizard.logging.LoggingFactory;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,7 +23,6 @@ public class Controller {
 
     @FXML
     public void initialize() {
-
         startDropwizard();
         initLogger();
     }
@@ -38,5 +42,6 @@ public class Controller {
 
     private void initLogger() {
         loggingTextArea.appendText("Initializing...");
+        TextAreaAppender.setTextArea(loggingTextArea);
     }
 }

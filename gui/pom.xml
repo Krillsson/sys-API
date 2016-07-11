@@ -20,16 +20,46 @@
             <groupId>com.krillsson</groupId>
             <artifactId>sys-api-server</artifactId>
             <version>0.4</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.krillsson</groupId>
+            <artifactId>sys-api-server</artifactId>
+            <version>0.4</version>
+            <type>zip</type>
+            <classifier>bin</classifier>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-server</id>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/jfx/lib</outputDirectory>
+                            <includeGroupIds>org.hyperic</includeGroupIds>
+                            <includeArtifactIds>sigar</includeArtifactIds>
+                            <includeTypes>zip</includeTypes>
+                            <excludeTransitive>true</excludeTransitive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>com.zenjava</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>8.1.4</version>
                 <configuration>
+                    <vendor>Krillsson</vendor>
                     <mainClass>com.krillsson.sysapi.gui.Main</mainClass>
                 </configuration>
                 <executions>
