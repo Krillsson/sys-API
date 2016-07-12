@@ -16,7 +16,7 @@
    <center>
       <SplitPane focusTraversable="true" prefHeight="300.0" prefWidth="400.0">
          <items>
-            <TextArea fx:id="loggingTextArea" prefHeight="300.0" prefWidth="400.0" style="-fx-background-color: #3D3F40;" />
+            <ListView fx:id="loggingTextArea"  style="-fx-background-color: #3D3F40;"/>
          </items>
       </SplitPane>
    </center>

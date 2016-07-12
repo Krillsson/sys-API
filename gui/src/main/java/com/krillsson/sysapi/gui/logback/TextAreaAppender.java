@@ -3,13 +3,23 @@ package com.krillsson.sysapi.gui.logback;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 import javafx.application.Platform;
-import javafx.scene.control.TextArea;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.ListView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class TextAreaAppender extends AppenderBase<ILoggingEvent> {
-    private static volatile TextArea textArea = null;
 
-    public static void setTextArea(final TextArea textArea) {
-        TextAreaAppender.textArea = textArea;
+    private static volatile ListView list = null;
+    static ObservableList<String> values = FXCollections.observableArrayList();
+
+
+    public static void setList(final ListView list) {
+        TextAreaAppender.list = list;
+        list.setItems(values);
     }
 
     @Override
@@ -22,14 +32,10 @@ public class TextAreaAppender extends AppenderBase<ILoggingEvent> {
             Platform.runLater(new Runnable() {
                 public void run() {
                     try {
-                        if (textArea != null) {
-                            if (textArea.getText().length() == 0) {
-                                textArea.setText(message);
-                            } else {
-                                textArea.selectEnd();
-                                textArea.insertText(textArea.getText().length(),
-                                        message);
-                            }
+                        if (list != null) {
+                            values.add(message);
+                            list.refresh();
+                            list.scrollTo(values.size() - 1);
                         }
                     } catch (final Throwable t) {
                         System.out.println("Unable to append log to text area: "

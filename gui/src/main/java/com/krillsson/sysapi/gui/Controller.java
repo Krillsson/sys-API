@@ -2,9 +2,8 @@ package com.krillsson.sysapi.gui;
 
 import com.krillsson.sysapi.MaintenanceApplication;
 import com.krillsson.sysapi.gui.logback.TextAreaAppender;
-import io.dropwizard.logging.DefaultLoggingFactory;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.ListView;
 import org.slf4j.Logger;
 
 import java.awt.event.ActionEvent;
@@ -19,7 +18,7 @@ public class Controller {
     private static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @FXML
-    private TextArea loggingTextArea;
+    private ListView loggingTextArea;
 
     @FXML
     public void initialize() {
@@ -53,6 +52,6 @@ public class Controller {
     }
 
     private void initLogger() {
-        TextAreaAppender.setTextArea(loggingTextArea);
+        TextAreaAppender.setList(loggingTextArea);
     }
 }
