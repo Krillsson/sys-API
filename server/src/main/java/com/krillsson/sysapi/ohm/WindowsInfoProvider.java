@@ -62,7 +62,7 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
 
     @Override
     public System systemSummary(String filesystemId, String nicId) {
-        System system =  super.systemSummary(filesystemId, nicId);
+        System system = super.systemSummary(filesystemId, nicId);
         monitorManager.Update();
         DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
         if (monitorManager.CpuMonitors().length > 0) {
@@ -156,7 +156,7 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
     @Override
     public NetworkInterfaceConfig getConfigById(String id) {
         monitorManager.Update();
-        NetworkInterfaceConfig config =  super.getConfigById(id);
+        NetworkInterfaceConfig config = super.getConfigById(id);
         setSpeed(config);
         return config;
     }
@@ -166,7 +166,7 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
         NicInfo[] nics = networkMonitor.getNics();
         for (NicInfo info : nics) {
             if (info.getPhysicalAddress().equals(config.getHwaddr())) {
-                config.setNetworkInterfaceSpeed(new NetworkInterfaceSpeed((long)(info.getInBandwidth().getValue() * 1000), (long)(info.getOutBandwidth().getValue() * 1000)));
+                config.setNetworkInterfaceSpeed(new NetworkInterfaceSpeed((long) (info.getInBandwidth().getValue() * 1000), (long) (info.getOutBandwidth().getValue() * 1000)));
             }
         }
     }
@@ -235,23 +235,29 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
             LOGGER.error("Trouble while initializing JNI4Net Bridge. Do I have admin privileges?");
             throw new RuntimeException("Unable to initialize JNI4Net Bridge.", e);
         }
-        File ohmJniWrapperDll;
-        File ohmJniWrapperJ4nDll;
-        File openHardwareMonitorLibDll;
-        if (new File("server/lib/OhmJniWrapper.dll").exists()) {
-            //For testing
-            ohmJniWrapperDll = new File("server/lib/OhmJniWrapper.dll");
-            ohmJniWrapperJ4nDll = new File("server/lib/OhmJniWrapper.j4n.dll");
-            openHardwareMonitorLibDll = new File("server/lib/OpenHardwareMonitorLib.dll");
-        }
-        else if (new File("../server/lib/OhmJniWrapper.dll").exists()) {
-            //For testing
-            ohmJniWrapperDll = new File("../server/lib/OhmJniWrapper.dll");
-            ohmJniWrapperJ4nDll = new File("../server/lib/OhmJniWrapper.j4n.dll");
-            openHardwareMonitorLibDll = new File("../server/lib/OpenHardwareMonitorLib.dll");
-        }
-        else {
+        File ohmJniWrapperDll = null;
+        File ohmJniWrapperJ4nDll = null;
+        File openHardwareMonitorLibDll = null;
+
+        String separator = java.lang.System.getProperty("file.separator");
+        String libLocation = new File(this
+                .getClass()
+                .getProtectionDomain()
+                .getCodeSource()
+                .getLocation()
+                .getFile())
+                .getParent()
+                + separator
+                + "lib"
+                + separator;
+
+        if (new File(libLocation + "OhmJniWrapper.dll").exists()) {
             //For deployment
+            ohmJniWrapperDll = new File(libLocation + "OhmJniWrapper.dll");
+            ohmJniWrapperJ4nDll = new File(libLocation + "OhmJniWrapper.j4n.dll");
+            openHardwareMonitorLibDll = new File(libLocation + "OpenHardwareMonitorLib.dll");
+        } else if (new File("lib/OhmJniWrapper.dll").exists()) {
+            //For testing
             ohmJniWrapperDll = new File("lib/OhmJniWrapper.dll");
             ohmJniWrapperJ4nDll = new File("lib/OhmJniWrapper.j4n.dll");
             openHardwareMonitorLibDll = new File("lib/OpenHardwareMonitorLib.dll");

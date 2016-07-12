@@ -24,7 +24,7 @@ public class Main extends Application {
         URL resource = getClass().getResource("/fxml/main.fxml");
         Parent root = FXMLLoader.load(resource);
         primaryStage.setTitle("Sys-Api Server");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setScene(new Scene(root, 400, 350));
         primaryStage.show();
     }
 

@@ -61,7 +61,7 @@
                         <id>03</id>
                         <configuration>
                             <tasks>
-                                <copy todir="${project.build.directory}/jfx/app/lib">
+                                <copy todir="${project.build.directory}/jfx/app/lib/lib">
                                     <fileset dir="${project.build.directory}/unpack/lib">
                                         <include name="**/*.*"/>
                                     </fileset>
@@ -81,7 +81,7 @@
             <plugin>
                 <groupId>com.zenjava</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
-                <version>8.1.4</version>
+                <version>8.5.0</version>
                 <configuration>
                     <vendor>Krillsson</vendor>
                     <mainClass>com.krillsson.sysapi.gui.Main</mainClass>
