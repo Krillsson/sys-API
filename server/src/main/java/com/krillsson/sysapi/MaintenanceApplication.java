@@ -11,6 +11,7 @@ import com.krillsson.sysapi.sigar.SigarKeeper;
 
 
 import com.krillsson.sysapi.util.OperatingSystem;
+import io.dropwizard.Configuration;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
@@ -40,11 +41,11 @@ import io.dropwizard.setup.Environment;
 
 public class MaintenanceApplication extends Application<MaintenanceConfiguration> {
     private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(MaintenanceApplication.class.getSimpleName());
+    private Configuration config;
 
     public static void main(String[] args) throws Exception {
         new MaintenanceApplication().run(args);
     }
-
 
     @Override
     public String getName() {
@@ -58,6 +59,7 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
 
     @Override
     public void run(MaintenanceConfiguration config, Environment environment) throws Exception {
+        this.config = config;
         System.setProperty("org.hyperic.sigar.path", libLocation(config));
         SigarKeeper sigarKeeper = SigarKeeper.getInstance();
         InfoProviderFactory infoProviderFactory = InfoProviderFactory.initialize(OperatingSystem.getCurrentOperatingSystem());
@@ -109,7 +111,7 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         }
     }
 
-    void addHttpsForward(ServletContextHandler handler) {
+    private void addHttpsForward(ServletContextHandler handler) {
         handler.addFilter(new FilterHolder(new Filter() {
 
             public void init(FilterConfig filterConfig) throws ServletException {
@@ -131,7 +133,7 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         }), "/*", EnumSet.of(DispatcherType.REQUEST));
     }
 
-    String getVersionFromManifest() throws IOException {
+    private String getVersionFromManifest() throws IOException {
         Class clazz = MaintenanceApplication.class;
         String className = clazz.getSimpleName() + ".class";
         String classPath = clazz.getResource(className).toString();
@@ -145,5 +147,9 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         Manifest manifest = new Manifest(new URL(manifestPath).openStream());
         Attributes attr = manifest.getMainAttributes();
         return attr.getValue("Version");
+    }
+
+    public Configuration getConfig() {
+        return config;
     }
 }

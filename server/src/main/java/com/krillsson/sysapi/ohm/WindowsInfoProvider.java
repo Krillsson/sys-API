@@ -243,18 +243,13 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
             ohmJniWrapperDll = new File("server/lib/OhmJniWrapper.dll");
             ohmJniWrapperJ4nDll = new File("server/lib/OhmJniWrapper.j4n.dll");
             openHardwareMonitorLibDll = new File("server/lib/OpenHardwareMonitorLib.dll");
-
-
         }
         else if (new File("../server/lib/OhmJniWrapper.dll").exists()) {
             //For testing
             ohmJniWrapperDll = new File("../server/lib/OhmJniWrapper.dll");
             ohmJniWrapperJ4nDll = new File("../server/lib/OhmJniWrapper.j4n.dll");
             openHardwareMonitorLibDll = new File("../server/lib/OpenHardwareMonitorLib.dll");
-
-
         }
-
         else {
             //For deployment
             ohmJniWrapperDll = new File("lib/OhmJniWrapper.dll");
