@@ -32,7 +32,7 @@ public class Controller {
             public void run() {
                 MaintenanceApplication application = new MaintenanceApplication();
                 try {
-                    application.run("server", "C:/Users/Christian/StudioProjects/sys-api/server/dev.yml");
+                    application.run("server", "C:/Users/Christian/StudioProjects/sys-api/server/configuration.yml");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

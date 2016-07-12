@@ -30,7 +30,7 @@ You should now be able to:
 
 ```sh
 cd server
-java -jar target/system-api.jar server dev.yml
+java -jar target/system-api.jar server configuration.yml
 ```
 If you got everything working you should now be able to:
 
@@ -47,7 +47,7 @@ mvn clean package
 And the resulting files should be located in */server/target/*
 
 ## Configuration reference
-The dev.yml file is a Dropwizard configuration file. Have a look at the [Dropwizard configuration reference](https://dropwizard.github.io/dropwizard/manual/configuration.html).
+The configuration.yml file is a Dropwizard configuration file. Have a look at the [Dropwizard configuration reference](https://dropwizard.github.io/dropwizard/manual/configuration.html).
 
 Apart from the standard Dropwizard configurations you need to specify what username and password to be used for the Basic Authentication like so:
 

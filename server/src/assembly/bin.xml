@@ -53,7 +53,7 @@
         </fileSet>
         <fileSet>
             <includes>
-                <include>dev.yml</include>
+                <include>configuration.yml</include>
             </includes>
         </fileSet>
     </fileSets>
