@@ -20,7 +20,6 @@
             <groupId>com.krillsson</groupId>
             <artifactId>sys-api-server</artifactId>
             <version>0.4</version>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -45,11 +44,36 @@
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/jfx/lib</outputDirectory>
-                            <includeGroupIds>org.hyperic</includeGroupIds>
-                            <includeArtifactIds>sigar</includeArtifactIds>
+                            <outputDirectory>${project.build.directory}/unpack</outputDirectory>
                             <includeTypes>zip</includeTypes>
-                            <excludeTransitive>true</excludeTransitive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <id>03</id>
+                        <configuration>
+                            <tasks>
+                                <copy todir="${project.build.directory}/jfx/app/lib">
+                                    <fileset dir="${project.build.directory}/unpack/lib">
+                                        <include name="**/*.*"/>
+                                    </fileset>
+                                </copy>
+                                <copy todir="${project.build.directory}/jfx/app">
+                                    <fileset dir="${project.build.directory}/unpack">
+                                        <include name="README.md"/>
+                                        <include name="LICENSE"/>
+                                        <include name="configuration.yml"/>
+                                    </fileset>
+                                </copy>
+                            </tasks>
                         </configuration>
                     </execution>
                 </executions>
