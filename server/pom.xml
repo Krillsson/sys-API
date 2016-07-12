@@ -16,7 +16,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
             <library-dir>${project.build.directory}/lib/</library-dir>
         <sigar.version>1.6.6.14</sigar.version>
-        <dropwizard.version>0.9.1</dropwizard.version>
+        <dropwizard.version>0.9.3</dropwizard.version>
     </properties>
 
     <dependencies>
