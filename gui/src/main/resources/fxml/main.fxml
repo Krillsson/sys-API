@@ -1,54 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import java.lang.*?>
-<?import java.util.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
-
-<BorderPane id="BorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.krillsson.sysapi.gui.Controller">
-   <center>
-      <SplitPane focusTraversable="true" prefHeight="300.0" prefWidth="400.0">
-         <items>
-            <ListView fx:id="loggingTextArea"  style="-fx-background-color: #3D3F40;"/>
-         </items>
-      </SplitPane>
-   </center>
-   <top>
-      <VBox prefHeight="-1.0" prefWidth="-1.0">
-         <children>
-            <MenuBar>
-               <menus>
-                  <Menu mnemonicParsing="false" text="File">
-                     <items>
-                        <MenuItem mnemonicParsing="false" text="Close" />
-                     </items>
-                  </Menu>
-                  <Menu mnemonicParsing="false" text="Edit">
-                     <items>
-                        <MenuItem mnemonicParsing="false" text="Delete" />
-                     </items>
-                  </Menu>
-                  <Menu mnemonicParsing="false" text="Help">
-                     <items>
-                        <MenuItem mnemonicParsing="false" text="About" />
-                     </items>
-                  </Menu>
-               </menus>
-            </MenuBar>
-            <ToolBar>
-               <items>
-                  <Button mnemonicParsing="false" style="-fx-graphic: url('http://icons.iconarchive.com/icons/custom-icon-design/pretty-office-9/24/open-file-icon.png');" text="" />
-                  <Button mnemonicParsing="false" style="-fx-graphic: url('http://icons.iconarchive.com/icons/custom-icon-design/pretty-office-7/24/Save-icon.png');" text="" />
-               </items>
-            </ToolBar>
-         </children>
-      </VBox>
-   </top>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<BorderPane id="BorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="800.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.krillsson.sysapi.gui.Controller">
+    <center>
+        <SplitPane focusTraversable="true" prefHeight="300.0" prefWidth="400.0">
+            <items>
+                <ListView fx:id="loggingTextArea"/>
+            </items>
+        </SplitPane>
+    </center>
+    <top>
+        <VBox prefHeight="-1.0" prefWidth="-1.0">
+            <children>
+                <MenuBar>
+                    <menus>
+                        <Menu mnemonicParsing="false" text="File">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Close"/>
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Edit">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Delete"/>
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Help">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="About"/>
+                            </items>
+                        </Menu>
+                    </menus>
+                </MenuBar>
+                <ToolBar>
+                    <items>
+                        <Button mnemonicParsing="false" fx:id="playButton" text=""/>
+                        <Button mnemonicParsing="false" fx:id="restartButton" text=""/>
+                        <Button mnemonicParsing="false" fx:id="stopButton" text=""/>
+                    </items>
+                </ToolBar>
+            </children>
+        </VBox>
+    </top>
 </BorderPane>
