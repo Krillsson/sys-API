@@ -41,6 +41,7 @@ import io.dropwizard.setup.Environment;
 
 public class MaintenanceApplication extends Application<MaintenanceConfiguration> {
     private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(MaintenanceApplication.class.getSimpleName());
+    private Environment environment;
 
     public static void main(String[] args) throws Exception {
         new MaintenanceApplication().run(args);
@@ -58,6 +59,7 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
 
     @Override
     public void run(MaintenanceConfiguration config, Environment environment) throws Exception {
+        this.environment = environment;
         System.setProperty("org.hyperic.sigar.path", libLocation(config));
         SigarKeeper sigarKeeper = SigarKeeper.getInstance();
         InfoProviderFactory infoProviderFactory = InfoProviderFactory.initialize(OperatingSystem.getCurrentOperatingSystem());
@@ -147,4 +149,7 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         return attr.getValue("Version");
     }
 
+    public Environment getEnvironment() {
+        return environment;
+    }
 }
