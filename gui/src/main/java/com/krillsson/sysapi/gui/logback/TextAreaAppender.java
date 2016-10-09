@@ -34,8 +34,6 @@ public class TextAreaAppender extends AppenderBase<ILoggingEvent> {
                     try {
                         if (list != null) {
                             values.add(message);
-                            list.refresh();
-                            list.scrollTo(values.size() - 1);
                         }
                     } catch (final Throwable t) {
                         System.out.println("Unable to append log to text area: "
@@ -44,7 +42,7 @@ public class TextAreaAppender extends AppenderBase<ILoggingEvent> {
                 }
             });
         } catch (final IllegalStateException e) {
-            // ignore case when the platform hasn't yet been iniitialized
+            // ignore case when the platform hasn't yet been initialized
         }
     }
 }
