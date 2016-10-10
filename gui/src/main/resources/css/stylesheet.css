@@ -1,0 +1,21 @@
+.list-cell:filled:selected:focused, .list-cell:filled:selected {
+    -fx-background-color: linear-gradient(#328BDB 0%, #207BCF 25%, #1973C9 75%, #0A65BF 100%);
+    -fx-text-fill: white;
+}
+
+.list-cell:even {
+    -fx-background-color: #eceeef;
+}
+.list-cell:odd {
+    -fx-background-color: white;
+}
+#playButton {
+    -fx-graphic: url("../graphics/media-playback-start.png");
+}
+#restartButton {
+    -fx-graphic: url("../graphics/view-refresh.png");
+}
+#stopButton {
+    -fx-graphic: url("../graphics/process-stop.png");
+}
+

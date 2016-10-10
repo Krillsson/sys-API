@@ -10,12 +10,14 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>gui</module>
         <module>server</module>
         <module>domain</module>
     </modules>
 
     <properties>
         <main.basedir>${project.basedir}</main.basedir>
+        <dropwizard.version>0.9.3</dropwizard.version>
     </properties>
 
     <repositories>
