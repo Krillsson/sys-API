@@ -7,11 +7,7 @@
             prefHeight="800.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.krillsson.sysapi.gui.Controller">
     <center>
-        <SplitPane focusTraversable="true" prefHeight="300.0" prefWidth="400.0">
-            <items>
                 <ListView fx:id="loggingTextArea"/>
-            </items>
-        </SplitPane>
     </center>
     <top>
         <VBox prefHeight="-1.0" prefWidth="-1.0">

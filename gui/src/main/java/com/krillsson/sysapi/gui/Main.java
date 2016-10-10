@@ -18,7 +18,6 @@ import java.util.concurrent.Executors;
 
 public class Main extends Application {
 
-
     @Override
     public void start(Stage primaryStage) throws Exception{
         URL resource = getClass().getResource("/fxml/main.fxml");

@@ -16,7 +16,6 @@ public class TextAreaAppender extends AppenderBase<ILoggingEvent> {
     private static volatile ListView list = null;
     static ObservableList<String> values = FXCollections.observableArrayList();
 
-
     public static void setList(final ListView list) {
         TextAreaAppender.list = list;
         list.setItems(values);
