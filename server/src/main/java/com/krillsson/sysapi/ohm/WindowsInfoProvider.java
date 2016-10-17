@@ -61,7 +61,7 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
     }
 
     @Override
-    public System systemSummary(String filesystemId, String nicId) {
+    public System systemSummary(int filesystemId, String nicId) {
         System system = super.systemSummary(filesystemId, nicId);
         monitorManager.Update();
         DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
@@ -108,7 +108,7 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
     }
 
     @Override
-    public Drive getFileSystemById(String name) {
+    public Drive getFileSystemById(int name) {
         Drive fileSystemById = super.getFileSystemById(name);
         monitorManager.Update();
         DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();

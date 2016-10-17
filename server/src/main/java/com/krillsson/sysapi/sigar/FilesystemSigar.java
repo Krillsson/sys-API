@@ -36,19 +36,19 @@ public class FilesystemSigar extends SigarWrapper {
                 .collect(Collectors.toList());
     }
 
-    public Drive getFileSystemById(String name) {
+    public Drive getFileSystemById(int id) {
         org.hyperic.sigar.FileSystem[] fss = getSigarFilesystems();
         Drive fileSystem;
 
         try {
             fileSystem = Arrays.asList(fss)
                     .stream()
-                    .filter(f -> f.getDirName().toLowerCase().replace(":", "").replace("\\", "").equals(name.toLowerCase()))
+                    .filter(f -> f.getDirName().hashCode() == id)
                     .map(this::convertToInternal)
                     .findFirst()
                     .get();
         } catch (NoSuchElementException e) {
-            throw new IllegalArgumentException("No FS named: '" + name + "' were found");
+            throw new IllegalArgumentException("No FS with id: '" + id + "' were found");
         }
         return fileSystem;
     }

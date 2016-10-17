@@ -25,7 +25,7 @@ public class SigarBeanConverter {
     }
 
     public static Drive fromSigarBean(org.hyperic.sigar.FileSystem fs, FileSystemUsage usage) {
-        return new Drive(fs.getDevName(), fs.getDirName(), //
+        return new Drive(fs.getDevName(), fs.getDirName().hashCode(), fs.getDirName(), //
                 FileSystemType.values()[fs.getType()], fs.getSysTypeName(), usage);
     }
 

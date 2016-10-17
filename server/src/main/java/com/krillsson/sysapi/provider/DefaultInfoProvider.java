@@ -32,7 +32,7 @@ public class DefaultInfoProvider implements InfoProvider
     }
 
     @Override
-    public System systemSummary(String filesystemId, String nicId)
+    public System systemSummary(int filesystemId, String nicId)
     {
         return sigar.system().getExtendedSystem(filesystemId, nicId);
     }
@@ -75,7 +75,7 @@ public class DefaultInfoProvider implements InfoProvider
     }
 
     @Override
-    public Drive getFileSystemById(String name)
+    public Drive getFileSystemById(int name)
     {
         return sigar.filesystems().getFileSystemById(name);
     }

@@ -50,7 +50,7 @@ public class DriveResource extends Resource {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     @Path("{id}")
-    public Drive getFsById(@Auth UserConfiguration user, @PathParam("id") String id) {
+    public Drive getFsById(@Auth UserConfiguration user, @PathParam("id") int id) {
         Drive fileSystem;
         try {
             fileSystem = provider.getFileSystemById(id);

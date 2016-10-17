@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public final class Drive
 {
     private String deviceName;
+    private final int id;
     private final String mountPoint;
     private final FileSystemType genericFSType;
     private final String osSpecificFSType;
@@ -12,10 +13,11 @@ public final class Drive
     private DriveHealth health;
     private DriveLoad load;
 
-    public Drive(String deviceName, String mountPoint,
+    public Drive(String deviceName, int id, String mountPoint,
                  FileSystemType genericFSType, String osSpecificFSType,
                  FileSystemUsage usage, DriveHealth health, DriveLoad load) {
         this.deviceName = deviceName;
+        this.id = id;
         this.mountPoint = mountPoint;
         this.genericFSType = genericFSType;
         this.osSpecificFSType = osSpecificFSType;
@@ -24,13 +26,19 @@ public final class Drive
         this.load = load;
     }
 
-    public Drive(String deviceName, String mountPoint, FileSystemType genericFSType, String osSpecificFSType, FileSystemUsage usage)
+    public Drive(String deviceName, int id, String mountPoint, FileSystemType genericFSType, String osSpecificFSType, FileSystemUsage usage)
     {
         this.deviceName = deviceName;
+        this.id = id;
         this.mountPoint = mountPoint;
         this.genericFSType = genericFSType;
         this.osSpecificFSType = osSpecificFSType;
         this.usage = usage;
+    }
+
+    @JsonProperty
+    public int getId() {
+        return id;
     }
 
     @JsonProperty

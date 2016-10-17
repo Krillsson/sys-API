@@ -34,7 +34,7 @@ public class SystemResource extends Resource {
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public System getExtendedSystem(@Auth UserConfiguration user, @QueryParam("fsid") Optional<String> filesystemId, @QueryParam("nicid") Optional<String> nicId)
+    public System getExtendedSystem(@Auth UserConfiguration user, @QueryParam("fsid") Optional<Integer> filesystemId, @QueryParam("nicid") Optional<String> nicId)
     {
         if(filesystemId.isPresent() && nicId.isPresent())
         {

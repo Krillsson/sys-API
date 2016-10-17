@@ -23,7 +23,7 @@ import java.util.List;
 
 public interface InfoProvider
 {
-    System systemSummary(String filesystemId, String nicId);
+    System systemSummary(int filesystemId, String nicId);
     System system();
     Motherboard motherboard();
 
@@ -32,7 +32,7 @@ public interface InfoProvider
 
     List<Drive> drives();
     List<Drive> getFileSystemsWithCategory(FileSystemType fsType);
-    Drive getFileSystemById(String name);
+    Drive getFileSystemById(int name);
 
     MemoryInfo memoryInfo();
     MainMemory ram();

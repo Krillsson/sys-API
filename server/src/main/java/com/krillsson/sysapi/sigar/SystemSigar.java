@@ -50,7 +50,7 @@ public class SystemSigar extends SigarWrapper {
         }
     }
 
-    public System getExtendedSystem(String filesystemId, String nicId) {
+    public System getExtendedSystem(int filesystemId, String nicId) {
         try {
             NetworkInterfaceConfig configById = sigarKeeper.network().getConfigById(nicId);
             configById.setNetworkInterfaceSpeed(sigarKeeper.network().getSpeed(nicId));
