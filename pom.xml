@@ -17,7 +17,7 @@
 
     <properties>
         <main.basedir>${project.basedir}</main.basedir>
-        <dropwizard.version>0.9.3</dropwizard.version>
+        <dropwizard.version>1.0.5</dropwizard.version>
     </properties>
 
     <repositories>

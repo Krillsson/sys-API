@@ -11,5 +11,3 @@ logging:
   appenders:
        - type: console
          threshold: DEBUG
-       - type: textarea
-         threshold: DEBUG

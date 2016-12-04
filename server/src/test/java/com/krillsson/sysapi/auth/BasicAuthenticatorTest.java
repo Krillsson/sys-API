@@ -1,10 +1,11 @@
 package com.krillsson.sysapi.auth;
 
-import com.google.common.base.Optional;
 import com.krillsson.sysapi.UserConfiguration;
 import io.dropwizard.auth.basic.BasicCredentials;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 

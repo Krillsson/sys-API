@@ -1,33 +1,14 @@
 package com.krillsson.sysapi.ohm;
 
-import com.krillsson.sysapi.domain.cpu.Cpu;
-import com.krillsson.sysapi.domain.cpu.CpuLoad;
-import com.krillsson.sysapi.domain.drive.*;
-import com.krillsson.sysapi.domain.gpu.Gpu;
-import com.krillsson.sysapi.domain.gpu.GpuInfo;
-import com.krillsson.sysapi.domain.gpu.GpuLoad;
-import com.krillsson.sysapi.domain.motherboard.Motherboard;
-import com.krillsson.sysapi.domain.network.NetworkInfo;
-import com.krillsson.sysapi.domain.network.NetworkInterfaceConfig;
-import com.krillsson.sysapi.domain.network.NetworkInterfaceSpeed;
-import com.krillsson.sysapi.domain.system.System;
-import com.krillsson.sysapi.provider.DefaultInfoProvider;
 import net.sf.jni4net.Bridge;
-import ohmwrapper.*;
+import ohmwrapper.MonitorManager;
+import ohmwrapper.OHMManagerFactory;
 import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-import static com.krillsson.sysapi.util.NullSafeOhmMonitor.nullSafe;
-import static java.util.Collections.singletonList;
-
-public class WindowsInfoProvider extends DefaultInfoProvider {
+public class WindowsInfoProvider {
     private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(WindowsInfoProvider.class.getSimpleName());
 
     MonitorManager monitorManager;
@@ -35,7 +16,7 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
     public WindowsInfoProvider() {
         initBridge();
     }
-
+/*
     @Override
     public Cpu cpu() {
         Cpu cpu = super.cpu();
@@ -225,7 +206,7 @@ public class WindowsInfoProvider extends DefaultInfoProvider {
         } else {
             return false;
         }
-    }
+    }*/
 
     private void initBridge() {
         Bridge.setVerbose(true);

@@ -79,7 +79,7 @@ This project includes:
   jersey-media-jaxb under CDDL+GPL License
   jersey-repackaged-guava under CDDL+GPL License
   jersey-test-framework-core under CDDL+GPL License
-  jersey-test-framework-provider-inmemory under CDDL+GPL License
+  jersey-test-framework-processor-inmemory under CDDL+GPL License
   Jetty :: Continuation under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
   Jetty :: Http Utility under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
   Jetty :: IO Utility under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0

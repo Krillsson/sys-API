@@ -3,40 +3,32 @@ package com.krillsson.sysapi;
 
 import com.krillsson.sysapi.auth.BasicAuthenticator;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
-import com.krillsson.sysapi.health.SigarLoadingHealthCheck;
-import com.krillsson.sysapi.provider.InfoProvider;
-import com.krillsson.sysapi.provider.InfoProviderFactory;
-import com.krillsson.sysapi.resources.*;
-import com.krillsson.sysapi.sigar.SigarKeeper;
-
-
-import com.krillsson.sysapi.util.OperatingSystem;
-import io.dropwizard.Configuration;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
-import org.slf4j.Logger;
-
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.EnumSet;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
-
+import com.krillsson.sysapi.oshi.*;
+import com.krillsson.sysapi.resources.MetaInfoResource;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
+import org.slf4j.Logger;
+import oshi.SystemInfo;
+import oshi.hardware.HardwareAbstractionLayer;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.EnumSet;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 
 public class MaintenanceApplication extends Application<MaintenanceConfiguration> {
@@ -61,9 +53,6 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
     public void run(MaintenanceConfiguration config, Environment environment) throws Exception {
         this.environment = environment;
         System.setProperty("org.hyperic.sigar.path", libLocation(config));
-        SigarKeeper sigarKeeper = SigarKeeper.getInstance();
-        InfoProviderFactory infoProviderFactory = InfoProviderFactory.initialize(OperatingSystem.getCurrentOperatingSystem());
-        InfoProvider provider = infoProviderFactory.getInfoProvider();
 
         if (config.forwardHttps()) {
             addHttpsForward(environment.getApplicationContext());
@@ -77,21 +66,30 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
                         .setAuthorizer(new BasicAuthorizer(config.getUser()))
                         .buildAuthFilter();
 
+        SystemInfo si = new SystemInfo();
+
+        HardwareAbstractionLayer hal = si.getHardware();
+        oshi.software.os.OperatingSystem os = si.getOperatingSystem();
+        System.out.println(os);
+
         environment.jersey().register(new AuthDynamicFeature(userBasicCredentialAuthFilter));
         environment.jersey().register(new AuthValueFactoryProvider.Binder(UserConfiguration.class));
-        environment.jersey().register(new CpuResource(provider));
-        environment.jersey().register(new DriveResource(provider));
-        environment.jersey().register(new MemoryResource(provider));
-        environment.jersey().register(new SystemResource(provider));
-        environment.jersey().register(new NetworkResource(provider));
-        environment.jersey().register(new ProcessResource(provider));
-        environment.jersey().register(new UsersResource(provider));
-        environment.jersey().register(new GpuResource(provider));
-        environment.jersey().register(new MotherboardResource(provider));
-        environment.jersey().register(new MetaInfoResource(getVersionFromManifest(), provider));
+        environment.jersey().register(new MetaInfoResource(getVersionFromManifest()));
 
-        environment.healthChecks().register("Sigar", new SigarLoadingHealthCheck());
+        //oshi
+        environment.jersey().register(new DiskStoresResource(hal.getDiskStores()));
+        environment.jersey().register(new DisplaysResource(hal.getDisplays()));
+        environment.jersey().register(new FileSystemResource(os.getFileSystem()));
+        environment.jersey().register(new MemoryResource(hal.getMemory()));
+        environment.jersey().register(new NetworkInterfacesResource(hal.getNetworkIFs()));
+        environment.jersey().register(new PowerSourcesResource(hal.getPowerSources()));
+        environment.jersey().register(new ProcessesResource(os));
+        environment.jersey().register(new ProcessorResource(hal.getProcessor()));
+        environment.jersey().register(new SensorsResource(hal.getSensors()));
+        environment.jersey().register(new UsbDevicesResource(hal.getUsbDevices(true)));
+
     }
+
 
     private String libLocation(MaintenanceConfiguration config) {
         if (config.getSigarLocation() != null) {

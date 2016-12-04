@@ -35,14 +35,9 @@
             <version>0.9.0-1</version>
         </dependency>
         <dependency>
-            <groupId>com.krillsson</groupId>
-            <artifactId>sys-api-domain</artifactId>
-            <version>0.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hyperic</groupId>
-            <artifactId>sigar</artifactId>
-            <version>${sigar.version}</version>
+            <groupId>com.github.dblock</groupId>
+            <artifactId>oshi-core</artifactId>
+            <version>3.2</version>
         </dependency>
         <dependency>
             <groupId>net.sf.jni4net</groupId>
@@ -57,13 +52,6 @@
             <version>0.0.1</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/OhmJniWrapper.j4n.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>org.hyperic</groupId>
-            <artifactId>sigar</artifactId>
-            <version>${sigar.version}</version>
-            <type>zip</type>
-            <classifier>libs-a</classifier>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
