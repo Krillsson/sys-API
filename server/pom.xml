@@ -54,6 +54,11 @@
             <systemPath>${project.basedir}/lib/OhmJniWrapper.j4n.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>com.krillsson</groupId>
+            <artifactId>sys-api-domain</artifactId>
+            <version>0.5</version>
+        </dependency>
+        <dependency>
             <groupId>org.jhardware</groupId>
             <artifactId>jHardware</artifactId>
             <version>0.8.4</version>
