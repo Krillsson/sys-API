@@ -1,10 +1,17 @@
 package com.krillsson.sysapi;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.krillsson.sysapi.auth.BasicAuthenticator;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
+import com.krillsson.sysapi.ohm.OhmDisplayResource;
+import com.krillsson.sysapi.ohm.WindowsInfoProvider;
 import com.krillsson.sysapi.oshi.*;
 import com.krillsson.sysapi.resources.MetaInfoResource;
+import com.krillsson.sysapi.util.OperatingSystem;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -21,6 +28,7 @@ import oshi.hardware.HardwareAbstractionLayer;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Feature;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -46,7 +54,7 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
 
     @Override
     public void initialize(Bootstrap<MaintenanceConfiguration> maintenanceConfigurationBootstrap) {
-
+        maintenanceConfigurationBootstrap.getObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
     }
 
     @Override
@@ -78,7 +86,6 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
 
         //oshi
         environment.jersey().register(new DiskStoresResource(hal.getDiskStores()));
-        environment.jersey().register(new DisplaysResource(hal.getDisplays()));
         environment.jersey().register(new FileSystemResource(os.getFileSystem()));
         environment.jersey().register(new MemoryResource(hal.getMemory()));
         environment.jersey().register(new NetworkInterfacesResource(hal.getNetworkIFs()));
@@ -88,6 +95,13 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         environment.jersey().register(new SensorsResource(hal.getSensors()));
         environment.jersey().register(new UsbDevicesResource(hal.getUsbDevices(true)));
 
+        if (OperatingSystem.isWindows()) {
+            WindowsInfoProvider windowsInfoProvider = new WindowsInfoProvider();
+            environment.jersey().register(new OhmDisplayResource(hal.getDisplays(), windowsInfoProvider));
+
+        } else {
+            environment.jersey().register(new DisplaysResource(hal.getDisplays()));
+        }
     }
 
 

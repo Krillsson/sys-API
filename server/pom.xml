@@ -54,6 +54,11 @@
             <systemPath>${project.basedir}/lib/OhmJniWrapper.j4n.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>org.jhardware</groupId>
+            <artifactId>jHardware</artifactId>
+            <version>0.8.4</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.10</version>

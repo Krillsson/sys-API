@@ -2,7 +2,9 @@ package com.krillsson.sysapi.oshi;
 
 import com.krillsson.sysapi.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
+import com.krillsson.sysapi.util.OperatingSystem;
 import io.dropwizard.auth.Auth;
+import ohmwrapper.GpuMonitor;
 import oshi.hardware.Display;
 import oshi.hardware.Sensors;
 
@@ -23,7 +25,7 @@ public class DisplaysResource {
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public Display[] getRoot(@Auth UserConfiguration user) {
+    public Object getRoot(@Auth UserConfiguration user) {
         return displays;
     }
 }

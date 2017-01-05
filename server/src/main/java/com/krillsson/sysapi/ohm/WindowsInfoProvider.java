@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.ohm;
 
 import net.sf.jni4net.Bridge;
+import ohmwrapper.GpuMonitor;
 import ohmwrapper.MonitorManager;
 import ohmwrapper.OHMManagerFactory;
 import org.slf4j.Logger;
@@ -15,6 +16,11 @@ public class WindowsInfoProvider {
 
     public WindowsInfoProvider() {
         initBridge();
+    }
+
+    public GpuMonitor[] ohmGpu() {
+        monitorManager.Update();
+        return monitorManager.GpuMonitors();
     }
 /*
     @Override
@@ -216,9 +222,44 @@ public class WindowsInfoProvider {
             LOGGER.error("Trouble while initializing JNI4Net Bridge. Do I have admin privileges?");
             throw new RuntimeException("Unable to initialize JNI4Net Bridge.", e);
         }
-        File ohmJniWrapperDll = null;
-        File ohmJniWrapperJ4nDll = null;
-        File openHardwareMonitorLibDll = null;
+
+        OHMManagerFactory factory;
+        //try loading from lib dir
+        factory = loadFromProjectDir();
+        //try loading from project dir
+        if (factory == null) {
+            factory = loadFromInstallDir();
+        }
+
+
+        try {
+            factory.init();
+            this.monitorManager = factory.GetManager();
+        } catch (
+                Exception e)
+
+        {
+            throw new RuntimeException("Unable to initialize JNI4Net Bridge. Do I have admin privileges? Crashing now", e);
+        }
+
+    }
+
+    private OHMManagerFactory loadFromProjectDir() {
+        String separator = java.lang.System.getProperty("file.separator");
+        String projectLibLocation = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().getFile()).getParentFile().getParent() + separator + "lib" + separator;
+        if (new File(projectLibLocation + "OhmJniWrapper.dll").exists()) {
+            //For deployment
+            Bridge.LoadAndRegisterAssemblyFrom(new File(projectLibLocation + "OhmJniWrapper.dll"));
+            Bridge.LoadAndRegisterAssemblyFrom(new File(projectLibLocation + "OhmJniWrapper.j4n.dll"));
+            Bridge.LoadAndRegisterAssemblyFrom(new File(projectLibLocation + "OpenHardwareMonitorLib.dll"));
+
+            return new OHMManagerFactory();
+        }
+
+        return null;
+    }
+
+    private OHMManagerFactory loadFromInstallDir() {
 
         String separator = java.lang.System.getProperty("file.separator");
         String libLocation = new File(this
@@ -234,25 +275,13 @@ public class WindowsInfoProvider {
 
         if (new File(libLocation + "OhmJniWrapper.dll").exists()) {
             //For deployment
-            ohmJniWrapperDll = new File(libLocation + "OhmJniWrapper.dll");
-            ohmJniWrapperJ4nDll = new File(libLocation + "OhmJniWrapper.j4n.dll");
-            openHardwareMonitorLibDll = new File(libLocation + "OpenHardwareMonitorLib.dll");
-        } else if (new File("lib/OhmJniWrapper.dll").exists()) {
-            //For testing
-            ohmJniWrapperDll = new File("lib/OhmJniWrapper.dll");
-            ohmJniWrapperJ4nDll = new File("lib/OhmJniWrapper.j4n.dll");
-            openHardwareMonitorLibDll = new File("lib/OpenHardwareMonitorLib.dll");
-        }
+            Bridge.LoadAndRegisterAssemblyFrom(new File(libLocation + "OhmJniWrapper.dll"));
+            Bridge.LoadAndRegisterAssemblyFrom(new File(libLocation + "OhmJniWrapper.j4n.dll"));
+            Bridge.LoadAndRegisterAssemblyFrom(new File(libLocation + "OpenHardwareMonitorLib.dll"));
 
-        Bridge.LoadAndRegisterAssemblyFrom(ohmJniWrapperDll);
-        Bridge.LoadAndRegisterAssemblyFrom(ohmJniWrapperJ4nDll);
-        Bridge.LoadAndRegisterAssemblyFrom(openHardwareMonitorLibDll);
-        try {
-            OHMManagerFactory factory = new OHMManagerFactory();
-            factory.init();
-            this.monitorManager = factory.GetManager();
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to initialize JNI4Net Bridge. Do I have admin privileges? Crashing now", e);
+            return new OHMManagerFactory();
         }
+        LOGGER.error("Unable to load OHM from installation directory {}", libLocation);
+        return null;
     }
 }
