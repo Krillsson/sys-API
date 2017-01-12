@@ -1,18 +1,36 @@
 package com.krillsson.sysapi;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import oshi.SystemInfo;
-import oshi.hardware.*;
 import oshi.hardware.CentralProcessor.TickType;
-import oshi.software.os.FileSystem;
-import oshi.software.os.OSFileStore;
-import oshi.software.os.OSProcess;
-import oshi.software.os.OperatingSystem;
+import oshi.json.SystemInfo;
+import oshi.json.hardware.Baseboard;
+import oshi.json.hardware.CentralProcessor;
+import oshi.json.hardware.ComputerSystem;
+import oshi.json.hardware.Display;
+import oshi.json.hardware.Firmware;
+import oshi.json.hardware.GlobalMemory;
+import oshi.json.hardware.HWDiskStore;
+import oshi.json.hardware.HWPartition;
+import oshi.json.hardware.HardwareAbstractionLayer;
+import oshi.json.hardware.NetworkIF;
+import oshi.json.hardware.PowerSource;
+import oshi.json.hardware.Sensors;
+import oshi.json.hardware.UsbDevice;
+import oshi.json.software.os.FileSystem;
+import oshi.json.software.os.OSFileStore;
+import oshi.json.software.os.OSProcess;
+import oshi.json.software.os.OperatingSystem;
+import oshi.json.util.PropertiesUtil;
 import oshi.software.os.OperatingSystem.ProcessSort;
 import oshi.util.FormatUtil;
 import oshi.util.Util;
@@ -22,7 +40,7 @@ import oshi.util.Util;
  *
  * @author dblock[at]dblock[dot]org
  */
-public class MaintenanceApplicationTest {
+public class SystemInfoTest {
 
     /**
      * The main method.
@@ -32,7 +50,9 @@ public class MaintenanceApplicationTest {
      */
     public static void main(String[] args) {
         // Options: ERROR > WARN > INFO > DEBUG > TRACE
-        Logger LOG = LoggerFactory.getLogger(MaintenanceApplicationTest.class);
+        System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "INFO");
+
+        Logger LOG = LoggerFactory.getLogger(SystemInfoTest.class);
 
         LOG.info("Initializing System...");
         SystemInfo si = new SystemInfo();
@@ -40,26 +60,21 @@ public class MaintenanceApplicationTest {
         HardwareAbstractionLayer hal = si.getHardware();
         OperatingSystem os = si.getOperatingSystem();
         System.out.println(os);
-
         LOG.info("Checking computer system...");
         printComputerSystem(hal.getComputerSystem());
-
+        LOG.info("Checking Processor...");
         printProcessor(hal.getProcessor());
-
         LOG.info("Checking Memory...");
         printMemory(hal.getMemory());
-
         LOG.info("Checking CPU...");
         printCpu(hal.getProcessor());
-
-        LOG.info("Checking Processes...");
-        printProcesses(os, hal.getMemory());
-
+        LOG.info("Checking Power sources...");
+        printPowerSources(hal.getPowerSources());
         LOG.info("Checking Sensors...");
         printSensors(hal.getSensors());
 
-        LOG.info("Checking Power sources...");
-        printPowerSources(hal.getPowerSources());
+        LOG.info("Checking Processes...");
+        printProcesses(os, hal.getMemory());
 
         LOG.info("Checking Disks...");
         printDisks(hal.getDiskStores());
@@ -77,6 +92,35 @@ public class MaintenanceApplicationTest {
         // hardware: USB devices
         LOG.info("Checking USB Devices...");
         printUsbDevices(hal.getUsbDevices(true));
+
+        LOG.info("Printing JSON:");
+        // Load properties from this file on the classpath
+        Properties props = PropertiesUtil.loadProperties("oshi.json.properties");
+        // Pretty JSON
+        System.out.println(si.toPrettyJSON(props));
+        // Compact JSON
+        // System.out.println(si.toCompactJSON(props));
+    }
+
+    private static void printComputerSystem(final ComputerSystem computerSystem) {
+
+        System.out.println("manufacturer: " + computerSystem.getManufacturer());
+        System.out.println("model: " + computerSystem.getModel());
+        System.out.println("serialnumber: " + computerSystem.getSerialNumber());
+        final Firmware firmware = computerSystem.getFirmware();
+        System.out.println("firmware:");
+        System.out.println("  manufacturer: " + firmware.getManufacturer());
+        System.out.println("  name: " + firmware.getName());
+        System.out.println("  description: " + firmware.getDescription());
+        System.out.println("  version: " + firmware.getVersion());
+        System.out.println("  release date: " + (firmware.getReleaseDate() == null ? "unknown"
+                : firmware.getReleaseDate() == null ? "unknown" : FormatUtil.formatDate(firmware.getReleaseDate())));
+        final Baseboard baseboard = computerSystem.getBaseboard();
+        System.out.println("baseboard:");
+        System.out.println("  manufacturer: " + baseboard.getManufacturer());
+        System.out.println("  model: " + baseboard.getModel());
+        System.out.println("  version: " + baseboard.getVersion());
+        System.out.println("  serialnumber: " + baseboard.getSerialNumber());
     }
 
     private static void printProcessor(CentralProcessor processor) {
@@ -132,34 +176,13 @@ public class MaintenanceApplicationTest {
         System.out.println(procCpu.toString());
     }
 
-    private static void printComputerSystem(final ComputerSystem computerSystem) {
-
-        System.out.println("manufacturer: " + computerSystem.getManufacturer());
-        System.out.println("model: " + computerSystem.getModel());
-        System.out.println("serialnumber: " + computerSystem.getSerialNumber());
-        final Firmware firmware = computerSystem.getFirmware();
-        System.out.println("firmware:");
-        System.out.println("  manufacturer: " + firmware.getManufacturer());
-        System.out.println("  name: " + firmware.getName());
-        System.out.println("  description: " + firmware.getDescription());
-        System.out.println("  version: " + firmware.getVersion());
-        System.out.println("  release date: " + (firmware.getReleaseDate() == null ? "unknown"
-                : firmware.getReleaseDate() == null ? "unknown" : FormatUtil.formatDate(firmware.getReleaseDate())));
-        final Baseboard baseboard = computerSystem.getBaseboard();
-        System.out.println("baseboard:");
-        System.out.println("  manufacturer: " + baseboard.getManufacturer());
-        System.out.println("  model: " + baseboard.getModel());
-        System.out.println("  version: " + baseboard.getVersion());
-        System.out.println("  serialnumber: " + baseboard.getSerialNumber());
-    }
-
     private static void printProcesses(OperatingSystem os, GlobalMemory memory) {
         System.out.println("Processes: " + os.getProcessCount() + ", Threads: " + os.getThreadCount());
         // Sort by highest CPU
-        List<OSProcess> procs = Arrays.asList(os.getProcesses(0, ProcessSort.MEMORY));
+        List<OSProcess> procs = Arrays.asList(os.getProcesses(5, ProcessSort.CPU));
 
         System.out.println("   PID  %CPU %MEM       VSZ       RSS Name");
-        for (int i = 0; i < procs.size() && i < procs.size(); i++) {
+        for (int i = 0; i < procs.size() && i < 5; i++) {
             OSProcess p = procs.get(i);
             System.out.format(" %5d %5.1f %4.1f %9s %9s %s%n", p.getProcessID(),
                     100d * (p.getKernelTime() + p.getUserTime()) / p.getUpTime(),
@@ -247,11 +270,13 @@ public class MaintenanceApplicationTest {
             System.out.format("   IPv6: %s %n", Arrays.toString(net.getIPv6addr()));
             boolean hasData = net.getBytesRecv() > 0 || net.getBytesSent() > 0 || net.getPacketsRecv() > 0
                     || net.getPacketsSent() > 0;
-            System.out.format("   Traffic: received %s/%s; transmitted %s/%s %n",
+            System.out.format("   Traffic: received %s/%s%s; transmitted %s/%s%s %n",
                     hasData ? net.getPacketsRecv() + " packets" : "?",
                     hasData ? FormatUtil.formatBytes(net.getBytesRecv()) : "?",
+                    hasData ? " (" + net.getInErrors() + " err)" : "",
                     hasData ? net.getPacketsSent() + " packets" : "?",
-                    hasData ? FormatUtil.formatBytes(net.getBytesSent()) : "?");
+                    hasData ? FormatUtil.formatBytes(net.getBytesSent()) : "?",
+                    hasData ? " (" + net.getOutErrors() + " err)" : "");
         }
     }
 
@@ -270,5 +295,18 @@ public class MaintenanceApplicationTest {
         for (UsbDevice usbDevice : usbDevices) {
             System.out.println(usbDevice.toString());
         }
+    }
+
+    /**
+     * Test JSON
+     */
+    @Test
+    public void testJSON() {
+        // TODO: test each class independently.
+        SystemInfo si = new SystemInfo();
+        String[] compact = si.toCompactJSON().split("\\n");
+        String[] pretty = si.toPrettyJSON().split("\\n");
+        assertEquals(1, compact.length);
+        assertTrue(1 < pretty.length);
     }
 }

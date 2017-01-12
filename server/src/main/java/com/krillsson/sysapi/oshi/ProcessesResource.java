@@ -3,8 +3,9 @@ package com.krillsson.sysapi.oshi;
 import com.krillsson.sysapi.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import io.dropwizard.auth.Auth;
-import oshi.software.os.OSProcess;
-import oshi.software.os.OperatingSystem;
+import oshi.json.software.os.OSProcess;
+import oshi.json.software.os.OperatingSystem;
+
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
@@ -24,6 +25,6 @@ public class ProcessesResource {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public OSProcess[] getRoot(@Auth UserConfiguration user) {
-        return operatingSystem.getProcesses(0, OperatingSystem.ProcessSort.MEMORY);
+        return operatingSystem.getProcesses(0, oshi.software.os.OperatingSystem.ProcessSort.MEMORY);
     }
 }

@@ -1,104 +1,47 @@
 package com.krillsson.sysapi.domain.system;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.krillsson.sysapi.domain.cpu.CpuLoad;
-import com.krillsson.sysapi.domain.drive.Drive;
-import com.krillsson.sysapi.domain.memory.MainMemory;
-import com.krillsson.sysapi.domain.network.NetworkInterfaceConfig;
-import com.krillsson.sysapi.domain.processes.ProcessStatistics;
+import com.krillsson.sysapi.domain.cpu.Cpu;
+import oshi.json.hardware.*;
+import oshi.json.software.os.*;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class System {
-    private final String hostname;
-    private final double uptime;
-    private final String osName, osVersion;
-    private final CpuLoad totalCpuLoad;
-    private final MainMemory mainMemory;
-    private final ProcessStatistics processStatistics;
-    private NetworkInterfaceConfig mainNetworkInterface;
-    private Drive mainFileSystem;
+    private final OperatingSystem operatingSystem;
+    private final ComputerSystem computerSystem;
+    private final Cpu cpu;
+    private final GlobalMemory memory;
+    private final PowerSource[] powerSources;
+    private final Sensors sensors;
 
-    public System(String hostname,
-                  double uptime,
-                  String osName,
-                  String osVersion,
-                  CpuLoad totalCpuLoad,
-                  MainMemory mainMemory,
-                  ProcessStatistics processStatistics) {
-        this.hostname = hostname;
-        this.uptime = uptime;
-        this.osName = osName;
-        this.osVersion = osVersion;
-        this.totalCpuLoad = totalCpuLoad;
-        this.mainMemory = mainMemory;
-        this.processStatistics = processStatistics;
+    public System(OperatingSystem operatingSystem, ComputerSystem computerSystem, Cpu cpu, GlobalMemory memory, PowerSource[] powerSources, Sensors sensors) {
+        this.operatingSystem = operatingSystem;
+        this.computerSystem = computerSystem;
+        this.cpu = cpu;
+        this.memory = memory;
+        this.powerSources = powerSources;
+        this.sensors = sensors;
     }
 
-    public System(String hostname,
-                  double uptime,
-                  String osName,
-                  String osVersion,
-                  CpuLoad totalCpuLoad,
-                  MainMemory mainMemory,
-                  ProcessStatistics processStatistics,
-                  Drive mainFileSystem,
-                  NetworkInterfaceConfig mainNetworkInterface) {
-        this.mainFileSystem = mainFileSystem;
-        this.mainNetworkInterface = mainNetworkInterface;
-        this.processStatistics = processStatistics;
-        this.mainMemory = mainMemory;
-        this.totalCpuLoad = totalCpuLoad;
-        this.osVersion = osVersion;
-        this.osName = osName;
-        this.uptime = uptime;
-        this.hostname = hostname;
+    public ComputerSystem getComputerSystem() {
+        return computerSystem;
     }
 
-
-
-    @JsonProperty
-    public String getHostname() {
-        return hostname;
+    public OperatingSystem getOperatingSystem() {
+        return operatingSystem;
     }
 
-    @JsonProperty
-    public double getUptime() {
-        return uptime;
+    public Cpu getCpu() {
+        return cpu;
     }
 
-    @JsonProperty
-    public String getOsName() {
-        return osName;
+    public GlobalMemory getMemory() {
+        return memory;
     }
 
-    @JsonProperty
-    public String getOsVersion() {
-        return osVersion;
+    public PowerSource[] getPowerSources() {
+        return powerSources;
     }
 
-    @JsonProperty
-    public CpuLoad getTotalCpuLoad() {
-        return totalCpuLoad;
-    }
-
-    @JsonProperty
-    public ProcessStatistics getProcessStatistics() {
-        return processStatistics;
-    }
-
-    @JsonProperty
-    public MainMemory getMainMemory() {
-        return mainMemory;
-    }
-
-    @JsonProperty
-    public NetworkInterfaceConfig getMainNetworkInterface() {
-        return mainNetworkInterface;
-    }
-
-    @JsonProperty
-    public Drive getMainFileSystem() {
-        return mainFileSystem;
+    public Sensors getSensors() {
+        return sensors;
     }
 }

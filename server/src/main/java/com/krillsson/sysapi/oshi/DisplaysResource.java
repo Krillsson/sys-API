@@ -4,9 +4,7 @@ import com.krillsson.sysapi.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.util.OperatingSystem;
 import io.dropwizard.auth.Auth;
-import ohmwrapper.GpuMonitor;
-import oshi.hardware.Display;
-import oshi.hardware.Sensors;
+import oshi.json.hardware.Display;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
@@ -14,7 +12,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("displays")
+@Path("gpus")
 @Produces(MediaType.APPLICATION_JSON)
 public class DisplaysResource {
     private final Display[] displays;

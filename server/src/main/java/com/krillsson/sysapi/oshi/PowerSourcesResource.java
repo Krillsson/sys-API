@@ -3,9 +3,7 @@ package com.krillsson.sysapi.oshi;
 import com.krillsson.sysapi.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import io.dropwizard.auth.Auth;
-import oshi.hardware.PowerSource;
-import oshi.software.os.OSProcess;
-import oshi.software.os.OperatingSystem;
+import oshi.json.hardware.PowerSource;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;

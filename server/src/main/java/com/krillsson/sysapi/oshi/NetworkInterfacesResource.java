@@ -3,8 +3,7 @@ package com.krillsson.sysapi.oshi;
 import com.krillsson.sysapi.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import io.dropwizard.auth.Auth;
-import oshi.hardware.NetworkIF;
-import oshi.hardware.Sensors;
+import oshi.json.hardware.NetworkIF;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
