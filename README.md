@@ -74,7 +74,6 @@ As of now you can query _sys-api_ for
 - Available space on filesystems
 - List all network interfaces
 - Get available swap and ram
-- General information about the system, like users, uptime and hostname
 - List all current processes along with ram usage and cpu-time.
 
 ## Endpoints
