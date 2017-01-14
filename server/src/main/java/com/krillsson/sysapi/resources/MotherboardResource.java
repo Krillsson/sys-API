@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 @Path("motherboard")
 @Produces(MediaType.APPLICATION_JSON)
 public class MotherboardResource {
+
     private final ComputerSystem computerSystem;
     private final UsbDevice[] usbDevices;
 
@@ -29,4 +30,5 @@ public class MotherboardResource {
     public Motherboard getRoot(@Auth UserConfiguration user) {
         return new Motherboard(computerSystem, usbDevices);
     }
+
 }

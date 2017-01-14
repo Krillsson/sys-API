@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core;
 
+import com.krillsson.sysapi.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.domain.health.HealthData;
 import com.krillsson.sysapi.domain.gpu.Gpu;
 import com.krillsson.sysapi.domain.storage.HWDiskHealth;
@@ -42,5 +43,10 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     @Override
     public Gpu[] gpus() {
         return new Gpu[0];
+    }
+
+    @Override
+    public GpuHealth[] gpuHealths() {
+        return new GpuHealth[0];
     }
 }

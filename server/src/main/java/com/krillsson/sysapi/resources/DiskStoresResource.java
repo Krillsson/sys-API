@@ -23,6 +23,7 @@ import java.util.List;
 @Path("disks")
 @Produces(MediaType.APPLICATION_JSON)
 public class DiskStoresResource {
+
     private final HWDiskStore[] diskStores;
     private final FileSystem fileSystem;
     private final InfoProvider provider;
@@ -54,4 +55,5 @@ public class DiskStoresResource {
         }
         return null;
     }
+
 }

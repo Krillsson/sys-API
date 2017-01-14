@@ -14,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 @Path("memory")
 @Produces(MediaType.APPLICATION_JSON)
 public class MemoryResource {
+
     private GlobalMemory memory;
 
     public MemoryResource(GlobalMemory memory) {
@@ -25,4 +26,5 @@ public class MemoryResource {
     public GlobalMemory getRoot(@Auth UserConfiguration user) {
         return memory ;
     }
+
 }

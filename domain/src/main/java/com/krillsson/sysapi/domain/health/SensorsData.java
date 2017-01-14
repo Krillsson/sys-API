@@ -1,31 +1,27 @@
 package com.krillsson.sysapi.domain.health;
 
+import com.krillsson.sysapi.domain.cpu.CpuHealth;
+import com.krillsson.sysapi.domain.gpu.GpuHealth;
+
 import java.util.List;
 
 public class SensorsData {
-    private final double[] cpuTemperatures;
-    private final double cpuFanRpm;
-    private final double cpuFanPercent;
+    private final CpuHealth cpuHealth;
+    private final GpuHealth[] gpuHealths;
     private final List<HealthData> healthDatas;
 
-    public SensorsData(double[] cpuTemperatures, double cpuFanRpm, double cpuFanPercent, List<HealthData> healthDatas) {
-
-        this.cpuTemperatures = cpuTemperatures;
-        this.cpuFanRpm = cpuFanRpm;
-        this.cpuFanPercent = cpuFanPercent;
+    public SensorsData(CpuHealth cpuHealth, GpuHealth[] gpuHealths, List<HealthData> healthDatas) {
+        this.cpuHealth = cpuHealth;
+        this.gpuHealths = gpuHealths;
         this.healthDatas = healthDatas;
     }
 
-    public double[] getCpuTemperatures() {
-        return cpuTemperatures;
+    public GpuHealth[] getGpuHealths() {
+        return gpuHealths;
     }
 
-    public double getCpuFanRpm() {
-        return cpuFanRpm;
-    }
-
-    public double getCpuFanPercent() {
-        return cpuFanPercent;
+    public CpuHealth getCpuHealth() {
+        return cpuHealth;
     }
 
     public List<HealthData> getHealthDatas() {

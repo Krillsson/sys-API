@@ -4,7 +4,7 @@ import com.krillsson.sysapi.domain.health.HealthData;
 import com.krillsson.sysapi.domain.health.DataType;
 import com.krillsson.sysapi.domain.storage.HWDiskLoad;
 import com.krillsson.sysapi.domain.gpu.Gpu;
-import com.krillsson.sysapi.domain.gpu.GpuLoad;
+import com.krillsson.sysapi.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.domain.storage.HWDiskHealth;
 import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.InfoProviderBase;
@@ -230,7 +230,7 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
         final GpuMonitor[] gpuMonitors = monitorManager.GpuMonitors();
         if (gpuMonitors != null && gpuMonitors.length > 0) {
             for (GpuMonitor gpuMonitor : gpuMonitors) {
-                GpuLoad gpuLoad = new GpuLoad(
+                GpuHealth gpuHealth = new GpuHealth(
                         nullSafe(gpuMonitor.getFanRPM()).getValue(), nullSafe(gpuMonitor.getFanPercent()).getValue(), nullSafe(gpuMonitor.getTemperature()).getValue(),
                         nullSafe(gpuMonitor.getCoreLoad()).getValue(),
                         nullSafe(gpuMonitor.getMemoryClock()).getValue());
@@ -239,12 +239,28 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
                         gpuMonitor.getName(),
                         nullSafe(gpuMonitor.getCoreClock()).getValue(),
                         nullSafe(gpuMonitor.getMemoryClock()).getValue(),
-                        gpuLoad
+                        gpuHealth
                 );
                 gpus.add(gpu);
             }
         }
         return gpus.toArray(/*type reference*/new Gpu[0]);
+    }
+
+    public GpuHealth[] gpuHealths() {
+        List<GpuHealth> gpus = new ArrayList<>();
+        monitorManager.Update();
+        final GpuMonitor[] gpuMonitors = monitorManager.GpuMonitors();
+        if (gpuMonitors != null && gpuMonitors.length > 0) {
+            for (GpuMonitor gpuMonitor : gpuMonitors) {
+                GpuHealth gpuHealth = new GpuHealth(
+                        nullSafe(gpuMonitor.getFanRPM()).getValue(), nullSafe(gpuMonitor.getFanPercent()).getValue(), nullSafe(gpuMonitor.getTemperature()).getValue(),
+                        nullSafe(gpuMonitor.getCoreLoad()).getValue(),
+                        nullSafe(gpuMonitor.getMemoryClock()).getValue());
+                gpus.add(gpuHealth);
+            }
+        }
+        return gpus.toArray(/*type reference*/new GpuHealth[0]);
     }
 
     private boolean initBridge() {

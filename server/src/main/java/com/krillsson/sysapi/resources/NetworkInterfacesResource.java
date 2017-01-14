@@ -14,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 @Path("networkinterfaces")
 @Produces(MediaType.APPLICATION_JSON)
 public class NetworkInterfacesResource {
+
     private final NetworkIF[] networkIFs;
 
     public NetworkInterfacesResource(NetworkIF[] networkIFs) {
@@ -25,4 +26,5 @@ public class NetworkInterfacesResource {
     public NetworkIF[] getRoot(@Auth UserConfiguration user) {
         return networkIFs;
     }
+
 }

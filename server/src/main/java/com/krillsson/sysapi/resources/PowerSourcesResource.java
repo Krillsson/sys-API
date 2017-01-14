@@ -14,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 @Path("powersources")
 @Produces(MediaType.APPLICATION_JSON)
 public class PowerSourcesResource {
+
     private final PowerSource[] powerSources;
 
     public PowerSourcesResource(PowerSource[] powerSources) {
@@ -24,4 +25,5 @@ public class PowerSourcesResource {
     public PowerSource[] getRoot(@Auth UserConfiguration user) {
         return powerSources;
     }
+
 }
