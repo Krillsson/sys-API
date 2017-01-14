@@ -1,7 +1,7 @@
 package com.krillsson.sysapi.auth;
 
 
-import com.krillsson.sysapi.UserConfiguration;
+import com.krillsson.sysapi.config.UserConfiguration;
 
 import org.junit.Before;
 import org.junit.Test;

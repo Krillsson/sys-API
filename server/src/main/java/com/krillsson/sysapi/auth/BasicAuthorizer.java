@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.auth;
 
-import com.krillsson.sysapi.UserConfiguration;
+import com.krillsson.sysapi.config.UserConfiguration;
 
 import io.dropwizard.auth.Authorizer;
 

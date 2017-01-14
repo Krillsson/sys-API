@@ -8,7 +8,7 @@ import io.dropwizard.auth.basic.BasicCredentials;
 
 import org.slf4j.Logger;
 
-import com.krillsson.sysapi.UserConfiguration;
+import com.krillsson.sysapi.config.UserConfiguration;
 
 import java.util.Optional;
 

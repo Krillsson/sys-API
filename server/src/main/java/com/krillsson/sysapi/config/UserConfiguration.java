@@ -1,4 +1,4 @@
-package com.krillsson.sysapi;
+package com.krillsson.sysapi.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

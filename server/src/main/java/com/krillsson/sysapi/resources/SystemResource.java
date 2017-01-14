@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.resources;
 
-import com.krillsson.sysapi.UserConfiguration;
+import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.domain.cpu.Cpu;
 import com.krillsson.sysapi.domain.system.JvmProperties;

@@ -1,4 +1,4 @@
-package com.krillsson.sysapi;
+package com.krillsson.sysapi.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
@@ -15,18 +15,10 @@ public class MaintenanceConfiguration extends Configuration {
 
     @Valid
     @JsonProperty
-    private String sigarLocation;
-
-    @Valid
-    @JsonProperty
     private boolean forwardHttps;
 
     public UserConfiguration getUser() {
         return user;
-    }
-
-    public String getSigarLocation() {
-        return sigarLocation;
     }
 
     public boolean forwardHttps() {

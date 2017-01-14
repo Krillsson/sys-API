@@ -4,6 +4,8 @@ package com.krillsson.sysapi;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.krillsson.sysapi.auth.BasicAuthenticator;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
+import com.krillsson.sysapi.config.MaintenanceConfiguration;
+import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.InfoProviderFactory;
 import com.krillsson.sysapi.resources.*;
