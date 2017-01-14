@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.domain.drive;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.krillsson.sysapi.domain.storage.HWDiskHealth;
 
 public final class Drive
 {
@@ -10,12 +11,12 @@ public final class Drive
     private final FileSystemType genericFSType;
     private final String osSpecificFSType;
     private final FileSystemUsage usage;
-    private DriveHealth health;
+    private HWDiskHealth health;
     private DriveLoad load;
 
     public Drive(String deviceName, int id, String mountPoint,
                  FileSystemType genericFSType, String osSpecificFSType,
-                 FileSystemUsage usage, DriveHealth health, DriveLoad load) {
+                 FileSystemUsage usage, HWDiskHealth health, DriveLoad load) {
         this.deviceName = deviceName;
         this.id = id;
         this.mountPoint = mountPoint;
@@ -67,7 +68,7 @@ public final class Drive
     }
 
     @JsonProperty
-    public DriveHealth getHealth()
+    public HWDiskHealth getHealth()
     {
         return health;
     }
@@ -81,7 +82,7 @@ public final class Drive
         this.deviceName = deviceName;
     }
 
-    public void setHealth(DriveHealth health)
+    public void setHealth(HWDiskHealth health)
     {
         this.health = health;
     }

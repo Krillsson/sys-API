@@ -4,6 +4,7 @@ import com.krillsson.sysapi.UserConfiguration;
 import com.krillsson.sysapi.domain.Thermals;
 import com.krillsson.sysapi.domain.gpu.Gpu;
 import com.krillsson.sysapi.domain.motherboard.Motherboard;
+import com.krillsson.sysapi.extension.windows.WindowsInfoProvider;
 import com.krillsson.sysapi.oshi.DisplaysResource;
 import com.krillsson.sysapi.util.OperatingSystem;
 import com.krillsson.sysapi.util.TemperatureUtils;

@@ -4,8 +4,10 @@ package com.krillsson.sysapi;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.krillsson.sysapi.auth.BasicAuthenticator;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
+import com.krillsson.sysapi.extension.InfoProvider;
+import com.krillsson.sysapi.extension.InfoProviderFactory;
 import com.krillsson.sysapi.ohm.OhmDisplayResource;
-import com.krillsson.sysapi.ohm.WindowsInfoProvider;
+import com.krillsson.sysapi.extension.windows.WindowsInfoProvider;
 import com.krillsson.sysapi.oshi.*;
 import com.krillsson.sysapi.resources.MetaInfoResource;
 import com.krillsson.sysapi.util.OperatingSystem;
@@ -58,7 +60,6 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
     @Override
     public void run(MaintenanceConfiguration config, Environment environment) throws Exception {
         this.environment = environment;
-        System.setProperty("org.hyperic.sigar.path", libLocation(config));
 
         if (config.forwardHttps()) {
             addHttpsForward(environment.getApplicationContext());
@@ -82,11 +83,12 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         environment.jersey().register(new AuthValueFactoryProvider.Binder(UserConfiguration.class));
         environment.jersey().register(new MetaInfoResource(getVersionFromManifest()));
 
+        InfoProvider provider = InfoProviderFactory.provide(OperatingSystem.getCurrentOperatingSystem());
         //oshi
         TemperatureUtils temperatureUtils = new TemperatureUtils(OperatingSystem.getCurrentOperatingSystem());
         Sensors sensors = hal.getSensors();
         environment.jersey().register(new SystemResource(temperatureUtils, sensors, os, hal.getComputerSystem(), hal.getProcessor(), hal.getMemory(), hal.getPowerSources(), sensors));
-        environment.jersey().register(new DiskStoresResource(hal.getDiskStores()));
+        environment.jersey().register(new DiskStoresResource(hal.getDiskStores(), os.getFileSystem(), provider));
         environment.jersey().register(new FileSystemResource(os.getFileSystem()));
         environment.jersey().register(new MemoryResource(hal.getMemory()));
         environment.jersey().register(new NetworkInterfacesResource(hal.getNetworkIFs()));

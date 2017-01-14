@@ -1,12 +1,17 @@
-package com.krillsson.sysapi.ohm;
+package com.krillsson.sysapi.extension.windows;
 
+import com.krillsson.sysapi.domain.drive.LifecycleData;
 import com.krillsson.sysapi.domain.gpu.Gpu;
 import com.krillsson.sysapi.domain.gpu.GpuInfo;
 import com.krillsson.sysapi.domain.gpu.GpuLoad;
 import com.krillsson.sysapi.domain.motherboard.Motherboard;
+import com.krillsson.sysapi.domain.storage.HWDiskHealth;
+import com.krillsson.sysapi.extension.InfoProvider;
+import com.krillsson.sysapi.extension.InfoProviderBase;
 import net.sf.jni4net.Bridge;
 import ohmwrapper.*;
 import org.slf4j.Logger;
+import oshi.json.hardware.HWDiskStore;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,21 +21,36 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.krillsson.sysapi.util.JarLocation.*;
 import static com.krillsson.sysapi.util.NullSafeOhmMonitor.nullSafe;
 
-public class WindowsInfoProvider {
-    private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(WindowsInfoProvider.class.getSimpleName());
+public class WindowsInfoProvider extends InfoProviderBase implements InfoProvider {
 
-    MonitorManager monitorManager;
+    private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(WindowsInfoProvider.class);
+
+    private static final File OHM_JNI_WRAPPER_DLL = new File(LIB_LOCATION + SEPARATOR + "OhmJniWrapper.dll");
+    private static final File OPEN_HARDWARE_MONITOR_LIB_DLL = new File(LIB_LOCATION + SEPARATOR + "OpenHardwareMonitorLib.dll");
+    private static final File OHM_JNI_WRAPPER_J4N_DLL = new File(LIB_LOCATION + SEPARATOR + "OhmJniWrapper.j4n.dll");
+
+    private MonitorManager monitorManager;
 
     public WindowsInfoProvider() {
-        initBridge();
+
+    }
+
+    @Override
+    public boolean canProvide() {
+        return OHM_JNI_WRAPPER_DLL.exists() &&
+                OPEN_HARDWARE_MONITOR_LIB_DLL.exists() &&
+                OHM_JNI_WRAPPER_DLL.exists() &&
+                initBridge();
     }
 
     public GpuMonitor[] ohmGpu() {
         monitorManager.Update();
         return monitorManager.GpuMonitors();
     }
+
 /*
     @Override
     public Cpu cpu() {
@@ -175,7 +195,7 @@ public class WindowsInfoProvider {
             for (DriveMonitor driveMonitor : driveMonitors) {
                 for (Drive drive : drives) {
                     if (driveNamesAreEqual(driveMonitor, drive)) {
-                        drive.setHealth(new DriveHealth(nullSafe(driveMonitor.getTemperature()).getValue(),
+                        drive.setHealth(new HWDiskHealth(nullSafe(driveMonitor.getTemperature()).getValue(),
                                 nullSafe(driveMonitor.getRemainingLife()).getValue(),
                                 Arrays.asList(nullSafe(driveMonitor.getLifecycleData()))
                                         .stream()
@@ -251,74 +271,63 @@ public class WindowsInfoProvider {
         return gpus;
     }
 
-    private void initBridge() {
+    private boolean initBridge() {
         Bridge.setVerbose(true);
         try {
             Bridge.init();
         } catch (IOException e) {
-            LOGGER.error("Trouble while initializing JNI4Net Bridge. Do I have admin privileges?");
-            throw new RuntimeException("Unable to initialize JNI4Net Bridge.", e);
+            LOGGER.error("Trouble while initializing JNI4Net Bridge. Do I have admin privileges?", e);
+            return false;
         }
 
-        OHMManagerFactory factory;
-        //try loading from lib dir
-        factory = loadFromProjectDir();
-        //try loading from project dir
-        if (factory == null) {
-            factory = loadFromInstallDir();
-        }
-
-
+        OHMManagerFactory factory = loadFromInstallDir();
         try {
             factory.init();
             this.monitorManager = factory.GetManager();
-        } catch (
-                Exception e)
-
-        {
-            throw new RuntimeException("Unable to initialize JNI4Net Bridge. Do I have admin privileges? Crashing now", e);
+            return true;
+        } catch (Exception e) {
+            LOGGER.error("Trouble while initializing JNI4Net Bridge. Do I have admin privileges?", e);
+            return false;
         }
-
-    }
-
-    private OHMManagerFactory loadFromProjectDir() {
-        String separator = java.lang.System.getProperty("file.separator");
-        String projectLibLocation = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().getFile()).getParentFile().getParent() + separator + "lib" + separator;
-        if (new File(projectLibLocation + "OhmJniWrapper.dll").exists()) {
-            //For deployment
-            Bridge.LoadAndRegisterAssemblyFrom(new File(projectLibLocation + "OhmJniWrapper.dll"));
-            Bridge.LoadAndRegisterAssemblyFrom(new File(projectLibLocation + "OhmJniWrapper.j4n.dll"));
-            Bridge.LoadAndRegisterAssemblyFrom(new File(projectLibLocation + "OpenHardwareMonitorLib.dll"));
-
-            return new OHMManagerFactory();
-        }
-
-        return null;
     }
 
     private OHMManagerFactory loadFromInstallDir() {
-
-        String separator = java.lang.System.getProperty("file.separator");
-        String libLocation = new File(this
-                .getClass()
-                .getProtectionDomain()
-                .getCodeSource()
-                .getLocation()
-                .getFile())
-                .getParent()
-                + separator
-                + "lib"
-                + separator;
-
-        if (new File(libLocation + "OhmJniWrapper.dll").exists()) {
-            //For deployment
-            Bridge.LoadAndRegisterAssemblyFrom(new File(libLocation + "OhmJniWrapper.dll"));
-            Bridge.LoadAndRegisterAssemblyFrom(new File(libLocation + "OhmJniWrapper.j4n.dll"));
-            Bridge.LoadAndRegisterAssemblyFrom(new File(libLocation + "OpenHardwareMonitorLib.dll"));
-
+        try {
+            Bridge.LoadAndRegisterAssemblyFrom(OHM_JNI_WRAPPER_DLL);
+            Bridge.LoadAndRegisterAssemblyFrom(OHM_JNI_WRAPPER_J4N_DLL);
+            Bridge.LoadAndRegisterAssemblyFrom(OPEN_HARDWARE_MONITOR_LIB_DLL);
             return new OHMManagerFactory();
+        } catch (Exception e) {
+            LOGGER.error("Unable to load OHM from installation directory {}", SOURCE_LIB_LOCATION, e);
+            return null;
         }
-        LOGGER.error("Unable to load OHM from installation directory {}", libLocation);
+
+    }
+
+    @Override
+    public HWDiskHealth provideDiskHealth(String name, HWDiskStore diskStore) {
+        monitorManager.Update();
+        DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
+        for (DriveMonitor driveMonitor : driveMonitors) {
+            if (driveMonitor.getLogicalName().equals(name)) {
+                List<LifecycleData> lifecycleData = new ArrayList<>();
+                addIfSafe(lifecycleData, driveMonitor.getRemainingLife());
+                if(driveMonitor.getLifecycleData() != null){
+                    for (OHMSensor sensor : driveMonitor.getLifecycleData()) {
+                        addIfSafe(lifecycleData, sensor);
+                    }
+                }
+
+                return new HWDiskHealth(nullSafe(driveMonitor.getTemperature()).getValue(), lifecycleData);
+            }
+        }
         return null;
+    }
+
+    private void addIfSafe(List<LifecycleData> lifecycleData, OHMSensor sensor) {
+        OHMSensor ohmSensor = nullSafe(sensor);
+        if (ohmSensor.getValue() > 0) {
+            lifecycleData.add(new LifecycleData(ohmSensor.getLabel(), ohmSensor.getValue()));
+        }
     }
 }
