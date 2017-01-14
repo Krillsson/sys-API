@@ -4,5 +4,11 @@ import com.krillsson.sysapi.domain.storage.HWDiskHealth;
 import oshi.json.hardware.HWDiskStore;
 
 public interface InfoProvider {
-    HWDiskHealth provideDiskHealth(String name, HWDiskStore diskStore);
+    HWDiskHealth diskHealth(String name, HWDiskStore diskStore);
+
+    double[] cpuTemperatures();
+
+    double getCpuFanRpm();
+
+    double getCpuFanPercent();
 }

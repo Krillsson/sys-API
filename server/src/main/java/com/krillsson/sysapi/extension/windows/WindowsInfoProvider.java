@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.extension.windows;
 
+import com.krillsson.sysapi.domain.drive.DriveLoad;
 import com.krillsson.sysapi.domain.drive.LifecycleData;
 import com.krillsson.sysapi.domain.gpu.Gpu;
 import com.krillsson.sysapi.domain.gpu.GpuInfo;
@@ -305,23 +306,65 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     @Override
-    public HWDiskHealth provideDiskHealth(String name, HWDiskStore diskStore) {
+    public HWDiskHealth diskHealth(String name, HWDiskStore diskStore) {
         monitorManager.Update();
         DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
         for (DriveMonitor driveMonitor : driveMonitors) {
             if (driveMonitor.getLogicalName().equals(name)) {
                 List<LifecycleData> lifecycleData = new ArrayList<>();
                 addIfSafe(lifecycleData, driveMonitor.getRemainingLife());
-                if(driveMonitor.getLifecycleData() != null){
+                if (driveMonitor.getLifecycleData() != null) {
                     for (OHMSensor sensor : driveMonitor.getLifecycleData()) {
                         addIfSafe(lifecycleData, sensor);
                     }
                 }
 
-                return new HWDiskHealth(nullSafe(driveMonitor.getTemperature()).getValue(), lifecycleData);
+                return new HWDiskHealth(nullSafe(driveMonitor.getTemperature()).getValue(),
+                        new DriveLoad(driveMonitor.getReadRate(),
+                                driveMonitor.getWriteRate()),
+                        lifecycleData);
             }
         }
         return null;
+    }
+
+    @Override
+    public double[] cpuTemperatures() {
+        double[] temperatures = new double[0];
+        monitorManager.Update();
+        if (monitorManager.CpuMonitors().length > 0) {
+            CpuMonitor cpuMonitor = monitorManager.CpuMonitors()[0];
+            temperatures = new double[]{nullSafe(cpuMonitor.getPackageTemperature()).getValue()};
+            if (nullSafe(cpuMonitor.getTemperatures()).length >= 1) {
+                final OHMSensor[] sensors = cpuMonitor.getTemperatures();
+                temperatures = new double[sensors.length];
+                for (int i = 0; i < sensors.length; i++) {
+                    OHMSensor sensor = sensors[i];
+                    temperatures[i] = sensor.getValue();
+                }
+            }
+        }
+        return temperatures;
+    }
+
+    @Override
+    public double getCpuFanRpm() {
+        monitorManager.Update();
+        if (monitorManager.CpuMonitors().length > 0) {
+            CpuMonitor cpuMonitor = monitorManager.CpuMonitors()[0];
+            return nullSafe(cpuMonitor.getFanRPM()).getValue();
+        }
+        return 0;
+    }
+
+    @Override
+    public double getCpuFanPercent() {
+        monitorManager.Update();
+        if (monitorManager.CpuMonitors().length > 0) {
+            CpuMonitor cpuMonitor = monitorManager.CpuMonitors()[0];
+            return nullSafe(cpuMonitor.getFanPercent()).getValue();
+        }
+        return 0;
     }
 
     private void addIfSafe(List<LifecycleData> lifecycleData, OHMSensor sensor) {

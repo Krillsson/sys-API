@@ -5,18 +5,37 @@ import oshi.json.hardware.Sensors;
 
 public class Cpu {
     private final CentralProcessor centralProcessor;
-    private final Sensors sensors;
+    private final double[] temperatures;
+    private final double voltage;
+    private final double fanRpm;
+    private final double fanPercent;
 
-    public Cpu(CentralProcessor centralProcessor, Sensors sensors) {
+    public Cpu(CentralProcessor centralProcessor, double voltage, double fanRpm, double fanPercent, double[] temperatures) {
         this.centralProcessor = centralProcessor;
-        this.sensors = sensors;
+        this.voltage = voltage;
+        this.fanRpm = fanRpm;
+        this.fanPercent = fanPercent;
+        this.temperatures = temperatures;
     }
 
     public CentralProcessor getCentralProcessor() {
         return centralProcessor;
     }
 
-    public Sensors getSensors() {
-        return sensors;
+    public double[] getTemperatures() {
+        return temperatures;
+    }
+
+
+    public double getVoltage() {
+        return voltage;
+    }
+
+    public double getFanRpm() {
+        return fanRpm;
+    }
+
+    public double getFanPercent() {
+        return fanPercent;
     }
 }

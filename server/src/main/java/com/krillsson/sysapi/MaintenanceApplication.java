@@ -87,14 +87,14 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         //oshi
         TemperatureUtils temperatureUtils = new TemperatureUtils(OperatingSystem.getCurrentOperatingSystem());
         Sensors sensors = hal.getSensors();
-        environment.jersey().register(new SystemResource(temperatureUtils, sensors, os, hal.getComputerSystem(), hal.getProcessor(), hal.getMemory(), hal.getPowerSources(), sensors));
+        environment.jersey().register(new SystemResource(provider, temperatureUtils, sensors, os, hal.getComputerSystem(), hal.getProcessor(), hal.getMemory(), hal.getPowerSources(), sensors));
         environment.jersey().register(new DiskStoresResource(hal.getDiskStores(), os.getFileSystem(), provider));
         environment.jersey().register(new FileSystemResource(os.getFileSystem()));
         environment.jersey().register(new MemoryResource(hal.getMemory()));
         environment.jersey().register(new NetworkInterfacesResource(hal.getNetworkIFs()));
         environment.jersey().register(new PowerSourcesResource(hal.getPowerSources()));
         environment.jersey().register(new ProcessesResource(os));
-        environment.jersey().register(new CpuResource(sensors, hal.getProcessor()));
+        environment.jersey().register(new CpuResource(sensors, hal.getProcessor(), provider));
         environment.jersey().register(new SensorsResource(sensors));
         environment.jersey().register(new UsbDevicesResource(hal.getUsbDevices(true)));
 

@@ -39,7 +39,7 @@ public class DiskStoresResource {
         List<Disk> disks = new ArrayList<>();
         for (HWDiskStore diskStore : diskStores) {
             OSFileStore associatedFileStore = findAssociatedFileStore(diskStore);
-            disks.add(new Disk(diskStore, provider.provideDiskHealth(associatedFileStore != null ? associatedFileStore.getMount() : "", diskStore), associatedFileStore));
+            disks.add(new Disk(diskStore, provider.diskHealth(associatedFileStore != null ? associatedFileStore.getMount() : "", diskStore), associatedFileStore));
         }
         return new Storage(disks.toArray(/*type reference*/new Disk[0]), fileSystem.getOpenFileDescriptors(), fileSystem.getMaxFileDescriptors());
     }
