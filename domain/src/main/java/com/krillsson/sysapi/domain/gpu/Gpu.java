@@ -1,40 +1,39 @@
 package com.krillsson.sysapi.domain.gpu;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Gpu
 {
-    private double fanRpm;
-    private double fanPercent;
-    private GpuInfo info;
+    private String vendor;
+    private String model;
+    private double coreMhz;
+    private double memoryMhz;
     private GpuLoad load;
 
-    public Gpu(double fanRpm, double fanPercent, GpuInfo info, GpuLoad load)
+    public Gpu(String vendor, String model, double coreMhz, double memoryMhz, GpuLoad load)
     {
-        this.fanRpm = fanRpm;
-        this.fanPercent = fanPercent;
-        this.info = info;
+        this.vendor = vendor;
+        this.model = model;
+        this.coreMhz = coreMhz;
+        this.memoryMhz = memoryMhz;
         this.load = load;
     }
 
-    @JsonProperty
-    public double getFanRpm()
-    {
-        return fanRpm;
+    public String getVendor() {
+        return vendor;
     }
-    @JsonProperty
-    public double getFanPercent()
-    {
-        return fanPercent;
+
+    public String getModel() {
+        return model;
     }
-    @JsonProperty
-    public GpuInfo getInfo()
-    {
-        return info;
+
+    public double getCoreMhz() {
+        return coreMhz;
     }
-    @JsonProperty
-    public GpuLoad getLoad()
-    {
+
+    public double getMemoryMhz() {
+        return memoryMhz;
+    }
+
+    public GpuLoad getLoad() {
         return load;
     }
 }

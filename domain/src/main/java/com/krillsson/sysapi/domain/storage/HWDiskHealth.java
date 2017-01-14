@@ -2,7 +2,7 @@ package com.krillsson.sysapi.domain.storage;
 
 
 import com.krillsson.sysapi.domain.drive.DriveLoad;
-import com.krillsson.sysapi.domain.drive.LifecycleData;
+import com.krillsson.sysapi.domain.HealthData;
 
 import java.util.List;
 
@@ -10,13 +10,13 @@ public class HWDiskHealth
 {
     private double temperature;
     private DriveLoad load;
-    private List<LifecycleData> lifecycleData;
+    private List<HealthData> healthData;
 
-    public HWDiskHealth(double temperature, DriveLoad load, List<LifecycleData> lifecycleData)
+    public HWDiskHealth(double temperature, DriveLoad load, List<HealthData> healthData)
     {
         this.temperature = temperature;
         this.load = load;
-        this.lifecycleData = lifecycleData;
+        this.healthData = healthData;
     }
 
     public double getTemperature()
@@ -24,9 +24,9 @@ public class HWDiskHealth
         return temperature;
     }
 
-    public List<LifecycleData> getLifecycleData()
+    public List<HealthData> getHealthData()
     {
-        return lifecycleData;
+        return healthData;
     }
 
     public DriveLoad getLoad() {

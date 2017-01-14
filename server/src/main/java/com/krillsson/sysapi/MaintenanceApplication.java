@@ -6,8 +6,6 @@ import com.krillsson.sysapi.auth.BasicAuthenticator;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.extension.InfoProvider;
 import com.krillsson.sysapi.extension.InfoProviderFactory;
-import com.krillsson.sysapi.ohm.OhmDisplayResource;
-import com.krillsson.sysapi.extension.windows.WindowsInfoProvider;
 import com.krillsson.sysapi.oshi.*;
 import com.krillsson.sysapi.resources.MetaInfoResource;
 import com.krillsson.sysapi.util.OperatingSystem;
@@ -29,11 +27,8 @@ import oshi.json.hardware.Sensors;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.EnumSet;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -84,47 +79,21 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         environment.jersey().register(new MetaInfoResource(getVersionFromManifest()));
 
         InfoProvider provider = InfoProviderFactory.provide(OperatingSystem.getCurrentOperatingSystem());
-        //oshi
         TemperatureUtils temperatureUtils = new TemperatureUtils(OperatingSystem.getCurrentOperatingSystem());
         Sensors sensors = hal.getSensors();
         environment.jersey().register(new SystemResource(provider, temperatureUtils, sensors, os, hal.getComputerSystem(), hal.getProcessor(), hal.getMemory(), hal.getPowerSources(), sensors));
         environment.jersey().register(new DiskStoresResource(hal.getDiskStores(), os.getFileSystem(), provider));
         environment.jersey().register(new FileSystemResource(os.getFileSystem()));
+        environment.jersey().register(new GpuResource(hal.getDisplays(), provider));
         environment.jersey().register(new MemoryResource(hal.getMemory()));
         environment.jersey().register(new NetworkInterfacesResource(hal.getNetworkIFs()));
         environment.jersey().register(new PowerSourcesResource(hal.getPowerSources()));
         environment.jersey().register(new ProcessesResource(os));
         environment.jersey().register(new CpuResource(sensors, hal.getProcessor(), provider));
-        environment.jersey().register(new SensorsResource(sensors));
+        environment.jersey().register(new SensorsResource(sensors, provider));
         environment.jersey().register(new UsbDevicesResource(hal.getUsbDevices(true)));
-
-        if (OperatingSystem.isWindows()) {
-            WindowsInfoProvider windowsInfoProvider = new WindowsInfoProvider();
-            environment.jersey().register(new OhmDisplayResource(hal.getDisplays(), windowsInfoProvider));
-
-        } else {
-            environment.jersey().register(new DisplaysResource(hal.getDisplays()));
-        }
     }
 
-
-    private String libLocation(MaintenanceConfiguration config) {
-        if (config.getSigarLocation() != null) {
-            return config.getSigarLocation();
-        }
-
-        File thisJar = new File(MaintenanceApplication.class.getProtectionDomain().getCodeSource().getLocation().getFile());
-
-        String separator = System.getProperty("file.separator");
-        String pathToJar = thisJar.getParent();
-        try {
-            pathToJar = URLDecoder.decode(pathToJar, "UTF-8");
-            return pathToJar + separator + "lib";
-        } catch (UnsupportedEncodingException e) {
-            LOGGER.error("Unable to decode the path to UTF-8");
-            return "";
-        }
-    }
 
     private void addHttpsForward(ServletContextHandler handler) {
         handler.addFilter(new FilterHolder(new Filter() {

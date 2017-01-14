@@ -48,8 +48,8 @@ public class SystemResource {
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public System getRoot(@Auth UserConfiguration user) {
         double[] temperature = provider.cpuTemperatures();
-        double fanRpm = provider.getCpuFanRpm();
-        double fanPercent = provider.getCpuFanPercent();
+        double fanRpm = provider.cpuFanRpm();
+        double fanPercent = provider.cpuFanPercent();
         if(temperature.length == 0){
             temperature = new double[]{sensors.getCpuTemperature()};
         }
@@ -58,8 +58,7 @@ public class SystemResource {
                 computerSystem,
                 new Cpu(processor,sensors.getCpuVoltage(), fanPercent, fanRpm, temperature),
                 memory,
-                powerSources,
-                sensors);
+                powerSources);
     }
 
     @GET

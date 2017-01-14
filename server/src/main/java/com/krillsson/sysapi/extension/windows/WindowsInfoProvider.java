@@ -1,11 +1,9 @@
 package com.krillsson.sysapi.extension.windows;
 
+import com.krillsson.sysapi.domain.HealthData;
 import com.krillsson.sysapi.domain.drive.DriveLoad;
-import com.krillsson.sysapi.domain.drive.LifecycleData;
 import com.krillsson.sysapi.domain.gpu.Gpu;
-import com.krillsson.sysapi.domain.gpu.GpuInfo;
 import com.krillsson.sysapi.domain.gpu.GpuLoad;
-import com.krillsson.sysapi.domain.motherboard.Motherboard;
 import com.krillsson.sysapi.domain.storage.HWDiskHealth;
 import com.krillsson.sysapi.extension.InfoProvider;
 import com.krillsson.sysapi.extension.InfoProviderBase;
@@ -17,10 +15,7 @@ import oshi.json.hardware.HWDiskStore;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.krillsson.sysapi.util.JarLocation.*;
 import static com.krillsson.sysapi.util.NullSafeOhmMonitor.nullSafe;
@@ -198,9 +193,9 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
                     if (driveNamesAreEqual(driveMonitor, drive)) {
                         drive.setHealth(new HWDiskHealth(nullSafe(driveMonitor.getTemperature()).getValue(),
                                 nullSafe(driveMonitor.getRemainingLife()).getValue(),
-                                Arrays.asList(nullSafe(driveMonitor.getLifecycleData()))
+                                Arrays.asList(nullSafe(driveMonitor.getHealthData()))
                                         .stream()
-                                        .map(l -> new LifecycleData(l.getLabel(), l.getValue()))
+                                        .map(l -> new HealthData(l.getLabel(), l.getValue()))
                                         .collect(Collectors.toList())));
                         drive.setLoad(new DriveLoad(driveMonitor.getReadRate(), driveMonitor.getWriteRate()));
                         drive.setDeviceName(driveMonitor.getName());
@@ -228,48 +223,27 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
         }
     }*/
 
-    public Motherboard motherboard() {
-        monitorManager.Update();
-        MainboardMonitor mainboardMonitor = monitorManager.getMainboardMonitor();
-        if (mainboardMonitor != null) {
-            Map<String, Double> boardTemperatures = Arrays.asList(nullSafe(mainboardMonitor.getBoardTemperatures())).stream().collect(Collectors.toMap(
-                    OHMSensor::getLabel,
-                    OHMSensor::getValue));
-            Map<String, Double> boardFanRpms = Arrays.asList(nullSafe(mainboardMonitor.getBoardFanRPM())).stream().collect(Collectors.toMap(
-                    OHMSensor::getLabel,
-                    OHMSensor::getValue));
-            Map<String, Double> boardFanPercents = Arrays.asList(nullSafe(mainboardMonitor.getBoardFanPercent())).stream().collect(Collectors.toMap(
-                    OHMSensor::getLabel,
-                    OHMSensor::getValue));
-            return new Motherboard(mainboardMonitor.getName(), boardTemperatures, boardFanRpms, boardFanPercents);
-        }
-        return null;
-    }
-
-    public List<Gpu> gpus() {
+    public Gpu[] gpus() {
         List<Gpu> gpus = new ArrayList<>();
         monitorManager.Update();
         final GpuMonitor[] gpuMonitors = monitorManager.GpuMonitors();
         if (gpuMonitors != null && gpuMonitors.length > 0) {
             for (GpuMonitor gpuMonitor : gpuMonitors) {
                 GpuLoad gpuLoad = new GpuLoad(
-                        nullSafe(gpuMonitor.getTemperature()).getValue(),
+                        nullSafe(gpuMonitor.getFanRPM()).getValue(), nullSafe(gpuMonitor.getFanPercent()).getValue(), nullSafe(gpuMonitor.getTemperature()).getValue(),
                         nullSafe(gpuMonitor.getCoreLoad()).getValue(),
                         nullSafe(gpuMonitor.getMemoryClock()).getValue());
-                GpuInfo gpuInfo = new GpuInfo(gpuMonitor.getVendor(),
+                Gpu gpu = new Gpu(
+                        gpuMonitor.getVendor(),
                         gpuMonitor.getName(),
                         nullSafe(gpuMonitor.getCoreClock()).getValue(),
-                        nullSafe(gpuMonitor.getMemoryClock()).getValue()
-                );
-                Gpu gpu = new Gpu(nullSafe(gpuMonitor.getFanRPM()).getValue(),
-                        nullSafe(gpuMonitor.getFanPercent()).getValue(),
-                        gpuInfo,
+                        nullSafe(gpuMonitor.getMemoryClock()).getValue(),
                         gpuLoad
                 );
                 gpus.add(gpu);
             }
         }
-        return gpus;
+        return gpus.toArray(/*type reference*/new Gpu[0]);
     }
 
     private boolean initBridge() {
@@ -311,18 +285,18 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
         DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
         for (DriveMonitor driveMonitor : driveMonitors) {
             if (driveMonitor.getLogicalName().equals(name)) {
-                List<LifecycleData> lifecycleData = new ArrayList<>();
-                addIfSafe(lifecycleData, driveMonitor.getRemainingLife());
+                List<HealthData> healthData = new ArrayList<>();
+                addIfSafe(healthData, driveMonitor.getRemainingLife());
                 if (driveMonitor.getLifecycleData() != null) {
                     for (OHMSensor sensor : driveMonitor.getLifecycleData()) {
-                        addIfSafe(lifecycleData, sensor);
+                        addIfSafe(healthData, sensor);
                     }
                 }
 
                 return new HWDiskHealth(nullSafe(driveMonitor.getTemperature()).getValue(),
                         new DriveLoad(driveMonitor.getReadRate(),
                                 driveMonitor.getWriteRate()),
-                        lifecycleData);
+                        healthData);
             }
         }
         return null;
@@ -348,7 +322,7 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     @Override
-    public double getCpuFanRpm() {
+    public double cpuFanRpm() {
         monitorManager.Update();
         if (monitorManager.CpuMonitors().length > 0) {
             CpuMonitor cpuMonitor = monitorManager.CpuMonitors()[0];
@@ -358,7 +332,7 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     @Override
-    public double getCpuFanPercent() {
+    public double cpuFanPercent() {
         monitorManager.Update();
         if (monitorManager.CpuMonitors().length > 0) {
             CpuMonitor cpuMonitor = monitorManager.CpuMonitors()[0];
@@ -367,10 +341,30 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
         return 0;
     }
 
-    private void addIfSafe(List<LifecycleData> lifecycleData, OHMSensor sensor) {
+    @Override
+    public List<HealthData> healthData() {
+        List<HealthData> list = new ArrayList<>();
+        monitorManager.Update();
+        MainboardMonitor mainboardMonitor = monitorManager.getMainboardMonitor();
+        if (mainboardMonitor != null) {
+            addIfSafe(list, nullSafe(mainboardMonitor.getBoardFanPercent()));
+            addIfSafe(list, nullSafe(mainboardMonitor.getBoardFanRPM()));
+            addIfSafe(list, nullSafe(mainboardMonitor.getBoardTemperatures()));
+        }
+        return list;
+    }
+
+    private void addIfSafe(List<HealthData> healthData, OHMSensor sensor) {
         OHMSensor ohmSensor = nullSafe(sensor);
         if (ohmSensor.getValue() > 0) {
-            lifecycleData.add(new LifecycleData(ohmSensor.getLabel(), ohmSensor.getValue()));
+            com.krillsson.sysapi.domain.DataType dataType = com.krillsson.sysapi.domain.DataType.valueOf(sensor.getDataType().toString().toUpperCase());
+            healthData.add(new HealthData(ohmSensor.getLabel(), ohmSensor.getValue(), dataType));
+        }
+    }
+
+    private void addIfSafe(List<HealthData> healthDataList, OHMSensor[] sensors) {
+        for (OHMSensor sensor : sensors) {
+            addIfSafe(healthDataList, sensor);
         }
     }
 }

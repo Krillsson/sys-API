@@ -4,7 +4,6 @@ import com.krillsson.sysapi.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.domain.cpu.Cpu;
 import com.krillsson.sysapi.extension.InfoProvider;
-import com.krillsson.sysapi.util.TemperatureUtils;
 import io.dropwizard.auth.Auth;
 import oshi.json.hardware.CentralProcessor;
 import oshi.json.hardware.Sensors;
@@ -32,8 +31,8 @@ public class CpuResource {
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public Cpu getRoot(@Auth UserConfiguration user) {
         double[] temperature = provider.cpuTemperatures();
-        double fanRpm = provider.getCpuFanRpm();
-        double fanPercent = provider.getCpuFanPercent();
+        double fanRpm = provider.cpuFanRpm();
+        double fanPercent = provider.cpuFanPercent();
         if(temperature.length == 0){
             temperature = new double[]{sensors.getCpuTemperature()};
         }

@@ -1,7 +1,14 @@
 package com.krillsson.sysapi.extension;
 
+import com.krillsson.sysapi.domain.HealthData;
+import com.krillsson.sysapi.domain.gpu.Gpu;
 import com.krillsson.sysapi.domain.storage.HWDiskHealth;
 import oshi.json.hardware.HWDiskStore;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class DefaultInfoProvider extends InfoProviderBase implements InfoProvider {
     @Override
@@ -20,12 +27,22 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     @Override
-    public double getCpuFanRpm() {
+    public double cpuFanRpm() {
         return 0;
     }
 
     @Override
-    public double getCpuFanPercent() {
+    public double cpuFanPercent() {
         return 0;
+    }
+
+    @Override
+    public List<HealthData> healthData() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Gpu[] gpus() {
+        return new Gpu[0];
     }
 }

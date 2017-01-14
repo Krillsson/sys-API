@@ -1,40 +1,22 @@
 package com.krillsson.sysapi.domain.gpu;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import oshi.json.hardware.Display;
 
 public class GpuInfo
 {
-    private String vendor;
-    private String model;
-    private double coreMhz;
-    private double memoryMhz;
+    private final Display[] displays;
+    private final Gpu[] gpus;
 
-    public GpuInfo(String vendor, String model, double coreMhz, double memoryMhz)
-    {
-        this.vendor = vendor;
-        this.model = model;
-        this.coreMhz = coreMhz;
-        this.memoryMhz = memoryMhz;
+    public GpuInfo(Display[] displays, Gpu[] gpus) {
+        this.displays = displays;
+        this.gpus = gpus;
     }
 
-    @JsonProperty
-    public String getVendor()
-    {
-        return vendor;
+    public Display[] getDisplays() {
+        return displays;
     }
-    @JsonProperty
-    public String getModel()
-    {
-        return model;
-    }
-    @JsonProperty
-    public double getCoreMhz()
-    {
-        return coreMhz;
-    }
-    @JsonProperty
-    public double getMemoryMhz()
-    {
-        return memoryMhz;
+
+    public Gpu[] getGpus() {
+        return gpus;
     }
 }

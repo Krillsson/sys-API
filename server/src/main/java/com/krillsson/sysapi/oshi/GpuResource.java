@@ -2,7 +2,8 @@ package com.krillsson.sysapi.oshi;
 
 import com.krillsson.sysapi.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
-import com.krillsson.sysapi.util.OperatingSystem;
+import com.krillsson.sysapi.domain.gpu.GpuInfo;
+import com.krillsson.sysapi.extension.InfoProvider;
 import io.dropwizard.auth.Auth;
 import oshi.json.hardware.Display;
 
@@ -14,16 +15,18 @@ import javax.ws.rs.core.MediaType;
 
 @Path("gpus")
 @Produces(MediaType.APPLICATION_JSON)
-public class DisplaysResource {
+public class GpuResource {
     private final Display[] displays;
+    private InfoProvider provider;
 
-    public DisplaysResource(Display[] displays) {
+    public GpuResource(Display[] displays, InfoProvider provider) {
         this.displays = displays;
+        this.provider = provider;
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public Object getRoot(@Auth UserConfiguration user) {
-        return displays;
+    public GpuInfo getRoot(@Auth UserConfiguration user) {
+        return new GpuInfo(displays, provider.gpus());
     }
 }
