@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.domain;
+package com.krillsson.sysapi.domain.health;
 
 public class HealthData {
     private final String description;

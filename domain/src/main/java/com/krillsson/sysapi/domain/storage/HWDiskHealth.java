@@ -1,7 +1,7 @@
 package com.krillsson.sysapi.domain.storage;
 
 
-import com.krillsson.sysapi.domain.HealthData;
+import com.krillsson.sysapi.domain.health.HealthData;
 
 import java.util.List;
 

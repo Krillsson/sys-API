@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.core.windows;
 
-import com.krillsson.sysapi.domain.HealthData;
+import com.krillsson.sysapi.domain.health.HealthData;
+import com.krillsson.sysapi.domain.health.DataType;
 import com.krillsson.sysapi.domain.storage.HWDiskLoad;
 import com.krillsson.sysapi.domain.gpu.Gpu;
 import com.krillsson.sysapi.domain.gpu.GpuLoad;
@@ -358,7 +359,7 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
     private void addIfSafe(List<HealthData> healthData, OHMSensor sensor) {
         OHMSensor ohmSensor = nullSafe(sensor);
         if (ohmSensor.getValue() > 0) {
-            com.krillsson.sysapi.domain.DataType dataType = com.krillsson.sysapi.domain.DataType.valueOf(sensor.getDataType().toString().toUpperCase());
+            com.krillsson.sysapi.domain.health.DataType dataType = DataType.valueOf(sensor.getDataType().toString().toUpperCase());
             healthData.add(new HealthData(ohmSensor.getLabel(), ohmSensor.getValue(), dataType));
         }
     }

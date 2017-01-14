@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.domain;
+package com.krillsson.sysapi.domain.health;
 
 public enum DataType {
     CLOCK,

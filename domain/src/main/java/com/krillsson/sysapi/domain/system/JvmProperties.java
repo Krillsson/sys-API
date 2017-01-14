@@ -1,8 +1,5 @@
 package com.krillsson.sysapi.domain.system;
 
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class JvmProperties {
     private String home, classPath, vendor,
             vendorUrl, version, osArch, osName,
@@ -22,57 +19,46 @@ public class JvmProperties {
         this.username = username;
     }
 
-    @JsonProperty
     public String getHome() {
         return home;
     }
 
-    @JsonProperty
     public String getClassPath() {
         return classPath;
     }
 
-    @JsonProperty
     public String getVendor() {
         return vendor;
     }
 
-    @JsonProperty
     public String getVendorUrl() {
         return vendorUrl;
     }
 
-    @JsonProperty
     public String getVersion() {
         return version;
     }
 
-    @JsonProperty
     public String getOsArch() {
         return osArch;
     }
 
-    @JsonProperty
     public String getOsName() {
         return osName;
     }
 
-    @JsonProperty
     public String getOsVersion() {
         return osVersion;
     }
 
-    @JsonProperty
     public String getUserDir() {
         return userDir;
     }
 
-    @JsonProperty
     public String getUserHome() {
         return userHome;
     }
 
-    @JsonProperty
     public String getUsername() {
         return username;
     }
