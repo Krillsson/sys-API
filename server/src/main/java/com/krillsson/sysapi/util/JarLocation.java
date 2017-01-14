@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.util;
 
-import com.krillsson.sysapi.MaintenanceApplication;
+import com.krillsson.sysapi.SystemApiApplication;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -16,9 +16,9 @@ public class JarLocation {
 
     private static File jarLocation() {
         try {
-            return new File(MaintenanceApplication.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+            return new File(SystemApiApplication.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
         } catch (URISyntaxException e) {
-            return new File(MaintenanceApplication.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+            return new File(SystemApiApplication.class.getProtectionDomain().getCodeSource().getLocation().getPath());
         }
     }
 }

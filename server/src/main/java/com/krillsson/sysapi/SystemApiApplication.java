@@ -4,7 +4,7 @@ package com.krillsson.sysapi;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.krillsson.sysapi.auth.BasicAuthenticator;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
-import com.krillsson.sysapi.config.MaintenanceConfiguration;
+import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.InfoProviderFactory;
@@ -34,12 +34,12 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 
-public class MaintenanceApplication extends Application<MaintenanceConfiguration> {
-    private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(MaintenanceApplication.class.getSimpleName());
+public class SystemApiApplication extends Application<SystemApiConfiguration> {
+    private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SystemApiApplication.class.getSimpleName());
     private Environment environment;
 
     public static void main(String[] args) throws Exception {
-        new MaintenanceApplication().run(args);
+        new SystemApiApplication().run(args);
     }
 
     @Override
@@ -48,12 +48,12 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
     }
 
     @Override
-    public void initialize(Bootstrap<MaintenanceConfiguration> maintenanceConfigurationBootstrap) {
+    public void initialize(Bootstrap<SystemApiConfiguration> maintenanceConfigurationBootstrap) {
         maintenanceConfigurationBootstrap.getObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
     }
 
     @Override
-    public void run(MaintenanceConfiguration config, Environment environment) throws Exception {
+    public void run(SystemApiConfiguration config, Environment environment) throws Exception {
         this.environment = environment;
 
         if (config.forwardHttps()) {
@@ -78,8 +78,9 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         environment.jersey().register(new AuthValueFactoryProvider.Binder(UserConfiguration.class));
         environment.jersey().register(new MetaInfoResource(getVersionFromManifest()));
 
-        InfoProvider provider = InfoProviderFactory.provide(OperatingSystem.getCurrentOperatingSystem());
+        InfoProvider provider = InfoProviderFactory.provide(OperatingSystem.getCurrentOperatingSystem(), config);
         Sensors sensors = hal.getSensors();
+
         environment.jersey().register(new SystemResource(provider, os, hal.getComputerSystem(), hal.getProcessor(), hal.getMemory(), hal.getPowerSources(), hal.getSensors()));
         environment.jersey().register(new DiskStoresResource(hal.getDiskStores(), os.getFileSystem(), provider));
         environment.jersey().register(new FileSystemResource(os.getFileSystem()));
@@ -117,7 +118,7 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
     }
 
     private String getVersionFromManifest() throws IOException {
-        Class clazz = MaintenanceApplication.class;
+        Class clazz = SystemApiApplication.class;
         String className = clazz.getSimpleName() + ".class";
         String classPath = clazz.getResource(className).toString();
         if (!classPath.startsWith("jar")) {

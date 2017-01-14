@@ -6,7 +6,7 @@ import io.dropwizard.Configuration;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-public class MaintenanceConfiguration extends Configuration {
+public class SystemApiConfiguration extends Configuration {
 
     @Valid
     @NotNull
@@ -15,10 +15,18 @@ public class MaintenanceConfiguration extends Configuration {
 
     @Valid
     @JsonProperty
+    private WindowsConfiguration windows;
+
+    @Valid
+    @JsonProperty
     private boolean forwardHttps;
 
     public UserConfiguration getUser() {
         return user;
+    }
+
+    public WindowsConfiguration windows() {
+        return windows;
     }
 
     public boolean forwardHttps() {

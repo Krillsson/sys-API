@@ -1,6 +1,8 @@
 user:
   username: user
   password: password
+windows:
+  enableOhmJniWrapper: false
 server:
   applicationContextPath: /v1
   applicationConnectors:

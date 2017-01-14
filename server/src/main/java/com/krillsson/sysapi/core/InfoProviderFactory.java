@@ -1,22 +1,25 @@
 package com.krillsson.sysapi.core;
 
+import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.core.windows.WindowsInfoProvider;
 import com.krillsson.sysapi.util.OperatingSystem;
 
 public class InfoProviderFactory
 {
     private InfoProviderFactory(){
-        //hidden
+        //prevent instantiation
     }
 
-    public static InfoProvider provide(OperatingSystem os)
+    public static InfoProvider provide(OperatingSystem os, SystemApiConfiguration configuration)
     {
         switch (os)
         {
             case WINDOWS:
-                WindowsInfoProvider windowsInfoProvider = new WindowsInfoProvider();
-                if(windowsInfoProvider.canProvide()){
-                    return windowsInfoProvider;
+                if(configuration.windows() == null && !configuration.windows().enableOhmJniWrapper()) {
+                    WindowsInfoProvider windowsInfoProvider = new WindowsInfoProvider();
+                    if (windowsInfoProvider.canProvide()) {
+                        return windowsInfoProvider;
+                    }
                 }
             case LINUX:
             case MAC_OS:

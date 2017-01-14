@@ -248,7 +248,7 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     private boolean initBridge() {
-        LOGGER.info("Enabling OHMJNIWrapper impl. Delete OHM .dll's in /lib dir to disable");
+        LOGGER.info("Enabling OHMJNIWrapper impl. Disable this in the configuration.yml (see README.md)");
         Bridge.setDebug(true);
         try {
             Bridge.init();
