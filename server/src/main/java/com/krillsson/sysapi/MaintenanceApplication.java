@@ -4,10 +4,9 @@ package com.krillsson.sysapi;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.krillsson.sysapi.auth.BasicAuthenticator;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
-import com.krillsson.sysapi.extension.InfoProvider;
-import com.krillsson.sysapi.extension.InfoProviderFactory;
-import com.krillsson.sysapi.oshi.*;
-import com.krillsson.sysapi.resources.MetaInfoResource;
+import com.krillsson.sysapi.core.InfoProvider;
+import com.krillsson.sysapi.core.InfoProviderFactory;
+import com.krillsson.sysapi.resources.*;
 import com.krillsson.sysapi.util.OperatingSystem;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
@@ -79,7 +78,7 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
 
         InfoProvider provider = InfoProviderFactory.provide(OperatingSystem.getCurrentOperatingSystem());
         Sensors sensors = hal.getSensors();
-        environment.jersey().register(new SystemResource(provider, os, hal));
+        environment.jersey().register(new SystemResource(provider, os, hal.getComputerSystem(), hal.getProcessor(), hal.getMemory(), hal.getPowerSources(), hal.getSensors()));
         environment.jersey().register(new DiskStoresResource(hal.getDiskStores(), os.getFileSystem(), provider));
         environment.jersey().register(new FileSystemResource(os.getFileSystem()));
         environment.jersey().register(new GpuResource(hal.getDisplays(), provider));

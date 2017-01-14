@@ -1,12 +1,12 @@
-package com.krillsson.sysapi.extension.windows;
+package com.krillsson.sysapi.core.windows;
 
 import com.krillsson.sysapi.domain.HealthData;
 import com.krillsson.sysapi.domain.storage.HWDiskLoad;
 import com.krillsson.sysapi.domain.gpu.Gpu;
 import com.krillsson.sysapi.domain.gpu.GpuLoad;
 import com.krillsson.sysapi.domain.storage.HWDiskHealth;
-import com.krillsson.sysapi.extension.InfoProvider;
-import com.krillsson.sysapi.extension.InfoProviderBase;
+import com.krillsson.sysapi.core.InfoProvider;
+import com.krillsson.sysapi.core.InfoProviderBase;
 import net.sf.jni4net.Bridge;
 import ohmwrapper.*;
 import org.slf4j.Logger;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.krillsson.sysapi.util.JarLocation.*;
-import static com.krillsson.sysapi.util.NullSafeOhmMonitor.nullSafe;
+import static com.krillsson.sysapi.core.windows.util.NullSafeOhmMonitor.nullSafe;
 
 public class WindowsInfoProvider extends InfoProviderBase implements InfoProvider {
 
@@ -247,7 +247,8 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     private boolean initBridge() {
-        Bridge.setVerbose(true);
+        LOGGER.info("Enabling OHMJNIWrapper impl. Delete OHM .dll's in /lib dir to disable");
+        Bridge.setDebug(true);
         try {
             Bridge.init();
         } catch (IOException e) {

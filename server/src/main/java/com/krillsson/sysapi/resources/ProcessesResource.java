@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.oshi;
+package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;

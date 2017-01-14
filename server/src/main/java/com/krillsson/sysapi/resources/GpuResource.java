@@ -1,9 +1,9 @@
-package com.krillsson.sysapi.oshi;
+package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.domain.gpu.GpuInfo;
-import com.krillsson.sysapi.extension.InfoProvider;
+import com.krillsson.sysapi.core.InfoProvider;
 import io.dropwizard.auth.Auth;
 import oshi.json.hardware.Display;
 

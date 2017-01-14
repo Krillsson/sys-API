@@ -1,14 +1,12 @@
-package com.krillsson.sysapi.extension;
+package com.krillsson.sysapi.core;
 
 import com.krillsson.sysapi.domain.HealthData;
 import com.krillsson.sysapi.domain.gpu.Gpu;
 import com.krillsson.sysapi.domain.storage.HWDiskHealth;
 import oshi.json.hardware.HWDiskStore;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class DefaultInfoProvider extends InfoProviderBase implements InfoProvider {
     @Override

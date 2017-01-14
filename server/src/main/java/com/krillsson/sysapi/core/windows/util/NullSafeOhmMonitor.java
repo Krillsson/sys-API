@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.util;
+package com.krillsson.sysapi.core.windows.util;
 
 import ohmwrapper.DataType;
 import ohmwrapper.OHMMonitor;

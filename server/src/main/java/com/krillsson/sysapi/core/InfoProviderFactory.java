@@ -1,6 +1,6 @@
-package com.krillsson.sysapi.extension;
+package com.krillsson.sysapi.core;
 
-import com.krillsson.sysapi.extension.windows.WindowsInfoProvider;
+import com.krillsson.sysapi.core.windows.WindowsInfoProvider;
 import com.krillsson.sysapi.util.OperatingSystem;
 
 public class InfoProviderFactory

@@ -1,11 +1,11 @@
-package com.krillsson.sysapi.oshi;
+package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.domain.cpu.Cpu;
 import com.krillsson.sysapi.domain.system.JvmProperties;
 import com.krillsson.sysapi.domain.system.System;
-import com.krillsson.sysapi.extension.InfoProvider;
+import com.krillsson.sysapi.core.InfoProvider;
 import io.dropwizard.auth.Auth;
 import oshi.json.hardware.*;
 import oshi.json.software.os.OperatingSystem;

@@ -1,7 +1,6 @@
 package com.krillsson.sysapi.util;
 
 import com.krillsson.sysapi.MaintenanceApplication;
-import com.krillsson.sysapi.extension.windows.WindowsInfoProvider;
 
 import java.io.File;
 import java.net.URISyntaxException;

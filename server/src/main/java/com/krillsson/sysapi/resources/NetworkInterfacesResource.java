@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.oshi;
+package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
@@ -11,7 +11,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("networkinterfaces")
+@Path("nics")
 @Produces(MediaType.APPLICATION_JSON)
 public class NetworkInterfacesResource {
     private final NetworkIF[] networkIFs;
