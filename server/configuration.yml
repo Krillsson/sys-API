@@ -1,8 +1,16 @@
+#########################################
+### System-Api configuration          ###
+#########################################
 user:
   username: user
   password: password
 windows:
-  enableOhmJniWrapper: false
+  enableOhmJniWrapper: true
+#forwardHttps: false
+
+#########################################
+### Dropwizard specific configuration ###
+#########################################
 server:
   applicationContextPath: /v1
   applicationConnectors:
@@ -13,3 +21,6 @@ logging:
   appenders:
        - type: console
          threshold: DEBUG
+# Disabled in the headless version
+#       - type: textarea
+#         threshold: DEBUG

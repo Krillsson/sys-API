@@ -11,7 +11,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("nics")
+@Path("networkinterfaces")
 @Produces(MediaType.APPLICATION_JSON)
 public class NetworkInterfacesResource {
     private final NetworkIF[] networkIFs;

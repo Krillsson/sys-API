@@ -15,7 +15,7 @@ public class InfoProviderFactory
         switch (os)
         {
             case WINDOWS:
-                if(configuration.windows() == null && !configuration.windows().enableOhmJniWrapper()) {
+                if(configuration.windows() == null || configuration.windows().enableOhmJniWrapper()) {
                     WindowsInfoProvider windowsInfoProvider = new WindowsInfoProvider();
                     if (windowsInfoProvider.canProvide()) {
                         return windowsInfoProvider;

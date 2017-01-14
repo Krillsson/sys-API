@@ -13,8 +13,6 @@ import io.dropwizard.logging.layout.LayoutFactory;
 
 @JsonTypeName("textarea")
 public class TextAreaAppenderFactory extends AbstractAppenderFactory {
-
-
     public Appender build(LoggerContext loggerContext, String s, LayoutFactory layoutFactory, LevelFilterFactory levelFilterFactory, AsyncAppenderFactory asyncAppenderFactory) {
         final TextAreaAppender appender = new TextAreaAppender();
         appender.setName("textarea-appender");

@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 @Path("processes")
 @Produces(MediaType.APPLICATION_JSON)
 public class ProcessesResource {
-    OperatingSystem operatingSystem;
+    private final OperatingSystem operatingSystem;
 
     public ProcessesResource(OperatingSystem operatingSystem) {
         this.operatingSystem = operatingSystem;

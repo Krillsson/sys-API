@@ -1,7 +1,7 @@
 # System Api
-System Api is a REST-interface to your computers hardware. it uses [Sigar](https://github.com/hyperic/sigar) as well as [OpenHardwareMonitor](https://github.com/openhardwaremonitor/openhardwaremonitor) to gather information about your
+System Api is a REST-interface to your computers hardware. it uses [OSHI](https://github.com/oshi/oshi) as well as [OpenHardwareMonitor](https://github.com/openhardwaremonitor/openhardwaremonitor) to gather information about your
 system and publishes that information with the help of [Dropwizard](https://github.com/dropwizard/dropwizard).
-You can run this application on a bunch of different platforms. Take a look at [Sigars wiki](https://support.hyperic.com/display/SIGAR/Home) to get an idea if you can run this on your system.
+You can run this application on every platform Oshi supports (Windows, Linux, Mac OS X & Unix (Solaris, FreeBSD))
 
 Feel free to create issues or make pull requests.
 
@@ -22,8 +22,6 @@ git clone [this repo] sys-api
 ```sh
 mvn clean install
 ```
-
-This will download the necessary Sigar native files and extract them under server/target/lib
 
 You should now be able to:
 
@@ -54,13 +52,13 @@ Apart from the standard Dropwizard configurations you need to specify what usern
     user:
         username: [change me]
         password: [change me]
+        
+On Windows systems you can disable the OhmJniWrapper feature with
 
-The application will attempt to resolve the location of the Sigar native files by itself. So the native files need to be contained in a directory named lib in the same directory as the .jar executable. 
-This has been tested on Mac OSX Yosemite and Windows 8.1. However, if you get *UnsatisfiedLinkError*'s you can override the location by specifying:
+    windows:
+      enableOhmJniWrapper: false
 
-    sigarLocation: [absolute path to lib folder]
-
-### But I want HTTPS?
+### Enable HTTPS
 
 Take a look at this guide: [Dropwizard and SSL](http://clearthehaze.com/2014/09/dropwizard-ssl/)
 
@@ -75,55 +73,31 @@ As of now you can query _sys-api_ for
 - Cpu usage per core
 - Available space on filesystems
 - List all network interfaces
-- Get the current speed of a network (a bit hacky)
 - Get available swap and ram
 - General information about the system, like users, uptime and hostname
-- List all current processes along with ram usage, cpu-time and arguments.
-
-Additionally, on a Windows machine you can do the following:
-
-- Read temperatures from the CPU, GPU as well as the motherboard
-- Fan usage and RPM on the CPU, GPU and motherboard
-- Disk read/write rates
-
-### Warning
-Due to the fact that OpenHardwareMonitor extend the functionality of the REST api, some elements in the JSON will be empty or contain zero/-1 values other systems. For instance the temperature will always be 0 or the DriveLoad object will always be empty. Code accordingly.
+- List all current processes along with ram usage and cpu-time.
 
 ## Endpoints
 
-    GET     /cpu
-    GET     /cpu/{core}
-    GET     /drives
-    GET     /drives/type/{fsTypeName}
-    GET     /drives/{id}
-    GET     /memory
-    GET     /memory/ram
-    GET     /memory/swap
-    GET     /networks
-    GET     /networks/{id}
-    GET     /networks/{id}/speed
-    GET     /processes
-    GET     /processes/statistics
-    GET     /processes/{pid}
-    GET     /system
-    GET     /system/jvm
-    GET     /system/operatingsystem
-    GET     /system/uptime
-    GET     /meta/version
-    GET     /meta/pid
-
-## Windows only:
-
-    GET     /motherboard
-    GET     /gpus
+    GET     /disks (com.krillsson.sysapi.resources.DiskStoresResource)
+    GET     /gpus (com.krillsson.sysapi.resources.GpuResource)
+    GET     /memory (com.krillsson.sysapi.resources.MemoryResource)
+    GET     /meta/version (com.krillsson.sysapi.resources.MetaInfoResource)
+    GET     /motherboard (com.krillsson.sysapi.resources.MotherboardResource)
+    GET     /networkinterfaces (com.krillsson.sysapi.resources.NetworkInterfacesResource)
+    GET     /powersources (com.krillsson.sysapi.resources.PowerSourcesResource)
+    GET     /processes (com.krillsson.sysapi.resources.ProcessesResource)
+    GET     /processor (com.krillsson.sysapi.resources.CpuResource)
+    GET     /sensors (com.krillsson.sysapi.resources.SensorsResource)
+    GET     /system (com.krillsson.sysapi.resources.SystemResource)
+    GET     /system/jvm (com.krillsson.sysapi.resources.SystemResource)
 
 # Prerequisites
 - [Maven 3](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html)
 - [Java 8 JRE](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 
 # Credits
-- [cb372 - metrics-sigar](https://github.com/cb372/metrics-sigar)
-- [Sigar](https://github.com/hyperic/sigar)
+- [OSHI](https://github.com/oshi/oshi)
 - [Dropwizard](https://github.com/dropwizard/dropwizard)
 
 All of the projects above are licensed under the [Apache License, Version 2](http://www.apache.org/licenses/LICENSE-2.0)

@@ -1,7 +1,7 @@
 package com.krillsson.sysapi.gui;
 
-import com.krillsson.sysapi.MaintenanceApplication;
-import com.krillsson.sysapi.MaintenanceConfiguration;
+import com.krillsson.sysapi.SystemApiApplication;
+import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.gui.logback.TextAreaAppender;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.testing.DropwizardTestSupport;
@@ -21,8 +21,8 @@ import static io.dropwizard.testing.ResourceHelpers.resourceFilePath;
 
 public class Controller {
 
-    private final DropwizardTestSupport<MaintenanceConfiguration> MAINTENANCE_APPLICATION =
-            new DropwizardTestSupport<MaintenanceConfiguration>(MaintenanceApplication.class, resourcePath());
+    private final DropwizardTestSupport<SystemApiConfiguration> MAINTENANCE_APPLICATION =
+            new DropwizardTestSupport<SystemApiConfiguration>(SystemApiApplication.class, resourcePath());
 
 
     private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(Controller.class.getSimpleName());

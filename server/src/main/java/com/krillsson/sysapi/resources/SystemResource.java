@@ -15,6 +15,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.net.UnknownHostException;
 import java.util.Properties;
 
 @Path("system")
@@ -49,11 +50,19 @@ public class SystemResource {
             temperature = new double[]{sensors.getCpuTemperature()};
         }
         return new System(
-                operatingSystem,
+                getHostName(), operatingSystem,
                 computerSystem,
                 new Cpu(processor,sensors.getCpuVoltage(), fanPercent, fanRpm, temperature),
                 memory,
                 powerSources);
+    }
+
+    private String getHostName() {
+        try {
+            return java.net.InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            return "";
+        }
     }
 
     @GET

@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.gui;
 
-import com.krillsson.sysapi.MaintenanceApplication;
+import com.krillsson.sysapi.SystemApiApplication;
 import com.krillsson.sysapi.gui.logback.TextAreaAppenderFactory;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

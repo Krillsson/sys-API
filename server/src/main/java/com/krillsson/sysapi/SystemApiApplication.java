@@ -83,7 +83,6 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
 
         environment.jersey().register(new SystemResource(provider, os, hal.getComputerSystem(), hal.getProcessor(), hal.getMemory(), hal.getPowerSources(), hal.getSensors()));
         environment.jersey().register(new DiskStoresResource(hal.getDiskStores(), os.getFileSystem(), provider));
-        environment.jersey().register(new FileSystemResource(os.getFileSystem()));
         environment.jersey().register(new GpuResource(hal.getDisplays(), provider));
         environment.jersey().register(new MemoryResource(hal.getMemory()));
         environment.jersey().register(new NetworkInterfacesResource(hal.getNetworkIFs()));
@@ -91,7 +90,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         environment.jersey().register(new ProcessesResource(os));
         environment.jersey().register(new CpuResource(sensors, hal.getProcessor(), provider));
         environment.jersey().register(new SensorsResource(sensors, provider));
-        environment.jersey().register(new UsbDevicesResource(hal.getUsbDevices(true)));
+        environment.jersey().register(new MotherboardResource(hal.getComputerSystem(), hal.getUsbDevices(false)));
     }
 
 
