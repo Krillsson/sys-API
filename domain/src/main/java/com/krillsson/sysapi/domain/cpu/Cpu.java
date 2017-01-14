@@ -1,41 +1,33 @@
 package com.krillsson.sysapi.domain.cpu;
 
 import oshi.json.hardware.CentralProcessor;
-import oshi.json.hardware.Sensors;
 
 public class Cpu {
     private final CentralProcessor centralProcessor;
-    private final double[] temperatures;
-    private final double voltage;
-    private final double fanRpm;
-    private final double fanPercent;
+    private final int processCount;
+    private final int threadCount;
+    private final CpuHealth cpuHealth;
 
-    public Cpu(CentralProcessor centralProcessor, double voltage, double fanRpm, double fanPercent, double[] temperatures) {
+    public Cpu(CentralProcessor centralProcessor, int processCount, int threadCount, CpuHealth cpuHealth) {
         this.centralProcessor = centralProcessor;
-        this.voltage = voltage;
-        this.fanRpm = fanRpm;
-        this.fanPercent = fanPercent;
-        this.temperatures = temperatures;
+        this.processCount = processCount;
+        this.threadCount = threadCount;
+        this.cpuHealth = cpuHealth;
     }
 
     public CentralProcessor getCentralProcessor() {
         return centralProcessor;
     }
 
-    public double[] getTemperatures() {
-        return temperatures;
+    public int getProcessCount() {
+        return processCount;
     }
 
-
-    public double getVoltage() {
-        return voltage;
+    public int getThreadCount() {
+        return threadCount;
     }
 
-    public double getFanRpm() {
-        return fanRpm;
-    }
-
-    public double getFanPercent() {
-        return fanPercent;
+    public CpuHealth getCpuHealth() {
+        return cpuHealth;
     }
 }

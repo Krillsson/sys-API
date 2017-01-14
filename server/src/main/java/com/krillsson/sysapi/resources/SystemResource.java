@@ -1,11 +1,12 @@
 package com.krillsson.sysapi.resources;
 
-import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
+import com.krillsson.sysapi.config.UserConfiguration;
+import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.domain.cpu.Cpu;
+import com.krillsson.sysapi.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.domain.system.JvmProperties;
 import com.krillsson.sysapi.domain.system.System;
-import com.krillsson.sysapi.core.InfoProvider;
 import io.dropwizard.auth.Auth;
 import oshi.json.hardware.*;
 import oshi.json.software.os.OperatingSystem;
@@ -30,7 +31,7 @@ public class SystemResource {
     private final Sensors sensors;
     private final InfoProvider provider;
 
-    public SystemResource(InfoProvider provider,OperatingSystem operatingSystem, ComputerSystem computerSystem, CentralProcessor processor, GlobalMemory memory, PowerSource[] powerSources, Sensors sensors) {
+    public SystemResource(InfoProvider provider, OperatingSystem operatingSystem, ComputerSystem computerSystem, CentralProcessor processor, GlobalMemory memory, PowerSource[] powerSources, Sensors sensors) {
         this.provider = provider;
         this.operatingSystem = operatingSystem;
         this.computerSystem = computerSystem;
@@ -46,13 +47,19 @@ public class SystemResource {
         double[] temperature = provider.cpuTemperatures();
         double fanRpm = provider.cpuFanRpm();
         double fanPercent = provider.cpuFanPercent();
-        if(temperature.length == 0){
+        if (temperature.length == 0) {
             temperature = new double[]{sensors.getCpuTemperature()};
         }
         return new System(
                 getHostName(), operatingSystem,
                 computerSystem,
-                new Cpu(processor,sensors.getCpuVoltage(), fanPercent, fanRpm, temperature),
+                    new Cpu(processor,
+                            operatingSystem.getProcessCount(),
+                            operatingSystem.getThreadCount(),
+                                new CpuHealth(
+                                    temperature,
+                                    sensors.getCpuVoltage(),
+                                    fanRpm, fanPercent)),
                 memory,
                 powerSources);
     }
@@ -83,4 +90,5 @@ public class SystemResource {
                 p.getProperty("user.home"),
                 p.getProperty("user.name"));
     }
+
 }

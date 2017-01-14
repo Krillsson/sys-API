@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.domain.gpu;
 
-public class GpuLoad
+public class GpuHealth
 {
     private double fanRpm;
     private double fanPercent;
@@ -8,7 +8,7 @@ public class GpuLoad
     private double coreLoad;
     private double memoryLoad;
 
-    public GpuLoad(double fanRpm, double fanPercent, double temperature, double coreLoad, double memoryLoad)
+    public GpuHealth(double fanRpm, double fanPercent, double temperature, double coreLoad, double memoryLoad)
     {
         this.fanRpm = fanRpm;
         this.fanPercent = fanPercent;

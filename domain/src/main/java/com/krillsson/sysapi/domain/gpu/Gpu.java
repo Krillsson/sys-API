@@ -6,9 +6,9 @@ public class Gpu
     private String model;
     private double coreMhz;
     private double memoryMhz;
-    private GpuLoad load;
+    private GpuHealth load;
 
-    public Gpu(String vendor, String model, double coreMhz, double memoryMhz, GpuLoad load)
+    public Gpu(String vendor, String model, double coreMhz, double memoryMhz, GpuHealth load)
     {
         this.vendor = vendor;
         this.model = model;
@@ -33,7 +33,7 @@ public class Gpu
         return memoryMhz;
     }
 
-    public GpuLoad getLoad() {
+    public GpuHealth getLoad() {
         return load;
     }
 }

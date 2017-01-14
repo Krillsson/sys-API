@@ -4,9 +4,11 @@ import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.domain.cpu.Cpu;
 import com.krillsson.sysapi.core.InfoProvider;
+import com.krillsson.sysapi.domain.cpu.CpuHealth;
 import io.dropwizard.auth.Auth;
 import oshi.json.hardware.CentralProcessor;
 import oshi.json.hardware.Sensors;
+import oshi.json.software.os.OperatingSystem;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
@@ -17,11 +19,14 @@ import javax.ws.rs.core.MediaType;
 @Path("processor")
 @Produces(MediaType.APPLICATION_JSON)
 public class CpuResource {
-    private final Sensors sensors;
-    private CentralProcessor processor;
-    private InfoProvider provider;
 
-    public CpuResource(Sensors sensors, CentralProcessor processor, InfoProvider provider) {
+    private final OperatingSystem operatingSystem;
+    private final Sensors sensors;
+    private final CentralProcessor processor;
+    private final InfoProvider provider;
+
+    public CpuResource(OperatingSystem operatingSystem, Sensors sensors, CentralProcessor processor, InfoProvider provider) {
+        this.operatingSystem = operatingSystem;
         this.sensors = sensors;
         this.processor = processor;
         this.provider = provider;
@@ -36,6 +41,7 @@ public class CpuResource {
         if(temperature.length == 0){
             temperature = new double[]{sensors.getCpuTemperature()};
         }
-        return new Cpu(processor,sensors.getCpuVoltage(), fanPercent, fanRpm, temperature);
+        return new Cpu(processor,operatingSystem.getProcessCount(), operatingSystem.getThreadCount(), new CpuHealth(temperature, sensors.getCpuVoltage(), fanRpm, fanPercent));
     }
+
 }

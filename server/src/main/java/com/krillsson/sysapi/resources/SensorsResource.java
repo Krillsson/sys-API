@@ -1,10 +1,11 @@
 package com.krillsson.sysapi.resources;
 
-import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
+import com.krillsson.sysapi.config.UserConfiguration;
+import com.krillsson.sysapi.core.InfoProvider;
+import com.krillsson.sysapi.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.domain.health.HealthData;
 import com.krillsson.sysapi.domain.health.SensorsData;
-import com.krillsson.sysapi.core.InfoProvider;
 import io.dropwizard.auth.Auth;
 import oshi.json.hardware.Sensors;
 
@@ -18,6 +19,7 @@ import java.util.List;
 @Path("sensors")
 @Produces(MediaType.APPLICATION_JSON)
 public class SensorsResource {
+
     private final Sensors sensors;
     private InfoProvider provider;
 
@@ -32,10 +34,11 @@ public class SensorsResource {
         double[] cpuTemperatures = provider.cpuTemperatures();
         double cpuFanRpm = provider.cpuFanRpm();
         double cpuFanPercent = provider.cpuFanPercent();
-        if(cpuTemperatures.length == 0){
+        if (cpuTemperatures.length == 0) {
             cpuTemperatures = new double[]{sensors.getCpuTemperature()};
         }
         List<HealthData> healthDatas = provider.healthData();
-        return new SensorsData(cpuTemperatures, cpuFanRpm, cpuFanPercent, healthDatas);
+        return new SensorsData(new CpuHealth(cpuTemperatures, sensors.getCpuVoltage(), cpuFanRpm, cpuFanPercent), provider.gpuHealths(), healthDatas);
     }
+
 }
