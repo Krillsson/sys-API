@@ -1,7 +1,7 @@
 package com.krillsson.sysapi.extension.windows;
 
 import com.krillsson.sysapi.domain.HealthData;
-import com.krillsson.sysapi.domain.drive.DriveLoad;
+import com.krillsson.sysapi.domain.storage.HWDiskLoad;
 import com.krillsson.sysapi.domain.gpu.Gpu;
 import com.krillsson.sysapi.domain.gpu.GpuLoad;
 import com.krillsson.sysapi.domain.storage.HWDiskHealth;
@@ -294,7 +294,7 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
                 }
 
                 return new HWDiskHealth(nullSafe(driveMonitor.getTemperature()).getValue(),
-                        new DriveLoad(driveMonitor.getReadRate(),
+                        new HWDiskLoad(driveMonitor.getReadRate(),
                                 driveMonitor.getWriteRate()),
                         healthData);
             }

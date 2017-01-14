@@ -20,6 +20,7 @@ public class InfoProviderFactory
                 }
             case LINUX:
             case MAC_OS:
+                //https://github.com/Chris911/iStats
             case FREE_BSD:
             case UNKNOWN:
             default:

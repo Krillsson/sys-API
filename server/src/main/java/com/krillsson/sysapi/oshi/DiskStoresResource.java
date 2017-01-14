@@ -2,7 +2,7 @@ package com.krillsson.sysapi.oshi;
 
 import com.krillsson.sysapi.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
-import com.krillsson.sysapi.domain.storage.Disk;
+import com.krillsson.sysapi.domain.storage.HWDisk;
 import com.krillsson.sysapi.domain.storage.Storage;
 import com.krillsson.sysapi.extension.InfoProvider;
 import io.dropwizard.auth.Auth;
@@ -36,12 +36,12 @@ public class DiskStoresResource {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public Storage getRoot(@Auth UserConfiguration user) {
-        List<Disk> disks = new ArrayList<>();
+        List<HWDisk> HWDisks = new ArrayList<>();
         for (HWDiskStore diskStore : diskStores) {
             OSFileStore associatedFileStore = findAssociatedFileStore(diskStore);
-            disks.add(new Disk(diskStore, provider.diskHealth(associatedFileStore != null ? associatedFileStore.getMount() : "", diskStore), associatedFileStore));
+            HWDisks.add(new HWDisk(diskStore, provider.diskHealth(associatedFileStore != null ? associatedFileStore.getMount() : "", diskStore), associatedFileStore));
         }
-        return new Storage(disks.toArray(/*type reference*/new Disk[0]), fileSystem.getOpenFileDescriptors(), fileSystem.getMaxFileDescriptors());
+        return new Storage(HWDisks.toArray(/*type reference*/new HWDisk[0]), fileSystem.getOpenFileDescriptors(), fileSystem.getMaxFileDescriptors());
     }
 
     private OSFileStore findAssociatedFileStore(HWDiskStore diskStore) {

@@ -6,7 +6,6 @@ import com.krillsson.sysapi.domain.cpu.Cpu;
 import com.krillsson.sysapi.domain.system.JvmProperties;
 import com.krillsson.sysapi.domain.system.System;
 import com.krillsson.sysapi.extension.InfoProvider;
-import com.krillsson.sysapi.util.TemperatureUtils;
 import io.dropwizard.auth.Auth;
 import oshi.json.hardware.*;
 import oshi.json.software.os.OperatingSystem;
@@ -22,8 +21,6 @@ import java.util.Properties;
 @Produces(MediaType.APPLICATION_JSON)
 public class SystemResource {
 
-    private final TemperatureUtils temperatureUtils;
-    private Sensors halSensors;
     private final OperatingSystem operatingSystem;
     private final ComputerSystem computerSystem;
     private final CentralProcessor processor;
@@ -32,10 +29,8 @@ public class SystemResource {
     private final Sensors sensors;
     private final InfoProvider provider;
 
-    public SystemResource(InfoProvider provider, TemperatureUtils temperatureUtils, Sensors halSensors, OperatingSystem operatingSystem, ComputerSystem computerSystem, CentralProcessor processor, GlobalMemory memory, PowerSource[] powerSources, Sensors sensors) {
+    public SystemResource(InfoProvider provider,OperatingSystem operatingSystem, ComputerSystem computerSystem, CentralProcessor processor, GlobalMemory memory, PowerSource[] powerSources, Sensors sensors) {
         this.provider = provider;
-        this.temperatureUtils = temperatureUtils;
-        this.halSensors = halSensors;
         this.operatingSystem = operatingSystem;
         this.computerSystem = computerSystem;
         this.processor = processor;

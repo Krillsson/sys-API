@@ -9,7 +9,6 @@ import com.krillsson.sysapi.extension.InfoProviderFactory;
 import com.krillsson.sysapi.oshi.*;
 import com.krillsson.sysapi.resources.MetaInfoResource;
 import com.krillsson.sysapi.util.OperatingSystem;
-import com.krillsson.sysapi.util.TemperatureUtils;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -79,9 +78,8 @@ public class MaintenanceApplication extends Application<MaintenanceConfiguration
         environment.jersey().register(new MetaInfoResource(getVersionFromManifest()));
 
         InfoProvider provider = InfoProviderFactory.provide(OperatingSystem.getCurrentOperatingSystem());
-        TemperatureUtils temperatureUtils = new TemperatureUtils(OperatingSystem.getCurrentOperatingSystem());
         Sensors sensors = hal.getSensors();
-        environment.jersey().register(new SystemResource(provider, temperatureUtils, sensors, os, hal.getComputerSystem(), hal.getProcessor(), hal.getMemory(), hal.getPowerSources(), sensors));
+        environment.jersey().register(new SystemResource(provider, os, hal));
         environment.jersey().register(new DiskStoresResource(hal.getDiskStores(), os.getFileSystem(), provider));
         environment.jersey().register(new FileSystemResource(os.getFileSystem()));
         environment.jersey().register(new GpuResource(hal.getDisplays(), provider));

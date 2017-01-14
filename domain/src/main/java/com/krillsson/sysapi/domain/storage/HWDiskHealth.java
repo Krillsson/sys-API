@@ -1,7 +1,6 @@
 package com.krillsson.sysapi.domain.storage;
 
 
-import com.krillsson.sysapi.domain.drive.DriveLoad;
 import com.krillsson.sysapi.domain.HealthData;
 
 import java.util.List;
@@ -9,10 +8,10 @@ import java.util.List;
 public class HWDiskHealth
 {
     private double temperature;
-    private DriveLoad load;
+    private HWDiskLoad load;
     private List<HealthData> healthData;
 
-    public HWDiskHealth(double temperature, DriveLoad load, List<HealthData> healthData)
+    public HWDiskHealth(double temperature, HWDiskLoad load, List<HealthData> healthData)
     {
         this.temperature = temperature;
         this.load = load;
@@ -29,7 +28,7 @@ public class HWDiskHealth
         return healthData;
     }
 
-    public DriveLoad getLoad() {
+    public HWDiskLoad getLoad() {
         return load;
     }
 }

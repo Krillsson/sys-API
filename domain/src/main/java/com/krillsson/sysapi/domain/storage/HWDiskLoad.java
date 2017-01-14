@@ -1,23 +1,19 @@
-package com.krillsson.sysapi.domain.drive;
+package com.krillsson.sysapi.domain.storage;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public class DriveLoad
+public class HWDiskLoad
 {
     private double readRateInkBs;
     private double writeRateInkBs;
 
-    public DriveLoad(double readRateInKbs, double writeRateInkBs) {
+    public HWDiskLoad(double readRateInKbs, double writeRateInkBs) {
         this.readRateInkBs = readRateInKbs;
         this.writeRateInkBs = writeRateInkBs;
     }
 
-    @JsonProperty
     public double getReadRateInkBs() {
         return readRateInkBs;
     }
 
-    @JsonProperty
     public double getWriteRateInkBs() {
         return writeRateInkBs;
     }

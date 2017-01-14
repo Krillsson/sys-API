@@ -3,12 +3,12 @@ package com.krillsson.sysapi.domain.storage;
 import oshi.json.hardware.HWDiskStore;
 import oshi.json.software.os.OSFileStore;
 
-public class Disk {
+public class HWDisk {
     private final HWDiskStore hwDiskStore;
     private final HWDiskHealth hwDiskHealth;
     private final OSFileStore associatedFileStore;
 
-    public Disk(HWDiskStore hwDiskStore, HWDiskHealth hwDiskHealth, OSFileStore associatedFileStore) {
+    public HWDisk(HWDiskStore hwDiskStore, HWDiskHealth hwDiskHealth, OSFileStore associatedFileStore) {
         this.hwDiskStore = hwDiskStore;
         this.hwDiskHealth = hwDiskHealth;
         this.associatedFileStore = associatedFileStore;
