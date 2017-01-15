@@ -7,6 +7,7 @@ import com.krillsson.sysapi.domain.storage.HWDiskHealth;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class DefaultInfoProvider extends InfoProviderBase implements InfoProvider {
     @Override
@@ -35,8 +36,8 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     @Override
-    public List<HealthData> healthData() {
-        return Collections.emptyList();
+    public HealthData[] healthData() {
+        return new HealthData[0];
     }
 
     @Override
@@ -45,7 +46,7 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     @Override
-    public GpuHealth[] gpuHealths() {
-        return new GpuHealth[0];
+    public Map<String, GpuHealth> gpuHealths() {
+        return Collections.emptyMap();
     }
 }

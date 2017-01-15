@@ -14,7 +14,9 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.krillsson.sysapi.core.windows.util.NullSafeOhmMonitor.nullSafe;
 import static com.krillsson.sysapi.util.JarLocation.*;
@@ -64,20 +66,22 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
         return gpus.toArray(/*type reference*/new Gpu[0]);
     }
 
-    public GpuHealth[] gpuHealths() {
-        List<GpuHealth> gpus = new ArrayList<>();
+    public Map<String, GpuHealth> gpuHealths() {
+        Map<String, GpuHealth> gpus = new HashMap<>();
         monitorManager.Update();
         final GpuMonitor[] gpuMonitors = monitorManager.GpuMonitors();
         if (gpuMonitors != null && gpuMonitors.length > 0) {
             for (GpuMonitor gpuMonitor : gpuMonitors) {
                 GpuHealth gpuHealth = new GpuHealth(
-                        nullSafe(gpuMonitor.getFanRPM()).getValue(), nullSafe(gpuMonitor.getFanPercent()).getValue(), nullSafe(gpuMonitor.getTemperature()).getValue(),
+                        nullSafe(gpuMonitor.getFanRPM()).getValue(),
+                        nullSafe(gpuMonitor.getFanPercent()).getValue(),
+                        nullSafe(gpuMonitor.getTemperature()).getValue(),
                         nullSafe(gpuMonitor.getCoreLoad()).getValue(),
                         nullSafe(gpuMonitor.getMemoryClock()).getValue());
-                gpus.add(gpuHealth);
+                gpus.put(gpuMonitor.getName(), gpuHealth);
             }
         }
-        return gpus.toArray(/*type reference*/new GpuHealth[0]);
+        return gpus;
     }
 
     private boolean initBridge() {
@@ -132,8 +136,6 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
             }
         }
         return null;
-
-
     }
 
     @Override
@@ -176,7 +178,7 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     @Override
-    public List<HealthData> healthData() {
+    public HealthData[] healthData() {
         List<HealthData> list = new ArrayList<>();
         monitorManager.Update();
         MainboardMonitor mainboardMonitor = monitorManager.getMainboardMonitor();
@@ -185,7 +187,7 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
             addIfSafe(list, nullSafe(mainboardMonitor.getBoardFanRPM()));
             addIfSafe(list, nullSafe(mainboardMonitor.getBoardTemperatures()));
         }
-        return list;
+        return list.toArray(/*type reference*/new HealthData[0]);
     }
 
     private void addIfSafe(List<HealthData> healthData, OHMSensor sensor) {

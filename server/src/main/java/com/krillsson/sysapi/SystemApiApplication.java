@@ -9,7 +9,6 @@ import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.InfoProviderFactory;
 import com.krillsson.sysapi.resources.*;
-import com.krillsson.sysapi.util.OperatingSystem;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -78,7 +77,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         environment.jersey().register(new AuthValueFactoryProvider.Binder(UserConfiguration.class));
         environment.jersey().register(new MetaInfoResource(getVersionFromManifest()));
 
-        InfoProvider provider = InfoProviderFactory.provide(OperatingSystem.getCurrentOperatingSystem(), config);
+        InfoProvider provider = new InfoProviderFactory(SystemInfo.getCurrentPlatformEnum(), config).provide();
         Sensors sensors = hal.getSensors();
 
         environment.jersey().register(new SystemResource(provider, os, hal.getProcessor(), hal.getMemory(), hal.getPowerSources(), hal.getSensors()));

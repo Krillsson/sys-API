@@ -5,7 +5,7 @@ import com.krillsson.sysapi.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.domain.health.HealthData;
 import com.krillsson.sysapi.domain.storage.HWDiskHealth;
 
-import java.util.List;
+import java.util.Map;
 
 public interface InfoProvider {
 
@@ -17,9 +17,9 @@ public interface InfoProvider {
 
     double cpuFanPercent();
 
-    List<HealthData> healthData();
+    HealthData[] healthData();
 
     Gpu[] gpus();
 
-    GpuHealth[] gpuHealths();
+    Map<String, GpuHealth> gpuHealths();
 }

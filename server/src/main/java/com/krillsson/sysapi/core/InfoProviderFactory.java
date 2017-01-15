@@ -2,14 +2,18 @@ package com.krillsson.sysapi.core;
 
 import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.core.windows.WindowsInfoProvider;
-import com.krillsson.sysapi.util.OperatingSystem;
+import oshi.PlatformEnum;
 
 public class InfoProviderFactory {
-    private InfoProviderFactory() {
-        //prevent instantiation
+    private final PlatformEnum os;
+    private final SystemApiConfiguration configuration;
+
+    public InfoProviderFactory(PlatformEnum os, SystemApiConfiguration configuration) {
+        this.os = os;
+        this.configuration = configuration;
     }
 
-    public static InfoProvider provide(OperatingSystem os, SystemApiConfiguration configuration) {
+    public InfoProvider provide() {
         switch (os) {
             case WINDOWS:
                 if (configuration.windows() == null || configuration.windows().enableOhmJniWrapper()) {
@@ -19,9 +23,10 @@ public class InfoProviderFactory {
                     }
                 }
             case LINUX:
-            case MAC_OS:
+            case MACOSX:
                 //https://github.com/Chris911/iStats
-            case FREE_BSD:
+            case FREEBSD:
+            case SOLARIS:
             case UNKNOWN:
             default:
                 return new DefaultInfoProvider();
