@@ -70,23 +70,25 @@ public class SystemResourceTest {
     @Test
     public void getSystem() throws Exception {
         double temperature = 30;
+        double voltage = 12;
         int processCount = 70;
         int threadCount = 100;
 
         when(sensors.getCpuTemperature()).thenReturn(temperature);
+        when(sensors.getCpuVoltage()).thenReturn(temperature);
         when(os.getProcessCount()).thenReturn(processCount);
         when(os.getThreadCount()).thenReturn(threadCount);
         final System response = RESOURCES.getJerseyTest().target("/system")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(System.class);
         assertThat(response.getCpu().getCpuHealth().getTemperatures()[0]).isEqualTo(temperature);
+        assertThat(response.getCpu().getCpuHealth().getVoltage()).isEqualTo(voltage);
         assertThat(response.getOperatingSystem().getProcessCount()).isEqualTo(processCount);
         assertThat(response.getOperatingSystem().getThreadCount()).isEqualTo(threadCount);
     }
 
     @After
     public void tearDown() {
-        reset(provider);
         reset(os);
         reset(processor);
         reset(memory);
