@@ -1,7 +1,6 @@
 package com.krillsson.sysapi.auth;
 
 import com.krillsson.sysapi.config.UserConfiguration;
-
 import io.dropwizard.auth.Authorizer;
 
 public class BasicAuthorizer implements Authorizer<UserConfiguration> {

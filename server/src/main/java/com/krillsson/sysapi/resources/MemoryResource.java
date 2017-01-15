@@ -1,7 +1,7 @@
 package com.krillsson.sysapi.resources;
 
-import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
+import com.krillsson.sysapi.config.UserConfiguration;
 import io.dropwizard.auth.Auth;
 import oshi.json.hardware.GlobalMemory;
 
@@ -24,7 +24,7 @@ public class MemoryResource {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public GlobalMemory getRoot(@Auth UserConfiguration user) {
-        return memory ;
+        return memory;
     }
 
 }

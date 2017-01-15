@@ -1,7 +1,6 @@
 package com.krillsson.sysapi.domain.storage;
 
-public class HWDiskLoad
-{
+public class HWDiskLoad {
     private double readRateInkBs;
     private double writeRateInkBs;
 

@@ -1,14 +1,11 @@
 package com.krillsson.sysapi.auth;
 
 
-
+import com.krillsson.sysapi.config.UserConfiguration;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
-
 import org.slf4j.Logger;
-
-import com.krillsson.sysapi.config.UserConfiguration;
 
 import java.util.Optional;
 

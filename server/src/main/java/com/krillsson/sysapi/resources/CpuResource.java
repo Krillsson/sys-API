@@ -1,9 +1,9 @@
 package com.krillsson.sysapi.resources;
 
-import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
-import com.krillsson.sysapi.domain.cpu.Cpu;
+import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.InfoProvider;
+import com.krillsson.sysapi.domain.cpu.Cpu;
 import com.krillsson.sysapi.domain.cpu.CpuHealth;
 import io.dropwizard.auth.Auth;
 import oshi.json.hardware.CentralProcessor;
@@ -38,10 +38,10 @@ public class CpuResource {
         double[] temperature = provider.cpuTemperatures();
         double fanRpm = provider.cpuFanRpm();
         double fanPercent = provider.cpuFanPercent();
-        if(temperature.length == 0){
+        if (temperature.length == 0) {
             temperature = new double[]{sensors.getCpuTemperature()};
         }
-        return new Cpu(processor,operatingSystem.getProcessCount(), operatingSystem.getThreadCount(), new CpuHealth(temperature, sensors.getCpuVoltage(), fanRpm, fanPercent));
+        return new Cpu(processor, operatingSystem.getProcessCount(), operatingSystem.getThreadCount(), new CpuHealth(temperature, sensors.getCpuVoltage(), fanRpm, fanPercent));
     }
 
 }

@@ -2,8 +2,7 @@ package com.krillsson.sysapi.domain.gpu;
 
 import oshi.json.hardware.Display;
 
-public class GpuInfo
-{
+public class GpuInfo {
     private final Display[] displays;
     private final Gpu[] gpus;
 

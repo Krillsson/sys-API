@@ -53,13 +53,13 @@ public class SystemResource {
         return new System(
                 getHostName(), operatingSystem,
                 computerSystem,
-                    new Cpu(processor,
-                            operatingSystem.getProcessCount(),
-                            operatingSystem.getThreadCount(),
-                                new CpuHealth(
-                                    temperature,
-                                    sensors.getCpuVoltage(),
-                                    fanRpm, fanPercent)),
+                new Cpu(processor,
+                        operatingSystem.getProcessCount(),
+                        operatingSystem.getThreadCount(),
+                        new CpuHealth(
+                                temperature,
+                                sensors.getCpuVoltage(),
+                                fanRpm, fanPercent)),
                 memory,
                 powerSources);
     }

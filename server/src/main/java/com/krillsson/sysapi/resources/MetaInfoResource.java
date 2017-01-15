@@ -1,7 +1,7 @@
 package com.krillsson.sysapi.resources;
 
-import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
+import com.krillsson.sysapi.config.UserConfiguration;
 import io.dropwizard.auth.Auth;
 
 import javax.annotation.security.RolesAllowed;
@@ -23,7 +23,7 @@ public class MetaInfoResource {
     @Path("version")
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public String getVersion(@Auth UserConfiguration user){
+    public String getVersion(@Auth UserConfiguration user) {
         return version;
     }
 

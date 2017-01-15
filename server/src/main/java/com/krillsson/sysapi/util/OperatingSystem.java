@@ -46,7 +46,7 @@ public enum OperatingSystem {
      * Checks whether the operating system this JVM runs on is Windows.
      *
      * @return <code>true</code> if the operating system this JVM runs on is
-     *         Windows, <code>false</code> otherwise
+     * Windows, <code>false</code> otherwise
      */
     public static boolean isWindows() {
         return getCurrentOperatingSystem() == WINDOWS;
@@ -56,7 +56,7 @@ public enum OperatingSystem {
      * Checks whether the operating system this JVM runs on is Linux.
      *
      * @return <code>true</code> if the operating system this JVM runs on is
-     *         Linux, <code>false</code> otherwise
+     * Linux, <code>false</code> otherwise
      */
     public static boolean isLinux() {
         return getCurrentOperatingSystem() == LINUX;
@@ -66,7 +66,7 @@ public enum OperatingSystem {
      * Checks whether the operating system this JVM runs on is Windows.
      *
      * @return <code>true</code> if the operating system this JVM runs on is
-     *         Windows, <code>false</code> otherwise
+     * Windows, <code>false</code> otherwise
      */
     public static boolean isMac() {
         return getCurrentOperatingSystem() == MAC_OS;
@@ -76,7 +76,7 @@ public enum OperatingSystem {
      * Checks whether the operating system this JVM runs on is FreeBSD.
      *
      * @return <code>true</code> if the operating system this JVM runs on is
-     *         FreeBSD, <code>false</code> otherwise
+     * FreeBSD, <code>false</code> otherwise
      */
     public static boolean isFreeBSD() {
         return getCurrentOperatingSystem() == FREE_BSD;

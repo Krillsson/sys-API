@@ -1,13 +1,13 @@
 package com.krillsson.sysapi.core.windows;
 
-import com.krillsson.sysapi.domain.health.HealthData;
-import com.krillsson.sysapi.domain.health.DataType;
-import com.krillsson.sysapi.domain.storage.HWDiskLoad;
-import com.krillsson.sysapi.domain.gpu.Gpu;
-import com.krillsson.sysapi.domain.gpu.GpuHealth;
-import com.krillsson.sysapi.domain.storage.HWDiskHealth;
 import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.InfoProviderBase;
+import com.krillsson.sysapi.domain.gpu.Gpu;
+import com.krillsson.sysapi.domain.gpu.GpuHealth;
+import com.krillsson.sysapi.domain.health.DataType;
+import com.krillsson.sysapi.domain.health.HealthData;
+import com.krillsson.sysapi.domain.storage.HWDiskHealth;
+import com.krillsson.sysapi.domain.storage.HWDiskLoad;
 import net.sf.jni4net.Bridge;
 import ohmwrapper.*;
 import org.slf4j.Logger;
@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.krillsson.sysapi.util.JarLocation.*;
 import static com.krillsson.sysapi.core.windows.util.NullSafeOhmMonitor.nullSafe;
+import static com.krillsson.sysapi.util.JarLocation.*;
 
 public class WindowsInfoProvider extends InfoProviderBase implements InfoProvider {
 

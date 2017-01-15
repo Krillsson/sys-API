@@ -2,9 +2,8 @@ package com.krillsson.sysapi.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.security.Principal;
-
 import javax.validation.constraints.NotNull;
+import java.security.Principal;
 
 public class UserConfiguration implements Principal {
     @NotNull

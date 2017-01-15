@@ -1,8 +1,8 @@
 package com.krillsson.sysapi.core;
 
+import com.krillsson.sysapi.domain.gpu.Gpu;
 import com.krillsson.sysapi.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.domain.health.HealthData;
-import com.krillsson.sysapi.domain.gpu.Gpu;
 import com.krillsson.sysapi.domain.storage.HWDiskHealth;
 import oshi.json.hardware.HWDiskStore;
 

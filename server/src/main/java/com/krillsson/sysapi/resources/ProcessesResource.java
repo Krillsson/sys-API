@@ -1,13 +1,11 @@
 package com.krillsson.sysapi.resources;
 
-import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
+import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.domain.system.ProcessesInfo;
 import io.dropwizard.auth.Auth;
 import oshi.json.hardware.GlobalMemory;
-import oshi.json.software.os.OSProcess;
 import oshi.json.software.os.OperatingSystem;
-
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;

@@ -1,44 +1,34 @@
 package com.krillsson.sysapi.core.windows.util;
 
-import ohmwrapper.DataType;
-import ohmwrapper.OHMMonitor;
 import ohmwrapper.OHMSensor;
-import system.Object;
 
-public class NullSafeOhmMonitor
-{
-    public static OHMSensor nullSafe(OHMSensor sensor){
-        if(sensor != null){
+public class NullSafeOhmMonitor {
+    public static OHMSensor nullSafe(OHMSensor sensor) {
+        if (sensor != null) {
             return sensor;
-        }
-        else return new NullSafeOHMSensor();
+        } else return new NullSafeOHMSensor();
     }
 
-    public static OHMSensor[] nullSafe(OHMSensor[] arr){
-        if(arr != null){
+    public static OHMSensor[] nullSafe(OHMSensor[] arr) {
+        if (arr != null) {
             return arr;
-        }
-        else{
+        } else {
             return new OHMSensor[0];
         }
     }
 
-    public static class NullSafeOHMSensor extends OHMSensor
-    {
-        public NullSafeOHMSensor()
-        {
+    public static class NullSafeOHMSensor extends OHMSensor {
+        public NullSafeOHMSensor() {
             super(null, null, null, false);
         }
 
         @Override
-        public String Text()
-        {
+        public String Text() {
             return "N/A";
         }
 
         @Override
-        public double getValue()
-        {
+        public double getValue() {
             return -1;
         }
     }

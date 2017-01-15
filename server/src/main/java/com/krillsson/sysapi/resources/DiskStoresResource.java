@@ -1,10 +1,10 @@
 package com.krillsson.sysapi.resources;
 
-import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
+import com.krillsson.sysapi.config.UserConfiguration;
+import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.domain.storage.HWDisk;
 import com.krillsson.sysapi.domain.storage.StorageInfo;
-import com.krillsson.sysapi.core.InfoProvider;
 import io.dropwizard.auth.Auth;
 import oshi.json.hardware.HWDiskStore;
 import oshi.json.hardware.HWPartition;
@@ -40,7 +40,7 @@ public class DiskStoresResource {
         List<HWDisk> HWDisks = new ArrayList<>();
         for (HWDiskStore diskStore : diskStores) {
             OSFileStore associatedFileStore = findAssociatedFileStore(diskStore);
-            HWDisks.add(new HWDisk(diskStore, provider.diskHealth(associatedFileStore != null ? associatedFileStore.getMount() : "", diskStore), associatedFileStore));
+            HWDisks.add(new HWDisk(diskStore, load, provider.diskHealth(associatedFileStore != null ? associatedFileStore.getMount() : "", diskStore), associatedFileStore));
         }
         return new StorageInfo(HWDisks.toArray(/*type reference*/new HWDisk[0]), fileSystem.getOpenFileDescriptors(), fileSystem.getMaxFileDescriptors());
     }
