@@ -77,7 +77,8 @@ public class SystemResource {
                         new CpuHealth(
                                 temperature,
                                 sensors.getCpuVoltage(),
-                                fanRpm, fanPercent)),
+                                fanRpm,
+                                fanPercent)),
                 memory,
                 powerSources);
     }
@@ -101,9 +102,6 @@ public class SystemResource {
                 p.getProperty("java.vendor"),
                 p.getProperty("java.vendor.url"),
                 p.getProperty("java.version"),
-                p.getProperty("os.arch"),
-                p.getProperty("os.name"),
-                p.getProperty("os.version"),
                 p.getProperty("user.dir"),
                 p.getProperty("user.home"),
                 p.getProperty("user.name"));

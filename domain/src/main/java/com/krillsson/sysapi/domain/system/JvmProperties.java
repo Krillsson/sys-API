@@ -21,19 +21,21 @@
 package com.krillsson.sysapi.domain.system;
 
 public class JvmProperties {
-    private String home, classPath, vendor,
-            vendorUrl, version, osArch, osName,
-            osVersion, userDir, userHome, username;
+    private String home;
+    private String classPath;
+    private String vendor;
+    private String vendorUrl;
+    private String version;
+    private String userDir;
+    private String userHome;
+    private String username;
 
-    public JvmProperties(String home, String classPath, String vendor, String vendorUrl, String version, String osArch, String osName, String osVersion, String userDir, String userHome, String username) {
+    public JvmProperties(String home, String classPath, String vendor, String vendorUrl, String version, String userDir, String userHome, String username) {
         this.home = home;
         this.classPath = classPath;
         this.vendor = vendor;
         this.vendorUrl = vendorUrl;
         this.version = version;
-        this.osArch = osArch;
-        this.osName = osName;
-        this.osVersion = osVersion;
         this.userDir = userDir;
         this.userHome = userHome;
         this.username = username;
@@ -57,18 +59,6 @@ public class JvmProperties {
 
     public String getVersion() {
         return version;
-    }
-
-    public String getOsArch() {
-        return osArch;
-    }
-
-    public String getOsName() {
-        return osName;
-    }
-
-    public String getOsVersion() {
-        return osVersion;
     }
 
     public String getUserDir() {
