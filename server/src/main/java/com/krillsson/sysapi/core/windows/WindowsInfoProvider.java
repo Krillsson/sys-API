@@ -298,7 +298,7 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     @Override
-    public HWDiskHealth diskHealth(String name, HWDiskStore diskStore) {
+    public HWDiskHealth diskHealth(String name) {
         monitorManager.Update();
         DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
         for (DriveMonitor driveMonitor : driveMonitors) {
@@ -311,14 +311,26 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
                     }
                 }
 
-                return new HWDiskHealth(nullSafe(driveMonitor.getTemperature()).getValue(),
-                        new HWDiskLoad(driveMonitor.getReadRate(),
-                                driveMonitor.getWriteRate()),
-                        healthData);
+                return new HWDiskHealth(nullSafe(driveMonitor.getTemperature()).getValue(), healthData);
+            }
+        }
+        return null;
+
+
+    }
+
+    @Override
+    public HWDiskLoad diskLoad(String name) {
+        monitorManager.Update();
+        DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
+        for (DriveMonitor driveMonitor : driveMonitors) {
+            if (driveMonitor.getLogicalName().equals(name)) {
+                return new HWDiskLoad(driveMonitor.getReadRate(), driveMonitor.getWriteRate());
             }
         }
         return null;
     }
+
 
     @Override
     public double[] cpuTemperatures() {

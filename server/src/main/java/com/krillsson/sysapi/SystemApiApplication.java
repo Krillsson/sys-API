@@ -81,11 +81,11 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         InfoProvider provider = InfoProviderFactory.provide(OperatingSystem.getCurrentOperatingSystem(), config);
         Sensors sensors = hal.getSensors();
 
-        environment.jersey().register(new SystemResource(provider, os, hal.getComputerSystem(), hal.getProcessor(), hal.getMemory(), hal.getPowerSources(), hal.getSensors()));
+        environment.jersey().register(new SystemResource(provider, os, hal.getProcessor(), hal.getMemory(), hal.getPowerSources(), hal.getSensors()));
         environment.jersey().register(new DiskStoresResource(hal.getDiskStores(), os.getFileSystem(), provider));
         environment.jersey().register(new GpuResource(hal.getDisplays(), provider));
         environment.jersey().register(new MemoryResource(hal.getMemory()));
-        environment.jersey().register(new NetworkInterfacesResource(hal.getNetworkIFs()));
+        environment.jersey().register(new NetworkInterfacesResource(hal));
         environment.jersey().register(new PowerSourcesResource(hal.getPowerSources()));
         environment.jersey().register(new ProcessesResource(os, hal.getMemory()));
         environment.jersey().register(new CpuResource(os, sensors, hal.getProcessor(), provider));

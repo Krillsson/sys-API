@@ -24,17 +24,15 @@ import java.util.Properties;
 public class SystemResource {
 
     private final OperatingSystem operatingSystem;
-    private final ComputerSystem computerSystem;
     private final CentralProcessor processor;
     private final GlobalMemory memory;
     private final PowerSource[] powerSources;
     private final Sensors sensors;
     private final InfoProvider provider;
 
-    public SystemResource(InfoProvider provider, OperatingSystem operatingSystem, ComputerSystem computerSystem, CentralProcessor processor, GlobalMemory memory, PowerSource[] powerSources, Sensors sensors) {
+    public SystemResource(InfoProvider provider, OperatingSystem operatingSystem, CentralProcessor processor, GlobalMemory memory, PowerSource[] powerSources, Sensors sensors) {
         this.provider = provider;
         this.operatingSystem = operatingSystem;
-        this.computerSystem = computerSystem;
         this.processor = processor;
         this.memory = memory;
         this.powerSources = powerSources;
@@ -51,8 +49,8 @@ public class SystemResource {
             temperature = new double[]{sensors.getCpuTemperature()};
         }
         return new System(
-                getHostName(), operatingSystem,
-                computerSystem,
+                getHostName(),
+                operatingSystem,
                 new Cpu(processor,
                         operatingSystem.getProcessCount(),
                         operatingSystem.getThreadCount(),

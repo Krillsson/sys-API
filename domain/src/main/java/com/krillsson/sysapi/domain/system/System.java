@@ -9,15 +9,13 @@ import oshi.json.software.os.OperatingSystem;
 public class System {
     private final String hostName;
     private final OperatingSystem operatingSystem;
-    private final ComputerSystem computerSystem;
     private final Cpu cpu;
     private final GlobalMemory memory;
     private final PowerSource[] powerSources;
 
-    public System(String hostName, OperatingSystem operatingSystem, ComputerSystem computerSystem, Cpu cpu, GlobalMemory memory, PowerSource[] powerSources) {
+    public System(String hostName, OperatingSystem operatingSystem, Cpu cpu, GlobalMemory memory, PowerSource[] powerSources) {
         this.hostName = hostName;
         this.operatingSystem = operatingSystem;
-        this.computerSystem = computerSystem;
         this.cpu = cpu;
         this.memory = memory;
         this.powerSources = powerSources;
@@ -25,10 +23,6 @@ public class System {
 
     public String getHostName() {
         return hostName;
-    }
-
-    public ComputerSystem getMotherboard() {
-        return computerSystem;
     }
 
     public OperatingSystem getOperatingSystem() {
