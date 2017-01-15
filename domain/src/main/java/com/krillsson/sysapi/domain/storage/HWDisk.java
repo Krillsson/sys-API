@@ -5,13 +5,11 @@ import oshi.json.software.os.OSFileStore;
 
 public class HWDisk {
     private final HWDiskStore diskStore;
-    private final HWDiskLoad load;
     private final HWDiskHealth health;
     private final OSFileStore associatedFileStore;
 
-    public HWDisk(HWDiskStore hwDiskStore, HWDiskLoad load, HWDiskHealth health, OSFileStore associatedFileStore) {
+    public HWDisk(HWDiskStore hwDiskStore, HWDiskHealth health, OSFileStore associatedFileStore) {
         this.diskStore = hwDiskStore;
-        this.load = load;
         this.health = health;
         this.associatedFileStore = associatedFileStore;
     }
@@ -22,10 +20,6 @@ public class HWDisk {
 
     public OSFileStore getAssociatedFileStore() {
         return associatedFileStore;
-    }
-
-    public HWDiskLoad getLoad() {
-        return load;
     }
 
     public HWDiskHealth getHealth() {

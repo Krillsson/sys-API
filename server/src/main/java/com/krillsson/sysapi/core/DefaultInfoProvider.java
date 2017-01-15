@@ -4,8 +4,6 @@ import com.krillsson.sysapi.domain.gpu.Gpu;
 import com.krillsson.sysapi.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.domain.health.HealthData;
 import com.krillsson.sysapi.domain.storage.HWDiskHealth;
-import com.krillsson.sysapi.domain.storage.HWDiskLoad;
-import oshi.json.hardware.HWDiskStore;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,11 +16,6 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
 
     @Override
     public HWDiskHealth diskHealth(String name) {
-        return null;
-    }
-
-    @Override
-    public HWDiskLoad diskLoad(String name) {
         return null;
     }
 

@@ -24,4 +24,8 @@ public class StorageInfo {
     public long getMaxFileDescriptors() {
         return maxFileDescriptors;
     }
+
+    public long getDataCapturedAt() {
+        return dataCapturedAt;
+    }
 }

@@ -7,11 +7,9 @@ import com.krillsson.sysapi.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.domain.health.DataType;
 import com.krillsson.sysapi.domain.health.HealthData;
 import com.krillsson.sysapi.domain.storage.HWDiskHealth;
-import com.krillsson.sysapi.domain.storage.HWDiskLoad;
 import net.sf.jni4net.Bridge;
 import ohmwrapper.*;
 import org.slf4j.Logger;
-import oshi.json.hardware.HWDiskStore;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,187 +40,6 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
                 OHM_JNI_WRAPPER_DLL.exists() &&
                 initBridge();
     }
-
-    public GpuMonitor[] ohmGpu() {
-        monitorManager.Update();
-        return monitorManager.GpuMonitors();
-    }
-
-/*
-    @Override
-    public Cpu cpu() {
-        Cpu cpu = super.cpu();
-        cpu.setStatistics(statistics());
-        monitorManager.Update();
-        if (monitorManager.CpuMonitors().length > 0) {
-            CpuMonitor cpuMonitor = monitorManager.CpuMonitors()[0];
-            cpu.setFanPercent(nullSafe(cpuMonitor.getFanPercent()).getValue());
-            cpu.setFanRpm(nullSafe(cpuMonitor.getFanRPM()).getValue());
-            cpu.setTemperature(nullSafe(cpuMonitor.getPackageTemperature()).getValue());
-            cpu.setVoltage(nullSafe(cpuMonitor.getVoltage()).getValue());
-            cpu.getTotalCpuLoad().setTemperature(nullSafe(cpuMonitor.getPackageTemperature()).getValue());
-            if (nullSafe(cpuMonitor.getTemperatures()).length >= 1 &&
-                    cpuMonitor.getTemperatures().length == cpu.getCpuLoadPerCore().size()) {
-                final List<CpuLoad> cpuLoadPerCore = cpu.getCpuLoadPerCore();
-                final OHMSensor[] temperatures = cpuMonitor.getTemperatures();
-                for (int i = 0; i < cpuLoadPerCore.size(); i++) {
-                    cpuLoadPerCore.get(i).setTemperature(temperatures[i].getValue());
-                }
-            }
-        }
-        return cpu;
-    }
-
-    @Override
-    public System systemSummary(int filesystemId, String nicId) {
-        System system = super.systemSummary(filesystemId, nicId);
-        monitorManager.Update();
-        DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
-        if (monitorManager.CpuMonitors().length > 0) {
-            CpuMonitor cpuMonitor = monitorManager.CpuMonitors()[0];
-            system.getTotalCpuLoad().setTemperature(nullSafe(cpuMonitor.getPackageTemperature()).getValue());
-        }
-        matchDriveProperties(singletonList(system.getMainFileSystem()), driveMonitors);
-        setSpeed(system.getMainNetworkInterface());
-        return system;
-    }
-
-    @Override
-    public CpuLoad getCpuTimeByCoreIndex(int id) {
-        CpuLoad cpuLoad = super.getCpuTimeByCoreIndex(id);
-        monitorManager.Update();
-        if (monitorManager.CpuMonitors().length > 0) {
-            CpuMonitor cpuMonitor = monitorManager.CpuMonitors()[0];
-            if (nullSafe(cpuMonitor.getTemperatures()).length >= 1 &&
-                    cpuMonitor.getTemperatures().length - 1 <= id) {
-                final OHMSensor[] temperatures = cpuMonitor.getTemperatures();
-                cpuLoad.setTemperature(temperatures[id].getValue());
-            }
-        }
-        return cpuLoad;
-    }
-
-    @Override
-    public List<Drive> drives() {
-        List<Drive> drives = super.drives();
-        monitorManager.Update();
-        DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
-        matchDriveProperties(drives, driveMonitors);
-        return drives;
-    }
-
-    @Override
-    public List<Drive> getFileSystemsWithCategory(FileSystemType fsType) {
-        List<Drive> drives = super.getFileSystemsWithCategory(fsType);
-        monitorManager.Update();
-        DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
-        matchDriveProperties(drives, driveMonitors);
-        return drives;
-    }
-
-    @Override
-    public Drive getFileSystemById(int name) {
-        Drive fileSystemById = super.getFileSystemById(name);
-        monitorManager.Update();
-        DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
-        matchDriveProperties(singletonList(fileSystemById), driveMonitors);
-        return fileSystemById;
-    }
-
-    @Override
-    public List<Gpu> gpus() {
-        List<Gpu> gpus = new ArrayList<>();
-        monitorManager.Update();
-        final GpuMonitor[] gpuMonitors = monitorManager.GpuMonitors();
-        if (gpuMonitors != null && gpuMonitors.length > 0) {
-            for (GpuMonitor gpuMonitor : gpuMonitors) {
-                GpuLoad gpuLoad = new GpuLoad(
-                        nullSafe(gpuMonitor.getTemperature()).getValue(),
-                        nullSafe(gpuMonitor.getCoreLoad()).getValue(),
-                        nullSafe(gpuMonitor.getMemoryClock()).getValue());
-                GpuInfo gpuInfo = new GpuInfo(gpuMonitor.getVendor(),
-                        gpuMonitor.getName(),
-                        nullSafe(gpuMonitor.getCoreClock()).getValue(),
-                        nullSafe(gpuMonitor.getMemoryClock()).getValue()
-                );
-                Gpu gpu = new Gpu(nullSafe(gpuMonitor.getFanRPM()).getValue(),
-                        nullSafe(gpuMonitor.getFanPercent()).getValue(),
-                        gpuInfo,
-                        gpuLoad
-                );
-                gpus.add(gpu);
-            }
-        }
-        return gpus;
-    }
-
-    @Override
-    public NetworkInfo networkInfo() {
-        monitorManager.Update();
-        NetworkInfo info = super.networkInfo();
-        for (NetworkInterfaceConfig conf : info.getNetworkInterfaceConfigs()) {
-            setSpeed(conf);
-        }
-        return info;
-    }
-
-    @Override
-    public NetworkInterfaceConfig getConfigById(String id) {
-        monitorManager.Update();
-        NetworkInterfaceConfig config = super.getConfigById(id);
-        setSpeed(config);
-        return config;
-    }
-
-    private void setSpeed(NetworkInterfaceConfig config) {
-        NetworkMonitor networkMonitor = monitorManager.getNetworkMonitor();
-        NicInfo[] nics = networkMonitor.getNics();
-        for (NicInfo info : nics) {
-            if (info.getPhysicalAddress().equals(config.getHwaddr())) {
-                config.setNetworkInterfaceSpeed(new NetworkInterfaceSpeed((long) (info.getInBandwidth().getValue() * 1000), (long) (info.getOutBandwidth().getValue() * 1000)));
-            }
-        }
-    }
-
-    @Override
-
-
-    private void matchDriveProperties(List<Drive> drives, DriveMonitor[] driveMonitors) {
-        if (driveMonitors != null && driveMonitors.length > 0) {
-            for (DriveMonitor driveMonitor : driveMonitors) {
-                for (Drive drive : drives) {
-                    if (driveNamesAreEqual(driveMonitor, drive)) {
-                        drive.setHealth(new HWDiskHealth(nullSafe(driveMonitor.getTemperature()).getValue(),
-                                nullSafe(driveMonitor.getRemainingLife()).getValue(),
-                                Arrays.asList(nullSafe(driveMonitor.getHealthData()))
-                                        .stream()
-                                        .map(l -> new HealthData(l.getLabel(), l.getValue()))
-                                        .collect(Collectors.toList())));
-                        drive.setLoad(new DriveLoad(driveMonitor.getReadRate(), driveMonitor.getWriteRate()));
-                        drive.setDeviceName(driveMonitor.getName());
-                    }
-                }
-            }
-        }
-    }
-
-    private boolean driveNamesAreEqual(DriveMonitor driveMonitor, Drive drive) {
-        if (driveMonitor.getLogicalName() != null) {
-            String driveMonitorName = driveMonitor
-                    .getLogicalName()
-                    .toLowerCase()
-                    .replace(":", "")
-                    .replace("\\", "");
-            String driveName = drive
-                    .deviceName()
-                    .toLowerCase()
-                    .replace(":", "")
-                    .replace("\\", "");
-            return driveMonitorName.equals(driveName);
-        } else {
-            return false;
-        }
-    }*/
 
     public Gpu[] gpus() {
         List<Gpu> gpus = new ArrayList<>();
@@ -318,19 +135,6 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
 
 
     }
-
-    @Override
-    public HWDiskLoad diskLoad(String name) {
-        monitorManager.Update();
-        DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
-        for (DriveMonitor driveMonitor : driveMonitors) {
-            if (driveMonitor.getLogicalName().equals(name)) {
-                return new HWDiskLoad(driveMonitor.getReadRate(), driveMonitor.getWriteRate());
-            }
-        }
-        return null;
-    }
-
 
     @Override
     public double[] cpuTemperatures() {
