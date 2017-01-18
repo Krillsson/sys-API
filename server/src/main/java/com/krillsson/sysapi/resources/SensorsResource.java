@@ -23,9 +23,9 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.InfoProvider;
-import com.krillsson.sysapi.domain.cpu.CpuHealth;
-import com.krillsson.sysapi.domain.health.HealthData;
-import com.krillsson.sysapi.domain.health.SensorsData;
+import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
+import com.krillsson.sysapi.core.domain.health.HealthData;
+import com.krillsson.sysapi.core.domain.health.SensorsData;
 import io.dropwizard.auth.Auth;
 import oshi.json.hardware.Sensors;
 
@@ -34,7 +34,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 @Path("sensors")
 @Produces(MediaType.APPLICATION_JSON)

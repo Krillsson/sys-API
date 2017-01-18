@@ -22,7 +22,7 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.domain.motherboard.Motherboard;
+import com.krillsson.sysapi.core.domain.motherboard.Motherboard;
 import io.dropwizard.auth.Auth;
 import oshi.json.hardware.ComputerSystem;
 import oshi.json.hardware.UsbDevice;

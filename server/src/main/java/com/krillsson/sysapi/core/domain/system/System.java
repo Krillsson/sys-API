@@ -18,9 +18,9 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.domain.system;
+package com.krillsson.sysapi.core.domain.system;
 
-import com.krillsson.sysapi.domain.cpu.Cpu;
+import com.krillsson.sysapi.core.domain.cpu.Cpu;
 import oshi.json.hardware.ComputerSystem;
 import oshi.json.hardware.GlobalMemory;
 import oshi.json.hardware.PowerSource;

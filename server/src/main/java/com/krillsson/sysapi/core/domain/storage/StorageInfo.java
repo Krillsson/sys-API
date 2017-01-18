@@ -18,7 +18,7 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.domain.storage;
+package com.krillsson.sysapi.core.domain.storage;
 
 public class StorageInfo {
     private final HWDisk[] HWDisks;
@@ -33,7 +33,7 @@ public class StorageInfo {
         this.dataCapturedAt = dataCapturedAt;
     }
 
-    public HWDisk[] getDiskStores() {
+    public HWDisk[] getDiskInfo() {
         return HWDisks;
     }
 

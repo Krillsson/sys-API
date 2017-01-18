@@ -18,25 +18,13 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.domain.motherboard;
+package com.krillsson.sysapi.core.domain.health;
 
-import oshi.json.hardware.ComputerSystem;
-import oshi.json.hardware.UsbDevice;
-
-public class Motherboard {
-    private final ComputerSystem computerSystem;
-    private final UsbDevice[] usbDevices;
-
-    public Motherboard(ComputerSystem computerSystem, UsbDevice[] usbDevices) {
-        this.computerSystem = computerSystem;
-        this.usbDevices = usbDevices;
-    }
-
-    public ComputerSystem getMotherboard() {
-        return computerSystem;
-    }
-
-    public UsbDevice[] getUsbDevices() {
-        return usbDevices;
-    }
+public enum DataType {
+    CLOCK,
+    VOLTAGE,
+    PERCENT,
+    RPM,
+    CELCIUS,
+    GIGABYTE
 }

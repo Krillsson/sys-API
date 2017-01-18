@@ -20,13 +20,12 @@
  */
 package com.krillsson.sysapi.core;
 
-import com.krillsson.sysapi.domain.gpu.Gpu;
-import com.krillsson.sysapi.domain.gpu.GpuHealth;
-import com.krillsson.sysapi.domain.health.HealthData;
-import com.krillsson.sysapi.domain.storage.HWDiskHealth;
+import com.krillsson.sysapi.core.domain.gpu.Gpu;
+import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
+import com.krillsson.sysapi.core.domain.health.HealthData;
+import com.krillsson.sysapi.core.domain.storage.HWDiskHealth;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 public class DefaultInfoProvider extends InfoProviderBase implements InfoProvider {

@@ -23,7 +23,7 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.InfoProvider;
-import com.krillsson.sysapi.domain.gpu.GpuInfo;
+import com.krillsson.sysapi.core.domain.gpu.GpuInfo;
 import io.dropwizard.auth.Auth;
 import oshi.json.hardware.Display;
 

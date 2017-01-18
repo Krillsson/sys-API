@@ -18,21 +18,27 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.domain.gpu;
+package com.krillsson.sysapi.core.domain.cpu;
 
-public class GpuHealth {
-    private double fanRpm;
-    private double fanPercent;
-    private double temperature;
-    private double coreLoad;
-    private double memoryLoad;
+public class CpuHealth {
+    private final double[] temperatures;
+    private final double voltage;
+    private final double fanRpm;
+    private final double fanPercent;
 
-    public GpuHealth(double fanRpm, double fanPercent, double temperature, double coreLoad, double memoryLoad) {
+    public CpuHealth(double[] temperatures, double voltage, double fanRpm, double fanPercent) {
+        this.temperatures = temperatures;
+        this.voltage = voltage;
         this.fanRpm = fanRpm;
         this.fanPercent = fanPercent;
-        this.temperature = temperature;
-        this.coreLoad = coreLoad;
-        this.memoryLoad = memoryLoad;
+    }
+
+    public double[] getTemperatures() {
+        return temperatures;
+    }
+
+    public double getVoltage() {
+        return voltage;
     }
 
     public double getFanRpm() {
@@ -41,17 +47,5 @@ public class GpuHealth {
 
     public double getFanPercent() {
         return fanPercent;
-    }
-
-    public double getTemperature() {
-        return temperature;
-    }
-
-    public double getCoreLoad() {
-        return coreLoad;
-    }
-
-    public double getMemoryLoad() {
-        return memoryLoad;
     }
 }

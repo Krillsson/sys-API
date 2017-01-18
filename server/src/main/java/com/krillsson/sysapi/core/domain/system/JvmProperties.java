@@ -18,7 +18,7 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.domain.system;
+package com.krillsson.sysapi.core.domain.system;
 
 public class JvmProperties {
     private String home;

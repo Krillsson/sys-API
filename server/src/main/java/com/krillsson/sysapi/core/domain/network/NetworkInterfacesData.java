@@ -18,34 +18,24 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.domain.cpu;
+package com.krillsson.sysapi.core.domain.network;
 
-public class CpuHealth {
-    private final double[] temperatures;
-    private final double voltage;
-    private final double fanRpm;
-    private final double fanPercent;
+import oshi.json.hardware.NetworkIF;
 
-    public CpuHealth(double[] temperatures, double voltage, double fanRpm, double fanPercent) {
-        this.temperatures = temperatures;
-        this.voltage = voltage;
-        this.fanRpm = fanRpm;
-        this.fanPercent = fanPercent;
+public class NetworkInterfacesData {
+    private final NetworkIF[] networkIFs;
+    private final long dataCapturedAt;
+
+    public NetworkInterfacesData(NetworkIF[] networkIFs, long dataCapturedAt) {
+        this.networkIFs = networkIFs;
+        this.dataCapturedAt = dataCapturedAt;
     }
 
-    public double[] getTemperatures() {
-        return temperatures;
+    public NetworkIF[] getNetworkIFs() {
+        return networkIFs;
     }
 
-    public double getVoltage() {
-        return voltage;
-    }
-
-    public double getFanRpm() {
-        return fanRpm;
-    }
-
-    public double getFanPercent() {
-        return fanPercent;
+    public long getDataCapturedAt() {
+        return dataCapturedAt;
     }
 }

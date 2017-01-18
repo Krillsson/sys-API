@@ -22,7 +22,7 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.domain.network.NetworkInterfacesData;
+import com.krillsson.sysapi.core.domain.network.NetworkInterfacesData;
 import io.dropwizard.auth.Auth;
 import oshi.json.hardware.HardwareAbstractionLayer;
 

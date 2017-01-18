@@ -18,24 +18,25 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.domain.gpu;
+package com.krillsson.sysapi.core.domain.system;
 
-import oshi.json.hardware.Display;
+import oshi.json.hardware.GlobalMemory;
+import oshi.json.software.os.OSProcess;
 
-public class GpuInfo {
-    private final Display[] displays;
-    private final Gpu[] gpus;
+public class ProcessesInfo {
+    private final GlobalMemory memory;
+    private final OSProcess[] processes;
 
-    public GpuInfo(Display[] displays, Gpu[] gpus) {
-        this.displays = displays;
-        this.gpus = gpus;
+    public ProcessesInfo(GlobalMemory memory, OSProcess[] processes) {
+        this.memory = memory;
+        this.processes = processes;
     }
 
-    public Display[] getDisplays() {
-        return displays;
+    public GlobalMemory getMemory() {
+        return memory;
     }
 
-    public Gpu[] getGpus() {
-        return gpus;
+    public OSProcess[] getProcesses() {
+        return processes;
     }
 }

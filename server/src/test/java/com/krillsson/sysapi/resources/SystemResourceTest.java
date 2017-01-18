@@ -23,7 +23,7 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.core.DefaultInfoProvider;
 import com.krillsson.sysapi.core.InfoProvider;
-import com.krillsson.sysapi.domain.system.System;
+import com.krillsson.sysapi.core.domain.system.System;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.After;
 import org.junit.Before;

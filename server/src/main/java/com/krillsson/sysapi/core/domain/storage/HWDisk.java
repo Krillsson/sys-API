@@ -18,7 +18,7 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.domain.storage;
+package com.krillsson.sysapi.core.domain.storage;
 
 import oshi.json.hardware.HWDiskStore;
 import oshi.json.software.os.OSFileStore;
@@ -38,7 +38,7 @@ public class HWDisk {
         return diskStore;
     }
 
-    public OSFileStore getAssociatedFileStore() {
+    public OSFileStore getOSFileStore() {
         return associatedFileStore;
     }
 

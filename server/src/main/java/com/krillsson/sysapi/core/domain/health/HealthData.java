@@ -18,27 +18,28 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.domain.storage;
+package com.krillsson.sysapi.core.domain.health;
 
-import com.krillsson.sysapi.domain.health.HealthData;
+public class HealthData {
+    private final String description;
+    private final double data;
+    private final DataType dataType;
 
-import java.util.List;
-
-public class HWDiskHealth {
-    private double temperature;
-    private List<HealthData> healthData;
-
-    public HWDiskHealth(double temperature, List<HealthData> healthData) {
-        this.temperature = temperature;
-        this.healthData = healthData;
+    public HealthData(String description, double data, DataType dataType) {
+        this.description = description;
+        this.data = data;
+        this.dataType = dataType;
     }
 
-    public double getTemperature() {
-        return temperature;
+    public String getDescription() {
+        return description;
     }
 
-    public List<HealthData> getHealthData() {
-        return healthData;
+    public double getData() {
+        return data;
     }
 
+    public DataType getDataType() {
+        return dataType;
+    }
 }

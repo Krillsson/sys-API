@@ -22,11 +22,11 @@ package com.krillsson.sysapi.core.windows;
 
 import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.InfoProviderBase;
-import com.krillsson.sysapi.domain.gpu.Gpu;
-import com.krillsson.sysapi.domain.gpu.GpuHealth;
-import com.krillsson.sysapi.domain.health.DataType;
-import com.krillsson.sysapi.domain.health.HealthData;
-import com.krillsson.sysapi.domain.storage.HWDiskHealth;
+import com.krillsson.sysapi.core.domain.gpu.Gpu;
+import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
+import com.krillsson.sysapi.core.domain.health.DataType;
+import com.krillsson.sysapi.core.domain.health.HealthData;
+import com.krillsson.sysapi.core.domain.storage.HWDiskHealth;
 import net.sf.jni4net.Bridge;
 import ohmwrapper.*;
 import org.slf4j.Logger;
@@ -213,7 +213,7 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
     private void addIfSafe(List<HealthData> healthData, OHMSensor sensor) {
         OHMSensor ohmSensor = nullSafe(sensor);
         if (ohmSensor.getValue() > 0) {
-            com.krillsson.sysapi.domain.health.DataType dataType = DataType.valueOf(sensor.getDataType().toString().toUpperCase());
+            com.krillsson.sysapi.core.domain.health.DataType dataType = DataType.valueOf(sensor.getDataType().toString().toUpperCase());
             healthData.add(new HealthData(ohmSensor.getLabel(), ohmSensor.getValue(), dataType));
         }
     }

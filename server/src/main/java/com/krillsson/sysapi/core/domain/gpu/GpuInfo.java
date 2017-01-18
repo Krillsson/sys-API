@@ -18,40 +18,24 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.domain.gpu;
+package com.krillsson.sysapi.core.domain.gpu;
 
-public class Gpu {
-    private String vendor;
-    private String model;
-    private double coreMhz;
-    private double memoryMhz;
-    private GpuHealth load;
+import oshi.json.hardware.Display;
 
-    public Gpu(String vendor, String model, double coreMhz, double memoryMhz, GpuHealth load) {
-        this.vendor = vendor;
-        this.model = model;
-        this.coreMhz = coreMhz;
-        this.memoryMhz = memoryMhz;
-        this.load = load;
+public class GpuInfo {
+    private final Display[] displays;
+    private final Gpu[] gpus;
+
+    public GpuInfo(Display[] displays, Gpu[] gpus) {
+        this.displays = displays;
+        this.gpus = gpus;
     }
 
-    public String getVendor() {
-        return vendor;
+    public Display[] getDisplays() {
+        return displays;
     }
 
-    public String getModel() {
-        return model;
-    }
-
-    public double getCoreMhz() {
-        return coreMhz;
-    }
-
-    public double getMemoryMhz() {
-        return memoryMhz;
-    }
-
-    public GpuHealth getLoad() {
-        return load;
+    public Gpu[] getGpus() {
+        return gpus;
     }
 }
