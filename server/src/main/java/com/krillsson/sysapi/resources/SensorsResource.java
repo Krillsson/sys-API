@@ -27,7 +27,7 @@ import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.core.domain.health.HealthData;
 import com.krillsson.sysapi.core.domain.health.SensorsData;
 import io.dropwizard.auth.Auth;
-import oshi.json.hardware.Sensors;
+import oshi.hardware.Sensors;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;

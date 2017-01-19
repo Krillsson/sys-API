@@ -24,8 +24,8 @@ import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.domain.system.ProcessesInfo;
 import io.dropwizard.auth.Auth;
-import oshi.json.hardware.GlobalMemory;
-import oshi.json.software.os.OperatingSystem;
+import oshi.hardware.GlobalMemory;
+import oshi.software.os.OperatingSystem;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;

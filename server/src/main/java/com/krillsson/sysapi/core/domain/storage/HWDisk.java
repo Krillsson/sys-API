@@ -20,8 +20,8 @@
  */
 package com.krillsson.sysapi.core.domain.storage;
 
-import oshi.json.hardware.HWDiskStore;
-import oshi.json.software.os.OSFileStore;
+import oshi.hardware.HWDiskStore;
+import oshi.software.os.OSFileStore;
 
 public class HWDisk {
     private final HWDiskStore diskStore;

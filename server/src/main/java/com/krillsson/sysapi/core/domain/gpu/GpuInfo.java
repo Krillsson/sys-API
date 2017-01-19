@@ -20,7 +20,7 @@
  */
 package com.krillsson.sysapi.core.domain.gpu;
 
-import oshi.json.hardware.Display;
+import oshi.hardware.Display;
 
 public class GpuInfo {
     private final Display[] displays;

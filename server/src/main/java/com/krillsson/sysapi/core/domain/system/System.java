@@ -21,10 +21,9 @@
 package com.krillsson.sysapi.core.domain.system;
 
 import com.krillsson.sysapi.core.domain.cpu.Cpu;
-import oshi.json.hardware.ComputerSystem;
-import oshi.json.hardware.GlobalMemory;
-import oshi.json.hardware.PowerSource;
-import oshi.json.software.os.OperatingSystem;
+import oshi.hardware.GlobalMemory;
+import oshi.hardware.PowerSource;
+import oshi.software.os.OperatingSystem;
 
 public class System {
     private final String hostName;

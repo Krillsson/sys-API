@@ -31,11 +31,11 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-import oshi.json.hardware.CentralProcessor;
-import oshi.json.hardware.GlobalMemory;
-import oshi.json.hardware.PowerSource;
-import oshi.json.hardware.Sensors;
-import oshi.json.software.os.OperatingSystem;
+import oshi.hardware.CentralProcessor;
+import oshi.hardware.GlobalMemory;
+import oshi.hardware.PowerSource;
+import oshi.hardware.Sensors;
+import oshi.software.os.OperatingSystem;
 
 import javax.ws.rs.core.MediaType;
 

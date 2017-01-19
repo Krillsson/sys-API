@@ -26,10 +26,10 @@ import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.domain.storage.HWDisk;
 import com.krillsson.sysapi.core.domain.storage.StorageInfo;
 import io.dropwizard.auth.Auth;
-import oshi.json.hardware.HWDiskStore;
-import oshi.json.hardware.HWPartition;
-import oshi.json.software.os.FileSystem;
-import oshi.json.software.os.OSFileStore;
+import oshi.hardware.HWDiskStore;
+import oshi.hardware.HWPartition;
+import oshi.software.os.FileSystem;
+import oshi.software.os.OSFileStore;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;

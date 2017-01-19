@@ -28,8 +28,8 @@ import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.core.domain.system.JvmProperties;
 import com.krillsson.sysapi.core.domain.system.System;
 import io.dropwizard.auth.Auth;
-import oshi.json.hardware.*;
-import oshi.json.software.os.OperatingSystem;
+import oshi.hardware.*;
+import oshi.software.os.OperatingSystem;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;

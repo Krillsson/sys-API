@@ -25,7 +25,7 @@ import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.domain.gpu.GpuInfo;
 import io.dropwizard.auth.Auth;
-import oshi.json.hardware.Display;
+import oshi.hardware.Display;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;

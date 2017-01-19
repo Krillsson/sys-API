@@ -23,7 +23,7 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import io.dropwizard.auth.Auth;
-import oshi.json.hardware.GlobalMemory;
+import oshi.hardware.GlobalMemory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;

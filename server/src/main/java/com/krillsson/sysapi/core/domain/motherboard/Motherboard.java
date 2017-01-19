@@ -20,8 +20,8 @@
  */
 package com.krillsson.sysapi.core.domain.motherboard;
 
-import oshi.json.hardware.ComputerSystem;
-import oshi.json.hardware.UsbDevice;
+import oshi.hardware.ComputerSystem;
+import oshi.hardware.UsbDevice;
 
 public class Motherboard {
     private final ComputerSystem computerSystem;

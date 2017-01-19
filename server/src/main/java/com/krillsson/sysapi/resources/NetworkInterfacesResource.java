@@ -24,7 +24,7 @@ import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfacesData;
 import io.dropwizard.auth.Auth;
-import oshi.json.hardware.HardwareAbstractionLayer;
+import oshi.hardware.HardwareAbstractionLayer;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;

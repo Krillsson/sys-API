@@ -20,7 +20,7 @@
  */
 package com.krillsson.sysapi.core.domain.network;
 
-import oshi.json.hardware.NetworkIF;
+import oshi.hardware.NetworkIF;
 
 public class NetworkInterfacesData {
     private final NetworkIF[] networkIFs;

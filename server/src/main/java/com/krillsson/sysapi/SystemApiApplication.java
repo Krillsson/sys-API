@@ -38,9 +38,10 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.slf4j.Logger;
-import oshi.json.SystemInfo;
-import oshi.json.hardware.HardwareAbstractionLayer;
-import oshi.json.hardware.Sensors;
+import oshi.SystemInfo;
+import oshi.hardware.HardwareAbstractionLayer;
+import oshi.hardware.Sensors;
+import oshi.software.os.OperatingSystem;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -89,7 +90,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         SystemInfo si = new SystemInfo();
 
         HardwareAbstractionLayer hal = si.getHardware();
-        oshi.json.software.os.OperatingSystem os = si.getOperatingSystem();
+        OperatingSystem os = si.getOperatingSystem();
         System.out.println(os);
 
         environment.jersey().register(new AuthDynamicFeature(userBasicCredentialAuthFilter));

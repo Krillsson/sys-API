@@ -20,8 +20,8 @@
  */
 package com.krillsson.sysapi.core.domain.system;
 
-import oshi.json.hardware.GlobalMemory;
-import oshi.json.software.os.OSProcess;
+import oshi.hardware.GlobalMemory;
+import oshi.software.os.OSProcess;
 
 public class ProcessesInfo {
     private final GlobalMemory memory;
