@@ -60,7 +60,7 @@
         </dependency>
         <dependency>
             <groupId>com.krillsson</groupId>
-            <artifactId>sys-api-domain</artifactId>
+            <artifactId>sys-api-dto</artifactId>
             <version>0.6-SNAPSHOT</version>
         </dependency>
         <dependency>

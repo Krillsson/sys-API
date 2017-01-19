@@ -12,7 +12,7 @@
     <modules>
         <module>gui</module>
         <module>server</module>
-        <module>domain</module>
+        <module>dto</module>
     </modules>
 
     <properties>
