@@ -26,7 +26,7 @@ import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.core.domain.health.DataType;
 import com.krillsson.sysapi.core.domain.health.HealthData;
-import com.krillsson.sysapi.core.domain.storage.HWDiskHealth;
+import com.krillsson.sysapi.core.domain.storage.DiskHealth;
 import net.sf.jni4net.Bridge;
 import ohmwrapper.*;
 import org.slf4j.Logger;
@@ -139,7 +139,7 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     @Override
-    public HWDiskHealth diskHealth(String name) {
+    public DiskHealth diskHealth(String name) {
         monitorManager.Update();
         DriveMonitor[] driveMonitors = monitorManager.DriveMonitors();
         for (DriveMonitor driveMonitor : driveMonitors) {
@@ -152,7 +152,7 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
                     }
                 }
 
-                return new HWDiskHealth(nullSafe(driveMonitor.getTemperature()).getValue(), healthData);
+                return new DiskHealth(nullSafe(driveMonitor.getTemperature()).getValue(), healthData.toArray(/* type reference*/new HealthData[0]));
             }
         }
         return null;

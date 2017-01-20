@@ -23,7 +23,7 @@ package com.krillsson.sysapi.core;
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.core.domain.health.HealthData;
-import com.krillsson.sysapi.core.domain.storage.HWDiskHealth;
+import com.krillsson.sysapi.core.domain.storage.DiskHealth;
 
 import java.util.Collections;
 import java.util.Map;
@@ -35,7 +35,7 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     @Override
-    public HWDiskHealth diskHealth(String name) {
+    public DiskHealth diskHealth(String name) {
         return null;
     }
 

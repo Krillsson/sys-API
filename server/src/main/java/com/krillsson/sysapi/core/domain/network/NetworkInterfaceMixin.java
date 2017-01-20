@@ -18,27 +18,15 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.storage;
 
-import com.krillsson.sysapi.core.domain.health.HealthData;
+package com.krillsson.sysapi.core.domain.network;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonFilter;
 
-public class HWDiskHealth {
-    private double temperature;
-    private List<HealthData> healthData;
-
-    public HWDiskHealth(double temperature, List<HealthData> healthData) {
-        this.temperature = temperature;
-        this.healthData = healthData;
-    }
-
-    public double getTemperature() {
-        return temperature;
-    }
-
-    public List<HealthData> getHealthData() {
-        return healthData;
-    }
-
+/**
+ * Fixes: com.fasterxml.jackson.databind.JsonMappingException:
+ * No serializer found for class java.net.NetworkInterface$1checkedAddresses
+ */
+@JsonFilter("networkInterface filter")
+public class NetworkInterfaceMixin {
 }

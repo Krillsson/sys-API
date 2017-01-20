@@ -25,18 +25,18 @@ import oshi.software.os.OSProcess;
 
 public class ProcessesInfo {
     private final GlobalMemory memory;
-    private final OSProcess[] processes;
+    private final OSProcess[] osProcesses;
 
-    public ProcessesInfo(GlobalMemory memory, OSProcess[] processes) {
+    public ProcessesInfo(GlobalMemory memory, OSProcess[] osProcesses) {
         this.memory = memory;
-        this.processes = processes;
+        this.osProcesses = osProcesses;
     }
 
     public GlobalMemory getMemory() {
         return memory;
     }
 
-    public OSProcess[] getProcesses() {
-        return processes;
+    public OSProcess[] getOsProcesses() {
+        return osProcesses;
     }
 }

@@ -23,13 +23,13 @@ package com.krillsson.sysapi.core;
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.core.domain.health.HealthData;
-import com.krillsson.sysapi.core.domain.storage.HWDiskHealth;
+import com.krillsson.sysapi.core.domain.storage.DiskHealth;
 
 import java.util.Map;
 
 public interface InfoProvider {
 
-    HWDiskHealth diskHealth(String name);
+    DiskHealth diskHealth(String name);
 
     double[] cpuTemperatures();
 

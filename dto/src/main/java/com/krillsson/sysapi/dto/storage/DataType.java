@@ -18,24 +18,14 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.network;
 
-import oshi.hardware.NetworkIF;
+package com.krillsson.sysapi.dto.storage;
 
-public class NetworkInterfacesData {
-    private final NetworkIF[] networkIFs;
-    private final long dataCapturedAt;
-
-    public NetworkInterfacesData(NetworkIF[] networkIFs, long dataCapturedAt) {
-        this.networkIFs = networkIFs;
-        this.dataCapturedAt = dataCapturedAt;
-    }
-
-    public NetworkIF[] getNetworkIFs() {
-        return networkIFs;
-    }
-
-    public long getTimeStamp() {
-        return dataCapturedAt;
-    }
+public enum DataType {
+    CLOCK,
+    VOLTAGE,
+    PERCENT,
+    RPM,
+    CELCIUS,
+    GIGABYTE
 }

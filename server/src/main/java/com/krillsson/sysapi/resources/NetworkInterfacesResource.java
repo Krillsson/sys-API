@@ -24,7 +24,7 @@ import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfacesData;
 import io.dropwizard.auth.Auth;
-import oshi.hardware.HardwareAbstractionLayer;
+import oshi.hardware.NetworkIF;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
@@ -36,16 +36,19 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public class NetworkInterfacesResource {
 
-    private final HardwareAbstractionLayer hal;
+    private final NetworkIF[] networkIFS;
 
-    public NetworkInterfacesResource(HardwareAbstractionLayer hal) {
-        this.hal = hal;
+    public NetworkInterfacesResource(NetworkIF[] networkIFS) {
+        this.networkIFS = networkIFS;
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public NetworkInterfacesData getRoot(@Auth UserConfiguration user) {
-        return new NetworkInterfacesData(hal.getNetworkIFs(), java.lang.System.currentTimeMillis());
+        for (NetworkIF networkIF : networkIFS) {
+            networkIF.updateNetworkStats();
+        }
+        return new NetworkInterfacesData(networkIFS, java.lang.System.currentTimeMillis());
     }
 
 }

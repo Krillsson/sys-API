@@ -20,13 +20,18 @@
  */
 package com.krillsson.sysapi;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.krillsson.sysapi.auth.BasicAuthenticator;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.InfoProviderFactory;
+import com.krillsson.sysapi.core.domain.network.NetworkInterfaceMixin;
 import com.krillsson.sysapi.resources.*;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
@@ -47,6 +52,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.NetworkInterface;
 import java.net.URL;
 import java.util.EnumSet;
 import java.util.jar.Attributes;
@@ -68,7 +74,12 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
 
     @Override
     public void initialize(Bootstrap<SystemApiConfiguration> maintenanceConfigurationBootstrap) {
-        maintenanceConfigurationBootstrap.getObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+        ObjectMapper mapper = maintenanceConfigurationBootstrap.getObjectMapper();
+        mapper.addMixInAnnotations(NetworkInterface.class, NetworkInterfaceMixin.class);
+        FilterProvider filterProvider = new SimpleFilterProvider()
+                .addFilter("networkInterface filter", SimpleBeanPropertyFilter.serializeAllExcept("name", "displayName", "inetAddresses", "interfaceAddresses", "mtu", "subInterfaces"));
+        mapper.setFilters(filterProvider);
+        //mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
     }
 
     @Override
@@ -104,7 +115,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         environment.jersey().register(new DiskStoresResource(hal.getDiskStores(), os.getFileSystem(), provider));
         environment.jersey().register(new GpuResource(hal.getDisplays(), provider));
         environment.jersey().register(new MemoryResource(hal.getMemory()));
-        environment.jersey().register(new NetworkInterfacesResource(hal));
+        environment.jersey().register(new NetworkInterfacesResource(hal.getNetworkIFs()));
         environment.jersey().register(new PowerSourcesResource(hal.getPowerSources()));
         environment.jersey().register(new ProcessesResource(os, hal.getMemory()));
         environment.jersey().register(new CpuResource(os, sensors, hal.getProcessor(), provider));

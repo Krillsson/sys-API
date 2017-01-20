@@ -18,24 +18,27 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.network;
+package com.krillsson.sysapi.core.domain.storage;
 
-import oshi.hardware.NetworkIF;
+import com.krillsson.sysapi.core.domain.health.HealthData;
 
-public class NetworkInterfacesData {
-    private final NetworkIF[] networkIFs;
-    private final long dataCapturedAt;
+import java.util.List;
 
-    public NetworkInterfacesData(NetworkIF[] networkIFs, long dataCapturedAt) {
-        this.networkIFs = networkIFs;
-        this.dataCapturedAt = dataCapturedAt;
+public class DiskHealth {
+    private double temperature;
+    private HealthData[] healthData;
+
+    public DiskHealth(double temperature, HealthData[] healthData) {
+        this.temperature = temperature;
+        this.healthData = healthData;
     }
 
-    public NetworkIF[] getNetworkIFs() {
-        return networkIFs;
+    public double getTemperature() {
+        return temperature;
     }
 
-    public long getTimeStamp() {
-        return dataCapturedAt;
+    public HealthData[] getHealthData() {
+        return healthData;
     }
+
 }

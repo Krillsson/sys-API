@@ -21,20 +21,20 @@
 package com.krillsson.sysapi.core.domain.storage;
 
 public class StorageInfo {
-    private final HWDisk[] HWDisks;
+    private final DiskInfo[] DiskInfos;
     private final long dataCapturedAt;
     private final long openFileDescriptors;
     private final long maxFileDescriptors;
 
-    public StorageInfo(HWDisk[] HWDisks, long openFileDescriptors, long maxFileDescriptors, long dataCapturedAt) {
-        this.HWDisks = HWDisks;
+    public StorageInfo(DiskInfo[] DiskInfos, long openFileDescriptors, long maxFileDescriptors, long dataCapturedAt) {
+        this.DiskInfos = DiskInfos;
         this.openFileDescriptors = openFileDescriptors;
         this.maxFileDescriptors = maxFileDescriptors;
         this.dataCapturedAt = dataCapturedAt;
     }
 
-    public HWDisk[] getDiskInfo() {
-        return HWDisks;
+    public DiskInfo[] getDiskInfo() {
+        return DiskInfos;
     }
 
     public long getOpenFileDescriptors() {
@@ -45,7 +45,7 @@ public class StorageInfo {
         return maxFileDescriptors;
     }
 
-    public long getDataCapturedAt() {
+    public long getTimeStamp() {
         return dataCapturedAt;
     }
 }

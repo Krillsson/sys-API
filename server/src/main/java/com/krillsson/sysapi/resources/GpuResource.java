@@ -24,6 +24,7 @@ import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.domain.gpu.GpuInfo;
+import com.krillsson.sysapi.core.domain.gpu.GpuInfoMapper;
 import io.dropwizard.auth.Auth;
 import oshi.hardware.Display;
 
@@ -47,8 +48,8 @@ public class GpuResource {
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public GpuInfo getRoot(@Auth UserConfiguration user) {
-        return new GpuInfo(displays, provider.gpus());
+    public com.krillsson.sysapi.dto.gpu.GpuInfo getRoot(@Auth UserConfiguration user) {
+        return GpuInfoMapper.INSTANCE.map(new GpuInfo(displays, provider.gpus()));
     }
 
 }

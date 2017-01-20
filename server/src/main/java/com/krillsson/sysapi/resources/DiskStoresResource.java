@@ -23,8 +23,9 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.InfoProvider;
-import com.krillsson.sysapi.core.domain.storage.HWDisk;
+import com.krillsson.sysapi.core.domain.storage.DiskInfo;
 import com.krillsson.sysapi.core.domain.storage.StorageInfo;
+import com.krillsson.sysapi.core.domain.storage.StorageInfoMapper;
 import io.dropwizard.auth.Auth;
 import oshi.hardware.HWDiskStore;
 import oshi.hardware.HWPartition;
@@ -40,7 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Path("disks")
+@Path("storage")
 @Produces(MediaType.APPLICATION_JSON)
 public class DiskStoresResource {
 
@@ -56,14 +57,15 @@ public class DiskStoresResource {
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public StorageInfo getRoot(@Auth UserConfiguration user) {
-        List<HWDisk> HWDisks = new ArrayList<>();
+    public com.krillsson.sysapi.dto.storage.StorageInfo getRoot(@Auth UserConfiguration user) {
+        List<DiskInfo> DiskInfos = new ArrayList<>();
         for (HWDiskStore diskStore : diskStores) {
             OSFileStore associatedFileStore = findAssociatedFileStore(diskStore);
             String name = associatedFileStore != null ? associatedFileStore.getMount() : "";
-            HWDisks.add(new HWDisk(diskStore, provider.diskHealth(name), associatedFileStore));
+            DiskInfos.add(new DiskInfo(diskStore, provider.diskHealth(name), associatedFileStore));
         }
-        return new StorageInfo(HWDisks.toArray(/*type reference*/new HWDisk[0]), fileSystem.getOpenFileDescriptors(), fileSystem.getMaxFileDescriptors(), java.lang.System.currentTimeMillis());
+        StorageInfo storageInfo = new StorageInfo(DiskInfos.toArray(/*type reference*/new DiskInfo[0]), fileSystem.getOpenFileDescriptors(), fileSystem.getMaxFileDescriptors(), System.currentTimeMillis());
+        return StorageInfoMapper.INSTANCE.map(storageInfo);
     }
 
     private OSFileStore findAssociatedFileStore(HWDiskStore diskStore) {

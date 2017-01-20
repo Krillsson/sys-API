@@ -23,26 +23,26 @@ package com.krillsson.sysapi.core.domain.storage;
 import oshi.hardware.HWDiskStore;
 import oshi.software.os.OSFileStore;
 
-public class HWDisk {
-    private final HWDiskStore diskStore;
-    private final HWDiskHealth health;
-    private final OSFileStore associatedFileStore;
+public class DiskInfo {
+    private final HWDiskStore hwDiskStore;
+    private final DiskHealth health;
+    private final OSFileStore osFileStore;
 
-    public HWDisk(HWDiskStore hwDiskStore, HWDiskHealth health, OSFileStore associatedFileStore) {
-        this.diskStore = hwDiskStore;
+    public DiskInfo(HWDiskStore hwDiskStore, DiskHealth health, OSFileStore osFileStore) {
+        this.hwDiskStore = hwDiskStore;
         this.health = health;
-        this.associatedFileStore = associatedFileStore;
+        this.osFileStore = osFileStore;
     }
 
-    public HWDiskStore getDiskStore() {
-        return diskStore;
+    public HWDiskStore getHwDiskStore() {
+        return hwDiskStore;
     }
 
-    public OSFileStore getOSFileStore() {
-        return associatedFileStore;
-    }
-
-    public HWDiskHealth getHealth() {
+    public DiskHealth getDiskHealth() {
         return health;
+    }
+
+    public OSFileStore getOsFileStore() {
+        return osFileStore;
     }
 }
