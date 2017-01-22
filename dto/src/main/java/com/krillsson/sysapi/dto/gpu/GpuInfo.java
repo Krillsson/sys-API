@@ -18,6 +18,14 @@ public class GpuInfo {
     @JsonProperty("gpus")
     private Gpu[] gpus = null;
 
+    public GpuInfo() {
+    }
+
+    public GpuInfo(Display[] displays, Gpu[] gpus) {
+        this.displays = displays;
+        this.gpus = gpus;
+    }
+
     @JsonProperty("displays")
     public Display[] getDisplays() {
         return displays;

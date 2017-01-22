@@ -26,6 +26,17 @@ public class GpuHealth {
     @JsonProperty("memoryLoad")
     private Integer memoryLoad;
 
+    public GpuHealth() {
+    }
+
+    public GpuHealth(Integer fanRpm, Integer fanPercent, Integer temperature, Integer coreLoad, Integer memoryLoad) {
+        this.fanRpm = fanRpm;
+        this.fanPercent = fanPercent;
+        this.temperature = temperature;
+        this.coreLoad = coreLoad;
+        this.memoryLoad = memoryLoad;
+    }
+
     @JsonProperty("fanRpm")
     public Integer getFanRpm() {
         return fanRpm;

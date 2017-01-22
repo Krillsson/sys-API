@@ -26,6 +26,17 @@ public class Gpu {
     @JsonProperty("gpuHealth")
     private GpuHealth gpuHealth;
 
+    public Gpu() {
+    }
+
+    public Gpu(String vendor, String model, Integer coreMhz, Integer memoryMhz, GpuHealth gpuHealth) {
+        this.vendor = vendor;
+        this.model = model;
+        this.coreMhz = coreMhz;
+        this.memoryMhz = memoryMhz;
+        this.gpuHealth = gpuHealth;
+    }
+
     @JsonProperty("vendor")
     public String getVendor() {
         return vendor;

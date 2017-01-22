@@ -14,6 +14,13 @@ public class Display {
     @JsonProperty("edid")
     private String edid;
 
+    public Display() {
+    }
+
+    public Display(String edid) {
+        this.edid = edid;
+    }
+
     @JsonProperty("edid")
     public String getEdid() {
         return edid;
