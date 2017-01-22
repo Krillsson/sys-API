@@ -27,16 +27,17 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceMixin;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.reflections.Reflections;
+/*import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
-import org.reflections.util.FilterBuilder;
+import org.reflections.util.FilterBuilder;*/
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.NetworkInterface;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -55,6 +56,10 @@ public class JsonSchemaGeneratorHack {
                 out.write(jsonSchemaForClass);
             }
         }
+    }
+
+    private Set<Class<?>> listClassesInPackage(String s) {
+        return new HashSet<>();
     }
 
     private String getJsonSchemaForClass(Class clazz) throws IOException {
@@ -81,7 +86,7 @@ public class JsonSchemaGeneratorHack {
 
         }
         return null;
-    }*/
+    }
 
     private Set<Class<?>> listClassesInPackage(String packageName){
         List<ClassLoader> classLoadersList = new LinkedList<ClassLoader>();
@@ -89,9 +94,9 @@ public class JsonSchemaGeneratorHack {
         classLoadersList.add(ClasspathHelper.staticClassLoader());
 
         Reflections reflections = new Reflections(new ConfigurationBuilder()
-                .setScanners(new SubTypesScanner(false /* don't exclude Object.class */), new ResourcesScanner())
+                .setScanners(new SubTypesScanner(false), new ResourcesScanner())
                 .setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0])))
                 .filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix(packageName))));
         return reflections.getSubTypesOf(Object.class);
-    }
+    }*/
 }
