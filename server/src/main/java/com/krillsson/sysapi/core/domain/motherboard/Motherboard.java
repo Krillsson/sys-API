@@ -32,7 +32,7 @@ public class Motherboard {
         this.usbDevices = usbDevices;
     }
 
-    public ComputerSystem getMotherboard() {
+    public ComputerSystem getComputerSystem() {
         return computerSystem;
     }
 

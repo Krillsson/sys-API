@@ -23,6 +23,7 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.domain.motherboard.Motherboard;
+import com.krillsson.sysapi.core.domain.motherboard.MotherboardMapper;
 import io.dropwizard.auth.Auth;
 import oshi.hardware.ComputerSystem;
 import oshi.hardware.UsbDevice;
@@ -47,8 +48,8 @@ public class MotherboardResource {
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public Motherboard getRoot(@Auth UserConfiguration user) {
-        return new Motherboard(computerSystem, usbDevices);
+    public com.krillsson.sysapi.dto.motherboard.Motherboard getRoot(@Auth UserConfiguration user) {
+        return MotherboardMapper.INSTANCE.map(new Motherboard(computerSystem, usbDevices));
     }
 
 }
