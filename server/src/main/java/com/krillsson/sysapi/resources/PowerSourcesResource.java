@@ -22,6 +22,7 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
+import com.krillsson.sysapi.core.domain.power.PowerSourceMapper;
 import io.dropwizard.auth.Auth;
 import oshi.hardware.PowerSource;
 
@@ -43,8 +44,8 @@ public class PowerSourcesResource {
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public PowerSource[] getRoot(@Auth UserConfiguration user) {
-        return powerSources;
+    public com.krillsson.sysapi.dto.power.PowerSource[] getRoot(@Auth UserConfiguration user) {
+        return PowerSourceMapper.INSTANCE.map(powerSources);
     }
 
 }
