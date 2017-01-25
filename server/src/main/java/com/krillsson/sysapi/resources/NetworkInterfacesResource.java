@@ -23,6 +23,7 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfacesData;
+import com.krillsson.sysapi.core.domain.network.NetworkInterfacesDataMapper;
 import io.dropwizard.auth.Auth;
 import oshi.hardware.NetworkIF;
 
@@ -44,11 +45,11 @@ public class NetworkInterfacesResource {
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public NetworkInterfacesData getRoot(@Auth UserConfiguration user) {
+    public com.krillsson.sysapi.dto.network.NetworkInterfacesData getRoot(@Auth UserConfiguration user) {
         for (NetworkIF networkIF : networkIFS) {
             networkIF.updateNetworkStats();
         }
-        return new NetworkInterfacesData(networkIFS, java.lang.System.currentTimeMillis());
+        return NetworkInterfacesDataMapper.INSTANCE.map(new NetworkInterfacesData(networkIFS, java.lang.System.currentTimeMillis()));
     }
 
 }
