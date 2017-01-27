@@ -22,8 +22,6 @@ package com.krillsson.sysapi.core.domain.storage;
 
 import com.krillsson.sysapi.core.domain.health.HealthData;
 
-import java.util.List;
-
 public class DiskHealth {
     private double temperature;
     private HealthData[] healthData;

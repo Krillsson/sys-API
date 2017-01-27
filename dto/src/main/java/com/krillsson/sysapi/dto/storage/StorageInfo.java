@@ -1,17 +1,15 @@
-
 package com.krillsson.sysapi.dto.storage;
 
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "openFileDescriptors",
-    "maxFileDescriptors",
-    "timeStamp",
-    "diskInfo"
+        "openFileDescriptors",
+        "maxFileDescriptors",
+        "timeStamp",
+        "diskInfo"
 })
 public class StorageInfo {
 
@@ -26,19 +24,17 @@ public class StorageInfo {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public StorageInfo() {
     }
 
     /**
-     * 
      * @param timeStamp
      * @param diskInfo
      * @param openFileDescriptors
      * @param maxFileDescriptors
      */
-    public StorageInfo(Integer openFileDescriptors, Integer maxFileDescriptors, Integer timeStamp, DiskInfo[]  diskInfo) {
+    public StorageInfo(Integer openFileDescriptors, Integer maxFileDescriptors, Integer timeStamp, DiskInfo[] diskInfo) {
         super();
         this.openFileDescriptors = openFileDescriptors;
         this.maxFileDescriptors = maxFileDescriptors;

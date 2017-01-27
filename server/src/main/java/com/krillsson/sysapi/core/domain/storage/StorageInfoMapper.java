@@ -34,22 +34,29 @@ import oshi.software.os.OSFileStore;
         unmappedTargetPolicy = ReportingPolicy.ERROR
 )
 public interface StorageInfoMapper {
-//http://mapstruct.org/documentation/1.1/reference/html/index.html#basic-mappings
-    StorageInfoMapper INSTANCE = Mappers.getMapper( StorageInfoMapper.class );
+    //http://mapstruct.org/documentation/1.1/reference/html/index.html#basic-mappings
+    StorageInfoMapper INSTANCE = Mappers.getMapper(StorageInfoMapper.class);
 
     com.krillsson.sysapi.dto.storage.StorageInfo map(StorageInfo value);
+
     @Mappings(
             @Mapping(source = "hwDiskStore", target = "diskStore")
     )
     com.krillsson.sysapi.dto.storage.DiskInfo map(DiskInfo value);
+
     com.krillsson.sysapi.dto.storage.HealthData map(HealthData value);
+
     @Mappings(
             @Mapping(source = "UUID", target = "uuid")
     )
     com.krillsson.sysapi.dto.storage.OsFileStore map(OSFileStore value);
+
     com.krillsson.sysapi.dto.storage.DiskHealth map(DiskHealth value);
+
     com.krillsson.sysapi.dto.storage.DiskStore map(oshi.hardware.HWDiskStore value);
+
     com.krillsson.sysapi.dto.storage.Partition map(oshi.hardware.HWPartition value);
+
     com.krillsson.sysapi.dto.storage.DataType map(DataType value);
 
     /*default com.krillsson.sysapi.dto.storage.DiskHealth mapa(DiskHealth value) {

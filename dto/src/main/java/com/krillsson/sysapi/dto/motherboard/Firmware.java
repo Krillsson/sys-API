@@ -1,19 +1,18 @@
-
 package com.krillsson.sysapi.dto.motherboard;
 
-import java.time.LocalDate;
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.time.LocalDate;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "manufacturer",
-    "name",
-    "description",
-    "version",
-    "releaseDate"
+        "manufacturer",
+        "name",
+        "description",
+        "version",
+        "releaseDate"
 })
 public class Firmware {
 
@@ -30,13 +29,11 @@ public class Firmware {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public Firmware() {
     }
 
     /**
-     * 
      * @param releaseDate
      * @param description
      * @param manufacturer

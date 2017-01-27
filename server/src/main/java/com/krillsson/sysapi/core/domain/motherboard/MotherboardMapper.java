@@ -21,7 +21,6 @@
 
 package com.krillsson.sysapi.core.domain.motherboard;
 
-import com.krillsson.sysapi.core.domain.gpu.GpuInfoMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
@@ -31,10 +30,15 @@ import org.mapstruct.factory.Mappers;
 )
 public interface MotherboardMapper {
 
-    MotherboardMapper INSTANCE = Mappers.getMapper( MotherboardMapper.class );
+    MotherboardMapper INSTANCE = Mappers.getMapper(MotherboardMapper.class);
+
     com.krillsson.sysapi.dto.motherboard.Motherboard map(com.krillsson.sysapi.core.domain.motherboard.Motherboard value);
+
     com.krillsson.sysapi.dto.motherboard.ComputerSystem map(oshi.hardware.ComputerSystem value);
+
     com.krillsson.sysapi.dto.motherboard.UsbDevice map(oshi.hardware.UsbDevice value);
+
     com.krillsson.sysapi.dto.motherboard.Firmware map(oshi.hardware.Firmware value);
+
     com.krillsson.sysapi.dto.motherboard.Baseboard map(oshi.hardware.Baseboard value);
 }

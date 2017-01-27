@@ -1,4 +1,3 @@
-
 package com.krillsson.sysapi.dto.memory;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -7,10 +6,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "swapTotal",
-    "swapUsed",
-    "total",
-    "available"
+        "swapTotal",
+        "swapUsed",
+        "total",
+        "available"
 })
 public class GlobalMemory {
 
@@ -25,13 +24,11 @@ public class GlobalMemory {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public GlobalMemory() {
     }
 
     /**
-     * 
      * @param total
      * @param swapUsed
      * @param swapTotal

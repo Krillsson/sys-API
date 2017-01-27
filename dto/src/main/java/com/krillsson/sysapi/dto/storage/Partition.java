@@ -1,4 +1,3 @@
-
 package com.krillsson.sysapi.dto.storage;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -7,14 +6,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "identification",
-    "name",
-    "type",
-    "uuid",
-    "size",
-    "major",
-    "minor",
-    "mountPoint"
+        "identification",
+        "name",
+        "type",
+        "uuid",
+        "size",
+        "major",
+        "minor",
+        "mountPoint"
 })
 public class Partition {
 
@@ -37,13 +36,11 @@ public class Partition {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public Partition() {
     }
 
     /**
-     * 
      * @param minor
      * @param identification
      * @param name

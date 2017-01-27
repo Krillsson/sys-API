@@ -1,4 +1,3 @@
-
 package com.krillsson.sysapi.dto.storage;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -7,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "description",
-    "data",
-    "dataType"
+        "description",
+        "data",
+        "dataType"
 })
 public class HealthData {
 
@@ -22,13 +21,11 @@ public class HealthData {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public HealthData() {
     }
 
     /**
-     * 
      * @param dataType
      * @param description
      * @param data

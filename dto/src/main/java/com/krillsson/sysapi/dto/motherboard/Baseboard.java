@@ -1,4 +1,3 @@
-
 package com.krillsson.sysapi.dto.motherboard;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -7,10 +6,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "manufacturer",
-    "model",
-    "version",
-    "serialNumber"
+        "manufacturer",
+        "model",
+        "version",
+        "serialNumber"
 })
 public class Baseboard {
 
@@ -25,13 +24,11 @@ public class Baseboard {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public Baseboard() {
     }
 
     /**
-     * 
      * @param model
      * @param manufacturer
      * @param serialNumber

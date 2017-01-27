@@ -41,5 +41,6 @@ public interface NetworkInterfacesDataMapper {
             @Mapping(target = "ipv4addr", source = "IPv4addr")
     })
     com.krillsson.sysapi.dto.network.NetworkIF map(oshi.hardware.NetworkIF value);
+
     com.krillsson.sysapi.dto.network.NetworkInterface map(java.net.NetworkInterface value) throws java.net.SocketException;
 }

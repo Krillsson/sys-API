@@ -32,5 +32,6 @@ public interface PowerSourceMapper {
     PowerSourceMapper INSTANCE = Mappers.getMapper(PowerSourceMapper.class);
 
     com.krillsson.sysapi.dto.power.PowerSource map(oshi.hardware.PowerSource value);
+
     com.krillsson.sysapi.dto.power.PowerSource[] map(oshi.hardware.PowerSource[] value);
 }

@@ -1,15 +1,13 @@
-
 package com.krillsson.sysapi.dto.motherboard;
 
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "computerSystem",
-    "usbDevices"
+        "computerSystem",
+        "usbDevices"
 })
 public class Motherboard {
 
@@ -20,13 +18,11 @@ public class Motherboard {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public Motherboard() {
     }
 
     /**
-     * 
      * @param computerSystem
      * @param usbDevices
      */

@@ -28,7 +28,10 @@ import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.core.domain.system.JvmProperties;
 import com.krillsson.sysapi.core.domain.system.System;
 import io.dropwizard.auth.Auth;
-import oshi.hardware.*;
+import oshi.hardware.CentralProcessor;
+import oshi.hardware.GlobalMemory;
+import oshi.hardware.PowerSource;
+import oshi.hardware.Sensors;
 import oshi.software.os.OperatingSystem;
 
 import javax.annotation.security.RolesAllowed;

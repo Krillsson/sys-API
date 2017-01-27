@@ -1,19 +1,17 @@
-
 package com.krillsson.sysapi.dto.motherboard;
 
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "name",
-    "vendor",
-    "vendorId",
-    "productId",
-    "serialNumber",
-    "connectedDevices"
+        "name",
+        "vendor",
+        "vendorId",
+        "productId",
+        "serialNumber",
+        "connectedDevices"
 })
 public class UsbDevice {
 
@@ -32,13 +30,11 @@ public class UsbDevice {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public UsbDevice() {
     }
 
     /**
-     * 
      * @param connectedDevices
      * @param vendor
      * @param name

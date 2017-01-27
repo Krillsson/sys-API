@@ -1,4 +1,3 @@
-
 package com.krillsson.sysapi.dto.power;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -7,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "name",
-    "remainingCapacity",
-    "timeRemaining"
+        "name",
+        "remainingCapacity",
+        "timeRemaining"
 })
 public class PowerSource {
 
@@ -22,13 +21,11 @@ public class PowerSource {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public PowerSource() {
     }
 
     /**
-     * 
      * @param remainingCapacity
      * @param name
      * @param timeRemaining

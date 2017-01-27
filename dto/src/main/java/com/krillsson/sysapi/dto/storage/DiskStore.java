@@ -1,24 +1,22 @@
-
 package com.krillsson.sysapi.dto.storage;
 
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "model",
-    "name",
-    "serial",
-    "size",
-    "reads",
-    "readBytes",
-    "writes",
-    "writeBytes",
-    "transferTime",
-    "partitions",
-    "timeStamp"
+        "model",
+        "name",
+        "serial",
+        "size",
+        "reads",
+        "readBytes",
+        "writes",
+        "writeBytes",
+        "transferTime",
+        "partitions",
+        "timeStamp"
 })
 public class DiskStore {
 
@@ -47,13 +45,11 @@ public class DiskStore {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public DiskStore() {
     }
 
     /**
-     * 
      * @param reads
      * @param model
      * @param timeStamp

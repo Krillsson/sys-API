@@ -1,4 +1,3 @@
-
 package com.krillsson.sysapi.dto.network;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -7,13 +6,13 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "index",
-    "parent",
-    "virtual",
-    "hardwareAddress",
-    "loopback",
-    "pointToPoint",
-    "up"
+        "index",
+        "parent",
+        "virtual",
+        "hardwareAddress",
+        "loopback",
+        "pointToPoint",
+        "up"
 })
 public class NetworkInterface {
 
@@ -32,13 +31,11 @@ public class NetworkInterface {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public NetworkInterface() {
     }
 
     /**
-     * 
      * @param virtual
      * @param index
      * @param loopback

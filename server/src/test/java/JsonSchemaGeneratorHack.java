@@ -27,20 +27,19 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceMixin;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.NetworkInterface;
+import java.util.HashSet;
+import java.util.Set;
+
 /*import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;*/
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.NetworkInterface;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
 
 public class JsonSchemaGeneratorHack {
 

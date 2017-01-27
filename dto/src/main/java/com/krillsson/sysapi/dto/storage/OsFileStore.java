@@ -1,4 +1,3 @@
-
 package com.krillsson.sysapi.dto.storage;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -7,14 +6,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "name",
-    "volume",
-    "mount",
-    "description",
-    "uuid",
-    "usableSpace",
-    "totalSpace",
-    "type"
+        "name",
+        "volume",
+        "mount",
+        "description",
+        "uuid",
+        "usableSpace",
+        "totalSpace",
+        "type"
 })
 public class OsFileStore {
 
@@ -37,13 +36,11 @@ public class OsFileStore {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public OsFileStore() {
     }
 
     /**
-     * 
      * @param totalSpace
      * @param usableSpace
      * @param mount

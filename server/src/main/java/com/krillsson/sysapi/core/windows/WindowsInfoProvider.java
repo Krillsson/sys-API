@@ -43,12 +43,10 @@ import static com.krillsson.sysapi.util.JarLocation.*;
 
 public class WindowsInfoProvider extends InfoProviderBase implements InfoProvider {
 
-    private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(WindowsInfoProvider.class);
-
     private static final File OHM_JNI_WRAPPER_DLL = new File(LIB_LOCATION + SEPARATOR + "OhmJniWrapper.dll");
     private static final File OPEN_HARDWARE_MONITOR_LIB_DLL = new File(LIB_LOCATION + SEPARATOR + "OpenHardwareMonitorLib.dll");
     private static final File OHM_JNI_WRAPPER_J4N_DLL = new File(LIB_LOCATION + SEPARATOR + "OhmJniWrapper.j4n.dll");
-
+    private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(WindowsInfoProvider.class);
     private MonitorManager monitorManager;
 
     public WindowsInfoProvider() {

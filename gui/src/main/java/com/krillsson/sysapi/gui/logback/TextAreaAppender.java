@@ -27,14 +27,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class TextAreaAppender extends AppenderBase<ILoggingEvent> {
 
-    private static volatile ListView list = null;
     static ObservableList<String> values = FXCollections.observableArrayList();
+    private static volatile ListView list = null;
 
     public static void setList(final ListView list) {
         TextAreaAppender.list = list;

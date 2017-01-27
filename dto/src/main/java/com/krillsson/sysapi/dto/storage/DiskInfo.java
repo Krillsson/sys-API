@@ -1,4 +1,3 @@
-
 package com.krillsson.sysapi.dto.storage;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -7,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "diskStore",
-    "diskHealth",
-    "osFileStore"
+        "diskStore",
+        "diskHealth",
+        "osFileStore"
 })
 public class DiskInfo {
 
@@ -22,13 +21,11 @@ public class DiskInfo {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public DiskInfo() {
     }
 
     /**
-     * 
      * @param diskStore
      * @param osFileStore
      * @param diskHealth

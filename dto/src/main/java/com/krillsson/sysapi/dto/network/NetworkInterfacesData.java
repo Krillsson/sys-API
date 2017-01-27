@@ -1,15 +1,13 @@
-
 package com.krillsson.sysapi.dto.network;
 
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "networkIFs",
-    "timeStamp"
+        "networkIFs",
+        "timeStamp"
 })
 public class NetworkInterfacesData {
 
@@ -20,13 +18,11 @@ public class NetworkInterfacesData {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public NetworkInterfacesData() {
     }
 
     /**
-     * 
      * @param networkIFs
      * @param timeStamp
      */

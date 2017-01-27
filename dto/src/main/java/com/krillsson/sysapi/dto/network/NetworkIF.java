@@ -1,28 +1,26 @@
-
 package com.krillsson.sysapi.dto.network;
 
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "networkInterface",
-    "mtu",
-    "bytesRecv",
-    "bytesSent",
-    "packetsRecv",
-    "packetsSent",
-    "inErrors",
-    "outErrors",
-    "speed",
-    "timeStamp",
-    "name",
-    "displayName",
-    "ipv6addr",
-    "ipv4addr",
-    "macaddr"
+        "networkInterface",
+        "mtu",
+        "bytesRecv",
+        "bytesSent",
+        "packetsRecv",
+        "packetsSent",
+        "inErrors",
+        "outErrors",
+        "speed",
+        "timeStamp",
+        "name",
+        "displayName",
+        "ipv6addr",
+        "ipv4addr",
+        "macaddr"
 })
 public class NetworkIF {
 
@@ -59,13 +57,11 @@ public class NetworkIF {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public NetworkIF() {
     }
 
     /**
-     * 
      * @param mtu
      * @param bytesSent
      * @param packetsSent

@@ -1,15 +1,13 @@
-
 package com.krillsson.sysapi.dto.storage;
 
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "temperature",
-    "healthData"
+        "temperature",
+        "healthData"
 })
 public class DiskHealth {
 
@@ -20,13 +18,11 @@ public class DiskHealth {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public DiskHealth() {
     }
 
     /**
-     * 
      * @param healthData
      * @param temperature
      */

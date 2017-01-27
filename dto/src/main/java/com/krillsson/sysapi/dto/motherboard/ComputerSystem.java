@@ -1,4 +1,3 @@
-
 package com.krillsson.sysapi.dto.motherboard;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -7,11 +6,11 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "manufacturer",
-    "model",
-    "serialNumber",
-    "firmware",
-    "baseboard"
+        "manufacturer",
+        "model",
+        "serialNumber",
+        "firmware",
+        "baseboard"
 })
 public class ComputerSystem {
 
@@ -28,13 +27,11 @@ public class ComputerSystem {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public ComputerSystem() {
     }
 
     /**
-     * 
      * @param firmware
      * @param model
      * @param baseboard

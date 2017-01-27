@@ -31,13 +31,17 @@ import oshi.util.EdidUtil;
 )
 public interface GpuInfoMapper {
 
-    GpuInfoMapper INSTANCE = Mappers.getMapper( GpuInfoMapper.class );
+    GpuInfoMapper INSTANCE = Mappers.getMapper(GpuInfoMapper.class);
 
     com.krillsson.sysapi.dto.gpu.GpuInfo map(com.krillsson.sysapi.core.domain.gpu.GpuInfo value);
+
     com.krillsson.sysapi.dto.gpu.Display map(oshi.hardware.Display value);
+
     com.krillsson.sysapi.dto.gpu.Gpu map(com.krillsson.sysapi.core.domain.gpu.Gpu value);
+
     com.krillsson.sysapi.dto.gpu.GpuHealth map(com.krillsson.sysapi.core.domain.gpu.GpuHealth value);
-    default java.lang.String map(byte[] value){
+
+    default java.lang.String map(byte[] value) {
         return EdidUtil.toString(value);
     }
 }
