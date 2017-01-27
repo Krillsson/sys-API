@@ -20,7 +20,7 @@
  */
 package com.krillsson.sysapi.core.domain.storage;
 
-import com.krillsson.sysapi.core.domain.health.HealthData;
+import com.krillsson.sysapi.core.domain.sensors.HealthData;
 
 public class DiskHealth {
     private double temperature;

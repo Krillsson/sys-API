@@ -18,28 +18,22 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core;
 
-import com.krillsson.sysapi.core.domain.gpu.Gpu;
-import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
-import com.krillsson.sysapi.core.domain.sensors.HealthData;
-import com.krillsson.sysapi.core.domain.storage.DiskHealth;
+package com.krillsson.sysapi.core.domain.cpu;
 
-import java.util.Map;
+import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
+import org.mapstruct.factory.Mappers;
 
-public interface InfoProvider {
+@Mapper(
+        unmappedTargetPolicy = ReportingPolicy.ERROR
+)
+public interface CpuInfoMapper {
+    CpuInfoMapper INSTANCE = Mappers.getMapper(CpuInfoMapper.class);
 
-    DiskHealth diskHealth(String name);
+    com.krillsson.sysapi.dto.cpu.CpuInfo map(CpuInfo value);
 
-    double[] cpuTemperatures();
+    com.krillsson.sysapi.dto.cpu.CentralProcessor map(oshi.hardware.CentralProcessor value);
 
-    double cpuFanRpm();
-
-    double cpuFanPercent();
-
-    HealthData[] mainboardHealthData();
-
-    Gpu[] gpus();
-
-    Map<String, GpuHealth> gpuHealths();
+    com.krillsson.sysapi.dto.cpu.CpuHealth map(com.krillsson.sysapi.core.domain.cpu.CpuHealth value);
 }

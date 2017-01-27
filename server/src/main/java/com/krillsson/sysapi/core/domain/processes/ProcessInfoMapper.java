@@ -18,13 +18,23 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.health;
 
-public enum DataType {
-    CLOCK,
-    VOLTAGE,
-    PERCENT,
-    RPM,
-    CELCIUS,
-    GIGABYTE
+package com.krillsson.sysapi.core.domain.processes;
+
+import com.krillsson.sysapi.dto.processes.ProcessInfo;
+import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
+import org.mapstruct.factory.Mappers;
+
+@Mapper(
+        unmappedTargetPolicy = ReportingPolicy.ERROR
+)
+public interface ProcessInfoMapper {
+    ProcessInfoMapper INSTANCE = Mappers.getMapper(ProcessInfoMapper.class);
+
+    ProcessInfo map(ProcessesInfo value);
+
+    com.krillsson.sysapi.dto.processes.Memory map(oshi.hardware.GlobalMemory value);
+
+    com.krillsson.sysapi.dto.processes.Process map(Process value);
 }

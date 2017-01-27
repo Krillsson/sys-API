@@ -23,10 +23,11 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.InfoProvider;
-import com.krillsson.sysapi.core.domain.cpu.Cpu;
 import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
+import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
 import com.krillsson.sysapi.core.domain.system.JvmProperties;
-import com.krillsson.sysapi.core.domain.system.System;
+import com.krillsson.sysapi.core.domain.system.SystemInfo;
+import com.krillsson.sysapi.core.domain.system.SystemInfoMapper;
 import io.dropwizard.auth.Auth;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.GlobalMemory;
@@ -40,6 +41,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 @Path("system")
@@ -64,17 +67,17 @@ public class SystemResource {
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public System getRoot(@Auth UserConfiguration user) {
+    public com.krillsson.sysapi.dto.system.SystemInfo getRoot(@Auth UserConfiguration user) {
         double[] temperature = provider.cpuTemperatures();
         double fanRpm = provider.cpuFanRpm();
         double fanPercent = provider.cpuFanPercent();
         if (temperature.length == 0) {
             temperature = new double[]{sensors.getCpuTemperature()};
         }
-        return new System(
+        return SystemInfoMapper.INSTANCE.map(new SystemInfo(
                 getHostName(),
                 operatingSystem,
-                new Cpu(processor,
+                new CpuInfo(processor,
                         operatingSystem.getProcessCount(),
                         operatingSystem.getThreadCount(),
                         new CpuHealth(
@@ -83,7 +86,7 @@ public class SystemResource {
                                 fanRpm,
                                 fanPercent)),
                 memory,
-                powerSources);
+                powerSources));
     }
 
     private String getHostName() {
@@ -97,17 +100,13 @@ public class SystemResource {
     @GET
     @Path("jvm")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public JvmProperties getProperties(@Auth UserConfiguration user) {
-        Properties p = java.lang.System.getProperties();
-        return new JvmProperties(
-                p.getProperty("java.home"),
-                p.getProperty("java.class.path"),
-                p.getProperty("java.vendor"),
-                p.getProperty("java.vendor.url"),
-                p.getProperty("java.version"),
-                p.getProperty("user.dir"),
-                p.getProperty("user.home"),
-                p.getProperty("user.name"));
+    public com.krillsson.sysapi.dto.system.JvmProperties getProperties(@Auth UserConfiguration user) {
+        Map<String, String> propertiesMap = new HashMap<>();
+        Properties systemProperties = java.lang.System.getProperties();
+        for (Map.Entry<Object, Object> x : systemProperties.entrySet()) {
+            propertiesMap.put((String) x.getKey(), (String) x.getValue());
+        }
+        return SystemInfoMapper.INSTANCE.map(new JvmProperties(propertiesMap));
     }
 
 }

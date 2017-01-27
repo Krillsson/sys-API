@@ -24,20 +24,26 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.InfoProvider;
-import com.krillsson.sysapi.core.domain.cpu.Cpu;
 import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
+import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
+import com.krillsson.sysapi.core.domain.cpu.CpuInfoMapper;
 import io.dropwizard.auth.Auth;
 import oshi.hardware.CentralProcessor;
+import oshi.hardware.CentralProcessor.TickType;
 import oshi.hardware.Sensors;
 import oshi.software.os.OperatingSystem;
+import oshi.util.Util;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.Arrays;
 
-@Path("processor")
+import static oshi.hardware.CentralProcessor.TickType.SOFTIRQ;
+
+@Path("cpu")
 @Produces(MediaType.APPLICATION_JSON)
 public class CpuResource {
 
@@ -55,14 +61,43 @@ public class CpuResource {
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public Cpu getRoot(@Auth UserConfiguration user) {
+    public com.krillsson.sysapi.dto.cpu.CpuInfo getRoot(@Auth UserConfiguration user) {
         double[] temperature = provider.cpuTemperatures();
         double fanRpm = provider.cpuFanRpm();
         double fanPercent = provider.cpuFanPercent();
         if (temperature.length == 0) {
             temperature = new double[]{sensors.getCpuTemperature()};
         }
-        return new Cpu(processor, operatingSystem.getProcessCount(), operatingSystem.getThreadCount(), new CpuHealth(temperature, sensors.getCpuVoltage(), fanRpm, fanPercent));
+        //printCpu();
+        return CpuInfoMapper.INSTANCE.map(new CpuInfo(processor,
+                operatingSystem.getProcessCount(),
+                operatingSystem.getThreadCount(),
+                new CpuHealth(temperature,
+                        sensors.getCpuVoltage(),
+                        fanRpm,
+                        fanPercent)));
+    }
+
+    private void printCpu() {
+        long[] prevTicks = processor.getSystemCpuLoadTicks();
+        System.out.println("CPU, IOWait, and IRQ ticks @ 0 sec:" + Arrays.toString(prevTicks));
+        // Wait a second...
+        Util.sleep(200);
+        long[] ticks = processor.getSystemCpuLoadTicks();
+        System.out.println("CPU, IOWait, and IRQ ticks @ 0.2 sec:" + Arrays.toString(ticks));
+        long user = ticks[TickType.USER.getIndex()] - prevTicks[TickType.USER.getIndex()];
+        long nice = ticks[TickType.NICE.getIndex()] - prevTicks[TickType.NICE.getIndex()];
+        long sys = ticks[TickType.SYSTEM.getIndex()] - prevTicks[TickType.SYSTEM.getIndex()];
+        long idle = ticks[TickType.IDLE.getIndex()] - prevTicks[TickType.IDLE.getIndex()];
+        long iowait = ticks[TickType.IOWAIT.getIndex()] - prevTicks[TickType.IOWAIT.getIndex()];
+        long irq = ticks[TickType.IRQ.getIndex()] - prevTicks[TickType.IRQ.getIndex()];
+        long softirq = ticks[SOFTIRQ.getIndex()] - prevTicks[SOFTIRQ.getIndex()];
+        long totalCpu = user + nice + sys + idle + iowait + irq + softirq;
+
+        System.out.format(
+                "User: %.1f%% Nice: %.1f%% System: %.1f%% Idle: %.1f%% IOwait: %.1f%% IRQ: %.1f%% SoftIRQ: %.1f%%%n",
+                100d * user / totalCpu, 100d * nice / totalCpu, 100d * sys / totalCpu, 100d * idle / totalCpu,
+                100d * iowait / totalCpu, 100d * irq / totalCpu, 100d * softirq / totalCpu);
     }
 
 }

@@ -22,8 +22,10 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.domain.system.Process;
-import com.krillsson.sysapi.core.domain.system.ProcessesInfo;
+import com.krillsson.sysapi.core.domain.processes.Process;
+import com.krillsson.sysapi.core.domain.processes.ProcessInfoMapper;
+import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
+import com.krillsson.sysapi.dto.processes.ProcessInfo;
 import io.dropwizard.auth.Auth;
 import oshi.hardware.GlobalMemory;
 import oshi.software.os.OperatingSystem;
@@ -50,7 +52,7 @@ public class ProcessesResource {
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public ProcessesInfo getRoot(@Auth UserConfiguration user) {
+    public ProcessInfo getRoot(@Auth UserConfiguration user) {
         Process[] processes = Arrays.stream(operatingSystem.getProcesses(0, OperatingSystem.ProcessSort.NAME)).map(p -> new Process(p.getName(),
                 p.getPath(),
                 p.getState(),
@@ -67,6 +69,6 @@ public class ProcessesResource {
                 p.getStartTime(),
                 p.getBytesRead(),
                 p.getBytesWritten())).collect(Collectors.toList()).toArray(new Process[0]);
-        return new ProcessesInfo(memory, processes);
+        return ProcessInfoMapper.INSTANCE.map(new ProcessesInfo(memory, processes));
     }
 }

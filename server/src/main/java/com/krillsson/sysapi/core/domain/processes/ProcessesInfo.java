@@ -18,45 +18,25 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.system;
 
-import com.krillsson.sysapi.core.domain.cpu.Cpu;
+package com.krillsson.sysapi.core.domain.processes;
+
 import oshi.hardware.GlobalMemory;
-import oshi.hardware.PowerSource;
-import oshi.software.os.OperatingSystem;
 
-public class System {
-    private final String hostName;
-    private final OperatingSystem operatingSystem;
-    private final Cpu cpu;
+public class ProcessesInfo {
     private final GlobalMemory memory;
-    private final PowerSource[] powerSources;
+    private final Process[] processes;
 
-    public System(String hostName, OperatingSystem operatingSystem, Cpu cpu, GlobalMemory memory, PowerSource[] powerSources) {
-        this.hostName = hostName;
-        this.operatingSystem = operatingSystem;
-        this.cpu = cpu;
+    public ProcessesInfo(GlobalMemory memory, Process[] processes) {
         this.memory = memory;
-        this.powerSources = powerSources;
-    }
-
-    public String getHostName() {
-        return hostName;
-    }
-
-    public OperatingSystem getOperatingSystem() {
-        return operatingSystem;
-    }
-
-    public Cpu getCpu() {
-        return cpu;
+        this.processes = processes;
     }
 
     public GlobalMemory getMemory() {
         return memory;
     }
 
-    public PowerSource[] getPowerSources() {
-        return powerSources;
+    public Process[] getProcesses() {
+        return processes;
     }
 }

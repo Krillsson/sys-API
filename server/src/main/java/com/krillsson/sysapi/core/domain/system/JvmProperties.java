@@ -20,56 +20,17 @@
  */
 package com.krillsson.sysapi.core.domain.system;
 
+import java.util.Map;
+
 public class JvmProperties {
-    private String home;
-    private String classPath;
-    private String vendor;
-    private String vendorUrl;
-    private String version;
-    private String userDir;
-    private String userHome;
-    private String username;
+    private Map<String, String> properties;
 
-    public JvmProperties(String home, String classPath, String vendor, String vendorUrl, String version, String userDir, String userHome, String username) {
-        this.home = home;
-        this.classPath = classPath;
-        this.vendor = vendor;
-        this.vendorUrl = vendorUrl;
-        this.version = version;
-        this.userDir = userDir;
-        this.userHome = userHome;
-        this.username = username;
+    public JvmProperties(Map<String, String> properties) {
+
+        this.properties = properties;
     }
 
-    public String getHome() {
-        return home;
-    }
-
-    public String getClassPath() {
-        return classPath;
-    }
-
-    public String getVendor() {
-        return vendor;
-    }
-
-    public String getVendorUrl() {
-        return vendorUrl;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public String getUserDir() {
-        return userDir;
-    }
-
-    public String getUserHome() {
-        return userHome;
-    }
-
-    public String getUsername() {
-        return username;
+    public Map<String, String> getProperties() {
+        return properties;
     }
 }

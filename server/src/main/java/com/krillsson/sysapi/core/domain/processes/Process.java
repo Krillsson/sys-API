@@ -19,7 +19,7 @@
  * contact[at]christian-jensen[dot]se
  */
 
-package com.krillsson.sysapi.core.domain.system;
+package com.krillsson.sysapi.core.domain.processes;
 
 import oshi.software.os.OSProcess;
 

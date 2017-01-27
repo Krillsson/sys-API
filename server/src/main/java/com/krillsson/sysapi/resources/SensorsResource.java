@@ -24,8 +24,9 @@ import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
-import com.krillsson.sysapi.core.domain.health.HealthData;
-import com.krillsson.sysapi.core.domain.health.SensorsData;
+import com.krillsson.sysapi.core.domain.sensors.HealthData;
+import com.krillsson.sysapi.core.domain.sensors.SensorsInfo;
+import com.krillsson.sysapi.core.domain.sensors.SensorsInfoMapper;
 import io.dropwizard.auth.Auth;
 import oshi.hardware.Sensors;
 
@@ -49,15 +50,15 @@ public class SensorsResource {
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public SensorsData getRoot(@Auth UserConfiguration user) {
+    public com.krillsson.sysapi.dto.sensors.SensorsInfo getRoot(@Auth UserConfiguration user) {
         double[] cpuTemperatures = provider.cpuTemperatures();
         double cpuFanRpm = provider.cpuFanRpm();
         double cpuFanPercent = provider.cpuFanPercent();
         if (cpuTemperatures.length == 0) {
             cpuTemperatures = new double[]{sensors.getCpuTemperature()};
         }
-        HealthData[] healthDatas = provider.healthData();
-        return new SensorsData(new CpuHealth(cpuTemperatures, sensors.getCpuVoltage(), cpuFanRpm, cpuFanPercent), provider.gpuHealths(), healthDatas);
+        HealthData[] healthData = provider.mainboardHealthData();
+        return SensorsInfoMapper.INSTANCE.map(new SensorsInfo(new CpuHealth(cpuTemperatures, sensors.getCpuVoltage(), cpuFanRpm, cpuFanPercent), provider.gpuHealths(), healthData));
     }
 
 }

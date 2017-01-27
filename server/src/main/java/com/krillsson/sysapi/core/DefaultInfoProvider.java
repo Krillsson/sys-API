@@ -22,7 +22,7 @@ package com.krillsson.sysapi.core;
 
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
-import com.krillsson.sysapi.core.domain.health.HealthData;
+import com.krillsson.sysapi.core.domain.sensors.HealthData;
 import com.krillsson.sysapi.core.domain.storage.DiskHealth;
 
 import java.util.Collections;
@@ -55,7 +55,7 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     @Override
-    public HealthData[] healthData() {
+    public HealthData[] mainboardHealthData() {
         return new HealthData[0];
     }
 

@@ -18,33 +18,36 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.health;
+package com.krillsson.sysapi.core.domain.cpu;
 
-import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
-import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
+import oshi.hardware.CentralProcessor;
 
-import java.util.Map;
-
-public class SensorsData {
+public class CpuInfo {
+    private final CentralProcessor centralProcessor;
+    private final int processCount;
+    private final int threadCount;
     private final CpuHealth cpuHealth;
-    private final Map<String, GpuHealth> gpuHealths;
-    private final HealthData[] healthDatas;
 
-    public SensorsData(CpuHealth cpuHealth, Map<String, GpuHealth> gpuHealths, HealthData[] healthDatas) {
+    public CpuInfo(CentralProcessor centralProcessor, int processCount, int threadCount, CpuHealth cpuHealth) {
+        this.centralProcessor = centralProcessor;
+        this.processCount = processCount;
+        this.threadCount = threadCount;
         this.cpuHealth = cpuHealth;
-        this.gpuHealths = gpuHealths;
-        this.healthDatas = healthDatas;
     }
 
-    public Map<String, GpuHealth> getGpuHealths() {
-        return gpuHealths;
+    public CentralProcessor getCentralProcessor() {
+        return centralProcessor;
+    }
+
+    public int getProcessCount() {
+        return processCount;
+    }
+
+    public int getThreadCount() {
+        return threadCount;
     }
 
     public CpuHealth getCpuHealth() {
         return cpuHealth;
-    }
-
-    public HealthData[] getHealthDatas() {
-        return healthDatas;
     }
 }

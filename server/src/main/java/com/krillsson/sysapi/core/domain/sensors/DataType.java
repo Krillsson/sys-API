@@ -18,28 +18,13 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core;
+package com.krillsson.sysapi.core.domain.sensors;
 
-import com.krillsson.sysapi.core.domain.gpu.Gpu;
-import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
-import com.krillsson.sysapi.core.domain.sensors.HealthData;
-import com.krillsson.sysapi.core.domain.storage.DiskHealth;
-
-import java.util.Map;
-
-public interface InfoProvider {
-
-    DiskHealth diskHealth(String name);
-
-    double[] cpuTemperatures();
-
-    double cpuFanRpm();
-
-    double cpuFanPercent();
-
-    HealthData[] mainboardHealthData();
-
-    Gpu[] gpus();
-
-    Map<String, GpuHealth> gpuHealths();
+public enum DataType {
+    CLOCK,
+    VOLTAGE,
+    PERCENT,
+    RPM,
+    CELCIUS,
+    GIGABYTE
 }

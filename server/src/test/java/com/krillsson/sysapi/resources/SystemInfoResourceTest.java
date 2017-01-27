@@ -23,7 +23,7 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.core.DefaultInfoProvider;
 import com.krillsson.sysapi.core.InfoProvider;
-import com.krillsson.sysapi.core.domain.system.System;
+import com.krillsson.sysapi.core.domain.system.SystemInfo;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.After;
 import org.junit.Before;
@@ -46,7 +46,7 @@ import static org.mockito.Mockito.*;
  * Unit tests for {@link SystemResource}.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class SystemResourceTest {
+public class SystemInfoResourceTest {
 
     private static final InfoProvider provider = new DefaultInfoProvider();
     private static final OperatingSystem os = mock(OperatingSystem.class);
@@ -78,11 +78,11 @@ public class SystemResourceTest {
         when(sensors.getCpuVoltage()).thenReturn(temperature);
         when(os.getProcessCount()).thenReturn(processCount);
         when(os.getThreadCount()).thenReturn(threadCount);
-        final System response = RESOURCES.getJerseyTest().target("/system")
+        final SystemInfo response = RESOURCES.getJerseyTest().target("/system")
                 .request(MediaType.APPLICATION_JSON_TYPE)
-                .get(System.class);
-        assertThat(response.getCpu().getCpuHealth().getTemperatures()[0]).isEqualTo(temperature);
-        assertThat(response.getCpu().getCpuHealth().getVoltage()).isEqualTo(voltage);
+                .get(SystemInfo.class);
+        assertThat(response.getCpuInfo().getCpuHealth().getTemperatures()[0]).isEqualTo(temperature);
+        assertThat(response.getCpuInfo().getCpuHealth().getVoltage()).isEqualTo(voltage);
         assertThat(response.getOperatingSystem().getProcessCount()).isEqualTo(processCount);
         assertThat(response.getOperatingSystem().getThreadCount()).isEqualTo(threadCount);
     }

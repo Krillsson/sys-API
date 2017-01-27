@@ -21,8 +21,8 @@
 
 package com.krillsson.sysapi.core.domain.storage;
 
-import com.krillsson.sysapi.core.domain.health.DataType;
-import com.krillsson.sysapi.core.domain.health.HealthData;
+import com.krillsson.sysapi.core.domain.sensors.DataType;
+import com.krillsson.sysapi.core.domain.sensors.HealthData;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -34,7 +34,6 @@ import oshi.software.os.OSFileStore;
         unmappedTargetPolicy = ReportingPolicy.ERROR
 )
 public interface StorageInfoMapper {
-    //http://mapstruct.org/documentation/1.1/reference/html/index.html#basic-mappings
     StorageInfoMapper INSTANCE = Mappers.getMapper(StorageInfoMapper.class);
 
     com.krillsson.sysapi.dto.storage.StorageInfo map(StorageInfo value);
@@ -44,7 +43,7 @@ public interface StorageInfoMapper {
     )
     com.krillsson.sysapi.dto.storage.DiskInfo map(DiskInfo value);
 
-    com.krillsson.sysapi.dto.storage.HealthData map(HealthData value);
+    com.krillsson.sysapi.dto.sensors.HealthData map(HealthData value);
 
     @Mappings(
             @Mapping(source = "UUID", target = "uuid")
@@ -57,27 +56,5 @@ public interface StorageInfoMapper {
 
     com.krillsson.sysapi.dto.storage.Partition map(oshi.hardware.HWPartition value);
 
-    com.krillsson.sysapi.dto.storage.DataType map(DataType value);
-
-    /*default com.krillsson.sysapi.dto.storage.DiskHealth mapa(DiskHealth value) {
-        if ( value == null ) {
-            return null;
-        }
-
-        com.krillsson.sysapi.dto.storage.DiskHealth diskHealth = new com.krillsson.sysapi.dto.storage.DiskHealth();
-
-
-        return diskHealth;
-    }
-
-    default com.krillsson.sysapi.dto.storage.DiskStore mapa(oshi.hardware.HWDiskStore value) {
-        if ( value == null ) {
-            return null;
-        }
-
-        com.krillsson.sysapi.dto.storage.DiskStore diskStore = new com.krillsson.sysapi.dto.storage.DiskStore();
-
-
-        return diskHealth;
-    }*/
+    com.krillsson.sysapi.dto.sensors.DataType map(DataType value);
 }

@@ -18,28 +18,28 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core;
+package com.krillsson.sysapi.core.domain.sensors;
 
-import com.krillsson.sysapi.core.domain.gpu.Gpu;
-import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
-import com.krillsson.sysapi.core.domain.sensors.HealthData;
-import com.krillsson.sysapi.core.domain.storage.DiskHealth;
+public class HealthData {
+    private final String description;
+    private final double data;
+    private final DataType dataType;
 
-import java.util.Map;
+    public HealthData(String description, double data, DataType dataType) {
+        this.description = description;
+        this.data = data;
+        this.dataType = dataType;
+    }
 
-public interface InfoProvider {
+    public String getDescription() {
+        return description;
+    }
 
-    DiskHealth diskHealth(String name);
+    public double getData() {
+        return data;
+    }
 
-    double[] cpuTemperatures();
-
-    double cpuFanRpm();
-
-    double cpuFanPercent();
-
-    HealthData[] mainboardHealthData();
-
-    Gpu[] gpus();
-
-    Map<String, GpuHealth> gpuHealths();
+    public DataType getDataType() {
+        return dataType;
+    }
 }

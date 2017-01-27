@@ -24,8 +24,8 @@ import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.InfoProviderBase;
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
-import com.krillsson.sysapi.core.domain.health.DataType;
-import com.krillsson.sysapi.core.domain.health.HealthData;
+import com.krillsson.sysapi.core.domain.sensors.DataType;
+import com.krillsson.sysapi.core.domain.sensors.HealthData;
 import com.krillsson.sysapi.core.domain.storage.DiskHealth;
 import net.sf.jni4net.Bridge;
 import ohmwrapper.*;
@@ -196,7 +196,7 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     @Override
-    public HealthData[] healthData() {
+    public HealthData[] mainboardHealthData() {
         List<HealthData> list = new ArrayList<>();
         monitorManager.Update();
         MainboardMonitor mainboardMonitor = monitorManager.getMainboardMonitor();
@@ -211,7 +211,7 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
     private void addIfSafe(List<HealthData> healthData, OHMSensor sensor) {
         OHMSensor ohmSensor = nullSafe(sensor);
         if (ohmSensor.getValue() > 0) {
-            com.krillsson.sysapi.core.domain.health.DataType dataType = DataType.valueOf(sensor.getDataType().toString().toUpperCase());
+            com.krillsson.sysapi.core.domain.sensors.DataType dataType = DataType.valueOf(sensor.getDataType().toString().toUpperCase());
             healthData.add(new HealthData(ohmSensor.getLabel(), ohmSensor.getValue(), dataType));
         }
     }

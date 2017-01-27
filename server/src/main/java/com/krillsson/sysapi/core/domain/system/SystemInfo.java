@@ -20,22 +20,43 @@
  */
 package com.krillsson.sysapi.core.domain.system;
 
+import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
 import oshi.hardware.GlobalMemory;
+import oshi.hardware.PowerSource;
+import oshi.software.os.OperatingSystem;
 
-public class ProcessesInfo {
+public class SystemInfo {
+    private final String hostName;
+    private final OperatingSystem operatingSystem;
+    private final CpuInfo cpuInfo;
     private final GlobalMemory memory;
-    private final Process[] processes;
+    private final PowerSource[] powerSources;
 
-    public ProcessesInfo(GlobalMemory memory, Process[] processes) {
+    public SystemInfo(String hostName, OperatingSystem operatingSystem, CpuInfo cpuInfo, GlobalMemory memory, PowerSource[] powerSources) {
+        this.hostName = hostName;
+        this.operatingSystem = operatingSystem;
+        this.cpuInfo = cpuInfo;
         this.memory = memory;
-        this.processes = processes;
+        this.powerSources = powerSources;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public OperatingSystem getOperatingSystem() {
+        return operatingSystem;
+    }
+
+    public CpuInfo getCpuInfo() {
+        return cpuInfo;
     }
 
     public GlobalMemory getMemory() {
         return memory;
     }
 
-    public Process[] getProcesses() {
-        return processes;
+    public PowerSource[] getPowerSources() {
+        return powerSources;
     }
 }

@@ -18,28 +18,18 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.health;
 
-public class HealthData {
-    private final String description;
-    private final double data;
-    private final DataType dataType;
+package com.krillsson.sysapi.core.domain.memory;
 
-    public HealthData(String description, double data, DataType dataType) {
-        this.description = description;
-        this.data = data;
-        this.dataType = dataType;
-    }
+import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
+import org.mapstruct.factory.Mappers;
 
-    public String getDescription() {
-        return description;
-    }
+@Mapper(
+        unmappedTargetPolicy = ReportingPolicy.ERROR
+)
+public interface GlobalMemoryMapper {
+    GlobalMemoryMapper INSTANCE = Mappers.getMapper(GlobalMemoryMapper.class);
 
-    public double getData() {
-        return data;
-    }
-
-    public DataType getDataType() {
-        return dataType;
-    }
+    com.krillsson.sysapi.dto.processes.Memory map(oshi.hardware.GlobalMemory value);
 }

@@ -19,7 +19,7 @@
  * contact[at]christian-jensen[dot]se
  */
 
-package com.krillsson.sysapi.dto.storage;
+package com.krillsson.sysapi.dto.sensors;
 
 public enum DataType {
     CLOCK,
