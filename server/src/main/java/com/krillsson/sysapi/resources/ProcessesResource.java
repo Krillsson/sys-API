@@ -22,6 +22,7 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
+import com.krillsson.sysapi.core.domain.system.Process;
 import com.krillsson.sysapi.core.domain.system.ProcessesInfo;
 import io.dropwizard.auth.Auth;
 import oshi.hardware.GlobalMemory;
@@ -32,6 +33,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @Path("processes")
 @Produces(MediaType.APPLICATION_JSON)
@@ -48,6 +51,22 @@ public class ProcessesResource {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public ProcessesInfo getRoot(@Auth UserConfiguration user) {
-        return new ProcessesInfo(memory, operatingSystem.getProcesses(0, oshi.software.os.OperatingSystem.ProcessSort.MEMORY));
+        Process[] processes = Arrays.stream(operatingSystem.getProcesses(0, OperatingSystem.ProcessSort.NAME)).map(p -> new Process(p.getName(),
+                p.getPath(),
+                p.getState(),
+                p.getProcessID(),
+                p.getParentProcessID(),
+                p.getThreadCount(),
+                p.getPriority(),
+                p.getVirtualSize(),
+                p.getResidentSetSize(),
+                100d * p.getResidentSetSize() / memory.getTotal(),
+                p.getKernelTime(), p.getUserTime(),
+                p.getUpTime(),
+                100d * (p.getKernelTime() + p.getUserTime()) / p.getUpTime(),
+                p.getStartTime(),
+                p.getBytesRead(),
+                p.getBytesWritten())).collect(Collectors.toList()).toArray(new Process[0]);
+        return new ProcessesInfo(memory, processes);
     }
 }

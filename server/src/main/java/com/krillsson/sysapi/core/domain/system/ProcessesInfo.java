@@ -21,22 +21,21 @@
 package com.krillsson.sysapi.core.domain.system;
 
 import oshi.hardware.GlobalMemory;
-import oshi.software.os.OSProcess;
 
 public class ProcessesInfo {
     private final GlobalMemory memory;
-    private final OSProcess[] osProcesses;
+    private final Process[] processes;
 
-    public ProcessesInfo(GlobalMemory memory, OSProcess[] osProcesses) {
+    public ProcessesInfo(GlobalMemory memory, Process[] processes) {
         this.memory = memory;
-        this.osProcesses = osProcesses;
+        this.processes = processes;
     }
 
     public GlobalMemory getMemory() {
         return memory;
     }
 
-    public OSProcess[] getOsProcesses() {
-        return osProcesses;
+    public Process[] getProcesses() {
+        return processes;
     }
 }
