@@ -27,23 +27,23 @@ public class NetworkIF {
     @JsonProperty("networkInterface")
     private NetworkInterface networkInterface;
     @JsonProperty("mtu")
-    private Integer mtu;
+    private int mtu;
     @JsonProperty("bytesRecv")
-    private Integer bytesRecv;
+    private long bytesRecv;
     @JsonProperty("bytesSent")
-    private Integer bytesSent;
+    private long bytesSent;
     @JsonProperty("packetsRecv")
-    private Integer packetsRecv;
+    private long packetsRecv;
     @JsonProperty("packetsSent")
-    private Integer packetsSent;
+    private long packetsSent;
     @JsonProperty("inErrors")
-    private Integer inErrors;
+    private long inErrors;
     @JsonProperty("outErrors")
-    private Integer outErrors;
+    private long outErrors;
     @JsonProperty("speed")
-    private Integer speed;
+    private long speed;
     @JsonProperty("timeStamp")
-    private Integer timeStamp;
+    private long timeStamp;
     @JsonProperty("name")
     private String name;
     @JsonProperty("displayName")
@@ -78,7 +78,7 @@ public class NetworkIF {
      * @param outErrors
      * @param displayName
      */
-    public NetworkIF(NetworkInterface networkInterface, Integer mtu, Integer bytesRecv, Integer bytesSent, Integer packetsRecv, Integer packetsSent, Integer inErrors, Integer outErrors, Integer speed, Integer timeStamp, String name, String displayName, String[] ipv6addr, String[] ipv4addr, String macaddr) {
+    public NetworkIF(NetworkInterface networkInterface, int mtu, long bytesRecv, long bytesSent, long packetsRecv, long packetsSent, long inErrors, long outErrors, long speed, long timeStamp, String name, String displayName, String[] ipv6addr, String[] ipv4addr, String macaddr) {
         super();
         this.networkInterface = networkInterface;
         this.mtu = mtu;
@@ -108,92 +108,92 @@ public class NetworkIF {
     }
 
     @JsonProperty("mtu")
-    public Integer getMtu() {
+    public long getMtu() {
         return mtu;
     }
 
     @JsonProperty("mtu")
-    public void setMtu(Integer mtu) {
+    public void setMtu(int mtu) {
         this.mtu = mtu;
     }
 
     @JsonProperty("bytesRecv")
-    public Integer getBytesRecv() {
+    public long getBytesRecv() {
         return bytesRecv;
     }
 
     @JsonProperty("bytesRecv")
-    public void setBytesRecv(Integer bytesRecv) {
+    public void setBytesRecv(long bytesRecv) {
         this.bytesRecv = bytesRecv;
     }
 
     @JsonProperty("bytesSent")
-    public Integer getBytesSent() {
+    public long getBytesSent() {
         return bytesSent;
     }
 
     @JsonProperty("bytesSent")
-    public void setBytesSent(Integer bytesSent) {
+    public void setBytesSent(long bytesSent) {
         this.bytesSent = bytesSent;
     }
 
     @JsonProperty("packetsRecv")
-    public Integer getPacketsRecv() {
+    public long getPacketsRecv() {
         return packetsRecv;
     }
 
     @JsonProperty("packetsRecv")
-    public void setPacketsRecv(Integer packetsRecv) {
+    public void setPacketsRecv(long packetsRecv) {
         this.packetsRecv = packetsRecv;
     }
 
     @JsonProperty("packetsSent")
-    public Integer getPacketsSent() {
+    public long getPacketsSent() {
         return packetsSent;
     }
 
     @JsonProperty("packetsSent")
-    public void setPacketsSent(Integer packetsSent) {
+    public void setPacketsSent(long packetsSent) {
         this.packetsSent = packetsSent;
     }
 
     @JsonProperty("inErrors")
-    public Integer getInErrors() {
+    public long getInErrors() {
         return inErrors;
     }
 
     @JsonProperty("inErrors")
-    public void setInErrors(Integer inErrors) {
+    public void setInErrors(long inErrors) {
         this.inErrors = inErrors;
     }
 
     @JsonProperty("outErrors")
-    public Integer getOutErrors() {
+    public long getOutErrors() {
         return outErrors;
     }
 
     @JsonProperty("outErrors")
-    public void setOutErrors(Integer outErrors) {
+    public void setOutErrors(long outErrors) {
         this.outErrors = outErrors;
     }
 
     @JsonProperty("speed")
-    public Integer getSpeed() {
+    public long getSpeed() {
         return speed;
     }
 
     @JsonProperty("speed")
-    public void setSpeed(Integer speed) {
+    public void setSpeed(long speed) {
         this.speed = speed;
     }
 
     @JsonProperty("timeStamp")
-    public Integer getTimeStamp() {
+    public long getTimeStamp() {
         return timeStamp;
     }
 
     @JsonProperty("timeStamp")
-    public void setTimeStamp(Integer timeStamp) {
+    public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
     }
 

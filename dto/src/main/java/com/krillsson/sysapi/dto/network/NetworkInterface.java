@@ -17,17 +17,17 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class NetworkInterface {
 
     @JsonProperty("index")
-    private Integer index;
+    private int index;
     @JsonProperty("parent")
     private NetworkInterface parent;
     @JsonProperty("virtual")
-    private Boolean virtual;
+    private boolean virtual;
     @JsonProperty("loopback")
-    private Boolean loopback;
+    private boolean loopback;
     @JsonProperty("pointToPoint")
-    private Boolean pointToPoint;
+    private boolean pointToPoint;
     @JsonProperty("up")
-    private Boolean up;
+    private boolean up;
 
     /**
      * No args constructor for use in serialization
@@ -43,7 +43,7 @@ public class NetworkInterface {
      * @param parent
      * @param up
      */
-    public NetworkInterface(Integer index, NetworkInterface parent, Boolean virtual, Boolean loopback, Boolean pointToPoint, Boolean up) {
+    public NetworkInterface(int index, NetworkInterface parent, boolean virtual, boolean loopback, boolean pointToPoint, boolean up) {
         super();
         this.index = index;
         this.parent = parent;
@@ -54,12 +54,12 @@ public class NetworkInterface {
     }
 
     @JsonProperty("index")
-    public Integer getIndex() {
+    public int getIndex() {
         return index;
     }
 
     @JsonProperty("index")
-    public void setIndex(Integer index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 
@@ -74,42 +74,42 @@ public class NetworkInterface {
     }
 
     @JsonProperty("virtual")
-    public Boolean getVirtual() {
+    public boolean getVirtual() {
         return virtual;
     }
 
     @JsonProperty("virtual")
-    public void setVirtual(Boolean virtual) {
+    public void setVirtual(boolean virtual) {
         this.virtual = virtual;
     }
 
     @JsonProperty("loopback")
-    public Boolean getLoopback() {
+    public boolean getLoopback() {
         return loopback;
     }
 
     @JsonProperty("loopback")
-    public void setLoopback(Boolean loopback) {
+    public void setLoopback(boolean loopback) {
         this.loopback = loopback;
     }
 
     @JsonProperty("pointToPoint")
-    public Boolean getPointToPoint() {
+    public boolean getPointToPoint() {
         return pointToPoint;
     }
 
     @JsonProperty("pointToPoint")
-    public void setPointToPoint(Boolean pointToPoint) {
+    public void setPointToPoint(boolean pointToPoint) {
         this.pointToPoint = pointToPoint;
     }
 
     @JsonProperty("up")
-    public Boolean getUp() {
+    public boolean getUp() {
         return up;
     }
 
     @JsonProperty("up")
-    public void setUp(Boolean up) {
+    public void setUp(boolean up) {
         this.up = up;
     }
 

@@ -14,13 +14,13 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class Memory {
 
     @JsonProperty("swapTotal")
-    private Integer swapTotal;
+    private long swapTotal;
     @JsonProperty("swapUsed")
-    private Integer swapUsed;
+    private long swapUsed;
     @JsonProperty("total")
-    private Integer total;
+    private long total;
     @JsonProperty("available")
-    private Integer available;
+    private long available;
 
     /**
      * No args constructor for use in serialization
@@ -34,7 +34,7 @@ public class Memory {
      * @param swapTotal
      * @param available
      */
-    public Memory(Integer swapTotal, Integer swapUsed, Integer total, Integer available) {
+    public Memory(long swapTotal, long swapUsed, long total, long available) {
         super();
         this.swapTotal = swapTotal;
         this.swapUsed = swapUsed;
@@ -43,42 +43,42 @@ public class Memory {
     }
 
     @JsonProperty("swapTotal")
-    public Integer getSwapTotal() {
+    public long getSwapTotal() {
         return swapTotal;
     }
 
     @JsonProperty("swapTotal")
-    public void setSwapTotal(Integer swapTotal) {
+    public void setSwapTotal(long swapTotal) {
         this.swapTotal = swapTotal;
     }
 
     @JsonProperty("swapUsed")
-    public Integer getSwapUsed() {
+    public long getSwapUsed() {
         return swapUsed;
     }
 
     @JsonProperty("swapUsed")
-    public void setSwapUsed(Integer swapUsed) {
+    public void setSwapUsed(long swapUsed) {
         this.swapUsed = swapUsed;
     }
 
     @JsonProperty("total")
-    public Integer getTotal() {
+    public long getTotal() {
         return total;
     }
 
     @JsonProperty("total")
-    public void setTotal(Integer total) {
+    public void setTotal(long total) {
         this.total = total;
     }
 
     @JsonProperty("available")
-    public Integer getAvailable() {
+    public long getAvailable() {
         return available;
     }
 
     @JsonProperty("available")
-    public void setAvailable(Integer available) {
+    public void setAvailable(long available) {
         this.available = available;
     }
 

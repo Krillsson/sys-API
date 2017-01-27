@@ -33,33 +33,33 @@ public class Process {
     @JsonProperty("state")
     private String state;
     @JsonProperty("processID")
-    private Integer processID;
+    private int processID;
     @JsonProperty("parentProcessID")
-    private Integer parentProcessID;
+    private int parentProcessID;
     @JsonProperty("threadCount")
-    private Integer threadCount;
+    private int threadCount;
     @JsonProperty("priority")
-    private Integer priority;
+    private int priority;
     @JsonProperty("virtualSize")
-    private Integer virtualSize;
+    private long virtualSize;
     @JsonProperty("residentSetSize")
-    private Integer residentSetSize;
+    private long residentSetSize;
     @JsonProperty("memoryPercent")
-    private Double memoryPercent;
+    private double memoryPercent;
     @JsonProperty("kernelTime")
-    private Integer kernelTime;
+    private long kernelTime;
     @JsonProperty("userTime")
-    private Integer userTime;
+    private long userTime;
     @JsonProperty("upTime")
-    private Integer upTime;
+    private long upTime;
     @JsonProperty("cpuPercent")
-    private Double cpuPercent;
+    private double cpuPercent;
     @JsonProperty("startTime")
-    private Integer startTime;
+    private long startTime;
     @JsonProperty("bytesRead")
-    private Integer bytesRead;
+    private long bytesRead;
     @JsonProperty("bytesWritten")
-    private Integer bytesWritten;
+    private long bytesWritten;
 
     /**
      * No args constructor for use in serialization
@@ -86,7 +86,7 @@ public class Process {
      * @param threadCount
      * @param path
      */
-    public Process(String name, String path, String state, Integer processID, Integer parentProcessID, Integer threadCount, Integer priority, Integer virtualSize, Integer residentSetSize, Double memoryPercent, Integer kernelTime, Integer userTime, Integer upTime, Double cpuPercent, Integer startTime, Integer bytesRead, Integer bytesWritten) {
+    public Process(String name, String path, String state, int processID, int parentProcessID, int threadCount, int priority, long virtualSize, long residentSetSize, double memoryPercent, long kernelTime, long userTime, long upTime, double cpuPercent, long startTime, long bytesRead, long bytesWritten) {
         super();
         this.name = name;
         this.path = path;
@@ -138,142 +138,142 @@ public class Process {
     }
 
     @JsonProperty("processID")
-    public Integer getProcessID() {
+    public long getProcessID() {
         return processID;
     }
 
     @JsonProperty("processID")
-    public void setProcessID(Integer processID) {
+    public void setProcessID(int processID) {
         this.processID = processID;
     }
 
     @JsonProperty("parentProcessID")
-    public Integer getParentProcessID() {
+    public long getParentProcessID() {
         return parentProcessID;
     }
 
     @JsonProperty("parentProcessID")
-    public void setParentProcessID(Integer parentProcessID) {
+    public void setParentProcessID(int parentProcessID) {
         this.parentProcessID = parentProcessID;
     }
 
     @JsonProperty("threadCount")
-    public Integer getThreadCount() {
+    public long getThreadCount() {
         return threadCount;
     }
 
     @JsonProperty("threadCount")
-    public void setThreadCount(Integer threadCount) {
+    public void setThreadCount(int threadCount) {
         this.threadCount = threadCount;
     }
 
     @JsonProperty("priority")
-    public Integer getPriority() {
+    public long getPriority() {
         return priority;
     }
 
     @JsonProperty("priority")
-    public void setPriority(Integer priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
     @JsonProperty("virtualSize")
-    public Integer getVirtualSize() {
+    public long getVirtualSize() {
         return virtualSize;
     }
 
     @JsonProperty("virtualSize")
-    public void setVirtualSize(Integer virtualSize) {
+    public void setVirtualSize(long virtualSize) {
         this.virtualSize = virtualSize;
     }
 
     @JsonProperty("residentSetSize")
-    public Integer getResidentSetSize() {
+    public long getResidentSetSize() {
         return residentSetSize;
     }
 
     @JsonProperty("residentSetSize")
-    public void setResidentSetSize(Integer residentSetSize) {
+    public void setResidentSetSize(long residentSetSize) {
         this.residentSetSize = residentSetSize;
     }
 
     @JsonProperty("memoryPercent")
-    public Double getMemoryPercent() {
+    public double getMemoryPercent() {
         return memoryPercent;
     }
 
     @JsonProperty("memoryPercent")
-    public void setMemoryPercent(Double memoryPercent) {
+    public void setMemoryPercent(double memoryPercent) {
         this.memoryPercent = memoryPercent;
     }
 
     @JsonProperty("kernelTime")
-    public Integer getKernelTime() {
+    public long getKernelTime() {
         return kernelTime;
     }
 
     @JsonProperty("kernelTime")
-    public void setKernelTime(Integer kernelTime) {
+    public void setKernelTime(long kernelTime) {
         this.kernelTime = kernelTime;
     }
 
     @JsonProperty("userTime")
-    public Integer getUserTime() {
+    public long getUserTime() {
         return userTime;
     }
 
     @JsonProperty("userTime")
-    public void setUserTime(Integer userTime) {
+    public void setUserTime(long userTime) {
         this.userTime = userTime;
     }
 
     @JsonProperty("upTime")
-    public Integer getUpTime() {
+    public long getUpTime() {
         return upTime;
     }
 
     @JsonProperty("upTime")
-    public void setUpTime(Integer upTime) {
+    public void setUpTime(long upTime) {
         this.upTime = upTime;
     }
 
     @JsonProperty("cpuPercent")
-    public Double getCpuPercent() {
+    public double getCpuPercent() {
         return cpuPercent;
     }
 
     @JsonProperty("cpuPercent")
-    public void setCpuPercent(Double cpuPercent) {
+    public void setCpuPercent(double cpuPercent) {
         this.cpuPercent = cpuPercent;
     }
 
     @JsonProperty("startTime")
-    public Integer getStartTime() {
+    public long getStartTime() {
         return startTime;
     }
 
     @JsonProperty("startTime")
-    public void setStartTime(Integer startTime) {
+    public void setStartTime(long startTime) {
         this.startTime = startTime;
     }
 
     @JsonProperty("bytesRead")
-    public Integer getBytesRead() {
+    public long getBytesRead() {
         return bytesRead;
     }
 
     @JsonProperty("bytesRead")
-    public void setBytesRead(Integer bytesRead) {
+    public void setBytesRead(long bytesRead) {
         this.bytesRead = bytesRead;
     }
 
     @JsonProperty("bytesWritten")
-    public Integer getBytesWritten() {
+    public long getBytesWritten() {
         return bytesWritten;
     }
 
     @JsonProperty("bytesWritten")
-    public void setBytesWritten(Integer bytesWritten) {
+    public void setBytesWritten(long bytesWritten) {
         this.bytesWritten = bytesWritten;
     }
 

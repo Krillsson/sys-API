@@ -15,20 +15,20 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class GpuHealth {
 
     @JsonProperty("fanRpm")
-    private Integer fanRpm;
+    private double fanRpm;
     @JsonProperty("fanPercent")
-    private Integer fanPercent;
+    private double fanPercent;
     @JsonProperty("temperature")
-    private Integer temperature;
+    private double temperature;
     @JsonProperty("coreLoad")
-    private Integer coreLoad;
+    private double coreLoad;
     @JsonProperty("memoryLoad")
-    private Integer memoryLoad;
+    private double memoryLoad;
 
     public GpuHealth() {
     }
 
-    public GpuHealth(Integer fanRpm, Integer fanPercent, Integer temperature, Integer coreLoad, Integer memoryLoad) {
+    public GpuHealth(double fanRpm, double fanPercent, double temperature, double coreLoad, double memoryLoad) {
         this.fanRpm = fanRpm;
         this.fanPercent = fanPercent;
         this.temperature = temperature;
@@ -37,52 +37,52 @@ public class GpuHealth {
     }
 
     @JsonProperty("fanRpm")
-    public Integer getFanRpm() {
+    public double getFanRpm() {
         return fanRpm;
     }
 
     @JsonProperty("fanRpm")
-    public void setFanRpm(Integer fanRpm) {
+    public void setFanRpm(double fanRpm) {
         this.fanRpm = fanRpm;
     }
 
     @JsonProperty("fanPercent")
-    public Integer getFanPercent() {
+    public double getFanPercent() {
         return fanPercent;
     }
 
     @JsonProperty("fanPercent")
-    public void setFanPercent(Integer fanPercent) {
+    public void setFanPercent(double fanPercent) {
         this.fanPercent = fanPercent;
     }
 
     @JsonProperty("temperature")
-    public Integer getTemperature() {
+    public double getTemperature() {
         return temperature;
     }
 
     @JsonProperty("temperature")
-    public void setTemperature(Integer temperature) {
+    public void setTemperature(double temperature) {
         this.temperature = temperature;
     }
 
     @JsonProperty("coreLoad")
-    public Integer getCoreLoad() {
+    public double getCoreLoad() {
         return coreLoad;
     }
 
     @JsonProperty("coreLoad")
-    public void setCoreLoad(Integer coreLoad) {
+    public void setCoreLoad(double coreLoad) {
         this.coreLoad = coreLoad;
     }
 
     @JsonProperty("memoryLoad")
-    public Integer getMemoryLoad() {
+    public double getMemoryLoad() {
         return memoryLoad;
     }
 
     @JsonProperty("memoryLoad")
-    public void setMemoryLoad(Integer memoryLoad) {
+    public void setMemoryLoad(double memoryLoad) {
         this.memoryLoad = memoryLoad;
     }
 

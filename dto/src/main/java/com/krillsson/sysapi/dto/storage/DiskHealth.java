@@ -13,7 +13,7 @@ import com.krillsson.sysapi.dto.sensors.HealthData;
 public class DiskHealth {
 
     @JsonProperty("temperature")
-    private Integer temperature;
+    private double temperature;
     @JsonProperty("healthData")
     private HealthData[] healthData = null;
 
@@ -27,18 +27,18 @@ public class DiskHealth {
      * @param healthData
      * @param temperature
      */
-    public DiskHealth(Integer temperature, HealthData[] healthData) {
+    public DiskHealth(double temperature, HealthData[] healthData) {
         this.temperature = temperature;
         this.healthData = healthData;
     }
 
     @JsonProperty("temperature")
-    public Integer getTemperature() {
+    public double getTemperature() {
         return temperature;
     }
 
     @JsonProperty("temperature")
-    public void setTemperature(Integer temperature) {
+    public void setTemperature(double temperature) {
         this.temperature = temperature;
     }
 

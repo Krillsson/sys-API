@@ -15,9 +15,9 @@ public class PowerSource {
     @JsonProperty("name")
     private String name;
     @JsonProperty("remainingCapacity")
-    private Double remainingCapacity;
+    private double remainingCapacity;
     @JsonProperty("timeRemaining")
-    private Double timeRemaining;
+    private double timeRemaining;
 
     /**
      * No args constructor for use in serialization
@@ -30,7 +30,7 @@ public class PowerSource {
      * @param name
      * @param timeRemaining
      */
-    public PowerSource(String name, Double remainingCapacity, Double timeRemaining) {
+    public PowerSource(String name, double remainingCapacity, double timeRemaining) {
         super();
         this.name = name;
         this.remainingCapacity = remainingCapacity;
@@ -48,22 +48,22 @@ public class PowerSource {
     }
 
     @JsonProperty("remainingCapacity")
-    public Double getRemainingCapacity() {
+    public double getRemainingCapacity() {
         return remainingCapacity;
     }
 
     @JsonProperty("remainingCapacity")
-    public void setRemainingCapacity(Double remainingCapacity) {
+    public void setRemainingCapacity(double remainingCapacity) {
         this.remainingCapacity = remainingCapacity;
     }
 
     @JsonProperty("timeRemaining")
-    public Double getTimeRemaining() {
+    public double getTimeRemaining() {
         return timeRemaining;
     }
 
     @JsonProperty("timeRemaining")
-    public void setTimeRemaining(Double timeRemaining) {
+    public void setTimeRemaining(double timeRemaining) {
         this.timeRemaining = timeRemaining;
     }
 

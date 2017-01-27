@@ -15,7 +15,6 @@ public class JvmProperties {
     @JsonProperty("properties")
     private Map<String, String> properties;
 
-
     /**
      * No args constructor for use in serialization
      */

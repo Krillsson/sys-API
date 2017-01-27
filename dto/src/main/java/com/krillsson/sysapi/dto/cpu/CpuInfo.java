@@ -16,9 +16,9 @@ public class CpuInfo {
     @JsonProperty("centralProcessor")
     private CentralProcessor centralProcessor;
     @JsonProperty("processCount")
-    private Integer processCount;
+    private int processCount;
     @JsonProperty("threadCount")
-    private Integer threadCount;
+    private int threadCount;
     @JsonProperty("cpuHealth")
     private CpuHealth cpuHealth;
 
@@ -34,7 +34,7 @@ public class CpuInfo {
      * @param cpuHealth
      * @param processCount
      */
-    public CpuInfo(CentralProcessor centralProcessor, Integer processCount, Integer threadCount, CpuHealth cpuHealth) {
+    public CpuInfo(CentralProcessor centralProcessor, int processCount, int threadCount, CpuHealth cpuHealth) {
         super();
         this.centralProcessor = centralProcessor;
         this.processCount = processCount;
@@ -53,22 +53,22 @@ public class CpuInfo {
     }
 
     @JsonProperty("processCount")
-    public Integer getProcessCount() {
+    public int getProcessCount() {
         return processCount;
     }
 
     @JsonProperty("processCount")
-    public void setProcessCount(Integer processCount) {
+    public void setProcessCount(int processCount) {
         this.processCount = processCount;
     }
 
     @JsonProperty("threadCount")
-    public Integer getThreadCount() {
+    public int getThreadCount() {
         return threadCount;
     }
 
     @JsonProperty("threadCount")
-    public void setThreadCount(Integer threadCount) {
+    public void setThreadCount(int threadCount) {
         this.threadCount = threadCount;
     }
 

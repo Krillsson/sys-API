@@ -26,11 +26,11 @@ public class Partition {
     @JsonProperty("uuid")
     private String uuid;
     @JsonProperty("size")
-    private Integer size;
+    private long size;
     @JsonProperty("major")
-    private Integer major;
+    private int major;
     @JsonProperty("minor")
-    private Integer minor;
+    private int minor;
     @JsonProperty("mountPoint")
     private String mountPoint;
 
@@ -50,7 +50,7 @@ public class Partition {
      * @param major
      * @param size
      */
-    public Partition(String identification, String name, String type, String uuid, Integer size, Integer major, Integer minor, String mountPoint) {
+    public Partition(String identification, String name, String type, String uuid, long size, int major, int minor, String mountPoint) {
         super();
         this.identification = identification;
         this.name = name;
@@ -103,32 +103,32 @@ public class Partition {
     }
 
     @JsonProperty("size")
-    public Integer getSize() {
+    public long getSize() {
         return size;
     }
 
     @JsonProperty("size")
-    public void setSize(Integer size) {
+    public void setSize(long size) {
         this.size = size;
     }
 
     @JsonProperty("major")
-    public Integer getMajor() {
+    public int getMajor() {
         return major;
     }
 
     @JsonProperty("major")
-    public void setMajor(Integer major) {
+    public void setMajor(int major) {
         this.major = major;
     }
 
     @JsonProperty("minor")
-    public Integer getMinor() {
+    public int getMinor() {
         return minor;
     }
 
     @JsonProperty("minor")
-    public void setMinor(Integer minor) {
+    public void setMinor(int minor) {
         this.minor = minor;
     }
 

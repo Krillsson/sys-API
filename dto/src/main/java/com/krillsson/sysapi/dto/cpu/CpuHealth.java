@@ -14,13 +14,13 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class CpuHealth {
 
     @JsonProperty("temperatures")
-    private int[] temperatures = null;
+    private double[] temperatures = null;
     @JsonProperty("voltage")
-    private Integer voltage;
+    private double voltage;
     @JsonProperty("fanRpm")
-    private Integer fanRpm;
+    private double fanRpm;
     @JsonProperty("fanPercent")
-    private Integer fanPercent;
+    private double fanPercent;
 
     /**
      * No args constructor for use in serialization
@@ -34,7 +34,7 @@ public class CpuHealth {
      * @param fanPercent
      * @param temperatures
      */
-    public CpuHealth(int[] temperatures, Integer voltage, Integer fanRpm, Integer fanPercent) {
+    public CpuHealth(double[] temperatures, double voltage, double fanRpm, double fanPercent) {
         super();
         this.temperatures = temperatures;
         this.voltage = voltage;
@@ -43,42 +43,42 @@ public class CpuHealth {
     }
 
     @JsonProperty("temperatures")
-    public int[] getTemperatures() {
+    public double[] getTemperatures() {
         return temperatures;
     }
 
     @JsonProperty("temperatures")
-    public void setTemperatures(int[] temperatures) {
+    public void setTemperatures(double[] temperatures) {
         this.temperatures = temperatures;
     }
 
     @JsonProperty("voltage")
-    public Integer getVoltage() {
+    public double getVoltage() {
         return voltage;
     }
 
     @JsonProperty("voltage")
-    public void setVoltage(Integer voltage) {
+    public void setVoltage(double voltage) {
         this.voltage = voltage;
     }
 
     @JsonProperty("fanRpm")
-    public Integer getFanRpm() {
+    public double getFanRpm() {
         return fanRpm;
     }
 
     @JsonProperty("fanRpm")
-    public void setFanRpm(Integer fanRpm) {
+    public void setFanRpm(double fanRpm) {
         this.fanRpm = fanRpm;
     }
 
     @JsonProperty("fanPercent")
-    public Integer getFanPercent() {
+    public double getFanPercent() {
         return fanPercent;
     }
 
     @JsonProperty("fanPercent")
-    public void setFanPercent(Integer fanPercent) {
+    public void setFanPercent(double fanPercent) {
         this.fanPercent = fanPercent;
     }
 

@@ -27,21 +27,21 @@ public class DiskStore {
     @JsonProperty("serial")
     private String serial;
     @JsonProperty("size")
-    private Integer size;
+    private long size;
     @JsonProperty("reads")
-    private Integer reads;
+    private long reads;
     @JsonProperty("readBytes")
-    private Integer readBytes;
+    private long readBytes;
     @JsonProperty("writes")
-    private Integer writes;
+    private long writes;
     @JsonProperty("writeBytes")
-    private Integer writeBytes;
+    private long writeBytes;
     @JsonProperty("transferTime")
-    private Integer transferTime;
+    private long transferTime;
     @JsonProperty("partitions")
     private Partition[] partitions = null;
     @JsonProperty("timeStamp")
-    private Integer timeStamp;
+    private long timeStamp;
 
     /**
      * No args constructor for use in serialization
@@ -62,7 +62,7 @@ public class DiskStore {
      * @param transferTime
      * @param size
      */
-    public DiskStore(String model, String name, String serial, Integer size, Integer reads, Integer readBytes, Integer writes, Integer writeBytes, Integer transferTime, Partition[] partitions, Integer timeStamp) {
+    public DiskStore(String model, String name, String serial, long size, long reads, long readBytes, long writes, long writeBytes, long transferTime, Partition[] partitions, long timeStamp) {
         super();
         this.model = model;
         this.name = name;
@@ -108,62 +108,62 @@ public class DiskStore {
     }
 
     @JsonProperty("size")
-    public Integer getSize() {
+    public long getSize() {
         return size;
     }
 
     @JsonProperty("size")
-    public void setSize(Integer size) {
+    public void setSize(long size) {
         this.size = size;
     }
 
     @JsonProperty("reads")
-    public Integer getReads() {
+    public long getReads() {
         return reads;
     }
 
     @JsonProperty("reads")
-    public void setReads(Integer reads) {
+    public void setReads(long reads) {
         this.reads = reads;
     }
 
     @JsonProperty("readBytes")
-    public Integer getReadBytes() {
+    public long getReadBytes() {
         return readBytes;
     }
 
     @JsonProperty("readBytes")
-    public void setReadBytes(Integer readBytes) {
+    public void setReadBytes(long readBytes) {
         this.readBytes = readBytes;
     }
 
     @JsonProperty("writes")
-    public Integer getWrites() {
+    public long getWrites() {
         return writes;
     }
 
     @JsonProperty("writes")
-    public void setWrites(Integer writes) {
+    public void setWrites(long writes) {
         this.writes = writes;
     }
 
     @JsonProperty("writeBytes")
-    public Integer getWriteBytes() {
+    public long getWriteBytes() {
         return writeBytes;
     }
 
     @JsonProperty("writeBytes")
-    public void setWriteBytes(Integer writeBytes) {
+    public void setWriteBytes(long writeBytes) {
         this.writeBytes = writeBytes;
     }
 
     @JsonProperty("transferTime")
-    public Integer getTransferTime() {
+    public long getTransferTime() {
         return transferTime;
     }
 
     @JsonProperty("transferTime")
-    public void setTransferTime(Integer transferTime) {
+    public void setTransferTime(long transferTime) {
         this.transferTime = transferTime;
     }
 
@@ -178,12 +178,12 @@ public class DiskStore {
     }
 
     @JsonProperty("timeStamp")
-    public Integer getTimeStamp() {
+    public long getTimeStamp() {
         return timeStamp;
     }
 
     @JsonProperty("timeStamp")
-    public void setTimeStamp(Integer timeStamp) {
+    public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
     }
 

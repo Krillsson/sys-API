@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import java.util.List;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "logicalProcessorCount",
@@ -30,11 +28,11 @@ import java.util.List;
 public class CentralProcessor {
 
     @JsonProperty("logicalProcessorCount")
-    private Integer logicalProcessorCount;
+    private int logicalProcessorCount;
     @JsonProperty("physicalProcessorCount")
-    private Integer physicalProcessorCount;
+    private int physicalProcessorCount;
     @JsonProperty("systemUptime")
-    private Integer systemUptime;
+    private long systemUptime;
     @JsonProperty("processorCpuLoadTicks")
     private long[][] processorCpuLoadTicks = null;
     @JsonProperty("systemSerialNumber")
@@ -44,9 +42,9 @@ public class CentralProcessor {
     @JsonProperty("name")
     private String name;
     @JsonProperty("systemLoadAverage")
-    private Integer systemLoadAverage;
+    private double systemLoadAverage;
     @JsonProperty("systemCpuLoad")
-    private Double systemCpuLoad;
+    private double systemCpuLoad;
     @JsonProperty("identifier")
     private String identifier;
     @JsonProperty("family")
@@ -54,17 +52,17 @@ public class CentralProcessor {
     @JsonProperty("vendor")
     private String vendor;
     @JsonProperty("vendorFreq")
-    private Integer vendorFreq;
+    private long vendorFreq;
     @JsonProperty("model")
     private String model;
     @JsonProperty("stepping")
     private String stepping;
     @JsonProperty("cpu64bit")
-    private Boolean cpu64bit;
+    private boolean cpu64bit;
     @JsonProperty("processorCpuLoadBetweenTicks")
-    private List<Double> processorCpuLoadBetweenTicks = null;
+    private double[] processorCpuLoadBetweenTicks = null;
     @JsonProperty("systemCpuLoadBetweenTicks")
-    private Double systemCpuLoadBetweenTicks;
+    private double systemCpuLoadBetweenTicks;
 
     /**
      * No args constructor for use in serialization
@@ -92,7 +90,7 @@ public class CentralProcessor {
      * @param systemUptime
      * @param identifier
      */
-    public CentralProcessor(Integer logicalProcessorCount, Integer physicalProcessorCount, Integer systemUptime, long[][] processorCpuLoadTicks, String systemSerialNumber, long[] systemCpuLoadTicks, String name, Integer systemLoadAverage, Double systemCpuLoad, String identifier, String family, String vendor, Integer vendorFreq, String model, String stepping, Boolean cpu64bit, List<Double> processorCpuLoadBetweenTicks, Double systemCpuLoadBetweenTicks) {
+    public CentralProcessor(int logicalProcessorCount, int physicalProcessorCount, long systemUptime, long[][] processorCpuLoadTicks, String systemSerialNumber, long[] systemCpuLoadTicks, String name, double systemLoadAverage, double systemCpuLoad, String identifier, String family, String vendor, long vendorFreq, String model, String stepping, boolean cpu64bit, double[] processorCpuLoadBetweenTicks, double systemCpuLoadBetweenTicks) {
         super();
         this.logicalProcessorCount = logicalProcessorCount;
         this.physicalProcessorCount = physicalProcessorCount;
@@ -120,7 +118,7 @@ public class CentralProcessor {
     }
 
     @JsonProperty("logicalProcessorCount")
-    public void setLogicalProcessorCount(Integer logicalProcessorCount) {
+    public void setLogicalProcessorCount(int logicalProcessorCount) {
         this.logicalProcessorCount = logicalProcessorCount;
     }
 
@@ -130,17 +128,17 @@ public class CentralProcessor {
     }
 
     @JsonProperty("physicalProcessorCount")
-    public void setPhysicalProcessorCount(Integer physicalProcessorCount) {
+    public void setPhysicalProcessorCount(int physicalProcessorCount) {
         this.physicalProcessorCount = physicalProcessorCount;
     }
 
     @JsonProperty("systemUptime")
-    public Integer getSystemUptime() {
+    public long getSystemUptime() {
         return systemUptime;
     }
 
     @JsonProperty("systemUptime")
-    public void setSystemUptime(Integer systemUptime) {
+    public void setSystemUptime(long systemUptime) {
         this.systemUptime = systemUptime;
     }
 
@@ -185,12 +183,12 @@ public class CentralProcessor {
     }
 
     @JsonProperty("systemLoadAverage")
-    public Integer getSystemLoadAverage() {
+    public double getSystemLoadAverage() {
         return systemLoadAverage;
     }
 
     @JsonProperty("systemLoadAverage")
-    public void setSystemLoadAverage(Integer systemLoadAverage) {
+    public void setSystemLoadAverage(double systemLoadAverage) {
         this.systemLoadAverage = systemLoadAverage;
     }
 
@@ -200,7 +198,7 @@ public class CentralProcessor {
     }
 
     @JsonProperty("systemCpuLoad")
-    public void setSystemCpuLoad(Double systemCpuLoad) {
+    public void setSystemCpuLoad(double systemCpuLoad) {
         this.systemCpuLoad = systemCpuLoad;
     }
 
@@ -235,12 +233,12 @@ public class CentralProcessor {
     }
 
     @JsonProperty("vendorFreq")
-    public Integer getVendorFreq() {
+    public long getVendorFreq() {
         return vendorFreq;
     }
 
     @JsonProperty("vendorFreq")
-    public void setVendorFreq(Integer vendorFreq) {
+    public void setVendorFreq(long vendorFreq) {
         this.vendorFreq = vendorFreq;
     }
 
@@ -265,22 +263,22 @@ public class CentralProcessor {
     }
 
     @JsonProperty("cpu64bit")
-    public Boolean getCpu64bit() {
+    public boolean getCpu64bit() {
         return cpu64bit;
     }
 
     @JsonProperty("cpu64bit")
-    public void setCpu64bit(Boolean cpu64bit) {
+    public void setCpu64bit(boolean cpu64bit) {
         this.cpu64bit = cpu64bit;
     }
 
     @JsonProperty("processorCpuLoadBetweenTicks")
-    public List<Double> getProcessorCpuLoadBetweenTicks() {
+    public double[] getProcessorCpuLoadBetweenTicks() {
         return processorCpuLoadBetweenTicks;
     }
 
     @JsonProperty("processorCpuLoadBetweenTicks")
-    public void setProcessorCpuLoadBetweenTicks(List<Double> processorCpuLoadBetweenTicks) {
+    public void setProcessorCpuLoadBetweenTicks(double[] processorCpuLoadBetweenTicks) {
         this.processorCpuLoadBetweenTicks = processorCpuLoadBetweenTicks;
     }
 
@@ -290,7 +288,7 @@ public class CentralProcessor {
     }
 
     @JsonProperty("systemCpuLoadBetweenTicks")
-    public void setSystemCpuLoadBetweenTicks(Double systemCpuLoadBetweenTicks) {
+    public void setSystemCpuLoadBetweenTicks(double systemCpuLoadBetweenTicks) {
         this.systemCpuLoadBetweenTicks = systemCpuLoadBetweenTicks;
     }
 

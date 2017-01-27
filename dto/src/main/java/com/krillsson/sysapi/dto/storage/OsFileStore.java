@@ -28,9 +28,9 @@ public class OsFileStore {
     @JsonProperty("uuid")
     private String uuid;
     @JsonProperty("usableSpace")
-    private Integer usableSpace;
+    private long usableSpace;
     @JsonProperty("totalSpace")
-    private Integer totalSpace;
+    private long totalSpace;
     @JsonProperty("type")
     private String type;
 
@@ -50,7 +50,7 @@ public class OsFileStore {
      * @param uuid
      * @param type
      */
-    public OsFileStore(String name, String volume, String mount, String description, String uuid, Integer usableSpace, Integer totalSpace, String type) {
+    public OsFileStore(String name, String volume, String mount, String description, String uuid, long usableSpace, long totalSpace, String type) {
         super();
         this.name = name;
         this.volume = volume;
@@ -113,22 +113,22 @@ public class OsFileStore {
     }
 
     @JsonProperty("usableSpace")
-    public Integer getUsableSpace() {
+    public long getUsableSpace() {
         return usableSpace;
     }
 
     @JsonProperty("usableSpace")
-    public void setUsableSpace(Integer usableSpace) {
+    public void setUsableSpace(long usableSpace) {
         this.usableSpace = usableSpace;
     }
 
     @JsonProperty("totalSpace")
-    public Integer getTotalSpace() {
+    public long getTotalSpace() {
         return totalSpace;
     }
 
     @JsonProperty("totalSpace")
-    public void setTotalSpace(Integer totalSpace) {
+    public void setTotalSpace(long totalSpace) {
         this.totalSpace = totalSpace;
     }
 
