@@ -23,7 +23,7 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.core.DefaultInfoProvider;
 import com.krillsson.sysapi.core.InfoProvider;
-import com.krillsson.sysapi.core.domain.system.SystemInfo;
+import com.krillsson.sysapi.dto.system.SystemInfo;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.After;
 import org.junit.Before;
@@ -75,7 +75,7 @@ public class SystemInfoResourceTest {
         int threadCount = 100;
 
         when(sensors.getCpuTemperature()).thenReturn(temperature);
-        when(sensors.getCpuVoltage()).thenReturn(temperature);
+        when(sensors.getCpuVoltage()).thenReturn(voltage);
         when(os.getProcessCount()).thenReturn(processCount);
         when(os.getThreadCount()).thenReturn(threadCount);
         final SystemInfo response = RESOURCES.getJerseyTest().target("/system")
