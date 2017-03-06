@@ -23,12 +23,16 @@ package com.krillsson.sysapi.core;
 import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.core.windows.WindowsInfoProvider;
 import oshi.PlatformEnum;
+import oshi.hardware.HardwareAbstractionLayer;
+import oshi.software.os.OperatingSystem;
 
 public class InfoProviderFactory {
+    private final HardwareAbstractionLayer hal;
     private final PlatformEnum os;
     private final SystemApiConfiguration configuration;
 
-    public InfoProviderFactory(PlatformEnum os, SystemApiConfiguration configuration) {
+    public InfoProviderFactory(HardwareAbstractionLayer hal, PlatformEnum os, SystemApiConfiguration configuration) {
+        this.hal = hal;
         this.os = os;
         this.configuration = configuration;
     }
@@ -37,7 +41,7 @@ public class InfoProviderFactory {
         switch (os) {
             case WINDOWS:
                 if (configuration.windows() == null || configuration.windows().enableOhmJniWrapper()) {
-                    WindowsInfoProvider windowsInfoProvider = new WindowsInfoProvider();
+                    WindowsInfoProvider windowsInfoProvider = new WindowsInfoProvider(hal);
                     if (windowsInfoProvider.canProvide()) {
                         return windowsInfoProvider;
                     }
@@ -49,7 +53,7 @@ public class InfoProviderFactory {
             case SOLARIS:
             case UNKNOWN:
             default:
-                return new DefaultInfoProvider();
+                return new DefaultInfoProvider(hal);
 
         }
     }

@@ -26,12 +26,14 @@ public class CpuInfo {
     private final CentralProcessor centralProcessor;
     private final int processCount;
     private final int threadCount;
+    private final CpuLoad cpuLoad;
     private final CpuHealth cpuHealth;
 
-    public CpuInfo(CentralProcessor centralProcessor, int processCount, int threadCount, CpuHealth cpuHealth) {
+    public CpuInfo(CentralProcessor centralProcessor, int processCount, int threadCount, CpuLoad cpuLoad, CpuHealth cpuHealth) {
         this.centralProcessor = centralProcessor;
         this.processCount = processCount;
         this.threadCount = threadCount;
+        this.cpuLoad = cpuLoad;
         this.cpuHealth = cpuHealth;
     }
 
@@ -45,6 +47,11 @@ public class CpuInfo {
 
     public int getThreadCount() {
         return threadCount;
+    }
+
+    public CpuLoad getCpuLoad()
+    {
+        return cpuLoad;
     }
 
     public CpuHealth getCpuHealth() {

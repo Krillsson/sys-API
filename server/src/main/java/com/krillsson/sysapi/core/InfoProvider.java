@@ -20,6 +20,7 @@
  */
 package com.krillsson.sysapi.core;
 
+import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
@@ -42,4 +43,6 @@ public interface InfoProvider {
     Gpu[] gpus();
 
     Map<String, GpuHealth> gpuHealths();
+
+    CpuLoad cpuLoad();
 }

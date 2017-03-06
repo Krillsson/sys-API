@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "centralProcessor",
         "processCount",
         "threadCount",
+        "cpuLoad",
         "cpuHealth"
 })
 public class CpuInfo {
@@ -19,6 +20,8 @@ public class CpuInfo {
     private int processCount;
     @JsonProperty("threadCount")
     private int threadCount;
+    @JsonProperty("cpuLoad")
+    private CpuLoad cpuLoad;
     @JsonProperty("cpuHealth")
     private CpuHealth cpuHealth;
 
@@ -30,15 +33,17 @@ public class CpuInfo {
 
     /**
      * @param centralProcessor
-     * @param threadCount
-     * @param cpuHealth
      * @param processCount
+     * @param threadCount
+     * @param cpuLoad
+     * @param cpuHealth
      */
-    public CpuInfo(CentralProcessor centralProcessor, int processCount, int threadCount, CpuHealth cpuHealth) {
+    public CpuInfo(CentralProcessor centralProcessor, int processCount, int threadCount, CpuLoad cpuLoad, CpuHealth cpuHealth) {
         super();
         this.centralProcessor = centralProcessor;
         this.processCount = processCount;
         this.threadCount = threadCount;
+        this.cpuLoad = cpuLoad;
         this.cpuHealth = cpuHealth;
     }
 
@@ -70,6 +75,18 @@ public class CpuInfo {
     @JsonProperty("threadCount")
     public void setThreadCount(int threadCount) {
         this.threadCount = threadCount;
+    }
+
+    @JsonProperty("cpuLoad")
+    public CpuLoad getCpuLoad()
+    {
+        return cpuLoad;
+    }
+
+    @JsonProperty("cpuLoad")
+    public void setCpuLoad(CpuLoad cpuLoad)
+    {
+        this.cpuLoad = cpuLoad;
     }
 
     @JsonProperty("cpuHealth")
