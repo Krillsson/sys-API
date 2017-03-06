@@ -35,7 +35,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "irq",
         "softirq"
 })
-public class CpuLoad {
+public class CpuLoad
+{
 
     @JsonProperty("cpuLoadCountingTicks")
     private double cpuLoadCountingTicks;
@@ -57,8 +58,15 @@ public class CpuLoad {
     @JsonProperty("softirq")
     private double softirq;
 
-    public CpuLoad(double cpuLoadCountingTicks, double cpuLoadOsMxBean, double user, double nice, double sys, double idle, double iowait, double irq, double softirq) {
+    public CpuLoad()
+    {
 
+    }
+
+    public CpuLoad(double cpuLoadCountingTicks, double cpuLoadOsMxBean, double user, double nice, double sys, double idle, double iowait, double irq, double softirq)
+    {
+        this.cpuLoadCountingTicks = cpuLoadCountingTicks;
+        this.cpuLoadOsMxBean = cpuLoadOsMxBean;
         this.user = user;
         this.nice = nice;
         this.sys = sys;
@@ -68,73 +76,111 @@ public class CpuLoad {
         this.softirq = softirq;
     }
 
+    @JsonProperty("cpuLoadCountingTicks")
+    public double getCpuLoadCountingTicks()
+    {
+        return cpuLoadCountingTicks;
+    }
+
+    @JsonProperty("cpuLoadCountingTicks")
+    public void setCpuLoadCountingTicks(double cpuLoadCountingTicks)
+    {
+        this.cpuLoadCountingTicks = cpuLoadCountingTicks;
+    }
+
+    @JsonProperty("cpuLoadOsMxBean")
+    public double getCpuLoadOsMxBean()
+    {
+        return cpuLoadOsMxBean;
+    }
+
+    @JsonProperty("cpuLoadOsMxBean")
+    public void setCpuLoadOsMxBean(double cpuLoadOsMxBean)
+    {
+        this.cpuLoadOsMxBean = cpuLoadOsMxBean;
+    }
+
     @JsonProperty("user")
-    public double getUser() {
+    public double getUser()
+    {
         return user;
     }
 
     @JsonProperty("user")
-    public void setUser(double user) {
+    public void setUser(double user)
+    {
         this.user = user;
     }
 
     @JsonProperty("nice")
-    public double getNice() {
+    public double getNice()
+    {
         return nice;
     }
 
     @JsonProperty("nice")
-    public void setNice(double nice) {
+    public void setNice(double nice)
+    {
         this.nice = nice;
     }
 
     @JsonProperty("sys")
-    public double getSys() {
+    public double getSys()
+    {
         return sys;
     }
 
     @JsonProperty("sys")
-    public void setSys(double sys) {
+    public void setSys(double sys)
+    {
         this.sys = sys;
     }
 
     @JsonProperty("idle")
-    public double getIdle() {
+    public double getIdle()
+    {
         return idle;
     }
 
     @JsonProperty("idle")
-    public void setIdle(double idle) {
+    public void setIdle(double idle)
+    {
         this.idle = idle;
     }
 
     @JsonProperty("iowait")
-    public double getIowait() {
+    public double getIowait()
+    {
         return iowait;
     }
 
     @JsonProperty("iowait")
-    public void setIowait(double iowait) {
+    public void setIowait(double iowait)
+    {
         this.iowait = iowait;
     }
 
     @JsonProperty("irq")
-    public double getIrq() {
+    public double getIrq()
+    {
         return irq;
     }
 
     @JsonProperty("irq")
-    public void setIrq(double irq) {
+    public void setIrq(double irq)
+    {
         this.irq = irq;
     }
 
     @JsonProperty("softirq")
-    public double getSoftirq() {
+    public double getSoftirq()
+    {
         return softirq;
     }
 
     @JsonProperty("softirq")
-    public void setSoftirq(double softirq) {
+    public void setSoftirq(double softirq)
+    {
         this.softirq = softirq;
     }
 }

@@ -36,4 +36,6 @@ public interface CpuInfoMapper {
     com.krillsson.sysapi.dto.cpu.CentralProcessor map(oshi.hardware.CentralProcessor value);
 
     com.krillsson.sysapi.dto.cpu.CpuHealth map(com.krillsson.sysapi.core.domain.cpu.CpuHealth value);
+
+    com.krillsson.sysapi.dto.cpu.CpuLoad map(com.krillsson.sysapi.core.domain.cpu.CpuLoad value);
 }
