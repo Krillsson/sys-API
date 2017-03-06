@@ -25,6 +25,7 @@ import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
+import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.core.domain.system.JvmProperties;
 import com.krillsson.sysapi.core.domain.system.SystemInfo;
 import com.krillsson.sysapi.core.domain.system.SystemInfoMapper;
@@ -71,6 +72,7 @@ public class SystemResource {
         double[] temperature = provider.cpuTemperatures();
         double fanRpm = provider.cpuFanRpm();
         double fanPercent = provider.cpuFanPercent();
+        CpuLoad cpuLoad = provider.cpuLoad();
         if (temperature.length == 0) {
             temperature = new double[]{sensors.getCpuTemperature()};
         }
@@ -80,7 +82,7 @@ public class SystemResource {
                 new CpuInfo(processor,
                         operatingSystem.getProcessCount(),
                         operatingSystem.getThreadCount(),
-                        new CpuHealth(
+                        cpuLoad, new CpuHealth(
                                 temperature,
                                 sensors.getCpuVoltage(),
                                 fanRpm,

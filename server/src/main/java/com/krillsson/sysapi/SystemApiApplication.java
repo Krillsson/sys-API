@@ -97,17 +97,16 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
                         .setAuthorizer(new BasicAuthorizer(config.getUser()))
                         .buildAuthFilter();
 
-        SystemInfo si = new SystemInfo();
+        SystemInfo systemInfo = new SystemInfo();
 
-        HardwareAbstractionLayer hal = si.getHardware();
-        OperatingSystem os = si.getOperatingSystem();
-        System.out.println(os);
+        HardwareAbstractionLayer hal = systemInfo.getHardware();
+        OperatingSystem os = systemInfo.getOperatingSystem();
 
         environment.jersey().register(new AuthDynamicFeature(userBasicCredentialAuthFilter));
         environment.jersey().register(new AuthValueFactoryProvider.Binder(UserConfiguration.class));
         environment.jersey().register(new MetaInfoResource(getVersionFromManifest()));
 
-        InfoProvider provider = new InfoProviderFactory(SystemInfo.getCurrentPlatformEnum(), config).provide();
+        InfoProvider provider = new InfoProviderFactory(hal, SystemInfo.getCurrentPlatformEnum(), config).provide();
         Sensors sensors = hal.getSensors();
 
         environment.jersey().register(new SystemResource(provider, os, hal.getProcessor(), hal.getMemory(), hal.getPowerSources(), hal.getSensors()));

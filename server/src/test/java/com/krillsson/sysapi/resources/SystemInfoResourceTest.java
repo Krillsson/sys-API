@@ -48,7 +48,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class SystemInfoResourceTest {
 
-    private static final InfoProvider provider = new DefaultInfoProvider();
+    private static final InfoProvider provider = new DefaultInfoProvider(null);
     private static final OperatingSystem os = mock(OperatingSystem.class);
     private static final CentralProcessor processor = mock(CentralProcessor.class);
     private static final GlobalMemory memory = mock(GlobalMemory.class);

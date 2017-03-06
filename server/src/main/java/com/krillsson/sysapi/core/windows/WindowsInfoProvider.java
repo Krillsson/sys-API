@@ -20,8 +20,10 @@
  */
 package com.krillsson.sysapi.core.windows;
 
+import com.krillsson.sysapi.core.DefaultInfoProvider;
 import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.InfoProviderBase;
+import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.core.domain.sensors.DataType;
@@ -30,6 +32,7 @@ import com.krillsson.sysapi.core.domain.storage.DiskHealth;
 import net.sf.jni4net.Bridge;
 import ohmwrapper.*;
 import org.slf4j.Logger;
+import oshi.hardware.HardwareAbstractionLayer;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,16 +44,18 @@ import java.util.Map;
 import static com.krillsson.sysapi.core.windows.util.NullSafeOhmMonitor.nullSafe;
 import static com.krillsson.sysapi.util.JarLocation.*;
 
-public class WindowsInfoProvider extends InfoProviderBase implements InfoProvider {
+public class WindowsInfoProvider extends DefaultInfoProvider  {
+
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(WindowsInfoProvider.class);
 
     private static final File OHM_JNI_WRAPPER_DLL = new File(LIB_LOCATION + SEPARATOR + "OhmJniWrapper.dll");
     private static final File OPEN_HARDWARE_MONITOR_LIB_DLL = new File(LIB_LOCATION + SEPARATOR + "OpenHardwareMonitorLib.dll");
     private static final File OHM_JNI_WRAPPER_J4N_DLL = new File(LIB_LOCATION + SEPARATOR + "OhmJniWrapper.j4n.dll");
-    private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(WindowsInfoProvider.class);
     private MonitorManager monitorManager;
 
-    public WindowsInfoProvider() {
-
+    public WindowsInfoProvider(HardwareAbstractionLayer hal)
+    {
+        super(hal);
     }
 
     @Override
@@ -193,6 +198,12 @@ public class WindowsInfoProvider extends InfoProviderBase implements InfoProvide
             return nullSafe(cpuMonitor.getFanPercent()).getValue();
         }
         return 0;
+    }
+
+    @Override
+    public CpuLoad cpuLoad()
+    {
+        return null;
     }
 
     @Override
