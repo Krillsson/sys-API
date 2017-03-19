@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 
 /**
  * Fixes: com.fasterxml.jackson.databind.JsonMappingException:
- * No serializer found for class java.net.NetworkInterface$1checkedAddresses
+ * No serializer found for class java.net.NetworkInterfaceData$1checkedAddresses
  */
 @JsonFilter("networkInterface filter")
 public class NetworkInterfaceMixin {

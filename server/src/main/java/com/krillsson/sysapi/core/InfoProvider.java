@@ -23,10 +23,13 @@ package com.krillsson.sysapi.core;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
+import com.krillsson.sysapi.core.domain.network.NetworkInterfaceData;
+import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
 import com.krillsson.sysapi.core.domain.storage.DiskHealth;
 
 import java.util.Map;
+import java.util.Optional;
 
 public interface InfoProvider {
 
@@ -45,4 +48,12 @@ public interface InfoProvider {
     Map<String, GpuHealth> gpuHealths();
 
     CpuLoad cpuLoad();
+
+    NetworkInterfaceData[] getAllNetworkInterfaces();
+
+    Optional<NetworkInterfaceData> getNetworkInterfaceById(String id);
+
+    String[] getNetworkInterfaceIds();
+
+    Optional<NetworkInterfaceSpeed> getNetworkInterfaceSpeed(String id);
 }

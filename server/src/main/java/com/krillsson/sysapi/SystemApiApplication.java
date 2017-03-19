@@ -53,6 +53,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.NetworkInterface;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -104,7 +105,6 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
 
         environment.jersey().register(new AuthDynamicFeature(userBasicCredentialAuthFilter));
         environment.jersey().register(new AuthValueFactoryProvider.Binder(UserConfiguration.class));
-        environment.jersey().register(new MetaInfoResource(getVersionFromManifest()));
 
         InfoProvider provider = new InfoProviderFactory(hal, SystemInfo.getCurrentPlatformEnum(), config).provide();
         Sensors sensors = hal.getSensors();
@@ -113,12 +113,13 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         environment.jersey().register(new DiskStoresResource(hal.getDiskStores(), os.getFileSystem(), provider));
         environment.jersey().register(new GpuResource(hal.getDisplays(), provider));
         environment.jersey().register(new MemoryResource(hal.getMemory()));
-        environment.jersey().register(new NetworkInterfacesResource(hal.getNetworkIFs()));
+        environment.jersey().register(new NetworkInterfacesResource(provider));
         environment.jersey().register(new PowerSourcesResource(hal.getPowerSources()));
         environment.jersey().register(new ProcessesResource(os, hal.getMemory()));
         environment.jersey().register(new CpuResource(os, sensors, hal.getProcessor(), provider));
         environment.jersey().register(new SensorsResource(sensors, provider));
         environment.jersey().register(new MotherboardResource(hal.getComputerSystem(), hal.getUsbDevices(false)));
+        environment.jersey().register(new MetaInfoResource(getVersionFromManifest(), getEndpoints(environment)));
     }
 
 
@@ -163,4 +164,17 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
     public Environment getEnvironment() {
         return environment;
     }
+
+    private String[] getEndpoints(Environment environment) {
+        final String NEWLINE = String.format("%n", new Object[0]);
+
+        String[] arr = environment.jersey().getResourceConfig().getEndpointsInfo()
+                .replace("The following paths were found for the configured resources:", "")
+                .replace("    ", "")
+                .replace("com.krillsson.sysapi.resources.", "")
+                .split(NEWLINE);
+
+        return Arrays.copyOfRange(arr, 2, arr.length - 1);
+    }
+
 }

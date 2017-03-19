@@ -22,34 +22,43 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.domain.network.NetworkInterfacesData;
+import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfacesDataMapper;
+import com.krillsson.sysapi.dto.network.NetworkInterfaceData;
 import io.dropwizard.auth.Auth;
-import oshi.hardware.NetworkIF;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Optional;
+
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
 @Path("nics")
 @Produces(MediaType.APPLICATION_JSON)
 public class NetworkInterfacesResource {
 
-    private final NetworkIF[] networkIFS;
+    private final InfoProvider infoProvider;
 
-    public NetworkInterfacesResource(NetworkIF[] networkIFS) {
-        this.networkIFS = networkIFS;
+    public NetworkInterfacesResource(InfoProvider infoProvider) {
+        this.infoProvider = infoProvider;
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public com.krillsson.sysapi.dto.network.NetworkInterfacesData getRoot(@Auth UserConfiguration user) {
-        for (NetworkIF networkIF : networkIFS) {
-            networkIF.updateNetworkStats();
+    public NetworkInterfaceData[] getNetworkInterfaces(@Auth UserConfiguration user) {
+        return NetworkInterfacesDataMapper.INSTANCE.map(infoProvider.getAllNetworkInterfaces());
+    }
+
+    @GET
+    @Path("{id}")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public NetworkInterfaceData getNetworkInterface(@Auth UserConfiguration user, @PathParam("id") String id) {
+        final Optional<com.krillsson.sysapi.core.domain.network.NetworkInterfaceData> networkInterface = infoProvider.getNetworkInterfaceById(id);
+        if (!networkInterface.isPresent()) {
+            throw new WebApplicationException(NOT_FOUND);
         }
-        return NetworkInterfacesDataMapper.INSTANCE.map(new NetworkInterfacesData(networkIFS, java.lang.System.currentTimeMillis()));
+        return NetworkInterfacesDataMapper.INSTANCE.map(networkInterface.get());
     }
 
 }

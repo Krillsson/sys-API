@@ -23,91 +23,87 @@ package com.krillsson.sysapi.core;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
+import com.krillsson.sysapi.core.domain.network.NetworkInterfaceData;
+import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
 import com.krillsson.sysapi.core.domain.storage.DiskHealth;
+import com.krillsson.sysapi.util.Utils;
+import org.slf4j.Logger;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.HardwareAbstractionLayer;
-import oshi.software.os.OperatingSystem;
-import oshi.util.Util;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class DefaultInfoProvider extends InfoProviderBase implements InfoProvider
-{
+public class DefaultInfoProvider extends InfoProviderBase implements InfoProvider {
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultInfoProvider.class);
 
     private final HardwareAbstractionLayer hal;
+    private final Utils utils;
+    private final DefaultNetworkProvider defaultNetworkProvider;
+
     private long[] ticks = new long[0];
-    private long sampledAt = -1;
+    private long ticksSampledAt = -1;
 
     private static final long MAX_SAMPLING_THRESHOLD = TimeUnit.SECONDS.toMillis(10);
     private static final int SLEEP_SAMPLE_PERIOD = 500;
 
-    public DefaultInfoProvider(HardwareAbstractionLayer hal)
-    {
+    public DefaultInfoProvider(HardwareAbstractionLayer hal, Utils utils) {
         this.hal = hal;
+        this.utils = utils;
+        this.defaultNetworkProvider = new DefaultNetworkProvider(hal, utils);
     }
 
     @Override
-    protected boolean canProvide()
-    {
+    protected boolean canProvide() {
         return true;
     }
 
     @Override
-    public DiskHealth diskHealth(String name)
-    {
+    public DiskHealth diskHealth(String name) {
         return null;
     }
 
     @Override
-    public double[] cpuTemperatures()
-    {
+    public double[] cpuTemperatures() {
         return new double[0];
     }
 
     @Override
-    public double cpuFanRpm()
-    {
+    public double cpuFanRpm() {
         return 0;
     }
 
     @Override
-    public double cpuFanPercent()
-    {
+    public double cpuFanPercent() {
         return 0;
     }
 
     @Override
-    public HealthData[] mainboardHealthData()
-    {
+    public HealthData[] mainboardHealthData() {
         return new HealthData[0];
     }
 
     @Override
-    public Gpu[] gpus()
-    {
+    public Gpu[] gpus() {
         return new Gpu[0];
     }
 
     @Override
-    public Map<String, GpuHealth> gpuHealths()
-    {
+    public Map<String, GpuHealth> gpuHealths() {
         return Collections.emptyMap();
     }
 
     @Override
-    public CpuLoad cpuLoad()
-    {
+    public CpuLoad cpuLoad() {
         //If this is the first time the method is run we need to get some sample data
         CentralProcessor processor = hal.getProcessor();
-        if (Arrays.equals(ticks, new long[0]) || isOutsideSamplingDuration())
-        {
+        if (Arrays.equals(ticks, new long[0]) || utils.isOutsideSamplingDuration(ticksSampledAt, MAX_SAMPLING_THRESHOLD)) {
+            LOGGER.debug("Sleeping thread since we don't have enough sample data. Hold on!");
             ticks = processor.getSystemCpuLoadTicks();
-            sampledAt = currentSystemTime();
-            Util.sleep(SLEEP_SAMPLE_PERIOD);
+            ticksSampledAt = utils.currentSystemTime();
+            utils.sleep(SLEEP_SAMPLE_PERIOD);
         }
         long[] currentTicks = processor.getSystemCpuLoadTicks();
         long user = currentTicks[CentralProcessor.TickType.USER.getIndex()] - ticks[CentralProcessor.TickType.USER.getIndex()];
@@ -121,23 +117,37 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
         long totalCpu = user + nice + sys + idle + iowait + irq + softirq;
 
         return new CpuLoad(
-                processor.getSystemCpuLoadBetweenTicks() * 100,
-                processor.getSystemCpuLoad() * 100,
-                100d * user / totalCpu,
-                100d * nice / totalCpu,
-                100d * sys / totalCpu,
-                100d * idle / totalCpu,
-                100d * iowait / totalCpu,
-                100d * irq / totalCpu,
-                100d * softirq / totalCpu
+                new BigDecimal(processor.getSystemCpuLoadBetweenTicks() * 100d).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
+                new BigDecimal(processor.getSystemCpuLoad() * 100d).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
+                new BigDecimal(100d * user / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
+                new BigDecimal(100d * nice / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
+                new BigDecimal(100d * sys / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
+                new BigDecimal(100d * idle / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
+                new BigDecimal(100d * iowait / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
+                new BigDecimal(100d * irq / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
+                new BigDecimal(100d * softirq / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue()
         );
     }
 
-    private boolean isOutsideSamplingDuration() {
-        return currentSystemTime() - sampledAt > MAX_SAMPLING_THRESHOLD;
+    @Override
+    public NetworkInterfaceData[] getAllNetworkInterfaces() {
+        return defaultNetworkProvider.getAllNetworkInterfaces();
     }
 
-    private static long currentSystemTime() {
-        return System.currentTimeMillis();
+    @Override
+    public Optional<NetworkInterfaceData> getNetworkInterfaceById(String id) {
+        return defaultNetworkProvider.getNetworkInterfaceById(id);
     }
+
+    @Override
+    public String[] getNetworkInterfaceIds() {
+        return defaultNetworkProvider.getNetworkInterfaceIds();
+    }
+
+    @Override
+    public Optional<NetworkInterfaceSpeed> getNetworkInterfaceSpeed(String id) {
+        return defaultNetworkProvider.getSpeed(id);
+    }
+
+
 }

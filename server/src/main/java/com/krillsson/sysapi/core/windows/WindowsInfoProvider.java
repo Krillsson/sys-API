@@ -26,20 +26,20 @@ import com.krillsson.sysapi.core.InfoProviderBase;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
+import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
 import com.krillsson.sysapi.core.domain.sensors.DataType;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
 import com.krillsson.sysapi.core.domain.storage.DiskHealth;
+import com.krillsson.sysapi.util.Utils;
 import net.sf.jni4net.Bridge;
 import ohmwrapper.*;
 import org.slf4j.Logger;
 import oshi.hardware.HardwareAbstractionLayer;
+import oshi.hardware.NetworkIF;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.krillsson.sysapi.core.windows.util.NullSafeOhmMonitor.nullSafe;
 import static com.krillsson.sysapi.util.JarLocation.*;
@@ -51,11 +51,13 @@ public class WindowsInfoProvider extends DefaultInfoProvider  {
     private static final File OHM_JNI_WRAPPER_DLL = new File(LIB_LOCATION + SEPARATOR + "OhmJniWrapper.dll");
     private static final File OPEN_HARDWARE_MONITOR_LIB_DLL = new File(LIB_LOCATION + SEPARATOR + "OpenHardwareMonitorLib.dll");
     private static final File OHM_JNI_WRAPPER_J4N_DLL = new File(LIB_LOCATION + SEPARATOR + "OhmJniWrapper.j4n.dll");
+    private final HardwareAbstractionLayer hal;
     private MonitorManager monitorManager;
 
-    public WindowsInfoProvider(HardwareAbstractionLayer hal)
+    public WindowsInfoProvider(HardwareAbstractionLayer hal, Utils utils)
     {
-        super(hal);
+        super(hal, utils);
+        this.hal = hal;
     }
 
     @Override
@@ -105,6 +107,28 @@ public class WindowsInfoProvider extends DefaultInfoProvider  {
             }
         }
         return gpus;
+    }
+
+    @Override
+    public Optional<NetworkInterfaceSpeed> getNetworkInterfaceSpeed(String id)
+    {
+        Optional<NetworkIF> networkOptional = Arrays.stream(hal.getNetworkIFs()).filter(n -> id.equals(n.getName())).findAny();
+        if(!networkOptional.isPresent()){
+            throw new NoSuchElementException(String.format("No NIC with id %s was found", id));
+        }
+        NetworkIF networkIF = networkOptional.get();
+
+        monitorManager.Update();
+        NetworkMonitor networkMonitor = monitorManager.getNetworkMonitor();
+        NicInfo[] nics = networkMonitor.getNics();
+        Optional<NicInfo> nicInfoOptional = Arrays.stream(nics).filter(n -> networkIF.getMacaddr().equals(n.getPhysicalAddress())).findAny();
+
+        if(!nicInfoOptional.isPresent()){
+            LOGGER.warn("Unable to find any OHM NicInfo matching with HW Address of {} for NIC {}. Defaulting to speed measurement.", networkIF.getMacaddr(), networkIF.getName());
+            return super.getNetworkInterfaceSpeed(id);
+        }
+        NicInfo nicInfo = nicInfoOptional.get();
+        return Optional.of(new NetworkInterfaceSpeed((long) (nicInfo.getInBandwidth().getValue() * 1000), (long) (nicInfo.getOutBandwidth().getValue() * 1000)));
     }
 
     private boolean initBridge() {
@@ -198,12 +222,6 @@ public class WindowsInfoProvider extends DefaultInfoProvider  {
             return nullSafe(cpuMonitor.getFanPercent()).getValue();
         }
         return 0;
-    }
-
-    @Override
-    public CpuLoad cpuLoad()
-    {
-        return null;
     }
 
     @Override

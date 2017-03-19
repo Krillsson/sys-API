@@ -33,7 +33,11 @@ import org.mapstruct.factory.Mappers;
 public interface NetworkInterfacesDataMapper {
     NetworkInterfacesDataMapper INSTANCE = Mappers.getMapper(NetworkInterfacesDataMapper.class);
 
-    com.krillsson.sysapi.dto.network.NetworkInterfacesData map(com.krillsson.sysapi.core.domain.network.NetworkInterfacesData value);
+    com.krillsson.sysapi.dto.network.NetworkInterfaceData map(com.krillsson.sysapi.core.domain.network.NetworkInterfaceData value);
+
+    com.krillsson.sysapi.dto.network.NetworkInterfaceSpeed map(com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed value);
+
+    com.krillsson.sysapi.dto.network.NetworkInterfaceData[] map(com.krillsson.sysapi.core.domain.network.NetworkInterfaceData[] value);
 
     @Mappings({
             @Mapping(target = "mtu", source = "MTU"),

@@ -29,15 +29,29 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.Collection;
+import java.util.Map;
 
-@Path("meta")
+@Path("")
 @Produces(MediaType.APPLICATION_JSON)
 public class MetaInfoResource {
 
-    private String version;
+    private final String version;
+    private final String[] endpoints;
 
-    public MetaInfoResource(String version) {
+    public MetaInfoResource(String version, String[] endpoints) {
         this.version = version;
+        this.endpoints = endpoints;
+    }
+
+    @GET
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public Object getRoot(@Auth UserConfiguration user) {
+        return new Object()
+        {
+            public String message = "Hello from System API v" + getVersion(user);
+            public String[] endpoints = MetaInfoResource.this.endpoints;
+        };
     }
 
     @Path("version")
