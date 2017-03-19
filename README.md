@@ -1,5 +1,8 @@
 :computer: System API
-=====================   
+=====================
+[![Build Status](https://travis-ci.org/Krillsson/sys-api.svg)](https://travis-ci.org/Krillsson/Krillsson)
+[![Coverage Status](https://coveralls.io/repos/github/Krillsson/sys-api/badge.svg?branch=develop)](https://coveralls.io/github/Krillsson/sys-api?branch=develop)
+
 System API (sys-api) is a RESTful API to your computers hardware. 
 
 Sys-api publishes metrics from [OSHI](https://github.com/oshi/oshi) with the help of [Dropwizard](https://github.com/dropwizard/dropwizard). On Windows the information is supplemented with

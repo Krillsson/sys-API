@@ -1,0 +1,23 @@
+language: java
+
+script: mvn test
+
+after_success:
+  - if [ "$AFTER_SUCCESS" == "jacoco" ]; then
+      mvn clean test jacoco:report coveralls:report;
+      mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=725e31fc82a52d09e5f1a37c7859e08ffe82c7d9;
+    fi
+
+matrix:
+  include:
+    - os: linux
+      jdk: oraclejdk8
+      env: AFTER_SUCCESS="jacoco"
+    - os: linux
+      jdk: oraclejdk7
+    - os: linux
+      jdk: openjdk7
+    - os: osx
+      osx_image: xcode8
+    - os: osx
+      env: JAVA_HOME=$(/usr/libexec/java_home)
