@@ -3,8 +3,7 @@ package com.krillsson.sysapi.dto.motherboard;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
-import java.time.LocalDate;
+import java.util.Date;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -25,7 +24,7 @@ public class Firmware {
     @JsonProperty("version")
     private String version;
     @JsonProperty("releaseDate")
-    private LocalDate releaseDate = null;
+    private Date releaseDate = null;
 
     /**
      * No args constructor for use in serialization
@@ -40,7 +39,7 @@ public class Firmware {
      * @param name
      * @param version
      */
-    public Firmware(String manufacturer, String name, String description, String version, LocalDate releaseDate) {
+    public Firmware(String manufacturer, String name, String description, String version, Date releaseDate) {
         super();
         this.manufacturer = manufacturer;
         this.name = name;
@@ -90,12 +89,12 @@ public class Firmware {
     }
 
     @JsonProperty("releaseDate")
-    public LocalDate getReleaseDate() {
+    public Date getReleaseDate() {
         return releaseDate;
     }
 
     @JsonProperty("releaseDate")
-    public void setReleaseDate(LocalDate releaseDate) {
+    public void setReleaseDate(Date releaseDate) {
         this.releaseDate = releaseDate;
     }
 
