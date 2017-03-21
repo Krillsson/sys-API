@@ -1,7 +1,9 @@
 :computer: System API
 =====================
-[![Build Status](https://travis-ci.org/Krillsson/sys-api.svg)](https://travis-ci.org/Krillsson/Krillsson)
+[![Build Status](https://travis-ci.org/Krillsson/sys-api.svg)](https://travis-ci.org/Krillsson/sys-api)
 [![Coverage Status](https://coveralls.io/repos/github/Krillsson/sys-api/badge.svg?branch=develop)](https://coveralls.io/github/Krillsson/sys-api?branch=develop)
+[![SonarQube Quality Gate](https://sonarqube.com/api/badges/gate?key=com.github.oshi:oshi-parent)](https://sonarqube.com/dashboard?id=com.github.oshi%3Aoshi-parent)
+
 
 System API (sys-api) is a RESTful API to your computers hardware. 
 
