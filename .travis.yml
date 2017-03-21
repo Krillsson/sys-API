@@ -15,9 +15,7 @@ matrix:
       env: AFTER_SUCCESS="jacoco"
     - os: linux
       jdk: oraclejdk8
-    - os: linux
-      jdk: openjdk8
-    - os: osx
-      osx_image: xcode8
+    - os: windows
+      jdk: oraclejdk8
     - os: osx
       env: JAVA_HOME=$(/usr/libexec/java_home)
