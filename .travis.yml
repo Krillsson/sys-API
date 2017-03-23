@@ -5,7 +5,7 @@ script: mvn test
 after_success:
   - if [ "$AFTER_SUCCESS" == "jacoco" ]; then
       mvn clean test jacoco:report coveralls:report;
-      mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=725e31fc82a52d09e5f1a37c7859e08ffe82c7d9;
+      mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=b62c23005ac76f38a728807b26072d8315173999;
     fi
 
 matrix:
