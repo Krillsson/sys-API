@@ -10,6 +10,9 @@ import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
 
 
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -37,17 +40,28 @@ public class DefaultNetworkProviderTest {
     }
 
     @Test
-    @Ignore
     public void shouldCorrectData() throws Exception {
         NetworkIF mock = mock(NetworkIF.class);
-        when(utils.currentSystemTime()).thenReturn(0L);
-        when(utils.currentSystemTime()).thenReturn(1000L);
+        int i = 3;
+        long rx = 100L;
+        long tx = 200L;
+        long startMillis = 1000L;
+        long endMillis = 6000L;
+        long resultRxbps = (((rx * i) - rx) * 8) / TimeUnit.MILLISECONDS.toSeconds(endMillis - startMillis);
+        long resultTxbps = (((tx * i) - tx) * 8) / TimeUnit.MILLISECONDS.toSeconds(endMillis - startMillis);
+
+        when(mock.getBytesRecv()).thenReturn(rx, rx * i);
+        when(mock.getBytesSent()).thenReturn(tx, tx * i);
+        when(utils.currentSystemTime()).thenReturn(startMillis, endMillis);
 
         when(mock.getName()).thenReturn("en1");
         when(hal.getNetworkIFs()).thenReturn(new NetworkIF[]{mock});
 
-        assertTrue(provider.getNetworkInterfaceById("en1").isPresent());
-        assertArrayEquals(new NetworkInterfaceData[0], provider.getAllNetworkInterfaces());
-        assertTrue(provider.getSpeed("en1").isPresent());
+        Optional<NetworkInterfaceData> en1 = provider.getNetworkInterfaceById("en1");
+        assertTrue(en1.isPresent());
+        NetworkInterfaceData networkInterfaceData = en1.get();
+        NetworkInterfaceSpeed networkInterfaceSpeed = networkInterfaceData.getNetworkInterfaceSpeed();
+        assertEquals(networkInterfaceSpeed.getRxbps(), resultRxbps);
+        assertEquals(networkInterfaceSpeed.getTxbps(), resultTxbps);
     }
 }

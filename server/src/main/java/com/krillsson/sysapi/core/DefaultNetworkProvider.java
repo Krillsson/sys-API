@@ -21,7 +21,7 @@ class DefaultNetworkProvider {
     private HashMap<String, NetworkInterfaceSpeedMeasurement> nicSpeedStore = new HashMap<>();
 
     private static final long MAX_SAMPLING_THRESHOLD = TimeUnit.SECONDS.toMillis(10);
-    private static final int SLEEP_SAMPLE_PERIOD = 1000;
+    private static final long SLEEP_SAMPLE_PERIOD = TimeUnit.SECONDS.toMillis(5);
     private static final int BYTE_TO_BIT = 8;
 
     private final HardwareAbstractionLayer hal;
@@ -54,7 +54,7 @@ class DefaultNetworkProvider {
 
         Optional<NetworkIF> networkOptional = Arrays.stream(hal.getNetworkIFs()).filter(n -> id.equals(n.getName())).findAny();
         if (!networkOptional.isPresent()) {
-            LOGGER.warn("No NIC with id %s was found", id);
+            LOGGER.warn("No NIC with id '{}' was found", id);
             return Optional.empty();
         }
         NetworkIF networkIF = networkOptional.get();
@@ -84,7 +84,9 @@ class DefaultNetworkProvider {
     }
 
     private long measureSpeed(long start, long end, long rxBytesStart, long rxBytesEnd) {
-        return (rxBytesEnd - rxBytesStart) * BYTE_TO_BIT / (end - start) * SLEEP_SAMPLE_PERIOD;
+        long deltaBytes = (rxBytesEnd - rxBytesStart) * BYTE_TO_BIT;
+        long deltaTime = TimeUnit.MILLISECONDS.toSeconds(end - start);
+        return deltaBytes / deltaTime;
     }
 
 }
