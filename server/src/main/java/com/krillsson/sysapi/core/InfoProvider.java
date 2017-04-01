@@ -53,7 +53,7 @@ public interface InfoProvider {
 
     Optional<NetworkInterfaceData> getNetworkInterfaceById(String id);
 
-    String[] getNetworkInterfaceIds();
-
     Optional<NetworkInterfaceSpeed> getNetworkInterfaceSpeed(String id);
+
+    String[] getNetworkInterfaceNames();
 }

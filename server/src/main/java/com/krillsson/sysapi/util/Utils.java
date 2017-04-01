@@ -15,7 +15,11 @@ public class Utils {
         oshi.util.Util.sleepAfter(startTime, ms);
     }
 
-    public boolean isOutsideSamplingDuration(long sampleTimeStamp, long maxSampleThreshold) {
+    public boolean isOutsideMaximumDuration(long sampleTimeStamp, long maxSampleThreshold) {
         return currentSystemTime() - sampleTimeStamp > maxSampleThreshold;
+    }
+
+    public boolean isInsideMinimumDuration(long sampledAt, long minSamplingThreshold) {
+        return currentSystemTime() - sampledAt < minSamplingThreshold;
     }
 }

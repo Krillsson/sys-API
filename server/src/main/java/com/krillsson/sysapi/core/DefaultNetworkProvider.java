@@ -8,20 +8,19 @@ import org.slf4j.Logger;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 class DefaultNetworkProvider {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultNetworkProvider.class);
+    private static final double MILLIS_TO_SECONDS = 1000.0;
 
     private HashMap<String, NetworkInterfaceSpeedMeasurement> nicSpeedStore = new HashMap<>();
 
     private static final long MAX_SAMPLING_THRESHOLD = TimeUnit.SECONDS.toMillis(10);
-    private static final long SLEEP_SAMPLE_PERIOD = TimeUnit.SECONDS.toMillis(5);
+    private static final long SLEEP_SAMPLE_PERIOD = TimeUnit.SECONDS.toMillis(2);
     private static final int BYTE_TO_BIT = 8;
 
     private final HardwareAbstractionLayer hal;
@@ -32,61 +31,88 @@ class DefaultNetworkProvider {
         this.utils = utils;
     }
 
-    NetworkInterfaceData[] getAllNetworkInterfaces() {
-        return Arrays.stream(hal.getNetworkIFs()).map(m -> {
-            m.updateNetworkStats();
-            return new NetworkInterfaceData(m, getSpeed(m.getName()).get());
-        }).toArray(NetworkInterfaceData[]::new);
-    }
-
-    Optional<NetworkInterfaceData> getNetworkInterfaceById(String id) {
-        return Arrays.stream(hal.getNetworkIFs()).filter(n -> id.equals(n.getName())).map(m -> {
-            m.updateNetworkStats();
-            return new NetworkInterfaceData(m, getSpeed(m.getName()).get());
-        }).findFirst();
-    }
-
-    String[] getNetworkInterfaceIds() {
+    String[] getNetworkInterfaceNames(){
         return Arrays.stream(hal.getNetworkIFs()).map(NetworkIF::getName).toArray(String[]::new);
     }
 
-    Optional<NetworkInterfaceSpeed> getSpeed(String id) {
+    NetworkInterfaceData[] getAllNetworkInterfaces() {
+        return populate(hal.getNetworkIFs());
+    }
 
+    Optional<NetworkInterfaceData> getNetworkInterfaceById(String id) {
+        return Arrays.stream(hal.getNetworkIFs()).filter(n -> id.equals(n.getName())).map(this::populate).findFirst();
+    }
+
+    Optional<NetworkInterfaceSpeed> getSpeed(String id) {
         Optional<NetworkIF> networkOptional = Arrays.stream(hal.getNetworkIFs()).filter(n -> id.equals(n.getName())).findAny();
-        if (!networkOptional.isPresent()) {
-            LOGGER.warn("No NIC with id '{}' was found", id);
+        if (networkOptional.isPresent()) {
+            NetworkIF networkIF = networkOptional.get();
+            return Optional.of(populate(networkIF).getNetworkInterfaceSpeed());
+        } else {
             return Optional.empty();
         }
-        NetworkIF networkIF = networkOptional.get();
-        NetworkInterfaceSpeedMeasurement start = nicSpeedStore.get(id);
+    }
 
-        if (start == null || utils.isOutsideSamplingDuration(start.getSampledAt(), MAX_SAMPLING_THRESHOLD)) {
+    private NetworkInterfaceData populate(NetworkIF networkIF){
+        initializeMeasurement(networkIF, true);
+        NetworkInterfaceSpeed networkInterfaceSpeed = measureNetworkSpeed(networkIF);
+        return new NetworkInterfaceData(networkIF, networkInterfaceSpeed);
+    }
+
+    private NetworkInterfaceData[] populate(NetworkIF[] networkIFS) {
+        List<NetworkInterfaceData> interfaces = new ArrayList<>();
+        for (int i = 0; i < networkIFS.length; i++) {
+            NetworkIF networkIF = networkIFS[i];
+            boolean lastItem = (networkIFS.length - 1) == i;
+            initializeMeasurement(networkIF, lastItem);
+        }
+        for (NetworkIF networkIF : networkIFS) {
+            interfaces.add(new NetworkInterfaceData(networkIF, measureNetworkSpeed(networkIF)));
+        }
+        return interfaces.toArray(new NetworkInterfaceData[0]);
+    }
+
+    private void initializeMeasurement(NetworkIF networkIF, boolean sleep) {
+        boolean updateNeeded;
+        NetworkInterfaceSpeedMeasurement start = nicSpeedStore.get(networkIF.getName());
+        updateNeeded = updateNeeded(start);
+        if (updateNeeded) {
             networkIF.updateNetworkStats();
-            start = new NetworkInterfaceSpeedMeasurement(networkIF.getBytesRecv(),
+            nicSpeedStore.put(networkIF.getName(), new NetworkInterfaceSpeedMeasurement(networkIF.getBytesRecv(),
                     networkIF.getBytesSent(),
-                    utils.currentSystemTime());
-            LOGGER.info("Sleeping thread since we don't have enough sample data. Hold on!");
+                    utils.currentSystemTime()));
+        }
+        if (sleep && updateNeeded) {
+            LOGGER.info("Sleeping thread. Hold on!");
             utils.sleep(SLEEP_SAMPLE_PERIOD);
         }
+    }
 
-        nicSpeedStore.remove(id);
-
+    private NetworkInterfaceSpeed measureNetworkSpeed(NetworkIF networkIF) {
+        NetworkInterfaceSpeedMeasurement start = nicSpeedStore.get(networkIF.getName());
         networkIF.updateNetworkStats();
         NetworkInterfaceSpeedMeasurement end = new NetworkInterfaceSpeedMeasurement(networkIF.getBytesRecv(),
                 networkIF.getBytesSent(),
                 utils.currentSystemTime());
-        nicSpeedStore.put(id, end);
-
+        nicSpeedStore.put(networkIF.getName(), end);
         final long rxbps = measureSpeed(start.getSampledAt(), end.getSampledAt(), start.getRxBytes(), end.getRxBytes());
         final long txbps = measureSpeed(start.getSampledAt(), end.getSampledAt(), start.getTxBytes(), end.getTxBytes());
-
-        return Optional.of(new NetworkInterfaceSpeed(rxbps, txbps));
+        return new NetworkInterfaceSpeed(rxbps, txbps);
     }
 
-    private long measureSpeed(long start, long end, long rxBytesStart, long rxBytesEnd) {
-        long deltaBytes = (rxBytesEnd - rxBytesStart) * BYTE_TO_BIT;
-        long deltaTime = TimeUnit.MILLISECONDS.toSeconds(end - start);
-        return deltaBytes / deltaTime;
+    private long measureSpeed(long start, long end, long bytesStart, long bytesEnd) {
+        double deltaBits = (bytesEnd - bytesStart) * BYTE_TO_BIT;
+        double deltaSeconds = (end - start) / MILLIS_TO_SECONDS;
+        if(deltaBits <= 0 || deltaSeconds <= 0){
+            return 0L;
+        }
+        double bitsPerSecond = deltaBits / deltaSeconds;
+        return (long)bitsPerSecond;
+    }
+
+    private boolean updateNeeded(NetworkInterfaceSpeedMeasurement start) {
+        return start == null ||
+                utils.isOutsideMaximumDuration(start.getSampledAt(), MAX_SAMPLING_THRESHOLD);
     }
 
 }

@@ -21,9 +21,6 @@
 package com.krillsson.sysapi.core.windows;
 
 import com.krillsson.sysapi.core.DefaultInfoProvider;
-import com.krillsson.sysapi.core.InfoProvider;
-import com.krillsson.sysapi.core.InfoProviderBase;
-import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;

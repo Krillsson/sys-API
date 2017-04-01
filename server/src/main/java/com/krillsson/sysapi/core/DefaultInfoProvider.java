@@ -99,7 +99,7 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     public CpuLoad cpuLoad() {
         //If this is the first time the method is run we need to get some sample data
         CentralProcessor processor = hal.getProcessor();
-        if (Arrays.equals(ticks, new long[0]) || utils.isOutsideSamplingDuration(ticksSampledAt, MAX_SAMPLING_THRESHOLD)) {
+        if (Arrays.equals(ticks, new long[0]) || utils.isOutsideMaximumDuration(ticksSampledAt, MAX_SAMPLING_THRESHOLD)) {
             LOGGER.debug("Sleeping thread since we don't have enough sample data. Hold on!");
             ticks = processor.getSystemCpuLoadTicks();
             ticksSampledAt = utils.currentSystemTime();
@@ -140,13 +140,13 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     @Override
-    public String[] getNetworkInterfaceIds() {
-        return defaultNetworkProvider.getNetworkInterfaceIds();
+    public Optional<NetworkInterfaceSpeed> getNetworkInterfaceSpeed(String id) {
+        return defaultNetworkProvider.getSpeed(id);
     }
 
     @Override
-    public Optional<NetworkInterfaceSpeed> getNetworkInterfaceSpeed(String id) {
-        return defaultNetworkProvider.getSpeed(id);
+    public String[] getNetworkInterfaceNames() {
+        return defaultNetworkProvider.getNetworkInterfaceNames();
     }
 
 
