@@ -27,6 +27,7 @@ import com.krillsson.sysapi.core.domain.processes.ProcessInfoMapper;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import com.krillsson.sysapi.dto.processes.ProcessInfo;
 import io.dropwizard.auth.Auth;
+import org.slf4j.Logger;
 import oshi.hardware.GlobalMemory;
 import oshi.software.os.OperatingSystem;
 
@@ -34,13 +35,16 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Path("processes")
 @Produces(MediaType.APPLICATION_JSON)
 public class ProcessesResource {
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ProcessesResource.class);
 
     private final OperatingSystem operatingSystem;
     private GlobalMemory memory;
@@ -52,8 +56,18 @@ public class ProcessesResource {
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public ProcessInfo getRoot(@Auth UserConfiguration user) {
-        Process[] processes = Arrays.stream(operatingSystem.getProcesses(0, OperatingSystem.ProcessSort.NAME)).map(p -> new Process(p.getName(),
+    public ProcessInfo getRoot(@Auth UserConfiguration user, @QueryParam("sortBy") Optional<String> processSort, @QueryParam("limit") Optional<Integer> limit) {
+        OperatingSystem.ProcessSort sortBy = OperatingSystem.ProcessSort.NAME;
+        if(processSort.isPresent()){
+            String method = processSort.get().toUpperCase();
+            try {
+                sortBy = OperatingSystem.ProcessSort.valueOf(method);
+            } catch (IllegalArgumentException e) {
+                LOGGER.error("No process sort method of type {} was found. Defaulting to: {}", method, OperatingSystem.ProcessSort.NAME);
+            }
+        }
+        Integer theLimit = limit.orElse(0);
+        Process[] processes = Arrays.stream(operatingSystem.getProcesses(theLimit, sortBy)).map(p -> new Process(p.getName(),
                 p.getPath(),
                 p.getState(),
                 p.getProcessID(),

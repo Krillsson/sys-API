@@ -47,7 +47,6 @@ import java.util.concurrent.TimeUnit;
 @Produces(MediaType.APPLICATION_JSON)
 public class CpuResource {
 
-
     private final OperatingSystem operatingSystem;
     private final Sensors sensors;
     private final CentralProcessor processor;
@@ -79,7 +78,6 @@ public class CpuResource {
                         fanRpm,
                         fanPercent)));
     }
-
 
     @GET
     @Path("ticks")
