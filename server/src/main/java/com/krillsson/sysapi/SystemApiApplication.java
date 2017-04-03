@@ -106,7 +106,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         environment.jersey().register(new AuthDynamicFeature(userBasicCredentialAuthFilter));
         environment.jersey().register(new AuthValueFactoryProvider.Binder(UserConfiguration.class));
 
-        InfoProvider provider = new InfoProviderFactory(hal, SystemInfo.getCurrentPlatformEnum(), config).provide();
+        InfoProvider provider = new InfoProviderFactory(hal, os, SystemInfo.getCurrentPlatformEnum(), config).provide();
         Sensors sensors = hal.getSensors();
 
         environment.jersey().register(new SystemResource(provider, os, hal.getProcessor(), hal.getMemory(), hal.getPowerSources(), hal.getSensors()));
@@ -115,7 +115,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         environment.jersey().register(new MemoryResource(hal.getMemory()));
         environment.jersey().register(new NetworkInterfacesResource(provider));
         environment.jersey().register(new PowerSourcesResource(hal.getPowerSources()));
-        environment.jersey().register(new ProcessesResource(os, hal.getMemory()));
+        environment.jersey().register(new ProcessesResource(provider));
         environment.jersey().register(new CpuResource(os, sensors, hal.getProcessor(), provider));
         environment.jersey().register(new SensorsResource(sensors, provider));
         environment.jersey().register(new MotherboardResource(hal.getComputerSystem(), hal.getUsbDevices(false)));
@@ -158,7 +158,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
                 "/META-INF/MANIFEST.MF";
         Manifest manifest = new Manifest(new URL(manifestPath).openStream());
         Attributes attr = manifest.getMainAttributes();
-        return attr.getValue("Version");
+        return "v."+ attr.getValue("Version");
     }
 
     public Environment getEnvironment() {
@@ -171,7 +171,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         String[] arr = environment.jersey().getResourceConfig().getEndpointsInfo()
                 .replace("The following paths were found for the configured resources:", "")
                 .replace("    ", "")
-                .replace("com.krillsson.sysapi.resources.", "")
+                .replaceAll(" \\(.+?\\)", "")
                 .split(NEWLINE);
 
         return Arrays.copyOfRange(arr, 2, arr.length - 1);

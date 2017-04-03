@@ -1,21 +1,30 @@
 package com.krillsson.sysapi.resources;
 
+import com.krillsson.sysapi.core.InfoProvider;
 import io.dropwizard.testing.junit.ResourceTestRule;
+import org.junit.Before;
 import org.junit.ClassRule;
-import oshi.hardware.GlobalMemory;
-import oshi.software.os.OperatingSystem;
+import org.junit.Test;
 
 import static org.mockito.Mockito.mock;
 
 public class ProcessesResourceTest {
 
-    static OperatingSystem os = mock(OperatingSystem.class);
-    static GlobalMemory memory = mock(GlobalMemory.class);
+    private static final InfoProvider provider = mock(InfoProvider.class);
 
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
-            .addResource(new ProcessesResource(os, memory))
+            .addResource(new ProcessesResource(provider))
             .build();
 
 
+    @Before
+    public void setUp() {
+
+    }
+
+    @Test
+    public void name() throws Exception {
+
+    }
 }

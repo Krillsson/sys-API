@@ -29,12 +29,14 @@ import oshi.software.os.OperatingSystem;
 
 public class InfoProviderFactory {
     private final HardwareAbstractionLayer hal;
+    private final OperatingSystem operatingSystem;
     private final PlatformEnum os;
     private final SystemApiConfiguration configuration;
     private final Utils utils;
 
-    public InfoProviderFactory(HardwareAbstractionLayer hal, PlatformEnum os, SystemApiConfiguration configuration) {
+    public InfoProviderFactory(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, PlatformEnum os, SystemApiConfiguration configuration) {
         this.hal = hal;
+        this.operatingSystem = operatingSystem;
         this.os = os;
         this.configuration = configuration;
         this.utils = new Utils();
@@ -44,7 +46,7 @@ public class InfoProviderFactory {
         switch (os) {
             case WINDOWS:
                 if (configuration.windows() == null || configuration.windows().enableOhmJniWrapper()) {
-                    WindowsInfoProvider windowsInfoProvider = new WindowsInfoProvider(hal, utils);
+                    WindowsInfoProvider windowsInfoProvider = new WindowsInfoProvider(hal, operatingSystem, utils);
                     if (windowsInfoProvider.canProvide()) {
                         return windowsInfoProvider;
                     }
@@ -56,7 +58,7 @@ public class InfoProviderFactory {
             case SOLARIS:
             case UNKNOWN:
             default:
-                return new DefaultInfoProvider(hal, utils);
+                return new DefaultInfoProvider(hal, operatingSystem, utils);
 
         }
     }

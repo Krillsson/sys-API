@@ -45,7 +45,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class SystemInfoResourceTest {
 
-    private static final InfoProvider provider = new DefaultInfoProvider(null, null);
+    private static final InfoProvider provider = new DefaultInfoProvider(null, null, null);
     private static final OperatingSystem os = mock(OperatingSystem.class);
     private static final CentralProcessor processor = mock(CentralProcessor.class);
     private static final GlobalMemory memory = mock(GlobalMemory.class);
@@ -69,20 +69,14 @@ public class SystemInfoResourceTest {
     public void getSystem() throws Exception {
         double temperature = 30;
         double voltage = 12;
-        int processCount = 70;
-        int threadCount = 100;
 
         when(sensors.getCpuTemperature()).thenReturn(temperature);
         when(sensors.getCpuVoltage()).thenReturn(voltage);
-        when(os.getProcessCount()).thenReturn(processCount);
-        when(os.getThreadCount()).thenReturn(threadCount);
         final SystemInfo response = RESOURCES.getJerseyTest().target("/system")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(SystemInfo.class);
         assertThat(response.getCpuInfo().getCpuHealth().getTemperatures()[0]).isEqualTo(temperature);
         assertThat(response.getCpuInfo().getCpuHealth().getVoltage()).isEqualTo(voltage);
-        assertThat(response.getOperatingSystem().getProcessCount()).isEqualTo(processCount);
-        assertThat(response.getOperatingSystem().getThreadCount()).isEqualTo(threadCount);
     }
 
     @After

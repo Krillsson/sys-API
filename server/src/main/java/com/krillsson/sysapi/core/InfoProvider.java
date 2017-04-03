@@ -25,8 +25,11 @@ import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceData;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
+import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
+import com.krillsson.sysapi.core.domain.processes.Process;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
 import com.krillsson.sysapi.core.domain.storage.DiskHealth;
+import oshi.software.os.OperatingSystem;
 
 import java.util.Map;
 import java.util.Optional;
@@ -56,4 +59,8 @@ public interface InfoProvider {
     Optional<NetworkInterfaceSpeed> getNetworkInterfaceSpeed(String id);
 
     String[] getNetworkInterfaceNames();
+
+    ProcessesInfo processesInfo(OperatingSystem.ProcessSort sortBy, int limit);
+
+    Optional<Process> getProcessByPid(int pid);
 }

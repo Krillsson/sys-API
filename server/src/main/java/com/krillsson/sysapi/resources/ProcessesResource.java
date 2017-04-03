@@ -20,45 +20,43 @@
  */
 package com.krillsson.sysapi.resources;
 
+
+
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.domain.processes.Process;
+import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.domain.processes.ProcessInfoMapper;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import com.krillsson.sysapi.dto.processes.ProcessInfo;
+import com.krillsson.sysapi.dto.processes.Process;
 import io.dropwizard.auth.Auth;
 import org.slf4j.Logger;
-import oshi.hardware.GlobalMemory;
 import oshi.software.os.OperatingSystem;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.Arrays;
+
 import java.util.Optional;
-import java.util.stream.Collectors;
+
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
 @Path("processes")
 @Produces(MediaType.APPLICATION_JSON)
 public class ProcessesResource {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ProcessesResource.class);
 
-    private final OperatingSystem operatingSystem;
-    private GlobalMemory memory;
+    private final InfoProvider provider;
 
-    public ProcessesResource(OperatingSystem operatingSystem, GlobalMemory memory) {
-        this.operatingSystem = operatingSystem;
-        this.memory = memory;
+    public ProcessesResource(InfoProvider provider) {
+        this.provider = provider;
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public ProcessInfo getRoot(@Auth UserConfiguration user, @QueryParam("sortBy") Optional<String> processSort, @QueryParam("limit") Optional<Integer> limit) {
         OperatingSystem.ProcessSort sortBy = OperatingSystem.ProcessSort.NAME;
-        if(processSort.isPresent()){
+        if (processSort.isPresent()) {
             String method = processSort.get().toUpperCase();
             try {
                 sortBy = OperatingSystem.ProcessSort.valueOf(method);
@@ -67,22 +65,18 @@ public class ProcessesResource {
             }
         }
         Integer theLimit = limit.orElse(0);
-        Process[] processes = Arrays.stream(operatingSystem.getProcesses(theLimit, sortBy)).map(p -> new Process(p.getName(),
-                p.getPath(),
-                p.getState(),
-                p.getProcessID(),
-                p.getParentProcessID(),
-                p.getThreadCount(),
-                p.getPriority(),
-                p.getVirtualSize(),
-                p.getResidentSetSize(),
-                100d * p.getResidentSetSize() / memory.getTotal(),
-                p.getKernelTime(), p.getUserTime(),
-                p.getUpTime(),
-                100d * (p.getKernelTime() + p.getUserTime()) / p.getUpTime(),
-                p.getStartTime(),
-                p.getBytesRead(),
-                p.getBytesWritten())).collect(Collectors.toList()).toArray(new Process[0]);
-        return ProcessInfoMapper.INSTANCE.map(new ProcessesInfo(memory, processes));
+        ProcessesInfo value = provider.processesInfo(sortBy, theLimit);
+        return ProcessInfoMapper.INSTANCE.map(value);
+    }
+
+    @GET
+    @Path("{pid}")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public Process getProcessByPid(@PathParam("pid") int pid) {
+        Optional<com.krillsson.sysapi.core.domain.processes.Process> process = provider.getProcessByPid(pid);
+        if (!process.isPresent()) {
+            throw new WebApplicationException(NOT_FOUND);
+        }
+        return ProcessInfoMapper.INSTANCE.map(process.get());
     }
 }

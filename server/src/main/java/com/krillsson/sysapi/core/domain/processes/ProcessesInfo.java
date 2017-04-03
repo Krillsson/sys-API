@@ -25,15 +25,34 @@ import oshi.hardware.GlobalMemory;
 
 public class ProcessesInfo {
     private final GlobalMemory memory;
+    private final long processId;
+    private final long threadCount;
+    private final long processCount;
     private final Process[] processes;
 
-    public ProcessesInfo(GlobalMemory memory, Process[] processes) {
+    public ProcessesInfo(GlobalMemory memory, long processId, long threadCount, long processCount, Process[] processes) {
         this.memory = memory;
+        this.processId = processId;
+        this.threadCount = threadCount;
+        this.processCount = processCount;
         this.processes = processes;
     }
 
     public GlobalMemory getMemory() {
         return memory;
+    }
+
+
+    public long getProcessId() {
+        return processId;
+    }
+
+    public long getProcessCount() {
+        return processCount;
+    }
+
+    public long getThreadCount() {
+        return threadCount;
     }
 
     public Process[] getProcesses() {

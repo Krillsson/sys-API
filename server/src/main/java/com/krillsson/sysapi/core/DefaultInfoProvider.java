@@ -25,21 +25,28 @@ import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceData;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
+import com.krillsson.sysapi.core.domain.processes.Process;
+import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
 import com.krillsson.sysapi.core.domain.storage.DiskHealth;
 import com.krillsson.sysapi.util.Utils;
 import org.slf4j.Logger;
 import oshi.hardware.CentralProcessor;
+import oshi.hardware.GlobalMemory;
 import oshi.hardware.HardwareAbstractionLayer;
+import oshi.software.os.OSProcess;
+import oshi.software.os.OperatingSystem;
 
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class DefaultInfoProvider extends InfoProviderBase implements InfoProvider {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultInfoProvider.class);
 
     private final HardwareAbstractionLayer hal;
+    private final OperatingSystem operatingSystem;
     private final Utils utils;
     private final DefaultNetworkProvider defaultNetworkProvider;
 
@@ -49,8 +56,9 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     private static final long MAX_SAMPLING_THRESHOLD = TimeUnit.SECONDS.toMillis(10);
     private static final int SLEEP_SAMPLE_PERIOD = 500;
 
-    public DefaultInfoProvider(HardwareAbstractionLayer hal, Utils utils) {
+    public DefaultInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils) {
         this.hal = hal;
+        this.operatingSystem = operatingSystem;
         this.utils = utils;
         this.defaultNetworkProvider = new DefaultNetworkProvider(hal, utils);
     }
@@ -147,6 +155,48 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     @Override
     public String[] getNetworkInterfaceNames() {
         return defaultNetworkProvider.getNetworkInterfaceNames();
+    }
+
+    @Override
+    public ProcessesInfo processesInfo(OperatingSystem.ProcessSort sortBy, int limit) {
+        GlobalMemory memory = hal.getMemory();
+        Process[] processes = Arrays.stream(operatingSystem.getProcesses(limit, sortBy)).map(p -> new Process(p.getName(),
+                p.getPath(),
+                p.getState(),
+                p.getProcessID(),
+                p.getParentProcessID(),
+                p.getThreadCount(),
+                p.getPriority(),
+                p.getVirtualSize(),
+                p.getResidentSetSize(),
+                100d * p.getResidentSetSize() / memory.getTotal(),
+                p.getKernelTime(), p.getUserTime(),
+                p.getUpTime(),
+                100d * (p.getKernelTime() + p.getUserTime()) / p.getUpTime(),
+                p.getStartTime(),
+                p.getBytesRead(),
+                p.getBytesWritten())).collect(Collectors.toList()).toArray(new Process[0]);
+        return new ProcessesInfo(memory, operatingSystem.getProcessId(), operatingSystem.getThreadCount(), operatingSystem.getProcessCount(), processes);
+    }
+
+    @Override
+    public Optional<Process> getProcessByPid(int pid) {
+        return Optional.of(operatingSystem.getProcess(pid)).map((OSProcess p) -> new Process(p.getName(),
+               p.getPath(),
+               p.getState(),
+               p.getProcessID(),
+               p.getParentProcessID(),
+               p.getThreadCount(),
+               p.getPriority(),
+               p.getVirtualSize(),
+               p.getResidentSetSize(),
+               100d * p.getResidentSetSize() / hal.getMemory().getTotal(),
+               p.getKernelTime(), p.getUserTime(),
+               p.getUpTime(),
+               100d * (p.getKernelTime() + p.getUserTime()) / p.getUpTime(),
+               p.getStartTime(),
+               p.getBytesRead(),
+               p.getBytesWritten()));
     }
 
 

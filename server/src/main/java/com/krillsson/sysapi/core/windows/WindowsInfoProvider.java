@@ -33,6 +33,7 @@ import ohmwrapper.*;
 import org.slf4j.Logger;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
+import oshi.software.os.OperatingSystem;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,9 +52,9 @@ public class WindowsInfoProvider extends DefaultInfoProvider  {
     private final HardwareAbstractionLayer hal;
     private MonitorManager monitorManager;
 
-    public WindowsInfoProvider(HardwareAbstractionLayer hal, Utils utils)
+    public WindowsInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils)
     {
-        super(hal, utils);
+        super(hal, operatingSystem, utils);
         this.hal = hal;
     }
 

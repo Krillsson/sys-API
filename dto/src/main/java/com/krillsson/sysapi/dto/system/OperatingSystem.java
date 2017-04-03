@@ -21,12 +21,6 @@ public class OperatingSystem {
     private String family;
     @JsonProperty("version")
     private Version version;
-    @JsonProperty("processId")
-    private long processId;
-    @JsonProperty("threadCount")
-    private long threadCount;
-    @JsonProperty("processCount")
-    private long processCount;
 
     /**
      * No args constructor for use in serialization
@@ -35,21 +29,15 @@ public class OperatingSystem {
     }
 
     /**
-     * @param processId
      * @param family
      * @param manufacturer
-     * @param threadCount
-     * @param processCount
      * @param version
      */
-    public OperatingSystem(String manufacturer, String family, Version version, long processId, long threadCount, long processCount) {
+    public OperatingSystem(String manufacturer, String family, Version version) {
         super();
         this.manufacturer = manufacturer;
         this.family = family;
         this.version = version;
-        this.processId = processId;
-        this.threadCount = threadCount;
-        this.processCount = processCount;
     }
 
     @JsonProperty("manufacturer")
@@ -81,35 +69,4 @@ public class OperatingSystem {
     public void setVersion(Version version) {
         this.version = version;
     }
-
-    @JsonProperty("processId")
-    public long getProcessId() {
-        return processId;
-    }
-
-    @JsonProperty("processId")
-    public void setProcessId(long processId) {
-        this.processId = processId;
-    }
-
-    @JsonProperty("threadCount")
-    public long getThreadCount() {
-        return threadCount;
-    }
-
-    @JsonProperty("threadCount")
-    public void setThreadCount(long threadCount) {
-        this.threadCount = threadCount;
-    }
-
-    @JsonProperty("processCount")
-    public long getProcessCount() {
-        return processCount;
-    }
-
-    @JsonProperty("processCount")
-    public void setProcessCount(long processCount) {
-        this.processCount = processCount;
-    }
-
 }

@@ -36,5 +36,5 @@ public interface ProcessInfoMapper {
 
     com.krillsson.sysapi.dto.processes.Memory map(oshi.hardware.GlobalMemory value);
 
-    com.krillsson.sysapi.dto.processes.Process map(Process value);
+    com.krillsson.sysapi.dto.processes.Process map(com.krillsson.sysapi.core.domain.processes.Process value);
 }
