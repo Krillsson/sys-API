@@ -38,7 +38,10 @@ import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -160,44 +163,19 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     @Override
     public ProcessesInfo processesInfo(OperatingSystem.ProcessSort sortBy, int limit) {
         GlobalMemory memory = hal.getMemory();
-        Process[] processes = Arrays.stream(operatingSystem.getProcesses(limit, sortBy)).map(p -> new Process(p.getName(),
-                p.getPath(),
-                p.getState(),
-                p.getProcessID(),
-                p.getParentProcessID(),
-                p.getThreadCount(),
-                p.getPriority(),
-                p.getVirtualSize(),
-                p.getResidentSetSize(),
-                100d * p.getResidentSetSize() / memory.getTotal(),
-                p.getKernelTime(), p.getUserTime(),
-                p.getUpTime(),
-                100d * (p.getKernelTime() + p.getUserTime()) / p.getUpTime(),
-                p.getStartTime(),
-                p.getBytesRead(),
-                p.getBytesWritten())).collect(Collectors.toList()).toArray(new Process[0]);
+        Process[] processes = Arrays
+                .stream(operatingSystem.getProcesses(limit, sortBy))
+                .map(p -> Process.create(p, memory))
+                .collect(Collectors.toList()).toArray(new Process[0]);
+
         return new ProcessesInfo(memory, operatingSystem.getProcessId(), operatingSystem.getThreadCount(), operatingSystem.getProcessCount(), processes);
     }
 
     @Override
     public Optional<Process> getProcessByPid(int pid) {
-        return Optional.of(operatingSystem.getProcess(pid)).map((OSProcess p) -> new Process(p.getName(),
-               p.getPath(),
-               p.getState(),
-               p.getProcessID(),
-               p.getParentProcessID(),
-               p.getThreadCount(),
-               p.getPriority(),
-               p.getVirtualSize(),
-               p.getResidentSetSize(),
-               100d * p.getResidentSetSize() / hal.getMemory().getTotal(),
-               p.getKernelTime(), p.getUserTime(),
-               p.getUpTime(),
-               100d * (p.getKernelTime() + p.getUserTime()) / p.getUpTime(),
-               p.getStartTime(),
-               p.getBytesRead(),
-               p.getBytesWritten()));
+        return Optional
+                .of(operatingSystem.getProcess(pid))
+                .map((OSProcess p) -> Process.create(p, hal.getMemory()));
     }
-
 
 }

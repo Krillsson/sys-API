@@ -8,6 +8,11 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({
         "name",
         "path",
+        "commandLine",
+        "user",
+        "userID",
+        "group",
+        "groupID",
         "state",
         "processID",
         "parentProcessID",
@@ -30,6 +35,16 @@ public class Process {
     private String name;
     @JsonProperty("path")
     private String path;
+    @JsonProperty("commandLine")
+    private String commandLine;
+    @JsonProperty("user")
+    private String user;
+    @JsonProperty("userID")
+    private String userID;
+    @JsonProperty("group")
+    private String group;
+    @JsonProperty("groupID")
+    private String groupID;
     @JsonProperty("state")
     private String state;
     @JsonProperty("processID")
@@ -68,28 +83,38 @@ public class Process {
     }
 
     /**
-     * @param residentSetSize
-     * @param bytesRead
-     * @param processID
-     * @param state
-     * @param parentProcessID
-     * @param userTime
-     * @param memoryPercent
-     * @param virtualSize
-     * @param startTime
-     * @param bytesWritten
-     * @param upTime
-     * @param kernelTime
-     * @param priority
-     * @param cpuPercent
      * @param name
-     * @param threadCount
      * @param path
+     * @param state
+     * @param commandLine
+     * @param user
+     * @param userID
+     * @param group
+     * @param groupID
+     * @param processID
+     * @param parentProcessID
+     * @param threadCount
+     * @param priority
+     * @param virtualSize
+     * @param residentSetSize
+     * @param memoryPercent
+     * @param kernelTime
+     * @param userTime
+     * @param upTime
+     * @param cpuPercent
+     * @param startTime
+     * @param bytesRead
+     * @param bytesWritten
      */
-    public Process(String name, String path, String state, int processID, int parentProcessID, int threadCount, int priority, long virtualSize, long residentSetSize, double memoryPercent, long kernelTime, long userTime, long upTime, double cpuPercent, long startTime, long bytesRead, long bytesWritten) {
+    public Process(String name, String path, String commandLine, String user, String userID, String group, String groupID, String state, int processID, int parentProcessID, int threadCount, int priority, long virtualSize, long residentSetSize, double memoryPercent, long kernelTime, long userTime, long upTime, double cpuPercent, long startTime, long bytesRead, long bytesWritten) {
         super();
         this.name = name;
         this.path = path;
+        this.commandLine = commandLine;
+        this.user = user;
+        this.userID = userID;
+        this.group = group;
+        this.groupID = groupID;
         this.state = state;
         this.processID = processID;
         this.parentProcessID = parentProcessID;
@@ -125,6 +150,56 @@ public class Process {
     @JsonProperty("path")
     public void setPath(String path) {
         this.path = path;
+    }
+
+    @JsonProperty("commandLine")
+    public String getCommandLine() {
+        return commandLine;
+    }
+
+    @JsonProperty("commandLine")
+    public void setCommandLine(String commandLine) {
+        this.commandLine = commandLine;
+    }
+
+    @JsonProperty("user")
+    public String getUser() {
+        return user;
+    }
+
+    @JsonProperty("user")
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    @JsonProperty("userID")
+    public String getUserID() {
+        return userID;
+    }
+
+    @JsonProperty("userID")
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    @JsonProperty("group")
+    public String getGroup() {
+        return group;
+    }
+
+    @JsonProperty("group")
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    @JsonProperty("groupID")
+    public String getGroupID() {
+        return groupID;
+    }
+
+    @JsonProperty("groupID")
+    public void setGroupID(String groupID) {
+        this.groupID = groupID;
     }
 
     @JsonProperty("state")
