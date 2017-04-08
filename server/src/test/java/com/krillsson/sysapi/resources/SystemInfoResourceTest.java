@@ -99,9 +99,12 @@ public class SystemInfoResourceTest {
     public void getJvmPropertiesWithCustomProperties() throws Exception {
         System.setProperty("theProperty", "hello");
 
-        final JvmProperties response = RESOURCES.getJerseyTest().target("/system/jvm")
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .get(JvmProperties.class);
+        JvmProperties response = null;
+        try {
+            response = RESOURCES.getJerseyTest().target("/system/jvm")
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .get(JvmProperties.class);
+        } catch (Exception e) {/* empty */}
 
         assertNotNull(response.getProperties().get("theProperty"));
     }
