@@ -23,6 +23,10 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.core.DefaultInfoProvider;
 import com.krillsson.sysapi.core.InfoProvider;
+import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
+import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
+import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
+import com.krillsson.sysapi.dto.system.JvmProperties;
 import com.krillsson.sysapi.dto.system.SystemInfo;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.*;
@@ -32,11 +36,17 @@ import oshi.hardware.CentralProcessor;
 import oshi.hardware.GlobalMemory;
 import oshi.hardware.PowerSource;
 import oshi.hardware.Sensors;
+import oshi.hardware.platform.linux.LinuxCentralProcessor;
+import oshi.hardware.platform.linux.LinuxGlobalMemory;
 import oshi.software.os.OperatingSystem;
+import oshi.software.os.linux.LinuxOperatingSystem;
 
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
 /**
@@ -45,47 +55,55 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class SystemInfoResourceTest {
 
-    private static final InfoProvider provider = new DefaultInfoProvider(null, null, null);
-    private static final OperatingSystem os = mock(OperatingSystem.class);
-    private static final CentralProcessor processor = mock(CentralProcessor.class);
-    private static final GlobalMemory memory = mock(GlobalMemory.class);
-    private static final PowerSource[] powerSources = new PowerSource[]{mock(PowerSource.class)};
-    private static final Sensors sensors = mock(Sensors.class);
+    private static final InfoProvider provider = mock(InfoProvider.class);
 
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
-            .addResource(new SystemResource(provider, os, processor, memory, powerSources, sensors))
+            .addResource(new SystemResource(provider))
             .build();
 
     @Before
     public void setUp() {
-        when(sensors.getCpuTemperature()).thenReturn((double) 30);
-        when(os.getProcessCount()).thenReturn(70);
-        when(os.getThreadCount()).thenReturn(100);
     }
 
     @Test
-    @Ignore
-    public void getSystem() throws Exception {
-        double temperature = 30;
-        double voltage = 12;
+    public void getSystemHappyPath() throws Exception {
+        when(provider.getSystemInfo()).thenReturn(
+                new com.krillsson.sysapi.core.domain.system.SystemInfo("theHost",
+                        new LinuxOperatingSystem(),
+                new CpuInfo(new LinuxCentralProcessor(), 4, 80,
+                        new CpuLoad(100,0,0,0,0, 0,0,0,0),
+                        new CpuHealth(new double[0], 120, 1000, 10)),
+                        new LinuxGlobalMemory(),
+                        new PowerSource[0]));
 
-        when(sensors.getCpuTemperature()).thenReturn(temperature);
-        when(sensors.getCpuVoltage()).thenReturn(voltage);
         final SystemInfo response = RESOURCES.getJerseyTest().target("/system")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(SystemInfo.class);
-        assertThat(response.getCpuInfo().getCpuHealth().getTemperatures()[0]).isEqualTo(temperature);
-        assertThat(response.getCpuInfo().getCpuHealth().getVoltage()).isEqualTo(voltage);
+        assertNotNull(response);
+        assertEquals(response.getCpuInfo().getCpuLoad().getCpuLoadCountingTicks(), 100, 0);
     }
 
-    @After
-    public void tearDown() {
-        reset(os);
-        reset(processor);
-        reset(memory);
-        reset(powerSources);
-        reset(sensors);
+    @Test
+    public void getSystemSadPath() throws Exception {
+        when(provider.getSystemInfo()).thenThrow(new RuntimeException());
+
+        Response systemInfo = RESOURCES.getJerseyTest().target("/system")
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .get();
+
+        assertEquals(systemInfo.getStatus(), 500);
+    }
+
+    @Test
+    public void getJvmPropertiesWithCustomProperties() throws Exception {
+        System.setProperty("theProperty", "hello");
+
+        final JvmProperties response = RESOURCES.getJerseyTest().target("/system/jvm")
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .get(JvmProperties.class);
+
+        assertNotNull(response.getProperties().get("theProperty"));
     }
 
 }

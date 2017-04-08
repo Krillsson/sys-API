@@ -30,18 +30,14 @@ import com.krillsson.sysapi.core.domain.cpu.CpuInfoMapper;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import io.dropwizard.auth.Auth;
 import oshi.hardware.CentralProcessor;
-import oshi.hardware.CentralProcessor.TickType;
 import oshi.hardware.Sensors;
 import oshi.software.os.OperatingSystem;
-import oshi.util.Util;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 @Path("cpu")
 @Produces(MediaType.APPLICATION_JSON)
@@ -74,9 +70,9 @@ public class CpuResource {
                 operatingSystem.getProcessCount(),
                 operatingSystem.getThreadCount(),
                 cpuLoad, new CpuHealth(temperature,
-                        sensors.getCpuVoltage(),
-                        fanRpm,
-                        fanPercent)));
+                sensors.getCpuVoltage(),
+                fanRpm,
+                fanPercent)));
     }
 
     @GET

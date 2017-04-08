@@ -29,12 +29,15 @@ import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import com.krillsson.sysapi.core.domain.processes.Process;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
 import com.krillsson.sysapi.core.domain.storage.DiskHealth;
+import com.krillsson.sysapi.core.domain.system.SystemInfo;
 import oshi.software.os.OperatingSystem;
 
 import java.util.Map;
 import java.util.Optional;
 
 public interface InfoProvider {
+
+    SystemInfo getSystemInfo();
 
     DiskHealth diskHealth(String name);
 

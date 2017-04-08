@@ -50,53 +50,17 @@ import java.util.Properties;
 @Produces(MediaType.APPLICATION_JSON)
 public class SystemResource {
 
-    private final OperatingSystem operatingSystem;
-    private final CentralProcessor processor;
-    private final GlobalMemory memory;
-    private final PowerSource[] powerSources;
-    private final Sensors sensors;
     private final InfoProvider provider;
 
-    public SystemResource(InfoProvider provider, OperatingSystem operatingSystem, CentralProcessor processor, GlobalMemory memory, PowerSource[] powerSources, Sensors sensors) {
+    public SystemResource(InfoProvider provider) {
         this.provider = provider;
-        this.operatingSystem = operatingSystem;
-        this.processor = processor;
-        this.memory = memory;
-        this.powerSources = powerSources;
-        this.sensors = sensors;
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public com.krillsson.sysapi.dto.system.SystemInfo getRoot(@Auth UserConfiguration user) {
-        double[] temperature = provider.cpuTemperatures();
-        double fanRpm = provider.cpuFanRpm();
-        double fanPercent = provider.cpuFanPercent();
-        CpuLoad cpuLoad = provider.cpuLoad();
-        if (temperature.length == 0) {
-            temperature = new double[]{sensors.getCpuTemperature()};
-        }
-        return SystemInfoMapper.INSTANCE.map(new SystemInfo(
-                getHostName(),
-                operatingSystem,
-                new CpuInfo(processor,
-                        operatingSystem.getProcessCount(),
-                        operatingSystem.getThreadCount(),
-                        cpuLoad, new CpuHealth(
-                                temperature,
-                                sensors.getCpuVoltage(),
-                                fanRpm,
-                                fanPercent)),
-                memory,
-                powerSources));
-    }
-
-    private String getHostName() {
-        try {
-            return java.net.InetAddress.getLocalHost().getHostName();
-        } catch (UnknownHostException e) {
-            return "";
-        }
+        SystemInfo value = provider.getSystemInfo();
+        return SystemInfoMapper.INSTANCE.map(value);
     }
 
     @GET

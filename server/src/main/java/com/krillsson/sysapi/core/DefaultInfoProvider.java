@@ -20,6 +20,8 @@
  */
 package com.krillsson.sysapi.core;
 
+import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
+import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
@@ -29,6 +31,7 @@ import com.krillsson.sysapi.core.domain.processes.Process;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
 import com.krillsson.sysapi.core.domain.storage.DiskHealth;
+import com.krillsson.sysapi.core.domain.system.SystemInfo;
 import com.krillsson.sysapi.util.Utils;
 import org.slf4j.Logger;
 import oshi.hardware.CentralProcessor;
@@ -38,6 +41,7 @@ import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
 
 import java.math.BigDecimal;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
@@ -141,6 +145,38 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     @Override
+    public SystemInfo getSystemInfo() {
+        double[] temperature = cpuTemperatures();
+        double fanRpm = cpuFanRpm();
+        double fanPercent = cpuFanPercent();
+        CpuLoad cpuLoad = cpuLoad();
+        if (temperature.length == 0) {
+            temperature = new double[]{hal.getSensors().getCpuTemperature()};
+        }
+        return new SystemInfo(
+                getHostName(),
+                operatingSystem,
+                new CpuInfo(hal.getProcessor(),
+                        operatingSystem.getProcessCount(),
+                        operatingSystem.getThreadCount(),
+                        cpuLoad, new CpuHealth(
+                        temperature,
+                        hal.getSensors().getCpuVoltage(),
+                        fanRpm,
+                        fanPercent)),
+                hal.getMemory(),
+                hal.getPowerSources());
+    }
+
+    private String getHostName() {
+        try {
+            return java.net.InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            return "";
+        }
+    }
+
+    @Override
     public NetworkInterfaceData[] getAllNetworkInterfaces() {
         return defaultNetworkProvider.getAllNetworkInterfaces();
     }
@@ -166,7 +202,8 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
         Process[] processes = Arrays
                 .stream(operatingSystem.getProcesses(limit, sortBy))
                 .map(p -> Process.create(p, memory))
-                .collect(Collectors.toList()).toArray(new Process[0]);
+                .collect(Collectors.toList())
+                .toArray(new Process[0]);
 
         return new ProcessesInfo(memory, operatingSystem.getProcessId(), operatingSystem.getThreadCount(), operatingSystem.getProcessCount(), processes);
     }
