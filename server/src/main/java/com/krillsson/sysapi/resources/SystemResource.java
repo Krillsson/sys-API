@@ -23,25 +23,16 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.InfoProvider;
-import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
-import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
-import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.core.domain.system.JvmProperties;
 import com.krillsson.sysapi.core.domain.system.SystemInfo;
 import com.krillsson.sysapi.core.domain.system.SystemInfoMapper;
 import io.dropwizard.auth.Auth;
-import oshi.hardware.CentralProcessor;
-import oshi.hardware.GlobalMemory;
-import oshi.hardware.PowerSource;
-import oshi.hardware.Sensors;
-import oshi.software.os.OperatingSystem;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -59,7 +50,7 @@ public class SystemResource {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public com.krillsson.sysapi.dto.system.SystemInfo getRoot(@Auth UserConfiguration user) {
-        SystemInfo value = provider.getSystemInfo();
+        SystemInfo value = provider.systemInfo();
         return SystemInfoMapper.INSTANCE.map(value);
     }
 

@@ -20,6 +20,7 @@
  */
 package com.krillsson.sysapi.core;
 
+import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
@@ -28,6 +29,7 @@ import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import com.krillsson.sysapi.core.domain.processes.Process;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
+import com.krillsson.sysapi.core.domain.sensors.SensorsInfo;
 import com.krillsson.sysapi.core.domain.storage.DiskHealth;
 import com.krillsson.sysapi.core.domain.system.SystemInfo;
 import oshi.software.os.OperatingSystem;
@@ -37,7 +39,11 @@ import java.util.Optional;
 
 public interface InfoProvider {
 
-    SystemInfo getSystemInfo();
+    CpuInfo cpuInfo();
+
+    long[] systemCpuLoadTicks();
+
+    SystemInfo systemInfo();
 
     DiskHealth diskHealth(String name);
 
@@ -66,4 +72,6 @@ public interface InfoProvider {
     ProcessesInfo processesInfo(OperatingSystem.ProcessSort sortBy, int limit);
 
     Optional<Process> getProcessByPid(int pid);
+
+    SensorsInfo sensorsInfo();
 }

@@ -40,25 +40,16 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public class SensorsResource {
 
-    private final Sensors sensors;
     private InfoProvider provider;
 
-    public SensorsResource(Sensors sensors, InfoProvider provider) {
-        this.sensors = sensors;
+    public SensorsResource(InfoProvider provider) {
         this.provider = provider;
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public com.krillsson.sysapi.dto.sensors.SensorsInfo getRoot(@Auth UserConfiguration user) {
-        double[] cpuTemperatures = provider.cpuTemperatures();
-        double cpuFanRpm = provider.cpuFanRpm();
-        double cpuFanPercent = provider.cpuFanPercent();
-        if (cpuTemperatures.length == 0) {
-            cpuTemperatures = new double[]{sensors.getCpuTemperature()};
-        }
-        HealthData[] healthData = provider.mainboardHealthData();
-        return SensorsInfoMapper.INSTANCE.map(new SensorsInfo(new CpuHealth(cpuTemperatures, sensors.getCpuVoltage(), cpuFanRpm, cpuFanPercent), provider.gpuHealths(), healthData));
+        return SensorsInfoMapper.INSTANCE.map(provider.sensorsInfo());
     }
 
 }

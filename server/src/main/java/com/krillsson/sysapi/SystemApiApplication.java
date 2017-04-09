@@ -116,8 +116,8 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         environment.jersey().register(new NetworkInterfacesResource(provider));
         environment.jersey().register(new PowerSourcesResource(hal.getPowerSources()));
         environment.jersey().register(new ProcessesResource(provider));
-        environment.jersey().register(new CpuResource(os, sensors, hal.getProcessor(), provider));
-        environment.jersey().register(new SensorsResource(sensors, provider));
+        environment.jersey().register(new CpuResource(provider));
+        environment.jersey().register(new SensorsResource(provider));
         environment.jersey().register(new MotherboardResource(hal.getComputerSystem(), hal.getUsbDevices(false)));
         environment.jersey().register(new MetaInfoResource(getVersionFromManifest(), getEndpoints(environment)));
     }

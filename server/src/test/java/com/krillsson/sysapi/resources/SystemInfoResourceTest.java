@@ -21,7 +21,6 @@
 
 package com.krillsson.sysapi.resources;
 
-import com.krillsson.sysapi.core.DefaultInfoProvider;
 import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
@@ -29,25 +28,23 @@ import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.dto.system.JvmProperties;
 import com.krillsson.sysapi.dto.system.SystemInfo;
 import io.dropwizard.testing.junit.ResourceTestRule;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.GlobalMemory;
 import oshi.hardware.PowerSource;
-import oshi.hardware.Sensors;
-import oshi.hardware.platform.linux.LinuxCentralProcessor;
-import oshi.hardware.platform.linux.LinuxGlobalMemory;
 import oshi.software.os.OperatingSystem;
-import oshi.software.os.linux.LinuxOperatingSystem;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link SystemResource}.
@@ -68,13 +65,15 @@ public class SystemInfoResourceTest {
 
     @Test
     public void getSystemHappyPath() throws Exception {
-        when(provider.getSystemInfo()).thenReturn(
-                new com.krillsson.sysapi.core.domain.system.SystemInfo("theHost",
-                        new LinuxOperatingSystem(),
-                new CpuInfo(new LinuxCentralProcessor(), 4, 80,
-                        new CpuLoad(100,0,0,0,0, 0,0,0,0),
-                        new CpuHealth(new double[0], 120, 1000, 10)),
-                        new LinuxGlobalMemory(),
+        OperatingSystem operatingSystem = mock(OperatingSystem.class);
+        CentralProcessor centralProcessor = mock(CentralProcessor.class);
+        GlobalMemory globalMemory = mock(GlobalMemory.class);
+        when(provider.systemInfo()).thenReturn(
+                new com.krillsson.sysapi.core.domain.system.SystemInfo("theHost", operatingSystem,
+                        new CpuInfo(centralProcessor, 4, 80,
+                                new CpuLoad(100, 0, 0, 0, 0, 0, 0, 0, 0),
+                                new CpuHealth(new double[0], 120, 1000, 10)),
+                        globalMemory,
                         new PowerSource[0]));
 
         final SystemInfo response = RESOURCES.getJerseyTest().target("/system")
@@ -86,7 +85,7 @@ public class SystemInfoResourceTest {
 
     @Test
     public void getSystemSadPath() throws Exception {
-        when(provider.getSystemInfo()).thenThrow(new RuntimeException());
+        when(provider.systemInfo()).thenThrow(new RuntimeException());
 
         Response systemInfo = RESOURCES.getJerseyTest().target("/system")
                 .request(MediaType.APPLICATION_JSON_TYPE)

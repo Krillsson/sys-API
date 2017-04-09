@@ -36,8 +36,11 @@ import oshi.software.os.OperatingSystem;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
@@ -61,10 +64,19 @@ public class ProcessesResource {
             try {
                 sortBy = OperatingSystem.ProcessSort.valueOf(method);
             } catch (IllegalArgumentException e) {
-                LOGGER.error("No process sort method of type {} was found. Defaulting to: {}", method, OperatingSystem.ProcessSort.NAME);
+                String validOptions = Arrays.stream(OperatingSystem.ProcessSort.values()).map(Enum::name).collect(Collectors.joining(", ", "Valid options are: ", "."));
+                LOGGER.error("No process sort method of type {} was found. {}", method, validOptions);
+                throw new WebApplicationException(String.format("No process sort method of type %s was found. %s", method, validOptions),
+                        Response.Status.BAD_REQUEST);
             }
         }
         Integer theLimit = limit.orElse(0);
+        if(theLimit < 0){
+            String message = String.format("limit cannot be negative (%d)", theLimit);
+            LOGGER.error(message);
+            throw new WebApplicationException(message,Response.Status.BAD_REQUEST);
+        }
+
         ProcessesInfo value = provider.processesInfo(sortBy, theLimit);
         return ProcessInfoMapper.INSTANCE.map(value);
     }
@@ -75,7 +87,7 @@ public class ProcessesResource {
     public Process getProcessByPid(@PathParam("pid") int pid) {
         Optional<com.krillsson.sysapi.core.domain.processes.Process> process = provider.getProcessByPid(pid);
         if (!process.isPresent()) {
-            throw new WebApplicationException(NOT_FOUND);
+            throw new WebApplicationException(String.format("No process with PID %d was found.", pid), NOT_FOUND);
         }
         return ProcessInfoMapper.INSTANCE.map(process.get());
     }

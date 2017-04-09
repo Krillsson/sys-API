@@ -30,6 +30,7 @@ import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
 import com.krillsson.sysapi.core.domain.processes.Process;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
+import com.krillsson.sysapi.core.domain.sensors.SensorsInfo;
 import com.krillsson.sysapi.core.domain.storage.DiskHealth;
 import com.krillsson.sysapi.core.domain.system.SystemInfo;
 import com.krillsson.sysapi.util.Utils;
@@ -68,6 +69,29 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
         this.operatingSystem = operatingSystem;
         this.utils = utils;
         this.defaultNetworkProvider = new DefaultNetworkProvider(hal, utils);
+    }
+
+    @Override
+    public CpuInfo cpuInfo() {
+        double[] temperature = cpuTemperatures();
+        double fanRpm = cpuFanRpm();
+        double fanPercent = cpuFanPercent();
+        CpuLoad cpuLoad = cpuLoad();
+        if (temperature.length == 0) {
+            temperature = new double[]{hal.getSensors().getCpuTemperature()};
+        }
+        return new CpuInfo(hal.getProcessor(),
+                operatingSystem.getProcessCount(),
+                operatingSystem.getThreadCount(),
+                cpuLoad, new CpuHealth(temperature,
+                hal.getSensors().getCpuVoltage(),
+                fanRpm,
+                fanPercent));
+    }
+
+    @Override
+    public long[] systemCpuLoadTicks() {
+        return hal.getProcessor().getSystemCpuLoadTicks();
     }
 
     @Override
@@ -145,7 +169,7 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     @Override
-    public SystemInfo getSystemInfo() {
+    public SystemInfo systemInfo() {
         double[] temperature = cpuTemperatures();
         double fanRpm = cpuFanRpm();
         double fanPercent = cpuFanPercent();
@@ -213,6 +237,18 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
         return Optional
                 .of(operatingSystem.getProcess(pid))
                 .map((OSProcess p) -> Process.create(p, hal.getMemory()));
+    }
+
+    @Override
+    public SensorsInfo sensorsInfo() {
+        double[] cpuTemperatures = cpuTemperatures();
+        double cpuFanRpm = cpuFanRpm();
+        double cpuFanPercent = cpuFanPercent();
+        if (cpuTemperatures.length == 0) {
+            cpuTemperatures = new double[]{hal.getSensors().getCpuTemperature()};
+        }
+        HealthData[] healthData = mainboardHealthData();
+        return new SensorsInfo(new CpuHealth(cpuTemperatures, hal.getSensors().getCpuVoltage(), cpuFanRpm, cpuFanPercent), gpuHealths(), healthData);
     }
 
 }
