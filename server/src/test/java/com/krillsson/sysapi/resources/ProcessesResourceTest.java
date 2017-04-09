@@ -5,10 +5,7 @@ import com.krillsson.sysapi.core.domain.processes.Process;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import com.krillsson.sysapi.dto.processes.ProcessInfo;
 import io.dropwizard.testing.junit.ResourceTestRule;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.*;
 import org.mockito.ArgumentCaptor;
 import oshi.hardware.GlobalMemory;
 import oshi.software.os.OSProcess;
@@ -27,6 +24,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 public class ProcessesResourceTest {
@@ -145,5 +143,10 @@ public class ProcessesResourceTest {
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get();
         Assert.assertEquals(response.getStatus(), 500);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        reset(provider);
     }
 }

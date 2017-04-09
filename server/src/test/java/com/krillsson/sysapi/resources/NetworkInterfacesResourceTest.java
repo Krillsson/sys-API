@@ -4,6 +4,7 @@ import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
 import com.krillsson.sysapi.dto.network.NetworkInterfaceData;
 import io.dropwizard.testing.junit.ResourceTestRule;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.isNotNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 public class NetworkInterfacesResourceTest {
@@ -79,5 +81,10 @@ public class NetworkInterfacesResourceTest {
         } catch (SocketException ignored) {
         }
         return null;
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        reset(provider);
     }
 }

@@ -6,6 +6,7 @@ import com.krillsson.sysapi.core.domain.sensors.DataType;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
 import com.krillsson.sysapi.core.domain.sensors.SensorsInfo;
 import io.dropwizard.testing.junit.ResourceTestRule;
+import org.junit.After;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 public class SensorsResourceTest {
@@ -44,5 +46,10 @@ public class SensorsResourceTest {
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get();
         assertEquals(response.getStatus(), 500);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        reset(provider);
     }
 }

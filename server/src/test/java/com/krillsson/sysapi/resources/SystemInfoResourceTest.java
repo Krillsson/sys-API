@@ -28,6 +28,7 @@ import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.dto.system.JvmProperties;
 import com.krillsson.sysapi.dto.system.SystemInfo;
 import io.dropwizard.testing.junit.ResourceTestRule;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -44,6 +45,7 @@ import javax.ws.rs.core.Response;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 /**
@@ -108,4 +110,8 @@ public class SystemInfoResourceTest {
         assertNotNull(response.getProperties().get("theProperty"));
     }
 
+    @After
+    public void tearDown() throws Exception {
+        reset(provider);
+    }
 }
