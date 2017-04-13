@@ -53,7 +53,7 @@ public class NetworkInterfacesResourceTest {
         NetworkInterfaceData networkInterfaceData = RESOURCES.getJerseyTest().target("/nics/en0")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(NetworkInterfaceData.class);
-        assertTrue(networkInterfaceData.getNetworkInterfaceSpeed().getRxbps()>= 0);
+        assertTrue(networkInterfaceData.getNetworkInterfaceSpeed().getRxbps() >= 0);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class NetworkInterfacesResourceTest {
         NetworkInterfaceData[] networkInterfaceData = RESOURCES.getJerseyTest().target("/nics")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(NetworkInterfaceData[].class);
-        assertTrue(networkInterfaceData[0].getNetworkInterfaceSpeed().getRxbps()>= 0);
+        assertTrue(networkInterfaceData[0].getNetworkInterfaceSpeed().getRxbps() >= 0);
     }
 
     private NetworkIF getNetworkIf() {

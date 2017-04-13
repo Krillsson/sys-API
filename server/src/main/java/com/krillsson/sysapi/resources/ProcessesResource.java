@@ -74,7 +74,7 @@ public class ProcessesResource {
         if(theLimit < 0){
             String message = String.format("limit cannot be negative (%d)", theLimit);
             LOGGER.error(message);
-            throw new WebApplicationException(message,Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(message, Response.Status.BAD_REQUEST);
         }
 
         ProcessesInfo value = provider.processesInfo(sortBy, theLimit);
