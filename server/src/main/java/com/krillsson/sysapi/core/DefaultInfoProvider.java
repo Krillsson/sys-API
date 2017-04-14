@@ -32,21 +32,20 @@ import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
 import com.krillsson.sysapi.core.domain.sensors.SensorsInfo;
 import com.krillsson.sysapi.core.domain.storage.DiskHealth;
+import com.krillsson.sysapi.core.domain.storage.DiskInfo;
+import com.krillsson.sysapi.core.domain.storage.StorageInfo;
 import com.krillsson.sysapi.core.domain.system.SystemInfo;
 import com.krillsson.sysapi.util.Utils;
 import org.slf4j.Logger;
-import oshi.hardware.CentralProcessor;
-import oshi.hardware.GlobalMemory;
-import oshi.hardware.HardwareAbstractionLayer;
+import oshi.hardware.*;
+import oshi.software.os.FileSystem;
+import oshi.software.os.OSFileStore;
 import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
 
 import java.math.BigDecimal;
 import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -249,6 +248,39 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
         }
         HealthData[] healthData = mainboardHealthData();
         return new SensorsInfo(new CpuHealth(cpuTemperatures, hal.getSensors().getCpuVoltage(), cpuFanRpm, cpuFanPercent), gpuHealths(), healthData);
+    }
+
+    @Override
+    public Optional<DiskInfo> getDiskInfoByName(String name){
+        return Arrays.stream(hal.getDiskStores()).filter(d -> d.getName().equals(name)).map(di -> {
+            OSFileStore associatedFileStore = findAssociatedFileStore(di);
+            String mount = associatedFileStore != null ? associatedFileStore.getMount() : "N/A";
+            return new DiskInfo(di, diskHealth(mount), associatedFileStore);
+        }).findFirst();
+
+    }
+
+    @Override
+    public StorageInfo storageInfo() {
+        List<DiskInfo> diskInfos = new ArrayList<>();
+        for (HWDiskStore diskStore : hal.getDiskStores()) {
+            OSFileStore associatedFileStore = findAssociatedFileStore(diskStore);
+            String name = associatedFileStore != null ? associatedFileStore.getMount() : "N/A";
+            diskInfos.add(new DiskInfo(diskStore, diskHealth(name), associatedFileStore));
+        }
+        FileSystem fileSystem = operatingSystem.getFileSystem();
+        return new StorageInfo(diskInfos.toArray(/*type reference*/new DiskInfo[0]), fileSystem.getOpenFileDescriptors(), fileSystem.getMaxFileDescriptors(), utils.currentSystemTime());
+    }
+
+    private OSFileStore findAssociatedFileStore(HWDiskStore diskStore) {
+        for (OSFileStore osFileStore : Arrays.asList(operatingSystem.getFileSystem().getFileStores())) {
+            for (HWPartition hwPartition : Arrays.asList(diskStore.getPartitions())) {
+                if (osFileStore.getUUID().equals(hwPartition.getUuid())) {
+                    return osFileStore;
+                }
+            }
+        }
+        return null;
     }
 
 }

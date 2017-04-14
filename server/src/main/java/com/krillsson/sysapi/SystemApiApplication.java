@@ -110,7 +110,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         Sensors sensors = hal.getSensors();
 
         environment.jersey().register(new SystemResource(provider));
-        environment.jersey().register(new DiskStoresResource(hal.getDiskStores(), os.getFileSystem(), provider));
+        environment.jersey().register(new DiskStoresResource(provider));
         environment.jersey().register(new GpuResource(hal.getDisplays(), provider));
         environment.jersey().register(new MemoryResource(hal.getMemory()));
         environment.jersey().register(new NetworkInterfacesResource(provider));

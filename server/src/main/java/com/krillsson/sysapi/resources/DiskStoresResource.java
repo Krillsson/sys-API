@@ -23,9 +23,11 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.InfoProvider;
+import com.krillsson.sysapi.core.domain.processes.ProcessInfoMapper;
 import com.krillsson.sysapi.core.domain.storage.DiskInfo;
 import com.krillsson.sysapi.core.domain.storage.StorageInfo;
 import com.krillsson.sysapi.core.domain.storage.StorageInfoMapper;
+import com.krillsson.sysapi.dto.processes.Process;
 import io.dropwizard.auth.Auth;
 import oshi.hardware.HWDiskStore;
 import oshi.hardware.HWPartition;
@@ -33,50 +35,41 @@ import oshi.software.os.FileSystem;
 import oshi.software.os.OSFileStore;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
 @Path("storage")
 @Produces(MediaType.APPLICATION_JSON)
 public class DiskStoresResource {
 
-    private final HWDiskStore[] diskStores;
-    private final FileSystem fileSystem;
     private final InfoProvider provider;
 
-    public DiskStoresResource(HWDiskStore[] diskStores, FileSystem fileSystem, InfoProvider provider) {
-        this.diskStores = diskStores;
-        this.fileSystem = fileSystem;
+    public DiskStoresResource(InfoProvider provider) {
         this.provider = provider;
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public com.krillsson.sysapi.dto.storage.StorageInfo getRoot(@Auth UserConfiguration user) {
-        List<DiskInfo> DiskInfos = new ArrayList<>();
-        for (HWDiskStore diskStore : diskStores) {
-            OSFileStore associatedFileStore = findAssociatedFileStore(diskStore);
-            String name = associatedFileStore != null ? associatedFileStore.getMount() : "";
-            DiskInfos.add(new DiskInfo(diskStore, provider.diskHealth(name), associatedFileStore));
-        }
-        StorageInfo storageInfo = new StorageInfo(DiskInfos.toArray(/*type reference*/new DiskInfo[0]), fileSystem.getOpenFileDescriptors(), fileSystem.getMaxFileDescriptors(), System.currentTimeMillis());
+        StorageInfo storageInfo = provider.storageInfo();
         return StorageInfoMapper.INSTANCE.map(storageInfo);
     }
 
-    private OSFileStore findAssociatedFileStore(HWDiskStore diskStore) {
-        for (OSFileStore osFileStore : Arrays.asList(fileSystem.getFileStores())) {
-            for (HWPartition hwPartition : Arrays.asList(diskStore.getPartitions())) {
-                if (osFileStore.getUUID().equals(hwPartition.getUuid())) {
-                    return osFileStore;
-                }
-            }
+    @GET
+    @Path("{name}")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public com.krillsson.sysapi.dto.storage.DiskInfo getDiskByName(@PathParam("name") String name) {
+        Optional<DiskInfo> disk = provider.getDiskInfoByName(name);
+        if (!disk.isPresent()) {
+            throw new WebApplicationException(String.format("No disk with name %s was found.", name), NOT_FOUND);
         }
-        return null;
+        return StorageInfoMapper.INSTANCE.map(disk.get());
     }
 
 }

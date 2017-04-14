@@ -31,6 +31,8 @@ import com.krillsson.sysapi.core.domain.processes.Process;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
 import com.krillsson.sysapi.core.domain.sensors.SensorsInfo;
 import com.krillsson.sysapi.core.domain.storage.DiskHealth;
+import com.krillsson.sysapi.core.domain.storage.DiskInfo;
+import com.krillsson.sysapi.core.domain.storage.StorageInfo;
 import com.krillsson.sysapi.core.domain.system.SystemInfo;
 import oshi.software.os.OperatingSystem;
 
@@ -74,4 +76,8 @@ public interface InfoProvider {
     Optional<Process> getProcessByPid(int pid);
 
     SensorsInfo sensorsInfo();
+
+    StorageInfo storageInfo();
+
+    Optional<DiskInfo> getDiskInfoByName(String name);
 }
