@@ -34,6 +34,7 @@ import com.krillsson.sysapi.core.domain.storage.DiskHealth;
 import com.krillsson.sysapi.core.domain.storage.DiskInfo;
 import com.krillsson.sysapi.core.domain.storage.StorageInfo;
 import com.krillsson.sysapi.core.domain.system.SystemInfo;
+import oshi.hardware.GlobalMemory;
 import oshi.software.os.OperatingSystem;
 
 import java.util.Map;
@@ -80,4 +81,6 @@ public interface InfoProvider {
     StorageInfo storageInfo();
 
     Optional<DiskInfo> getDiskInfoByName(String name);
+
+    GlobalMemory globalMemory();
 }

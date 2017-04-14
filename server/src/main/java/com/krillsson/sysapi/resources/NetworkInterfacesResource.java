@@ -61,11 +61,4 @@ public class NetworkInterfacesResource {
         return NetworkInterfacesDataMapper.INSTANCE.map(networkInterface.get());
     }
 
-    @GET
-    @Path("names")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public String[] getNetworkInterfaceNames(@Auth UserConfiguration user) {
-        return infoProvider.getNetworkInterfaceNames();
-    }
-
 }

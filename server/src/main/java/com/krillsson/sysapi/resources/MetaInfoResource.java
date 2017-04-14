@@ -54,8 +54,8 @@ public class MetaInfoResource {
         };
     }
 
-    @Path("version")
     @GET
+    @Path("version")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public String getVersion(@Auth UserConfiguration user) {
         return version;

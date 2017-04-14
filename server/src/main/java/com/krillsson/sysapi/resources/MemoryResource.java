@@ -22,6 +22,7 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
+import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.domain.memory.GlobalMemoryMapper;
 import com.krillsson.sysapi.dto.processes.Memory;
 import io.dropwizard.auth.Auth;
@@ -37,16 +38,16 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public class MemoryResource {
 
-    private GlobalMemory memory;
+    private InfoProvider provider;
 
-    public MemoryResource(GlobalMemory memory) {
-        this.memory = memory;
+    public MemoryResource(InfoProvider provider) {
+        this.provider = provider;
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public Memory getRoot(@Auth UserConfiguration user) {
-        return GlobalMemoryMapper.INSTANCE.map(memory);
+        return GlobalMemoryMapper.INSTANCE.map(provider.globalMemory());
     }
 
 }

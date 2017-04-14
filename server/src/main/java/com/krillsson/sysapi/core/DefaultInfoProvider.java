@@ -261,6 +261,11 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     @Override
+    public GlobalMemory globalMemory() {
+        return hal.getMemory();
+    }
+
+    @Override
     public StorageInfo storageInfo() {
         List<DiskInfo> diskInfos = new ArrayList<>();
         for (HWDiskStore diskStore : hal.getDiskStores()) {
