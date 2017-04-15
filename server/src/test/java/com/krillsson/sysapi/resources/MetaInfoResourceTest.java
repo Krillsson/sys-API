@@ -22,15 +22,25 @@ public class MetaInfoResourceTest {
             .build();
 
     @Test
-    public void getMetaHappyPath() throws Exception {
-
+    public void getRootHappyPath() throws Exception {
         final com.krillsson.sysapi.dto.metadata.Meta response = RESOURCES.getJerseyTest().target("/")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(com.krillsson.sysapi.dto.metadata.Meta.class);
+
         assertNotNull(response);
         assertEquals(response.getVersion(), "1.0");
         assertEquals(response.getEndpoints()[0], "test0");
         assertEquals(response.getEndpoints()[1], "test1");
+    }
+
+    @Test
+    public void getVersionHappyPath() throws Exception {
+        final String response = RESOURCES.getJerseyTest().target("/version")
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .get(String.class);
+
+        assertNotNull(response);
+        assertEquals(response, "1.0");
     }
 
     @After
