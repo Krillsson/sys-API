@@ -22,6 +22,8 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
+import com.krillsson.sysapi.core.domain.metadata.MetaMapper;
+import com.krillsson.sysapi.dto.metadata.Meta;
 import io.dropwizard.auth.Auth;
 
 import javax.annotation.security.RolesAllowed;
@@ -46,12 +48,8 @@ public class MetaInfoResource {
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public Object getRoot(@Auth UserConfiguration user) {
-        return new Object()
-        {
-            public String message = "Hello from System API v" + getVersion(user);
-            public String[] endpoints = MetaInfoResource.this.endpoints;
-        };
+    public Meta getRoot(@Auth UserConfiguration user) {
+        return MetaMapper.INSTANCE.map(new com.krillsson.sysapi.core.domain.metadata.Meta(endpoints, version));
     }
 
     @GET

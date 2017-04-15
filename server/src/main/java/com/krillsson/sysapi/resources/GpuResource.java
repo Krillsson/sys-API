@@ -38,18 +38,16 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public class GpuResource {
 
-    private final Display[] displays;
     private InfoProvider provider;
 
-    public GpuResource(Display[] displays, InfoProvider provider) {
-        this.displays = displays;
+    public GpuResource(InfoProvider provider) {
         this.provider = provider;
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public com.krillsson.sysapi.dto.gpu.GpuInfo getRoot(@Auth UserConfiguration user) {
-        return GpuInfoMapper.INSTANCE.map(new GpuInfo(displays, provider.gpus()));
+        return GpuInfoMapper.INSTANCE.map(provider.gpuInfo());
     }
 
 }

@@ -22,6 +22,7 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
+import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.domain.motherboard.Motherboard;
 import com.krillsson.sysapi.core.domain.motherboard.MotherboardMapper;
 import io.dropwizard.auth.Auth;
@@ -38,18 +39,16 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public class MotherboardResource {
 
-    private final ComputerSystem computerSystem;
-    private final UsbDevice[] usbDevices;
+    InfoProvider provider;
 
-    public MotherboardResource(ComputerSystem computerSystem, UsbDevice[] usbDevices) {
-        this.computerSystem = computerSystem;
-        this.usbDevices = usbDevices;
+    public MotherboardResource(InfoProvider provider) {
+        this.provider = provider;
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public com.krillsson.sysapi.dto.motherboard.Motherboard getRoot(@Auth UserConfiguration user) {
-        return MotherboardMapper.INSTANCE.map(new Motherboard(computerSystem, usbDevices));
+        return MotherboardMapper.INSTANCE.map(provider.motherboard());
     }
 
 }

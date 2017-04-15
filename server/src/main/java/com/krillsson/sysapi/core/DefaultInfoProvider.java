@@ -25,6 +25,8 @@ import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
+import com.krillsson.sysapi.core.domain.gpu.GpuInfo;
+import com.krillsson.sysapi.core.domain.motherboard.Motherboard;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceData;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
 import com.krillsson.sysapi.core.domain.processes.Process;
@@ -263,6 +265,21 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     @Override
     public GlobalMemory globalMemory() {
         return hal.getMemory();
+    }
+
+    @Override
+    public PowerSource[] powerSources() {
+        return hal.getPowerSources();
+    }
+
+    @Override
+    public GpuInfo gpuInfo() {
+        return new GpuInfo(hal.getDisplays(), gpus());
+    }
+
+    @Override
+    public Motherboard motherboard() {
+        return new Motherboard(hal.getComputerSystem(), hal.getUsbDevices(false));
     }
 
     @Override

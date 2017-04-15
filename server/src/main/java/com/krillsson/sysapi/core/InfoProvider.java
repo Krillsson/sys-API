@@ -24,6 +24,8 @@ import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
+import com.krillsson.sysapi.core.domain.gpu.GpuInfo;
+import com.krillsson.sysapi.core.domain.motherboard.Motherboard;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceData;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
@@ -35,6 +37,7 @@ import com.krillsson.sysapi.core.domain.storage.DiskInfo;
 import com.krillsson.sysapi.core.domain.storage.StorageInfo;
 import com.krillsson.sysapi.core.domain.system.SystemInfo;
 import oshi.hardware.GlobalMemory;
+import oshi.hardware.PowerSource;
 import oshi.software.os.OperatingSystem;
 
 import java.util.Map;
@@ -83,4 +86,10 @@ public interface InfoProvider {
     Optional<DiskInfo> getDiskInfoByName(String name);
 
     GlobalMemory globalMemory();
+
+    PowerSource[] powerSources();
+
+    GpuInfo gpuInfo();
+
+    Motherboard motherboard();
 }
