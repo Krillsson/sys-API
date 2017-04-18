@@ -54,7 +54,7 @@ public class WindowsInfoProvider extends DefaultInfoProvider  {
 
     public WindowsInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils)
     {
-        super(hal, operatingSystem, utils);
+        super(hal, operatingSystem, utils, defaultNetworkProvider, defaultDiskProvider);
         this.hal = hal;
     }
 

@@ -58,7 +58,7 @@ public class InfoProviderFactory {
             case SOLARIS:
             case UNKNOWN:
             default:
-                return new DefaultInfoProvider(hal, operatingSystem, utils);
+                return new DefaultInfoProvider(hal, operatingSystem, utils, defaultNetworkProvider, defaultDiskProvider);
 
         }
     }

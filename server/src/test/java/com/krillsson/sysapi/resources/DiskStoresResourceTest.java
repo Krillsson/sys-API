@@ -36,11 +36,9 @@ public class DiskStoresResourceTest {
     @Before
     public void setUp() throws Exception {
         diskInfo = new DiskInfo(new HWDiskStore(), new DiskHealth(0, new HealthData[0]),
-                new OSFileStore("diskInfo", "", "", "", "", "", 0, 0));
+                diskSpeed, new OSFileStore("diskInfo", "", "", "", "", "", 0, 0));
         diskInfo.getHwDiskStore().setName("sd0");
         diskSd0 = new StorageInfo(new DiskInfo[]{diskInfo}, 0, 0, 0);
-
-
     }
 
     @Test

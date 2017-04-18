@@ -1,7 +1,6 @@
 package com.krillsson.sysapi.core.domain.network;
 
-public class NetworkInterfaceSpeed
-{
+public class NetworkInterfaceSpeed {
     private final long rxbps;
     private final long txbps;
 
