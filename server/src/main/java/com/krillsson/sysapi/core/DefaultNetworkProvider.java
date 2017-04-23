@@ -2,7 +2,7 @@ package com.krillsson.sysapi.core;
 
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceData;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
-import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeedMeasurement;
+import com.krillsson.sysapi.core.domain.network.SpeedMeasurement;
 import com.krillsson.sysapi.util.Utils;
 import org.slf4j.Logger;
 import oshi.hardware.HardwareAbstractionLayer;
@@ -10,14 +10,13 @@ import oshi.hardware.NetworkIF;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 class DefaultNetworkProvider {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultNetworkProvider.class);
     private static final double MILLIS_TO_SECONDS = 1000.0;
 
-    private HashMap<String, NetworkInterfaceSpeedMeasurement> nicSpeedStore = new HashMap<>();
+    private HashMap<String, SpeedMeasurement> nicSpeedStore = new HashMap<>();
 
     private static final long MAX_SAMPLING_THRESHOLD = TimeUnit.SECONDS.toMillis(10);
     private static final long SLEEP_SAMPLE_PERIOD = TimeUnit.SECONDS.toMillis(2);
@@ -74,11 +73,11 @@ class DefaultNetworkProvider {
 
     private void initializeMeasurement(NetworkIF networkIF, boolean sleep) {
         boolean updateNeeded;
-        NetworkInterfaceSpeedMeasurement start = nicSpeedStore.get(networkIF.getName());
+        SpeedMeasurement start = nicSpeedStore.get(networkIF.getName());
         updateNeeded = updateNeeded(start);
         if (updateNeeded) {
             networkIF.updateNetworkStats();
-            nicSpeedStore.put(networkIF.getName(), new NetworkInterfaceSpeedMeasurement(networkIF.getBytesRecv(),
+            nicSpeedStore.put(networkIF.getName(), new SpeedMeasurement(networkIF.getBytesRecv(),
                     networkIF.getBytesSent(),
                     utils.currentSystemTime()));
         }
@@ -89,14 +88,14 @@ class DefaultNetworkProvider {
     }
 
     private NetworkInterfaceSpeed measureNetworkSpeed(NetworkIF networkIF) {
-        NetworkInterfaceSpeedMeasurement start = nicSpeedStore.get(networkIF.getName());
+        SpeedMeasurement start = nicSpeedStore.get(networkIF.getName());
         networkIF.updateNetworkStats();
-        NetworkInterfaceSpeedMeasurement end = new NetworkInterfaceSpeedMeasurement(networkIF.getBytesRecv(),
+        SpeedMeasurement end = new SpeedMeasurement(networkIF.getBytesRecv(),
                 networkIF.getBytesSent(),
                 utils.currentSystemTime());
         nicSpeedStore.put(networkIF.getName(), end);
-        final long rxbps = measureSpeed(start.getSampledAt(), end.getSampledAt(), start.getRxBytes(), end.getRxBytes());
-        final long txbps = measureSpeed(start.getSampledAt(), end.getSampledAt(), start.getTxBytes(), end.getTxBytes());
+        final long rxbps = measureSpeed(start.getSampledAt(), end.getSampledAt(), start.getRead(), end.getRead());
+        final long txbps = measureSpeed(start.getSampledAt(), end.getSampledAt(), start.getWrite(), end.getWrite());
         return new NetworkInterfaceSpeed(rxbps, txbps);
     }
 
@@ -110,7 +109,7 @@ class DefaultNetworkProvider {
         return (long)bitsPerSecond;
     }
 
-    private boolean updateNeeded(NetworkInterfaceSpeedMeasurement start) {
+    private boolean updateNeeded(SpeedMeasurement start) {
         return start == null ||
                 utils.isOutsideMaximumDuration(start.getSampledAt(), MAX_SAMPLING_THRESHOLD);
     }

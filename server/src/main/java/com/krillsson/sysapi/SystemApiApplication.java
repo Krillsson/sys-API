@@ -107,7 +107,6 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         environment.jersey().register(new AuthValueFactoryProvider.Binder(UserConfiguration.class));
 
         InfoProvider provider = new InfoProviderFactory(hal, os, SystemInfo.getCurrentPlatformEnum(), config).provide();
-        Sensors sensors = hal.getSensors();
 
         environment.jersey().register(new SystemResource(provider));
         environment.jersey().register(new DiskStoresResource(provider));

@@ -45,7 +45,6 @@ class DefaultDiskProvider {
     private static final long MAX_SAMPLING_THRESHOLD = TimeUnit.SECONDS.toMillis(10);
     private static final long SLEEP_SAMPLE_PERIOD = TimeUnit.SECONDS.toMillis(2);
 
-
     private final OperatingSystem operatingSystem;
     private final HardwareAbstractionLayer hal;
     private final Utils utils;
