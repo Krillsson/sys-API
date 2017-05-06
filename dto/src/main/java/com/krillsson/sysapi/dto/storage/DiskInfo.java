@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "diskStore",
+        "diskSpeed",
         "diskHealth",
         "osFileStore"
 })
@@ -14,6 +15,8 @@ public class DiskInfo {
 
     @JsonProperty("diskStore")
     private DiskStore diskStore;
+    @JsonProperty("diskSpeed")
+    private DiskSpeed diskSpeed;
     @JsonProperty("diskHealth")
     private DiskHealth diskHealth;
     @JsonProperty("osFileStore")
@@ -45,6 +48,16 @@ public class DiskInfo {
     @JsonProperty("diskStore")
     public void setDiskStore(DiskStore diskStore) {
         this.diskStore = diskStore;
+    }
+
+    @JsonProperty("diskSpeed")
+    public DiskSpeed getDiskSpeed() {
+        return diskSpeed;
+    }
+
+    @JsonProperty("diskSpeed")
+    public void setDiskSpeed(DiskSpeed diskSpeed) {
+        this.diskSpeed = diskSpeed;
     }
 
     @JsonProperty("diskHealth")

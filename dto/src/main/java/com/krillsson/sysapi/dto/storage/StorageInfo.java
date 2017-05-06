@@ -17,8 +17,6 @@ public class StorageInfo {
     private long openFileDescriptors;
     @JsonProperty("maxFileDescriptors")
     private long maxFileDescriptors;
-    @JsonProperty("timeStamp")
-    private long timeStamp;
     @JsonProperty("diskInfo")
     private DiskInfo[] diskInfo = null;
 
@@ -29,16 +27,14 @@ public class StorageInfo {
     }
 
     /**
-     * @param timeStamp
      * @param diskInfo
      * @param openFileDescriptors
      * @param maxFileDescriptors
      */
-    public StorageInfo(long openFileDescriptors, long maxFileDescriptors, long timeStamp, DiskInfo[] diskInfo) {
+    public StorageInfo(long openFileDescriptors, long maxFileDescriptors, DiskInfo[] diskInfo) {
         super();
         this.openFileDescriptors = openFileDescriptors;
         this.maxFileDescriptors = maxFileDescriptors;
-        this.timeStamp = timeStamp;
         this.diskInfo = diskInfo;
     }
 
@@ -60,16 +56,6 @@ public class StorageInfo {
     @JsonProperty("maxFileDescriptors")
     public void setMaxFileDescriptors(long maxFileDescriptors) {
         this.maxFileDescriptors = maxFileDescriptors;
-    }
-
-    @JsonProperty("timeStamp")
-    public long getTimeStamp() {
-        return timeStamp;
-    }
-
-    @JsonProperty("timeStamp")
-    public void setTimeStamp(long timeStamp) {
-        this.timeStamp = timeStamp;
     }
 
     @JsonProperty("diskInfo")

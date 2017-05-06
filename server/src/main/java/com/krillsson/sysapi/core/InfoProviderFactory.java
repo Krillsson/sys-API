@@ -32,13 +32,15 @@ public class InfoProviderFactory {
     private final OperatingSystem operatingSystem;
     private final PlatformEnum os;
     private final SystemApiConfiguration configuration;
+    private final SpeedMeasurementManager speedMeasurementManager;
     private final Utils utils;
 
-    public InfoProviderFactory(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, PlatformEnum os, SystemApiConfiguration configuration) {
+    public InfoProviderFactory(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, PlatformEnum os, SystemApiConfiguration configuration, SpeedMeasurementManager speedMeasurementManager) {
         this.hal = hal;
         this.operatingSystem = operatingSystem;
         this.os = os;
         this.configuration = configuration;
+        this.speedMeasurementManager = speedMeasurementManager;
         this.utils = new Utils();
     }
 
@@ -46,7 +48,7 @@ public class InfoProviderFactory {
         switch (os) {
             case WINDOWS:
                 if (configuration.windows() == null || configuration.windows().enableOhmJniWrapper()) {
-                    WindowsInfoProvider windowsInfoProvider = new WindowsInfoProvider(hal, operatingSystem, utils);
+                    WindowsInfoProvider windowsInfoProvider = new WindowsInfoProvider(hal, operatingSystem, utils, new DefaultNetworkProvider(hal, speedMeasurementManager), new DefaultDiskProvider(operatingSystem, hal, speedMeasurementManager));
                     if (windowsInfoProvider.canProvide()) {
                         return windowsInfoProvider;
                     }
@@ -58,7 +60,7 @@ public class InfoProviderFactory {
             case SOLARIS:
             case UNKNOWN:
             default:
-                return new DefaultInfoProvider(hal, operatingSystem, utils, defaultNetworkProvider, defaultDiskProvider);
+                return new DefaultInfoProvider(hal, operatingSystem, utils, new DefaultNetworkProvider(hal, speedMeasurementManager), new DefaultDiskProvider(operatingSystem, hal, speedMeasurementManager));
 
         }
     }

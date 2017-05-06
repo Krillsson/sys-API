@@ -50,6 +50,8 @@ public interface StorageInfoMapper {
     )
     com.krillsson.sysapi.dto.storage.OsFileStore map(OSFileStore value);
 
+    com.krillsson.sysapi.dto.storage.DiskSpeed map(com.krillsson.sysapi.core.domain.storage.DiskSpeed value);
+
     com.krillsson.sysapi.dto.storage.DiskHealth map(DiskHealth value);
 
     com.krillsson.sysapi.dto.storage.DiskStore map(oshi.hardware.HWDiskStore value);

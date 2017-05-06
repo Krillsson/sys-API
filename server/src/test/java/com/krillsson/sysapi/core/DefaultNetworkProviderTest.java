@@ -18,13 +18,15 @@ public class DefaultNetworkProviderTest {
 
     DefaultNetworkProvider provider;
     private HardwareAbstractionLayer hal;
+    private SpeedMeasurementManager speedMeasurementManager;
     private Utils utils;
 
     @Before
     public void setUp() throws Exception {
         hal = mock(HardwareAbstractionLayer.class);
+        speedMeasurementManager = mock(SpeedMeasurementManager.class);
         utils = new TestableUtils();
-        provider = new DefaultNetworkProvider(hal, utils);
+        provider = new DefaultNetworkProvider(hal, speedMeasurementManager);
     }
 
     @Test

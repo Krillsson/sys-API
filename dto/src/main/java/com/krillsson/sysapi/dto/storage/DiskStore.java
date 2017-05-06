@@ -40,8 +40,6 @@ public class DiskStore {
     private long transferTime;
     @JsonProperty("partitions")
     private Partition[] partitions = null;
-    @JsonProperty("timeStamp")
-    private long timeStamp;
 
     /**
      * No args constructor for use in serialization
@@ -52,7 +50,6 @@ public class DiskStore {
     /**
      * @param reads
      * @param model
-     * @param timeStamp
      * @param partitions
      * @param name
      * @param writeBytes
@@ -62,7 +59,7 @@ public class DiskStore {
      * @param transferTime
      * @param size
      */
-    public DiskStore(String model, String name, String serial, long size, long reads, long readBytes, long writes, long writeBytes, long transferTime, Partition[] partitions, long timeStamp) {
+    public DiskStore(String model, String name, String serial, long size, long reads, long readBytes, long writes, long writeBytes, long transferTime, Partition[] partitions) {
         super();
         this.model = model;
         this.name = name;
@@ -74,7 +71,6 @@ public class DiskStore {
         this.writeBytes = writeBytes;
         this.transferTime = transferTime;
         this.partitions = partitions;
-        this.timeStamp = timeStamp;
     }
 
     @JsonProperty("model")
@@ -175,16 +171,6 @@ public class DiskStore {
     @JsonProperty("partitions")
     public void setPartitions(Partition[] partitions) {
         this.partitions = partitions;
-    }
-
-    @JsonProperty("timeStamp")
-    public long getTimeStamp() {
-        return timeStamp;
-    }
-
-    @JsonProperty("timeStamp")
-    public void setTimeStamp(long timeStamp) {
-        this.timeStamp = timeStamp;
     }
 
 }

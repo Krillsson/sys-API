@@ -1,19 +1,19 @@
 package com.krillsson.sysapi.core.domain.storage;
 
 public class DiskSpeed {
-    private final long rBps;
-    private final long wBps;
+    private final long readBytesPerSecond;
+    private final long writeBytesPerSecond;
 
-    public DiskSpeed(long rBps, long wBps) {
-        this.rBps = rBps;
-        this.wBps = wBps;
+    public DiskSpeed(long readBytesPerSecond, long writeBytesPerSecond) {
+        this.readBytesPerSecond = readBytesPerSecond;
+        this.writeBytesPerSecond = writeBytesPerSecond;
     }
 
-    public long getRBps() {
-        return rBps;
+    public long getReadBytesPerSecond() {
+        return readBytesPerSecond;
     }
 
-    public long getWBps() {
-        return wBps;
+    public long getWriteBytesPerSecond() {
+        return writeBytesPerSecond;
     }
 }

@@ -44,6 +44,10 @@ public class DiskInfo {
         return health;
     }
 
+    public DiskSpeed getDiskSpeed() {
+        return diskSpeed;
+    }
+
     public OSFileStore getOsFileStore() {
         return osFileStore;
     }

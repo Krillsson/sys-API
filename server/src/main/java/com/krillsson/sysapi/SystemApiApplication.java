@@ -30,6 +30,7 @@ import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.InfoProviderFactory;
+import com.krillsson.sysapi.core.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceMixin;
 import com.krillsson.sysapi.resources.*;
 import io.dropwizard.Application;
@@ -53,8 +54,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.NetworkInterface;
 import java.net.URL;
+import java.time.Clock;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -106,7 +110,9 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         environment.jersey().register(new AuthDynamicFeature(userBasicCredentialAuthFilter));
         environment.jersey().register(new AuthValueFactoryProvider.Binder(UserConfiguration.class));
 
-        InfoProvider provider = new InfoProviderFactory(hal, os, SystemInfo.getCurrentPlatformEnum(), config).provide();
+        SpeedMeasurementManager speedMeasurementManager = new SpeedMeasurementManager(Executors.newScheduledThreadPool(5), Clock.systemUTC(), 5);
+        InfoProvider provider = new InfoProviderFactory(hal, os, SystemInfo.getCurrentPlatformEnum(), config, speedMeasurementManager).provide();
+        environment.lifecycle().manage(speedMeasurementManager);
 
         environment.jersey().register(new SystemResource(provider));
         environment.jersey().register(new DiskStoresResource(provider));
