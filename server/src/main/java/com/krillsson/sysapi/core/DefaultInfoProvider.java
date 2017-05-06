@@ -160,15 +160,15 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
         long totalCpu = user + nice + sys + idle + iowait + irq + softirq;
 
         return new CpuLoad(
-                new BigDecimal(processor.getSystemCpuLoadBetweenTicks() * 100d).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
-                new BigDecimal(processor.getSystemCpuLoad() * 100d).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
-                new BigDecimal(100d * user / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
-                new BigDecimal(100d * nice / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
-                new BigDecimal(100d * sys / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
-                new BigDecimal(100d * idle / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
-                new BigDecimal(100d * iowait / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
-                new BigDecimal(100d * irq / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
-                new BigDecimal(100d * softirq / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue()
+                BigDecimal.valueOf(processor.getSystemCpuLoadBetweenTicks() * 100d).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
+                BigDecimal.valueOf(processor.getSystemCpuLoad() * 100d).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
+                BigDecimal.valueOf(100d * user / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
+                BigDecimal.valueOf(100d * nice / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
+                BigDecimal.valueOf(100d * sys / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
+                BigDecimal.valueOf(100d * idle / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
+                BigDecimal.valueOf(100d * iowait / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
+                BigDecimal.valueOf(100d * irq / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
+                BigDecimal.valueOf(100d * softirq / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue()
         );
     }
 

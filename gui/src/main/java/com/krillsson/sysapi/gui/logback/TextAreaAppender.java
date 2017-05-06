@@ -50,7 +50,7 @@ public class TextAreaAppender extends AppenderBase<ILoggingEvent> {
                         if (list != null) {
                             values.add(message);
                         }
-                    } catch (final Throwable t) {
+                    } catch (final Exception t) {
                         System.out.println("Unable to append log to text area: "
                                 + t.getMessage());
                     }

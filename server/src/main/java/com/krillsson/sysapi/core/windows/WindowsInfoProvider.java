@@ -142,14 +142,17 @@ public class WindowsInfoProvider extends DefaultInfoProvider  {
         }
 
         OHMManagerFactory factory = loadFromInstallDir();
-        try {
-            factory.init();
-            this.monitorManager = factory.GetManager();
-            return true;
-        } catch (Exception e) {
-            LOGGER.error("Trouble while initializing JNI4Net Bridge. Do I have admin privileges?", e);
-            return false;
+        if(factory != null) {
+            try {
+                factory.init();
+                this.monitorManager = factory.GetManager();
+                return true;
+            } catch (Exception e) {
+                LOGGER.error("Trouble while initializing JNI4Net Bridge. Do I have admin privileges?", e);
+                return false;
+            }
         }
+        return false;
     }
 
     private OHMManagerFactory loadFromInstallDir() {

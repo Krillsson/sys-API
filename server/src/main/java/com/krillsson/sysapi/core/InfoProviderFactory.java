@@ -45,12 +45,14 @@ public class InfoProviderFactory {
     }
 
     public InfoProvider provide() {
+        InfoProvider infoProvider;
         switch (os) {
             case WINDOWS:
                 if (configuration.windows() == null || configuration.windows().enableOhmJniWrapper()) {
                     WindowsInfoProvider windowsInfoProvider = new WindowsInfoProvider(hal, operatingSystem, utils, new DefaultNetworkProvider(hal, speedMeasurementManager), new DefaultDiskProvider(operatingSystem, hal, speedMeasurementManager));
                     if (windowsInfoProvider.canProvide()) {
-                        return windowsInfoProvider;
+                        infoProvider = windowsInfoProvider;
+                        break;
                     }
                 }
             case LINUX:
@@ -60,9 +62,10 @@ public class InfoProviderFactory {
             case SOLARIS:
             case UNKNOWN:
             default:
-                return new DefaultInfoProvider(hal, operatingSystem, utils, new DefaultNetworkProvider(hal, speedMeasurementManager), new DefaultDiskProvider(operatingSystem, hal, speedMeasurementManager));
-
+                infoProvider = new DefaultInfoProvider(hal, operatingSystem, utils, new DefaultNetworkProvider(hal, speedMeasurementManager), new DefaultDiskProvider(operatingSystem, hal, speedMeasurementManager));
+            break;
         }
+        return infoProvider;
     }
 
 }

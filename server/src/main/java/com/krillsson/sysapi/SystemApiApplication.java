@@ -83,7 +83,6 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         FilterProvider filterProvider = new SimpleFilterProvider()
                 .addFilter("networkInterface filter", SimpleBeanPropertyFilter.serializeAllExcept("name", "displayName", "inetAddresses", "interfaceAddresses", "mtu", "subInterfaces"));
         mapper.setFilters(filterProvider);
-        //mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
     }
 
     @Override
