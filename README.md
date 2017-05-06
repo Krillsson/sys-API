@@ -16,23 +16,27 @@ Use the */system* endpoint to get a summary of the system health.
 - Memory usage
 - List running processes
 - List all network interfaces
-- Show info from sensors and fans (as of now kind of unreliable)
+- Show info from sensors and fans
 - Motherboard information
 
 ## Endpoints
 
-    GET     /disks (com.krillsson.sysapi.resources.DiskStoresResource)
-    GET     /gpus (com.krillsson.sysapi.resources.GpuResource)
-    GET     /memory (com.krillsson.sysapi.resources.MemoryResource)
-    GET     /meta/version (com.krillsson.sysapi.resources.MetaInfoResource)
-    GET     /motherboard (com.krillsson.sysapi.resources.MotherboardResource)
-    GET     /networkinterfaces (com.krillsson.sysapi.resources.NetworkInterfacesResource)
-    GET     /powersources (com.krillsson.sysapi.resources.PowerSourcesResource)
-    GET     /processes (com.krillsson.sysapi.resources.ProcessesResource)
-    GET     /processor (com.krillsson.sysapi.resources.CpuResource)
-    GET     /sensors (com.krillsson.sysapi.resources.SensorsResource)
-    GET     /system (com.krillsson.sysapi.resources.SystemResource)
-    GET     /system/jvm (com.krillsson.sysapi.resources.SystemResource)
+```
+    GET /cpu
+    GET /cpu/ticks
+    GET /gpus
+    GET /memory
+    GET /motherboard
+    GET /nics
+    GET /nics/{id}
+    GET /powersources
+    GET /processes
+    GET /processes/{pid}
+    GET /sensors
+    GET /storage
+    GET /storage/{name}
+    GET /system
+```
 
 ## Running
 Download the [latest release](https://github.com/Krillsson/sys-api/releases/latest).
@@ -57,8 +61,6 @@ Disable the OhmJni extension on Windows:
       enableOhmJniWrapper: false
 
 ### Enable HTTPS
-
-[Dropwizard and SSL](http://clearthehaze.com/2014/09/dropwizard-ssl/)
 
 Forward HTTP to HTTPS:
 
