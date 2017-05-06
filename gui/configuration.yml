@@ -1,0 +1,15 @@
+user:
+  username: user
+  password: password
+server:
+  applicationContextPath: /v1
+  applicationConnectors:
+    - type: http
+      port: 8080
+logging:
+  level: INFO
+  appenders:
+       - type: console
+         threshold: DEBUG
+       - type: textarea
+         threshold: DEBUG
