@@ -22,15 +22,13 @@ package com.krillsson.sysapi.core.domain.storage;
 
 public class StorageInfo {
     private final DiskInfo[] DiskInfos;
-    private final long dataCapturedAt;
     private final long openFileDescriptors;
     private final long maxFileDescriptors;
 
-    public StorageInfo(DiskInfo[] DiskInfos, long openFileDescriptors, long maxFileDescriptors, long dataCapturedAt) {
+    public StorageInfo(DiskInfo[] DiskInfos, long openFileDescriptors, long maxFileDescriptors) {
         this.DiskInfos = DiskInfos;
         this.openFileDescriptors = openFileDescriptors;
         this.maxFileDescriptors = maxFileDescriptors;
-        this.dataCapturedAt = dataCapturedAt;
     }
 
     public DiskInfo[] getDiskInfo() {
@@ -43,9 +41,5 @@ public class StorageInfo {
 
     public long getMaxFileDescriptors() {
         return maxFileDescriptors;
-    }
-
-    public long getTimeStamp() {
-        return dataCapturedAt;
     }
 }

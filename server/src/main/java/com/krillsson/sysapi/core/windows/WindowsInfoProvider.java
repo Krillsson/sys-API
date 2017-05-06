@@ -20,7 +20,9 @@
  */
 package com.krillsson.sysapi.core.windows;
 
+import com.krillsson.sysapi.core.DefaultDiskProvider;
 import com.krillsson.sysapi.core.DefaultInfoProvider;
+import com.krillsson.sysapi.core.DefaultNetworkProvider;
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
@@ -52,9 +54,9 @@ public class WindowsInfoProvider extends DefaultInfoProvider  {
     private final HardwareAbstractionLayer hal;
     private MonitorManager monitorManager;
 
-    public WindowsInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils)
+    public WindowsInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils, DefaultNetworkProvider defaultNetworkProvider, DefaultDiskProvider defaultDiskProvider)
     {
-        super(hal, operatingSystem, utils);
+        super(hal, operatingSystem, utils, defaultNetworkProvider, defaultDiskProvider);
         this.hal = hal;
     }
 

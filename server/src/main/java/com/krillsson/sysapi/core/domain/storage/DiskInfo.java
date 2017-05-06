@@ -26,11 +26,13 @@ import oshi.software.os.OSFileStore;
 public class DiskInfo {
     private final HWDiskStore hwDiskStore;
     private final DiskHealth health;
+    private final DiskSpeed diskSpeed;
     private final OSFileStore osFileStore;
 
-    public DiskInfo(HWDiskStore hwDiskStore, DiskHealth health, OSFileStore osFileStore) {
+    public DiskInfo(HWDiskStore hwDiskStore, DiskHealth health, DiskSpeed diskSpeed, OSFileStore osFileStore) {
         this.hwDiskStore = hwDiskStore;
         this.health = health;
+        this.diskSpeed = diskSpeed;
         this.osFileStore = osFileStore;
     }
 
@@ -40,6 +42,10 @@ public class DiskInfo {
 
     public DiskHealth getDiskHealth() {
         return health;
+    }
+
+    public DiskSpeed getDiskSpeed() {
+        return diskSpeed;
     }
 
     public OSFileStore getOsFileStore() {

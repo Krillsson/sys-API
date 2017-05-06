@@ -58,6 +58,7 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     private final OperatingSystem operatingSystem;
     private final Utils utils;
     private final DefaultNetworkProvider defaultNetworkProvider;
+    private final DefaultDiskProvider defaultDiskProvider;
 
     private long[] ticks = new long[0];
     private long ticksSampledAt = -1;
@@ -65,11 +66,12 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     private static final long MAX_SAMPLING_THRESHOLD = TimeUnit.SECONDS.toMillis(10);
     private static final int SLEEP_SAMPLE_PERIOD = 500;
 
-    public DefaultInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils) {
+    public DefaultInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils, DefaultNetworkProvider defaultNetworkProvider, DefaultDiskProvider defaultDiskProvider) {
         this.hal = hal;
         this.operatingSystem = operatingSystem;
         this.utils = utils;
-        this.defaultNetworkProvider = new DefaultNetworkProvider(hal, utils);
+        this.defaultNetworkProvider = defaultNetworkProvider;
+        this.defaultDiskProvider = defaultDiskProvider;
     }
 
     @Override
@@ -81,7 +83,8 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
         if (temperature.length == 0) {
             temperature = new double[]{hal.getSensors().getCpuTemperature()};
         }
-        return new CpuInfo(hal.getProcessor(),
+        return new CpuInfo(
+                hal.getProcessor(),
                 operatingSystem.getProcessCount(),
                 operatingSystem.getThreadCount(),
                 cpuLoad, new CpuHealth(temperature,
@@ -102,7 +105,7 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
 
     @Override
     public DiskHealth diskHealth(String name) {
-        return null;
+        return defaultDiskProvider.diskHealth(name);
     }
 
     @Override
@@ -254,12 +257,7 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
 
     @Override
     public Optional<DiskInfo> getDiskInfoByName(String name){
-        return Arrays.stream(hal.getDiskStores()).filter(d -> d.getName().equals(name)).map(di -> {
-            OSFileStore associatedFileStore = findAssociatedFileStore(di);
-            String mount = associatedFileStore != null ? associatedFileStore.getMount() : "N/A";
-            return new DiskInfo(di, diskHealth(mount), associatedFileStore);
-        }).findFirst();
-
+        return defaultDiskProvider.getDiskInfoByName(name);
     }
 
     @Override
@@ -284,25 +282,7 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
 
     @Override
     public StorageInfo storageInfo() {
-        List<DiskInfo> diskInfos = new ArrayList<>();
-        for (HWDiskStore diskStore : hal.getDiskStores()) {
-            OSFileStore associatedFileStore = findAssociatedFileStore(diskStore);
-            String name = associatedFileStore != null ? associatedFileStore.getMount() : "N/A";
-            diskInfos.add(new DiskInfo(diskStore, diskHealth(name), associatedFileStore));
-        }
-        FileSystem fileSystem = operatingSystem.getFileSystem();
-        return new StorageInfo(diskInfos.toArray(/*type reference*/new DiskInfo[0]), fileSystem.getOpenFileDescriptors(), fileSystem.getMaxFileDescriptors(), utils.currentSystemTime());
-    }
-
-    private OSFileStore findAssociatedFileStore(HWDiskStore diskStore) {
-        for (OSFileStore osFileStore : Arrays.asList(operatingSystem.getFileSystem().getFileStores())) {
-            for (HWPartition hwPartition : Arrays.asList(diskStore.getPartitions())) {
-                if (osFileStore.getUUID().equals(hwPartition.getUuid())) {
-                    return osFileStore;
-                }
-            }
-        }
-        return null;
+        return defaultDiskProvider.storageInfo();
     }
 
 }
