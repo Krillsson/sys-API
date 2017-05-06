@@ -66,7 +66,7 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     private static final long MAX_SAMPLING_THRESHOLD = TimeUnit.SECONDS.toMillis(10);
     private static final int SLEEP_SAMPLE_PERIOD = 500;
 
-    public DefaultInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils, DefaultNetworkProvider defaultNetworkProvider, DefaultDiskProvider defaultDiskProvider) {
+    protected DefaultInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils, DefaultNetworkProvider defaultNetworkProvider, DefaultDiskProvider defaultDiskProvider) {
         this.hal = hal;
         this.operatingSystem = operatingSystem;
         this.utils = utils;

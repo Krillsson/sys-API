@@ -136,7 +136,7 @@ public class WindowsInfoProvider extends DefaultInfoProvider  {
         Bridge.setDebug(true);
         try {
             Bridge.init();
-        } catch (IOException e) {
+        } catch (IOException | UnsupportedOperationException e) {
             LOGGER.error("Trouble while initializing JNI4Net Bridge. Do I have admin privileges?", e);
             return false;
         }

@@ -7,6 +7,7 @@ import org.mockito.ArgumentCaptor;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -107,8 +108,7 @@ public class SpeedMeasurementManagerTest {
         ArgumentCaptor<Runnable> argumentCaptor = ArgumentCaptor.forClass(Runnable.class);
         when(executorService.scheduleAtFixedRate(argumentCaptor.capture(), anyLong(), anyLong(), any(TimeUnit.class))).thenReturn(null);
 
-        measurementManager.register(speedSource);
-        measurementManager.register(secondSpeedSource);
+        measurementManager.register(Arrays.asList(speedSource, secondSpeedSource));
         measurementManager.start();
 
         Runnable value = argumentCaptor.getValue();
@@ -155,6 +155,16 @@ public class SpeedMeasurementManagerTest {
         assertNull(en0);
         verify(speedSource, never()).getCurrentRead();
         verify(speedSource, never()).getCurrentWrite();
+    }
+
+    @Test
+    public void stoppingManagerShutsDownExecutorService() throws Exception {
+        when(executorService.scheduleAtFixedRate(any(Runnable.class), anyLong(), anyLong(), any(TimeUnit.class))).thenReturn(null);
+
+        measurementManager.start();
+        measurementManager.stop();
+
+        verify(executorService).shutdownNow();
     }
 
     void setupClockMock() {
