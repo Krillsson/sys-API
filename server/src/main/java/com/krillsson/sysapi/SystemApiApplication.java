@@ -123,7 +123,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         environment.jersey().register(new CpuResource(provider));
         environment.jersey().register(new SensorsResource(provider));
         environment.jersey().register(new MotherboardResource(provider));
-        environment.jersey().register(new MetaInfoResource(getVersionFromManifest(), getEndpoints(environment)));
+        environment.jersey().register(new MetaInfoResource(getVersionFromManifest(), getEndpoints(environment), os.getProcessId()));
     }
 
 

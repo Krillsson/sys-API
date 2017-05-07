@@ -72,6 +72,8 @@ public interface InfoProvider {
 
     CpuLoad cpuLoad();
 
+    OperatingSystem operatingSystem();
+
     NetworkInterfaceData[] getAllNetworkInterfaces();
 
     Optional<NetworkInterfaceData> getNetworkInterfaceById(String id);

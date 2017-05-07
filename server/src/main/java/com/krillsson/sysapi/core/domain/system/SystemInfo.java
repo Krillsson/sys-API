@@ -21,19 +21,22 @@
 package com.krillsson.sysapi.core.domain.system;
 
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
+import oshi.PlatformEnum;
 import oshi.hardware.GlobalMemory;
 import oshi.hardware.PowerSource;
 import oshi.software.os.OperatingSystem;
 
 public class SystemInfo {
     private final String hostName;
+    private final PlatformEnum platformEnum;
     private final OperatingSystem operatingSystem;
     private final CpuInfo cpuInfo;
     private final GlobalMemory memory;
     private final PowerSource[] powerSources;
 
-    public SystemInfo(String hostName, OperatingSystem operatingSystem, CpuInfo cpuInfo, GlobalMemory memory, PowerSource[] powerSources) {
+    public SystemInfo(String hostName, PlatformEnum platformEnum, OperatingSystem operatingSystem, CpuInfo cpuInfo, GlobalMemory memory, PowerSource[] powerSources) {
         this.hostName = hostName;
+        this.platformEnum = platformEnum;
         this.operatingSystem = operatingSystem;
         this.cpuInfo = cpuInfo;
         this.memory = memory;
@@ -42,6 +45,10 @@ public class SystemInfo {
 
     public String getHostName() {
         return hostName;
+    }
+
+    public PlatformEnum getPlatformEnum() {
+        return platformEnum;
     }
 
     public OperatingSystem getOperatingSystem() {

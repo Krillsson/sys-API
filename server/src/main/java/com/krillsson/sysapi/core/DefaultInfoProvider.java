@@ -190,7 +190,7 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
         }
         return new SystemInfo(
                 getHostName(),
-                operatingSystem,
+                oshi.SystemInfo.getCurrentPlatformEnum(), operatingSystem,
                 new CpuInfo(processor(),
                         operatingSystem.getProcessCount(),
                         operatingSystem.getThreadCount(),
@@ -201,6 +201,11 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
                         fanPercent)),
                 hal.getMemory(),
                 hal.getPowerSources());
+    }
+
+    @Override
+    public OperatingSystem operatingSystem(){
+        return operatingSystem;
     }
 
     private String getHostName() {

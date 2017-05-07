@@ -31,8 +31,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.Collection;
-import java.util.Map;
 
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
@@ -40,10 +38,12 @@ public class MetaInfoResource {
 
     private final String version;
     private final String[] endpoints;
+    private final int thisPid;
 
-    public MetaInfoResource(String version, String[] endpoints) {
+    public MetaInfoResource(String version, String[] endpoints, int thisPid) {
         this.version = version;
         this.endpoints = endpoints;
+        this.thisPid = thisPid;
     }
 
     @GET
@@ -59,4 +59,11 @@ public class MetaInfoResource {
         return version;
     }
 
+
+    @GET
+    @Path("pid")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public int getThisPid(){
+        return thisPid;
+    }
 }

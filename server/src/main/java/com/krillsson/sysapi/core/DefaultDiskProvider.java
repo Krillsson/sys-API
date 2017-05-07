@@ -51,7 +51,7 @@ public class DefaultDiskProvider {
         register();
     }
 
-    private void register(){
+    private void register() {
         for (HWDiskStore store : hal.getDiskStores()) {
             speedMeasurementManager.register(new DiskSpeedSource(store.getName(), hal));
         }
@@ -77,9 +77,13 @@ public class DefaultDiskProvider {
         }).findFirst();
     }
 
-    private DiskSpeed diskSpeedForName(String name){
+    private DiskSpeed diskSpeedForName(String name) {
         SpeedMeasurementManager.CurrentSpeed currentSpeedForName = speedMeasurementManager.getCurrentSpeedForName(name);
-        return new DiskSpeed(currentSpeedForName.getReadPerSeconds(), currentSpeedForName.getWritePerSeconds());
+        if (currentSpeedForName != null) {
+            return new DiskSpeed(currentSpeedForName.getReadPerSeconds(), currentSpeedForName.getWritePerSeconds());
+        } else {
+            return new DiskSpeed(0, 0);
+        }
     }
 
     DiskHealth diskHealth(String name) {

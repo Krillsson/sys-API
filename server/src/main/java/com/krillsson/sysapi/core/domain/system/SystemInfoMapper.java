@@ -26,8 +26,11 @@ import com.krillsson.sysapi.core.domain.memory.GlobalMemoryMapper;
 import com.krillsson.sysapi.core.domain.power.PowerSourceMapper;
 import com.krillsson.sysapi.core.domain.sensors.SensorsInfoMapper;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
+import oshi.PlatformEnum;
 
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.ERROR,
@@ -36,6 +39,11 @@ import org.mapstruct.factory.Mappers;
 public interface SystemInfoMapper {
     SystemInfoMapper INSTANCE = Mappers.getMapper(SystemInfoMapper.class);
 
+    com.krillsson.sysapi.dto.system.PlatformEnum map(PlatformEnum value);
+
+    @Mappings(
+            @Mapping(source = "platformEnum", target = "platform")
+    )
     com.krillsson.sysapi.dto.system.SystemInfo map(com.krillsson.sysapi.core.domain.system.SystemInfo value);
 
     com.krillsson.sysapi.dto.system.OperatingSystem map(oshi.software.os.OperatingSystem value);

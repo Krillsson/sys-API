@@ -34,6 +34,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
+import oshi.PlatformEnum;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.GlobalMemory;
 import oshi.hardware.PowerSource;
@@ -71,7 +72,7 @@ public class SystemInfoResourceTest {
         CentralProcessor centralProcessor = mock(CentralProcessor.class);
         GlobalMemory globalMemory = mock(GlobalMemory.class);
         when(provider.systemInfo()).thenReturn(
-                new com.krillsson.sysapi.core.domain.system.SystemInfo("theHost", operatingSystem,
+                new com.krillsson.sysapi.core.domain.system.SystemInfo("theHost", PlatformEnum.LINUX, operatingSystem,
                         new CpuInfo(centralProcessor, 4, 80,
                                 new CpuLoad(100, 0, 0, 0, 0, 0, 0, 0, 0),
                                 new CpuHealth(new double[0], 120, 1000, 10)),
