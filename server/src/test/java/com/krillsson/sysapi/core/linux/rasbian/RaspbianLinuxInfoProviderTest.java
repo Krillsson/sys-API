@@ -46,6 +46,14 @@ public class RaspbianLinuxInfoProviderTest {
         assertEquals(0.0, voltage, 0.0);
     }
 
+    @Test
+    public void testInvalidOutput() throws Exception {
+        ((TestableRaspbianLinuxInfoProvider)infoProvider).setCommandOutput("command not found: 127");
+
+        double voltage = infoProvider.cpuVoltage();
+        assertEquals(0.0, voltage, 0.0);
+    }
+
     private static class TestableRaspbianLinuxInfoProvider extends RaspbianLinuxInfoProvider{
 
         private String commandOutput;
