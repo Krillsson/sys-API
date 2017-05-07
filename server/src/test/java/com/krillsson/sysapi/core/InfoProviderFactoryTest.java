@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.core;
 
 import com.krillsson.sysapi.config.SystemApiConfiguration;
+import com.krillsson.sysapi.core.linux.rasbian.RaspbianLinuxInfoProvider;
 import com.krillsson.sysapi.core.windows.WindowsInfoProvider;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +30,6 @@ public class InfoProviderFactoryTest {
         measurementManager = mock(SpeedMeasurementManager.class);
         when(hal.getNetworkIFs()).thenReturn(new NetworkIF[0]);
         when(hal.getDiskStores()).thenReturn(new HWDiskStore[0]);
-
     }
 
     @Test
@@ -40,4 +40,26 @@ public class InfoProviderFactoryTest {
         assertNotNull(provider);
         assertTrue(provider instanceof DefaultInfoProvider);
     }
+
+    @Test
+    public void providerDetectsRaspbian() throws Exception {
+        when(os.getFamily()).thenReturn("Raspbian GNU/Linux");
+        InfoProviderFactory factory = new InfoProviderFactory(hal, os, PlatformEnum.LINUX, config, measurementManager);
+
+        InfoProvider provider = factory.provide();
+        assertNotNull(provider);
+        assertTrue(provider instanceof RaspbianLinuxInfoProvider);
+    }
+
+    @Test
+    public void providerDetectsLinux() throws Exception {
+        when(os.getFamily()).thenReturn("Debian GNU/Linux");
+        InfoProviderFactory factory = new InfoProviderFactory(hal, os, PlatformEnum.LINUX, config, measurementManager);
+
+        InfoProvider provider = factory.provide();
+        assertNotNull(provider);
+        assertFalse(provider instanceof RaspbianLinuxInfoProvider);
+        assertTrue(provider instanceof DefaultInfoProvider);
+    }
+
 }
