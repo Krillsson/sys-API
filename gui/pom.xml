@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.krillsson</groupId>
         <artifactId>sys-api</artifactId>
-        <version>0.7-SNAPSHOT</version>
+        <version>0.7</version>
     </parent>
 
     <properties>
@@ -19,13 +19,13 @@
         <dependency>
             <groupId>com.krillsson</groupId>
             <artifactId>sys-api-server</artifactId>
-            <version>0.7-SNAPSHOT</version>
+            <version>0.7</version>
         </dependency>
 
         <dependency>
             <groupId>com.krillsson</groupId>
             <artifactId>sys-api-server</artifactId>
-            <version>0.7-SNAPSHOT</version>
+            <version>0.7</version>
             <type>zip</type>
             <classifier>bin</classifier>
         </dependency>
