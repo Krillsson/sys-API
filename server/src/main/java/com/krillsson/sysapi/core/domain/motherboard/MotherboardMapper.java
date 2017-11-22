@@ -24,6 +24,8 @@ package com.krillsson.sysapi.core.domain.motherboard;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
+import org.threeten.bp.DateTimeUtils;
+import org.threeten.bp.ZoneId;
 
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.ERROR
@@ -41,4 +43,8 @@ public interface MotherboardMapper {
     com.krillsson.sysapi.dto.motherboard.Firmware map(oshi.hardware.Firmware value);
 
     com.krillsson.sysapi.dto.motherboard.Baseboard map(oshi.hardware.Baseboard value);
+
+    default java.util.Date map(org.threeten.bp.LocalDate value) {
+        return value != null ? DateTimeUtils.toDate(value.atStartOfDay(ZoneId.systemDefault()).toInstant()) : null;
+    }
 }
