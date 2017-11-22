@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "manufacturer",
+        "platform",
         "family",
         "version",
         "processId",
@@ -34,7 +35,6 @@ public class OperatingSystem {
      * @param version
      */
     public OperatingSystem(String manufacturer, String family, Version version) {
-        super();
         this.manufacturer = manufacturer;
         this.family = family;
         this.version = version;

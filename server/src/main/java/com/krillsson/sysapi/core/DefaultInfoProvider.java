@@ -40,8 +40,6 @@ import com.krillsson.sysapi.core.domain.system.SystemInfo;
 import com.krillsson.sysapi.util.Utils;
 import org.slf4j.Logger;
 import oshi.hardware.*;
-import oshi.software.os.FileSystem;
-import oshi.software.os.OSFileStore;
 import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
 
@@ -80,22 +78,31 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
         double fanRpm = cpuFanRpm();
         double fanPercent = cpuFanPercent();
         CpuLoad cpuLoad = cpuLoad();
-        if (temperature.length == 0) {
-            temperature = new double[]{hal.getSensors().getCpuTemperature()};
-        }
         return new CpuInfo(
-                hal.getProcessor(),
+                processor(),
                 operatingSystem.getProcessCount(),
                 operatingSystem.getThreadCount(),
-                cpuLoad, new CpuHealth(temperature,
-                hal.getSensors().getCpuVoltage(),
-                fanRpm,
-                fanPercent));
+                cpuLoad,
+                new CpuHealth(
+                        temperature,
+                        cpuVoltage(),
+                        fanRpm,
+                        fanPercent));
+    }
+
+    @Override
+    public CentralProcessor processor() {
+        return hal.getProcessor();
+    }
+
+    @Override
+    public double cpuVoltage() {
+        return hal.getSensors().getCpuVoltage();
     }
 
     @Override
     public long[] systemCpuLoadTicks() {
-        return hal.getProcessor().getSystemCpuLoadTicks();
+        return processor().getSystemCpuLoadTicks();
     }
 
     @Override
@@ -110,12 +117,12 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
 
     @Override
     public double[] cpuTemperatures() {
-        return new double[0];
+        return new double[]{hal.getSensors().getCpuTemperature()};
     }
 
     @Override
     public double cpuFanRpm() {
-        return 0;
+        return Arrays.stream(hal.getSensors().getFanSpeeds()).findFirst().orElse(0);
     }
 
     @Override
@@ -141,7 +148,7 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     @Override
     public CpuLoad cpuLoad() {
         //If this is the first time the method is run we need to get some sample data
-        CentralProcessor processor = hal.getProcessor();
+        CentralProcessor processor = processor();
         if (Arrays.equals(ticks, new long[0]) || utils.isOutsideMaximumDuration(ticksSampledAt, MAX_SAMPLING_THRESHOLD)) {
             LOGGER.debug("Sleeping thread since we don't have enough sample data. Hold on!");
             ticks = processor.getSystemCpuLoadTicks();
@@ -183,17 +190,22 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
         }
         return new SystemInfo(
                 getHostName(),
-                operatingSystem,
-                new CpuInfo(hal.getProcessor(),
+                oshi.SystemInfo.getCurrentPlatformEnum(), operatingSystem,
+                new CpuInfo(processor(),
                         operatingSystem.getProcessCount(),
                         operatingSystem.getThreadCount(),
                         cpuLoad, new CpuHealth(
                         temperature,
-                        hal.getSensors().getCpuVoltage(),
+                        cpuVoltage(),
                         fanRpm,
                         fanPercent)),
                 hal.getMemory(),
                 hal.getPowerSources());
+    }
+
+    @Override
+    public OperatingSystem operatingSystem(){
+        return operatingSystem;
     }
 
     private String getHostName() {
@@ -252,7 +264,7 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
             cpuTemperatures = new double[]{hal.getSensors().getCpuTemperature()};
         }
         HealthData[] healthData = mainboardHealthData();
-        return new SensorsInfo(new CpuHealth(cpuTemperatures, hal.getSensors().getCpuVoltage(), cpuFanRpm, cpuFanPercent), gpuHealths(), healthData);
+        return new SensorsInfo(new CpuHealth(cpuTemperatures, cpuVoltage(), cpuFanRpm, cpuFanPercent), gpuHealths(), healthData);
     }
 
     @Override

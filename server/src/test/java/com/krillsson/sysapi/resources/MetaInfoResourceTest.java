@@ -18,7 +18,7 @@ public class MetaInfoResourceTest {
 
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
-            .addResource(new MetaInfoResource("1.0", new String[]{"test0", "test1"}))
+            .addResource(new MetaInfoResource("1.0", new String[]{"test0", "test1"}, 100))
             .build();
 
     @Test

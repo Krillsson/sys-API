@@ -55,6 +55,21 @@ public class SystemResource {
     }
 
     @GET
+    @Path("uptime")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public long getUptime(@Auth UserConfiguration user) {
+        return provider.cpuInfo().getCentralProcessor().getSystemUptime();
+    }
+
+
+        @GET
+    @Path("os")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public com.krillsson.sysapi.dto.system.OperatingSystem getOperatingSystem(@Auth UserConfiguration user) {
+        return SystemInfoMapper.INSTANCE.map(provider.operatingSystem());
+    }
+
+    @GET
     @Path("jvm")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public com.krillsson.sysapi.dto.system.JvmProperties getProperties(@Auth UserConfiguration user) {

@@ -36,6 +36,7 @@ import com.krillsson.sysapi.core.domain.storage.DiskHealth;
 import com.krillsson.sysapi.core.domain.storage.DiskInfo;
 import com.krillsson.sysapi.core.domain.storage.StorageInfo;
 import com.krillsson.sysapi.core.domain.system.SystemInfo;
+import oshi.hardware.CentralProcessor;
 import oshi.hardware.GlobalMemory;
 import oshi.hardware.PowerSource;
 import oshi.software.os.OperatingSystem;
@@ -46,6 +47,10 @@ import java.util.Optional;
 public interface InfoProvider {
 
     CpuInfo cpuInfo();
+
+    CentralProcessor processor();
+
+    double cpuVoltage();
 
     long[] systemCpuLoadTicks();
 
@@ -66,6 +71,8 @@ public interface InfoProvider {
     Map<String, GpuHealth> gpuHealths();
 
     CpuLoad cpuLoad();
+
+    OperatingSystem operatingSystem();
 
     NetworkInterfaceData[] getAllNetworkInterfaces();
 

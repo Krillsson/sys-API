@@ -10,6 +10,7 @@ import com.krillsson.sysapi.dto.processes.Memory;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "hostName",
+        "platform",
         "operatingSystem",
         "cpuInfo",
         "memory",
@@ -19,6 +20,8 @@ public class SystemInfo {
 
     @JsonProperty("hostName")
     private String hostName;
+    @JsonProperty("platform")
+    private PlatformEnum platform;
     @JsonProperty("operatingSystem")
     private OperatingSystem operatingSystem;
     @JsonProperty("cpuInfo")
@@ -41,9 +44,10 @@ public class SystemInfo {
      * @param powerSources
      * @param memory
      */
-    public SystemInfo(String hostName, OperatingSystem operatingSystem, CpuInfo cpuInfo, Memory memory, PowerSource[] powerSources) {
+    public SystemInfo(String hostName, PlatformEnum platform,OperatingSystem operatingSystem, CpuInfo cpuInfo, Memory memory, PowerSource[] powerSources) {
         super();
         this.hostName = hostName;
+        this.platform = platform;
         this.operatingSystem = operatingSystem;
         this.cpuInfo = cpuInfo;
         this.memory = memory;
@@ -58,6 +62,16 @@ public class SystemInfo {
     @JsonProperty("hostName")
     public void setHostName(String hostName) {
         this.hostName = hostName;
+    }
+
+    @JsonProperty("platform")
+    public PlatformEnum getPlatform() {
+        return platform;
+    }
+
+    @JsonProperty("platform")
+    public void setPlatform(PlatformEnum platform) {
+        this.platform = platform;
     }
 
     @JsonProperty("operatingSystem")

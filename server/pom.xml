@@ -8,15 +8,14 @@
     <parent>
         <groupId>com.krillsson</groupId>
         <artifactId>sys-api</artifactId>
-        <version>0.6</version>
+        <version>0.7-SNAPSHOT</version>
     </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
             <library-dir>${project.build.directory}/lib/</library-dir>
-        <sigar.version>1.6.6.14</sigar.version>
-        <org.mapstruct.version>1.1.0.Final</org.mapstruct.version>
+        <org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
         <m2e.apt.activation>jdt_apt</m2e.apt.activation>
     </properties>
 
@@ -32,14 +31,9 @@
             <version>${dropwizard.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.dropwizard.modules</groupId>
-            <artifactId>dropwizard-java8</artifactId>
-            <version>0.9.0-1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.dblock</groupId>
+            <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
-            <version>3.4.0</version>
+            <version>3.4.3</version>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -69,12 +63,7 @@
         <dependency>
             <groupId>com.krillsson</groupId>
             <artifactId>sys-api-dto</artifactId>
-            <version>0.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jhardware</groupId>
-            <artifactId>jHardware</artifactId>
-            <version>0.8.4</version>
+            <version>0.7-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -100,19 +89,6 @@
             <version>1.9.0</version>
             <scope>test</scope>
         </dependency>
-        <!--<dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.10</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-jsonSchema</artifactId>
-            <version>2.8.6</version>
-            <scope>test</scope>
-
-        </dependency>-->
     </dependencies>
 
     <build>
