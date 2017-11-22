@@ -93,7 +93,7 @@ public class DefaultDiskProvider {
     private OSFileStore findAssociatedFileStore(HWDiskStore diskStore) {
         for (OSFileStore osFileStore : Arrays.asList(operatingSystem.getFileSystem().getFileStores())) {
             for (HWPartition hwPartition : Arrays.asList(diskStore.getPartitions())) {
-                if (osFileStore.getUUID().equals(hwPartition.getUuid())) {
+                if (osFileStore.getUUID().equalsIgnoreCase(hwPartition.getUuid())) {
                     return osFileStore;
                 }
             }
