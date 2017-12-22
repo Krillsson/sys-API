@@ -44,7 +44,7 @@ public class DefaultDiskProvider {
     private final HardwareAbstractionLayer hal;
     private final SpeedMeasurementManager speedMeasurementManager;
 
-    DefaultDiskProvider(OperatingSystem operatingSystem, HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
+    protected DefaultDiskProvider(OperatingSystem operatingSystem, HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
         this.operatingSystem = operatingSystem;
         this.hal = hal;
         this.speedMeasurementManager = speedMeasurementManager;
@@ -57,7 +57,7 @@ public class DefaultDiskProvider {
         }
     }
 
-    StorageInfo storageInfo() {
+    protected StorageInfo storageInfo() {
         List<DiskInfo> diskInfos = new ArrayList<>();
         for (HWDiskStore diskStore : hal.getDiskStores()) {
             OSFileStore associatedFileStore = findAssociatedFileStore(diskStore);
