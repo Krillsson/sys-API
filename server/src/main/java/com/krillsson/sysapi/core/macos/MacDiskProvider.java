@@ -33,7 +33,7 @@ public class MacDiskProvider extends DefaultDiskProvider {
 
     private void fixDuplicateDrive(StorageInfo storageInfo) {
         List<DiskInfo> duplicates = findDuplicates(storageInfo);
-        if (!duplicates.isEmpty() && duplicates.size() == 2) {
+        if (duplicates.size() == 2) {
 
             DiskInfo legacy = duplicates.get(0);
             DiskInfo apfs = duplicates.get(1);
@@ -59,7 +59,7 @@ public class MacDiskProvider extends DefaultDiskProvider {
                 .findAny()
                 .orElse(Collections.emptyList())
                 .stream()
-                // this will always put apfs one at second place
+                // this will always put apfs at second place
                 .sorted(Comparator.comparingLong(d -> -d.getHwDiskStore().getReadBytes()))
                 .collect(Collectors.toList());
     }
