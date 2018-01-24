@@ -74,7 +74,7 @@ public class SystemInfoResourceTest {
         when(provider.systemInfo()).thenReturn(
                 new com.krillsson.sysapi.core.domain.system.SystemInfo("theHost", PlatformEnum.LINUX, operatingSystem,
                         new CpuInfo(centralProcessor, 4, 80,
-                                new CpuLoad(100, 0, 0, 0, 0, 0, 0, 0, 0),
+                                new CpuLoad(100, 0, coreLoads),
                                 new CpuHealth(new double[0], 120, 1000, 10)),
                         globalMemory,
                         new PowerSource[0]));

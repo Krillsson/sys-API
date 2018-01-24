@@ -20,6 +20,7 @@
  */
 package com.krillsson.sysapi.core;
 
+import com.krillsson.sysapi.core.domain.cpu.CoreLoad;
 import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
@@ -39,13 +40,19 @@ import com.krillsson.sysapi.core.domain.storage.StorageInfo;
 import com.krillsson.sysapi.core.domain.system.SystemInfo;
 import com.krillsson.sysapi.util.Utils;
 import org.slf4j.Logger;
-import oshi.hardware.*;
+import oshi.hardware.CentralProcessor;
+import oshi.hardware.GlobalMemory;
+import oshi.hardware.HardwareAbstractionLayer;
+import oshi.hardware.PowerSource;
 import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
 
 import java.math.BigDecimal;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -63,6 +70,8 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
 
     private static final long MAX_SAMPLING_THRESHOLD = TimeUnit.SECONDS.toMillis(10);
     private static final int SLEEP_SAMPLE_PERIOD = 500;
+    private long coreTicksSampledAt = -1;
+    private long[][] coreTicks = new long[0][0];
 
     protected DefaultInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils, DefaultNetworkProvider defaultNetworkProvider, DefaultDiskProvider defaultDiskProvider) {
         this.hal = hal;
@@ -145,6 +154,40 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
         return Collections.emptyMap();
     }
 
+    public CpuLoad cpuLoad() {
+        CentralProcessor processor = processor();
+        if (Arrays.equals(coreTicks, new long[0][0]) || utils.isOutsideMaximumDuration(coreTicksSampledAt, MAX_SAMPLING_THRESHOLD)) {
+            LOGGER.debug("Sleeping thread since we don't have enough sample data. Hold on!");
+            coreTicks = processor.getProcessorCpuLoadTicks();
+            coreTicksSampledAt = utils.currentSystemTime();
+            utils.sleep(SLEEP_SAMPLE_PERIOD);
+        }
+        CoreLoad[] coreLoads = new CoreLoad[processor.getLogicalProcessorCount()];
+        long[][] currentProcessorTicks = processor.getProcessorCpuLoadTicks();
+        long sampledAt = utils.currentSystemTime();
+        for (int i = 0; i < coreLoads.length; i++) {
+            long[] currentTicks = currentProcessorTicks[i];
+            long user = currentTicks[CentralProcessor.TickType.USER.getIndex()] - coreTicks[i][CentralProcessor.TickType.USER.getIndex()];
+            long nice = currentTicks[CentralProcessor.TickType.NICE.getIndex()] - coreTicks[i][CentralProcessor.TickType.NICE.getIndex()];
+            long sys = currentTicks[CentralProcessor.TickType.SYSTEM.getIndex()] - coreTicks[i][CentralProcessor.TickType.SYSTEM.getIndex()];
+            long idle = currentTicks[CentralProcessor.TickType.IDLE.getIndex()] - coreTicks[i][CentralProcessor.TickType.IDLE.getIndex()];
+            long iowait = currentTicks[CentralProcessor.TickType.IOWAIT.getIndex()] - coreTicks[i][CentralProcessor.TickType.IOWAIT.getIndex()];
+            long irq = currentTicks[CentralProcessor.TickType.IRQ.getIndex()] - coreTicks[i][CentralProcessor.TickType.IRQ.getIndex()];
+            long softirq = currentTicks[CentralProcessor.TickType.SOFTIRQ.getIndex()] - coreTicks[i][CentralProcessor.TickType.SOFTIRQ.getIndex()];
+            long steal = currentTicks[CentralProcessor.TickType.STEAL.getIndex()] - coreTicks[i][CentralProcessor.TickType.STEAL.getIndex()];
+
+            long totalCpu = user + nice + sys + idle + iowait + irq + softirq + steal;
+            long totalIdle = idle + iowait;
+            long totalSystem = irq + softirq + sys + steal;
+
+
+        }
+
+        coreTicks = currentProcessorTicks;
+        coreTicksSampledAt = utils.currentSystemTime();
+
+    }
+
     @Override
     public CpuLoad cpuLoad() {
         //If this is the first time the method is run we need to get some sample data
@@ -155,6 +198,7 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
             ticksSampledAt = utils.currentSystemTime();
             utils.sleep(SLEEP_SAMPLE_PERIOD);
         }
+
         long[] currentTicks = processor.getSystemCpuLoadTicks();
         long user = currentTicks[CentralProcessor.TickType.USER.getIndex()] - ticks[CentralProcessor.TickType.USER.getIndex()];
         long nice = currentTicks[CentralProcessor.TickType.NICE.getIndex()] - ticks[CentralProcessor.TickType.NICE.getIndex()];
@@ -165,7 +209,6 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
         long softirq = currentTicks[CentralProcessor.TickType.SOFTIRQ.getIndex()] - ticks[CentralProcessor.TickType.SOFTIRQ.getIndex()];
 
         long totalCpu = user + nice + sys + idle + iowait + irq + softirq;
-
         return new CpuLoad(
                 BigDecimal.valueOf(processor.getSystemCpuLoadBetweenTicks() * 100d).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
                 BigDecimal.valueOf(processor.getSystemCpuLoad() * 100d).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
@@ -204,7 +247,7 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     @Override
-    public OperatingSystem operatingSystem(){
+    public OperatingSystem operatingSystem() {
         return operatingSystem;
     }
 
@@ -268,7 +311,7 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     @Override
-    public Optional<DiskInfo> getDiskInfoByName(String name){
+    public Optional<DiskInfo> getDiskInfoByName(String name) {
         return defaultDiskProvider.getDiskInfoByName(name);
     }
 
