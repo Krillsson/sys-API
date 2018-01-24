@@ -27,160 +27,56 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "user",
-        "nice",
-        "sys",
-        "idle",
-        "iowait",
-        "irq",
-        "softirq"
+        "cpuLoadCountingTicks",
+        "cpuLoadOsMxBean",
+        "coreLoads",
 })
-public class CpuLoad
-{
+public class CpuLoad {
 
     @JsonProperty("cpuLoadCountingTicks")
     private double cpuLoadCountingTicks;
     @JsonProperty("cpuLoadOsMxBean")
     private double cpuLoadOsMxBean;
+    @JsonProperty("coreLoads")
+    private CoreLoad[] coreLoads;
 
-    @JsonProperty("user")
-    private double user;
-    @JsonProperty("nice")
-    private double nice;
-    @JsonProperty("sys")
-    private double sys;
-    @JsonProperty("idle")
-    private double idle;
-    @JsonProperty("iowait")
-    private double iowait;
-    @JsonProperty("irq")
-    private double irq;
-    @JsonProperty("softirq")
-    private double softirq;
-
-    public CpuLoad()
-    {
+    public CpuLoad() {
 
     }
 
-    public CpuLoad(double cpuLoadCountingTicks, double cpuLoadOsMxBean, double user, double nice, double sys, double idle, double iowait, double irq, double softirq)
-    {
+    public CpuLoad(double cpuLoadCountingTicks, double cpuLoadOsMxBean, CoreLoad[] coreLoads) {
         this.cpuLoadCountingTicks = cpuLoadCountingTicks;
         this.cpuLoadOsMxBean = cpuLoadOsMxBean;
-        this.user = user;
-        this.nice = nice;
-        this.sys = sys;
-        this.idle = idle;
-        this.iowait = iowait;
-        this.irq = irq;
-        this.softirq = softirq;
+        this.coreLoads = coreLoads;
     }
 
     @JsonProperty("cpuLoadCountingTicks")
-    public double getCpuLoadCountingTicks()
-    {
+    public double getCpuLoadCountingTicks() {
         return cpuLoadCountingTicks;
     }
 
     @JsonProperty("cpuLoadCountingTicks")
-    public void setCpuLoadCountingTicks(double cpuLoadCountingTicks)
-    {
+    public void setCpuLoadCountingTicks(double cpuLoadCountingTicks) {
         this.cpuLoadCountingTicks = cpuLoadCountingTicks;
     }
 
     @JsonProperty("cpuLoadOsMxBean")
-    public double getCpuLoadOsMxBean()
-    {
+    public double getCpuLoadOsMxBean() {
         return cpuLoadOsMxBean;
     }
 
     @JsonProperty("cpuLoadOsMxBean")
-    public void setCpuLoadOsMxBean(double cpuLoadOsMxBean)
-    {
+    public void setCpuLoadOsMxBean(double cpuLoadOsMxBean) {
         this.cpuLoadOsMxBean = cpuLoadOsMxBean;
     }
 
-    @JsonProperty("user")
-    public double getUser()
-    {
-        return user;
+    @JsonProperty("coreLoads")
+    public CoreLoad[] getCoreLoads() {
+        return coreLoads;
     }
 
-    @JsonProperty("user")
-    public void setUser(double user)
-    {
-        this.user = user;
-    }
-
-    @JsonProperty("nice")
-    public double getNice()
-    {
-        return nice;
-    }
-
-    @JsonProperty("nice")
-    public void setNice(double nice)
-    {
-        this.nice = nice;
-    }
-
-    @JsonProperty("sys")
-    public double getSys()
-    {
-        return sys;
-    }
-
-    @JsonProperty("sys")
-    public void setSys(double sys)
-    {
-        this.sys = sys;
-    }
-
-    @JsonProperty("idle")
-    public double getIdle()
-    {
-        return idle;
-    }
-
-    @JsonProperty("idle")
-    public void setIdle(double idle)
-    {
-        this.idle = idle;
-    }
-
-    @JsonProperty("iowait")
-    public double getIowait()
-    {
-        return iowait;
-    }
-
-    @JsonProperty("iowait")
-    public void setIowait(double iowait)
-    {
-        this.iowait = iowait;
-    }
-
-    @JsonProperty("irq")
-    public double getIrq()
-    {
-        return irq;
-    }
-
-    @JsonProperty("irq")
-    public void setIrq(double irq)
-    {
-        this.irq = irq;
-    }
-
-    @JsonProperty("softirq")
-    public double getSoftirq()
-    {
-        return softirq;
-    }
-
-    @JsonProperty("softirq")
-    public void setSoftirq(double softirq)
-    {
-        this.softirq = softirq;
+    @JsonProperty("coreLoads")
+    public void setCoreLoads(CoreLoad[] coreLoads) {
+        this.coreLoads = coreLoads;
     }
 }

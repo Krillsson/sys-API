@@ -22,6 +22,7 @@
 package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.core.InfoProvider;
+import com.krillsson.sysapi.core.domain.cpu.CoreLoad;
 import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
@@ -74,7 +75,7 @@ public class SystemInfoResourceTest {
         when(provider.systemInfo()).thenReturn(
                 new com.krillsson.sysapi.core.domain.system.SystemInfo("theHost", PlatformEnum.LINUX, operatingSystem,
                         new CpuInfo(centralProcessor, 4, 80,
-                                new CpuLoad(100, 0, coreLoads),
+                                new CpuLoad(100, 0, new CoreLoad[]{}),
                                 new CpuHealth(new double[0], 120, 1000, 10)),
                         globalMemory,
                         new PowerSource[0]));

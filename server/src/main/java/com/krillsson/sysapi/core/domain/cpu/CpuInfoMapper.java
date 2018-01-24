@@ -38,4 +38,6 @@ public interface CpuInfoMapper {
     com.krillsson.sysapi.dto.cpu.CpuHealth map(com.krillsson.sysapi.core.domain.cpu.CpuHealth value);
 
     com.krillsson.sysapi.dto.cpu.CpuLoad map(com.krillsson.sysapi.core.domain.cpu.CpuLoad value);
+
+    com.krillsson.sysapi.dto.cpu.CoreLoad map(com.krillsson.sysapi.core.domain.cpu.CoreLoad value);
 }
