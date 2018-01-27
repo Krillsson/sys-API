@@ -152,7 +152,8 @@ public class SpeedMeasurementManagerTest {
 
         SpeedMeasurementManager.CurrentSpeed en0 = measurementManager.getCurrentSpeedForName(EN_0);
 
-        assertNull(en0);
+        assertEquals(en0.getReadPerSeconds(), 0);
+        assertEquals(en0.getWritePerSeconds(), 0);
         verify(speedSource, never()).getCurrentRead();
         verify(speedSource, never()).getCurrentWrite();
     }
