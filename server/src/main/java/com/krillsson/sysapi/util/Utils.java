@@ -1,7 +1,5 @@
 package com.krillsson.sysapi.util;
 
-import oshi.util.Util;
-
 public class Utils {
     public long currentSystemTime() {
         return System.currentTimeMillis();

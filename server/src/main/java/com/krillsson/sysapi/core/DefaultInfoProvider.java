@@ -65,9 +65,6 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     private final DefaultNetworkProvider defaultNetworkProvider;
     private final DefaultDiskProvider defaultDiskProvider;
 
-    private long[] ticks = new long[0];
-    private long ticksSampledAt = -1;
-
     private static final long MAX_SAMPLING_THRESHOLD = TimeUnit.SECONDS.toMillis(10);
     private static final int SLEEP_SAMPLE_PERIOD = 1000;
     private long coreTicksSampledAt = -1;
