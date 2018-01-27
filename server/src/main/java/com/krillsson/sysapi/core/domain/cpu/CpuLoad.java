@@ -20,73 +20,27 @@
  */
 package com.krillsson.sysapi.core.domain.cpu;
 
-public class CpuLoad
-{
+public class CpuLoad {
     private final double cpuLoadCountingTicks;
     private final double cpuLoadOsMxBean;
-    private final double user;
-    private final double nice;
-    private final double sys;
-    private final double idle;
-    private final double iowait;
-    private final double irq;
-    private final double softirq;
+    private final CoreLoad[] coreLoads;
 
-    public CpuLoad(double cpuLoadCountingTicks, double cpuLoadOsMxBean, double user, double nice, double sys, double idle, double iowait, double irq, double softirq)
-    {
+
+    public CpuLoad(double cpuLoadCountingTicks, double cpuLoadOsMxBean, CoreLoad[] coreLoads) {
         this.cpuLoadCountingTicks = cpuLoadCountingTicks;
         this.cpuLoadOsMxBean = cpuLoadOsMxBean;
-        this.user = user;
-        this.nice = nice;
-        this.sys = sys;
-        this.idle = idle;
-        this.iowait = iowait;
-        this.irq = irq;
-        this.softirq = softirq;
+        this.coreLoads = coreLoads;
     }
 
-    public double getCpuLoadCountingTicks()
-    {
+    public double getCpuLoadCountingTicks() {
         return cpuLoadCountingTicks;
     }
 
-    public double getCpuLoadOsMxBean()
-    {
+    public double getCpuLoadOsMxBean() {
         return cpuLoadOsMxBean;
     }
 
-    public double getUser()
-    {
-        return user;
-    }
-
-    public double getNice()
-    {
-        return nice;
-    }
-
-    public double getSys()
-    {
-        return sys;
-    }
-
-    public double getIdle()
-    {
-        return idle;
-    }
-
-    public double getIowait()
-    {
-        return iowait;
-    }
-
-    public double getIrq()
-    {
-        return irq;
-    }
-
-    public double getSoftirq()
-    {
-        return softirq;
+    public CoreLoad[] getCoreLoads() {
+        return coreLoads;
     }
 }

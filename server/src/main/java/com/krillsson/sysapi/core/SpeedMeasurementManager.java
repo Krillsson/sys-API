@@ -74,7 +74,12 @@ public class SpeedMeasurementManager implements Managed {
     }
 
     CurrentSpeed getCurrentSpeedForName(String name){
-        return currentSpeedStore.get(name);
+        CurrentSpeed currentSpeed = currentSpeedStore.get(name);
+        if(currentSpeed == null){
+            // no valid measurement yet
+            return new CurrentSpeed(0, 0);
+        }
+        return currentSpeed;
     }
 
     private void execute() {

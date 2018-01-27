@@ -16,6 +16,7 @@
                 <include>README.md</include>
                 <include>LICENSE</include>
                 <include>NOTICE</include>
+                <include>sys-api.postman_collection.json</include>
             </includes>
         </fileSet>
         <fileSet>

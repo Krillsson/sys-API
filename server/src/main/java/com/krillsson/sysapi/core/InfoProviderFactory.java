@@ -22,6 +22,7 @@ package com.krillsson.sysapi.core;
 
 import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.core.linux.rasbian.RaspbianLinuxInfoProvider;
+import com.krillsson.sysapi.core.macos.MacDiskProvider;
 import com.krillsson.sysapi.core.windows.WindowsInfoProvider;
 import com.krillsson.sysapi.util.Utils;
 import org.slf4j.Logger;
@@ -72,6 +73,8 @@ public class InfoProviderFactory {
                 //falling through to default case
             case MACOSX:
                 //https://github.com/Chris911/iStats
+                infoProvider = new DefaultInfoProvider(hal, operatingSystem, utils, new DefaultNetworkProvider(hal, speedMeasurementManager), new MacDiskProvider(operatingSystem, hal, speedMeasurementManager));
+                break;
             case FREEBSD:
             case SOLARIS:
             case UNKNOWN:
