@@ -17,7 +17,7 @@
 
     <properties>
         <main.basedir>${project.basedir}</main.basedir>
-        <dropwizard.version>1.2.1</dropwizard.version>
+        <dropwizard.version>1.2.3</dropwizard.version>
         <copyright>2017</copyright>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
         <maven.min-version>3.2.3</maven.min-version>
