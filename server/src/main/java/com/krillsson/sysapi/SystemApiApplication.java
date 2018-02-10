@@ -39,6 +39,7 @@ import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.dropwizard.sslreload.SslReloadBundle;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
@@ -77,12 +78,14 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
     }
 
     @Override
-    public void initialize(Bootstrap<SystemApiConfiguration> maintenanceConfigurationBootstrap) {
-        ObjectMapper mapper = maintenanceConfigurationBootstrap.getObjectMapper();
+    public void initialize(Bootstrap<SystemApiConfiguration> bootstrap) {
+        ObjectMapper mapper = bootstrap.getObjectMapper();
         mapper.addMixInAnnotations(NetworkInterface.class, NetworkInterfaceMixin.class);
         FilterProvider filterProvider = new SimpleFilterProvider()
                 .addFilter("networkInterface filter", SimpleBeanPropertyFilter.serializeAllExcept("name", "displayName", "inetAddresses", "interfaceAddresses", "mtu", "subInterfaces"));
         mapper.setFilters(filterProvider);
+        bootstrap.addBundle(new SslReloadBundle());
+
     }
 
     @Override
