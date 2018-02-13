@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/Krillsson/sys-api/badge.svg?branch=develop)](https://coveralls.io/github/Krillsson/sys-api?branch=develop)
 [![SonarQube Quality Gate](https://sonarqube.com/api/badges/gate?key=com.krillsson:sys-api)](https://sonarqube.com/dashboard?id=com.krillsson%3Asys-api)
 
-System API (sys-api) is a RESTful API to your computers hardware. 
+System API (sys-API) is a RESTful API to your computers hardware. 
 
 Sys-api publishes metrics from [OSHI](https://github.com/oshi/oshi) with the help of [Dropwizard](https://github.com/dropwizard/dropwizard). On Windows the information is supplemented with
 [OpenHardwareMonitor](https://github.com/openhardwaremonitor/openhardwaremonitor) with a little help from [OhmJni4Net](https://github.com/Krillsson/ohmjni4net).
