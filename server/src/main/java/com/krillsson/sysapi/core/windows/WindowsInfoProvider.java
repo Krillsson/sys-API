@@ -52,12 +52,16 @@ public class WindowsInfoProvider extends DefaultInfoProvider  {
     private static final File OPEN_HARDWARE_MONITOR_LIB_DLL = new File(LIB_LOCATION + SEPARATOR + "OpenHardwareMonitorLib.dll");
     private static final File OHM_JNI_WRAPPER_J4N_DLL = new File(LIB_LOCATION + SEPARATOR + "OhmJniWrapper.j4n.dll");
     private final HardwareAbstractionLayer hal;
+    private WindowsNetworkProvider windowsNetworkProvider;
+    private final WindowsDiskProvider windowsDiskProvider;
     private MonitorManager monitorManager;
 
-    public WindowsInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils, DefaultNetworkProvider defaultNetworkProvider, DefaultDiskProvider defaultDiskProvider)
+    public WindowsInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils, WindowsNetworkProvider windowsNetworkProvider, WindowsDiskProvider windowsDiskProvider)
     {
-        super(hal, operatingSystem, utils, defaultNetworkProvider, defaultDiskProvider);
+        super(hal, operatingSystem, utils, windowsNetworkProvider, windowsDiskProvider);
         this.hal = hal;
+        this.windowsNetworkProvider = windowsNetworkProvider;
+        this.windowsDiskProvider = windowsDiskProvider;
     }
 
     @Override
@@ -146,6 +150,8 @@ public class WindowsInfoProvider extends DefaultInfoProvider  {
             try {
                 factory.init();
                 this.monitorManager = factory.GetManager();
+                this.windowsDiskProvider.setMonitorManager(monitorManager);
+                this.windowsNetworkProvider.setMonitorManager(monitorManager);
                 return true;
             } catch (Exception e) {
                 LOGGER.error("Trouble while initializing JNI4Net Bridge. Do I have admin privileges?", e);
@@ -157,8 +163,11 @@ public class WindowsInfoProvider extends DefaultInfoProvider  {
 
     private OHMManagerFactory loadFromInstallDir() {
         try {
+            LOGGER.debug("Attempting to load {}", OHM_JNI_WRAPPER_DLL);
             Bridge.LoadAndRegisterAssemblyFrom(OHM_JNI_WRAPPER_DLL);
+            LOGGER.debug("Attempting to load {}", OHM_JNI_WRAPPER_J4N_DLL);
             Bridge.LoadAndRegisterAssemblyFrom(OHM_JNI_WRAPPER_J4N_DLL);
+            LOGGER.debug("Attempting to load {}", OPEN_HARDWARE_MONITOR_LIB_DLL);
             Bridge.LoadAndRegisterAssemblyFrom(OPEN_HARDWARE_MONITOR_LIB_DLL);
             return new OHMManagerFactory();
         } catch (Exception e) {

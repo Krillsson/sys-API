@@ -23,7 +23,9 @@ package com.krillsson.sysapi.core;
 import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.core.linux.rasbian.RaspbianLinuxInfoProvider;
 import com.krillsson.sysapi.core.macos.MacDiskProvider;
+import com.krillsson.sysapi.core.windows.WindowsDiskProvider;
 import com.krillsson.sysapi.core.windows.WindowsInfoProvider;
+import com.krillsson.sysapi.core.windows.WindowsNetworkProvider;
 import com.krillsson.sysapi.util.Utils;
 import org.slf4j.Logger;
 import oshi.PlatformEnum;
@@ -53,24 +55,24 @@ public class InfoProviderFactory {
     }
 
     public InfoProvider provide() {
-        InfoProvider infoProvider;
+        InfoProvider infoProvider = null;
         switch (os) {
             case WINDOWS:
                 if (configuration.windows() == null || configuration.windows().enableOhmJniWrapper()) {
-                    WindowsInfoProvider windowsInfoProvider = new WindowsInfoProvider(hal, operatingSystem, utils, new DefaultNetworkProvider(hal, speedMeasurementManager), new DefaultDiskProvider(operatingSystem, hal, speedMeasurementManager));
+                    WindowsInfoProvider windowsInfoProvider = new WindowsInfoProvider(hal, operatingSystem, utils, new WindowsNetworkProvider(hal, speedMeasurementManager), new WindowsDiskProvider(operatingSystem, hal, speedMeasurementManager));
                     if (windowsInfoProvider.canProvide()) {
                         infoProvider = windowsInfoProvider;
-                        break;
                     }
                 }
-                //falling through to default case
+                break;
+            //falling through to default case
             case LINUX:
                 if (operatingSystem.getFamily().toLowerCase().contains(RASPBIAN_QUALIFIER)) {
                     LOGGER.info("Raspberry Pi detected");
                     infoProvider = new RaspbianLinuxInfoProvider(hal, operatingSystem, utils, new DefaultNetworkProvider(hal, speedMeasurementManager), new DefaultDiskProvider(operatingSystem, hal, speedMeasurementManager));
-                    break;
                 }
-                //falling through to default case
+                break;
+            //falling through to default case
             case MACOSX:
                 //https://github.com/Chris911/iStats
                 infoProvider = new DefaultInfoProvider(hal, operatingSystem, utils, new DefaultNetworkProvider(hal, speedMeasurementManager), new MacDiskProvider(operatingSystem, hal, speedMeasurementManager));
@@ -79,8 +81,10 @@ public class InfoProviderFactory {
             case SOLARIS:
             case UNKNOWN:
             default:
-                infoProvider = new DefaultInfoProvider(hal, operatingSystem, utils, new DefaultNetworkProvider(hal, speedMeasurementManager), new DefaultDiskProvider(operatingSystem, hal, speedMeasurementManager));
                 break;
+        }
+        if (infoProvider == null) {
+            infoProvider = new DefaultInfoProvider(hal, operatingSystem, utils, new DefaultNetworkProvider(hal, speedMeasurementManager), new DefaultDiskProvider(operatingSystem, hal, speedMeasurementManager));
         }
         return infoProvider;
     }

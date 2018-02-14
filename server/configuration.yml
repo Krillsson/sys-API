@@ -17,7 +17,12 @@ server:
     - type: http
       port: 8080
 logging:
-  level: INFO
+  loggers:
+
+    # Overrides the level of com.example.dw.Thing and sets it to DEBUG.
+    "oshi": INFO
+    "org.eclipse.jetty": INFO
+  level: DEBUG
   appenders:
        - type: console
          threshold: DEBUG
