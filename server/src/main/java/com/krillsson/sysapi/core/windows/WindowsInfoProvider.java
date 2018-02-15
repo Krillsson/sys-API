@@ -113,28 +113,6 @@ public class WindowsInfoProvider extends DefaultInfoProvider  {
         return gpus;
     }
 
-    @Override
-    public Optional<NetworkInterfaceSpeed> getNetworkInterfaceSpeed(String id)
-    {
-        Optional<NetworkIF> networkOptional = Arrays.stream(hal.getNetworkIFs()).filter(n -> id.equals(n.getName())).findAny();
-        if(!networkOptional.isPresent()){
-            throw new NoSuchElementException(String.format("No NIC with id %s was found", id));
-        }
-        NetworkIF networkIF = networkOptional.get();
-
-        monitorManager.Update();
-        NetworkMonitor networkMonitor = monitorManager.getNetworkMonitor();
-        NicInfo[] nics = networkMonitor.getNics();
-        Optional<NicInfo> nicInfoOptional = Arrays.stream(nics).filter(n -> networkIF.getMacaddr().equals(n.getPhysicalAddress())).findAny();
-
-        if(!nicInfoOptional.isPresent()){
-            LOGGER.warn("Unable to find any OHM NicInfo matching with HW Address of {} for NIC {}. Defaulting to speed measurement.", networkIF.getMacaddr(), networkIF.getName());
-            return super.getNetworkInterfaceSpeed(id);
-        }
-        NicInfo nicInfo = nicInfoOptional.get();
-        return Optional.of(new NetworkInterfaceSpeed((long) (nicInfo.getInBandwidth().getValue() * 1000), (long) (nicInfo.getOutBandwidth().getValue() * 1000)));
-    }
-
     private boolean initBridge() {
         LOGGER.info("Enabling OHMJNIWrapper impl. Disable this in the configuration.yml (see README.md)");
         Bridge.setDebug(true);

@@ -69,13 +69,15 @@ public class InfoProviderFactory {
             case LINUX:
                 if (operatingSystem.getFamily().toLowerCase().contains(RASPBIAN_QUALIFIER)) {
                     LOGGER.info("Raspberry Pi detected");
-                    infoProvider = new RaspbianLinuxInfoProvider(hal, operatingSystem, utils, new DefaultNetworkProvider(hal, speedMeasurementManager), new DefaultDiskProvider(operatingSystem, hal, speedMeasurementManager));
+                    infoProvider = new RaspbianLinuxInfoProvider(hal, operatingSystem, utils, createDefaultNetworkProvider(), getDefaultDiskProvider());
                 }
                 break;
             //falling through to default case
             case MACOSX:
                 //https://github.com/Chris911/iStats
-                infoProvider = new DefaultInfoProvider(hal, operatingSystem, utils, new DefaultNetworkProvider(hal, speedMeasurementManager), new MacDiskProvider(operatingSystem, hal, speedMeasurementManager));
+                MacDiskProvider defaultDiskProvider = new MacDiskProvider(operatingSystem, hal, speedMeasurementManager);
+                defaultDiskProvider.register();
+                infoProvider = new DefaultInfoProvider(hal, operatingSystem, utils, createDefaultNetworkProvider(), defaultDiskProvider);
                 break;
             case FREEBSD:
             case SOLARIS:
@@ -84,9 +86,21 @@ public class InfoProviderFactory {
                 break;
         }
         if (infoProvider == null) {
-            infoProvider = new DefaultInfoProvider(hal, operatingSystem, utils, new DefaultNetworkProvider(hal, speedMeasurementManager), new DefaultDiskProvider(operatingSystem, hal, speedMeasurementManager));
+            infoProvider = new DefaultInfoProvider(hal, operatingSystem, utils, createDefaultNetworkProvider(), getDefaultDiskProvider());
         }
         return infoProvider;
+    }
+
+    private DefaultDiskProvider getDefaultDiskProvider() {
+        DefaultDiskProvider defaultDiskProvider = new DefaultDiskProvider(operatingSystem, hal, speedMeasurementManager);
+        defaultDiskProvider.register();
+        return defaultDiskProvider;
+    }
+
+    private DefaultNetworkProvider createDefaultNetworkProvider() {
+        DefaultNetworkProvider defaultNetworkProvider = new DefaultNetworkProvider(hal, speedMeasurementManager);
+        defaultNetworkProvider.register();
+        return defaultNetworkProvider;
     }
 
 }

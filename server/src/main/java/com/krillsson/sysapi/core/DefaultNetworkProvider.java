@@ -34,7 +34,7 @@ public class DefaultNetworkProvider {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultNetworkProvider.class);
 
     private static final int BYTE_TO_BIT = 8;
-    private static final NetworkInterfaceSpeed EMPTY_INTERFACE_SPEED = new NetworkInterfaceSpeed(0, 0);
+    protected static final NetworkInterfaceSpeed EMPTY_INTERFACE_SPEED = new NetworkInterfaceSpeed(0, 0);
 
     private final HardwareAbstractionLayer hal;
     private final SpeedMeasurementManager speedMeasurementManager;
@@ -42,10 +42,9 @@ public class DefaultNetworkProvider {
     protected DefaultNetworkProvider(HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
         this.hal = hal;
         this.speedMeasurementManager = speedMeasurementManager;
-        register();
     }
 
-    protected void register() {
+    public void register() {
         List<SpeedMeasurementManager.SpeedSource> collect = Arrays.stream(hal.getNetworkIFs()).map(n -> new SpeedMeasurementManager.SpeedSource() {
             @Override
             public String getName() {
@@ -72,20 +71,20 @@ public class DefaultNetworkProvider {
     }
 
     NetworkInterfaceData[] getAllNetworkInterfaces() {
-        return Arrays.stream(hal.getNetworkIFs()).map(n -> new NetworkInterfaceData(n, getSpeed(n.getName()).orElse(EMPTY_INTERFACE_SPEED))).toArray(NetworkInterfaceData[]::new);
+        return Arrays.stream(hal.getNetworkIFs()).map(n -> new NetworkInterfaceData(n, getSpeed(n.getName()))).toArray(NetworkInterfaceData[]::new);
     }
 
     Optional<NetworkInterfaceData> getNetworkInterfaceById(String id) {
-        return Arrays.stream(hal.getNetworkIFs()).filter(n -> id.equals(n.getName())).map(nic -> new NetworkInterfaceData(nic, getSpeed(nic.getName()).orElse(EMPTY_INTERFACE_SPEED))).findFirst();
+        return Arrays.stream(hal.getNetworkIFs()).filter(n -> id.equals(n.getName())).map(nic -> new NetworkInterfaceData(nic, getSpeed(nic.getName()))).findFirst();
     }
 
-    protected Optional<NetworkInterfaceSpeed> getSpeed(String id) {
+    protected NetworkInterfaceSpeed getSpeed(String id) {
         Optional<NetworkIF> networkOptional = Arrays.stream(hal.getNetworkIFs()).filter(n -> id.equals(n.getName())).findAny();
         if (networkOptional.isPresent()) {
             NetworkIF networkIF = networkOptional.get();
-            return Optional.of(networkInterfaceSpeed(networkIF.getName()));
+            return networkInterfaceSpeed(networkIF.getName());
         } else {
-            return Optional.empty();
+            return EMPTY_INTERFACE_SPEED;
         }
     }
 

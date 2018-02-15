@@ -249,11 +249,6 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     }
 
     @Override
-    public Optional<NetworkInterfaceSpeed> getNetworkInterfaceSpeed(String id) {
-        return defaultNetworkProvider.getSpeed(id);
-    }
-
-    @Override
     public String[] getNetworkInterfaceNames() {
         return defaultNetworkProvider.getNetworkInterfaceNames();
     }

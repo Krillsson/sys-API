@@ -29,7 +29,7 @@ public class WindowsNetworkProvider extends DefaultNetworkProvider {
     }
 
     @Override
-    public Optional<NetworkInterfaceSpeed> getSpeed(String id)
+    public NetworkInterfaceSpeed getSpeed(String id)
     {
         Optional<NetworkIF> networkOptional = Arrays.stream(hal.getNetworkIFs()).filter(n -> id.equals(n.getName())).findAny();
         if(!networkOptional.isPresent()){
@@ -40,19 +40,13 @@ public class WindowsNetworkProvider extends DefaultNetworkProvider {
         monitorManager.Update();
         NetworkMonitor networkMonitor = monitorManager.getNetworkMonitor();
         NicInfo[] nics = networkMonitor.getNics();
-        Optional<NicInfo> nicInfoOptional = Arrays.stream(nics).filter(n -> networkIF.getMacaddr().equals(n.getPhysicalAddress())).findAny();
+        Optional<NicInfo> nicInfoOptional = Arrays.stream(nics).filter(n -> networkIF.getMacaddr().equalsIgnoreCase(n.getPhysicalAddress())).findAny();
 
         if(!nicInfoOptional.isPresent()){
-            LOGGER.warn("Unable to find any OHM NicInfo matching with HW Address of {} for NIC {}. Defaulting to speed measurement.", networkIF.getMacaddr(), networkIF.getName());
-            return super.getSpeed(id);
+            return EMPTY_INTERFACE_SPEED;
         }
         NicInfo nicInfo = nicInfoOptional.get();
-        return Optional.of(new NetworkInterfaceSpeed((long) (nicInfo.getInBandwidth().getValue() * 1000), (long) (nicInfo.getOutBandwidth().getValue() * 1000)));
-    }
-
-    @Override
-    protected void register() {
-        // don't
+        return new NetworkInterfaceSpeed((long) (nicInfo.getInBandwidth().getValue()), (long) (nicInfo.getOutBandwidth().getValue()));
     }
 
     public void setMonitorManager(MonitorManager monitorManager) {

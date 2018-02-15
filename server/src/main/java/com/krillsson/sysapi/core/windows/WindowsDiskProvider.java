@@ -47,9 +47,4 @@ public class WindowsDiskProvider extends DefaultDiskProvider {
         double readRate = driveInfo.getReadRate();
         return new DiskSpeed((long) readRate, (long) writeRate);
     }
-
-    @Override
-    protected void register() {
-        // don't
-    }
 }

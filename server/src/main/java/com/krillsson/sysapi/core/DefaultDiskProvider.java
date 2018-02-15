@@ -49,10 +49,9 @@ public class DefaultDiskProvider {
         this.operatingSystem = operatingSystem;
         this.hal = hal;
         this.speedMeasurementManager = speedMeasurementManager;
-        register();
     }
 
-    protected void register() {
+    public void register() {
         for (HWDiskStore store : hal.getDiskStores()) {
             speedMeasurementManager.register(new DiskSpeedSource(store.getName(), hal));
         }
