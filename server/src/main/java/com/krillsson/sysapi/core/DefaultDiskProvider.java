@@ -62,7 +62,7 @@ public class DefaultDiskProvider {
         for (HWDiskStore diskStore : hal.getDiskStores()) {
             OSFileStore associatedFileStore = findAssociatedFileStore(diskStore);
             String name = associatedFileStore != null ? associatedFileStore.getName() : "N/A";
-            diskInfos.add(new DiskInfo(diskStore, diskHealth(name), diskSpeedForName(diskStore, associatedFileStore), associatedFileStore));
+            diskInfos.add(new DiskInfo(diskStore, diskHealth(name), diskSpeedForStore(diskStore, associatedFileStore), associatedFileStore));
         }
 
         FileSystem fileSystem = operatingSystem.getFileSystem();
@@ -73,11 +73,11 @@ public class DefaultDiskProvider {
         return Arrays.stream(hal.getDiskStores()).filter(d -> d.getName().equals(name)).map(di -> {
             OSFileStore associatedFileStore = findAssociatedFileStore(di);
             String mount = associatedFileStore != null ? associatedFileStore.getName() : "N/A";
-            return new DiskInfo(di, diskHealth(mount), diskSpeedForName(di, associatedFileStore), associatedFileStore);
+            return new DiskInfo(di, diskHealth(mount), diskSpeedForStore(di, associatedFileStore), associatedFileStore);
         }).findFirst();
     }
 
-    protected DiskSpeed diskSpeedForName(HWDiskStore diskStore, OSFileStore osFileStore) {
+    protected DiskSpeed diskSpeedForStore(HWDiskStore diskStore, OSFileStore osFileStore) {
         SpeedMeasurementManager.CurrentSpeed currentSpeedForName = speedMeasurementManager.getCurrentSpeedForName(diskStore.getName());
         if (currentSpeedForName != null) {
             return new DiskSpeed(currentSpeedForName.getReadPerSeconds(), currentSpeedForName.getWritePerSeconds());

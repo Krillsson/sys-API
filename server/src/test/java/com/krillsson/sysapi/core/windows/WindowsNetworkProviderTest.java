@@ -10,12 +10,13 @@ import org.junit.Before;
 import org.junit.Test;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
-import sun.nio.ch.Net;
+
+import java.util.NoSuchElementException;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class WindowsNetworkProviderTest {
@@ -60,12 +61,12 @@ public class WindowsNetworkProviderTest {
         NetworkInterfaceSpeed en0 = nicProvider.getSpeed("en0");
         assertThat(en0.getRxbps(), is(123L));
         assertThat(en0.getTxbps(), is(321L));
+        verify(monitorManager).Update();
     }
 
-    @Test
+    @Test(expected = NoSuchElementException.class)
     public void noAvailableSpeedRecordsReturnsDefaultValues() throws Exception {
-        NetworkInterfaceSpeed en0 = nicProvider.getSpeed("en0");
-        assertThat(en0.getRxbps(), is(0L));
-        assertThat(en0.getTxbps(), is(0L));
+        when(hal.getNetworkIFs()).thenReturn(new NetworkIF[0]);
+        nicProvider.getSpeed("en0");
     }
 }
