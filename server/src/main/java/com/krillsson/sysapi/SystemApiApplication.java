@@ -47,7 +47,6 @@ import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.slf4j.Logger;
 import oshi.SystemInfo;
 import oshi.hardware.HardwareAbstractionLayer;
-import oshi.hardware.Sensors;
 import oshi.software.os.OperatingSystem;
 
 import javax.servlet.*;
@@ -60,8 +59,6 @@ import java.time.Clock;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -87,7 +84,6 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
                 .addFilter("networkInterface filter", SimpleBeanPropertyFilter.serializeAllExcept("name", "displayName", "inetAddresses", "interfaceAddresses", "mtu", "subInterfaces"));
         mapper.setFilters(filterProvider);
         bootstrap.addBundle(new SslReloadBundle());
-
     }
 
     @Override
@@ -167,7 +163,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
                 "/META-INF/MANIFEST.MF";
         Manifest manifest = new Manifest(new URL(manifestPath).openStream());
         Attributes attr = manifest.getMainAttributes();
-        return "v."+ attr.getValue("Version");
+        return "v." + attr.getValue("Version");
     }
 
     public Environment getEnvironment() {
