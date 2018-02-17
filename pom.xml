@@ -6,7 +6,7 @@
 
     <groupId>com.krillsson</groupId>
     <artifactId>sys-api</artifactId>
-    <version>0.8-SNAPSHOT</version>
+    <version>0.8</version>
     <packaging>pom</packaging>
 
     <modules>
