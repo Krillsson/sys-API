@@ -78,8 +78,6 @@ public interface InfoProvider {
 
     Optional<NetworkInterfaceData> getNetworkInterfaceById(String id);
 
-    Optional<NetworkInterfaceSpeed> getNetworkInterfaceSpeed(String id);
-
     String[] getNetworkInterfaceNames();
 
     ProcessesInfo processesInfo(OperatingSystem.ProcessSort sortBy, int limit);

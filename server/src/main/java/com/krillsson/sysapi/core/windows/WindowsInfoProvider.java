@@ -52,12 +52,16 @@ public class WindowsInfoProvider extends DefaultInfoProvider  {
     private static final File OPEN_HARDWARE_MONITOR_LIB_DLL = new File(LIB_LOCATION + SEPARATOR + "OpenHardwareMonitorLib.dll");
     private static final File OHM_JNI_WRAPPER_J4N_DLL = new File(LIB_LOCATION + SEPARATOR + "OhmJniWrapper.j4n.dll");
     private final HardwareAbstractionLayer hal;
+    private WindowsNetworkProvider windowsNetworkProvider;
+    private final WindowsDiskProvider windowsDiskProvider;
     private MonitorManager monitorManager;
 
-    public WindowsInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils, DefaultNetworkProvider defaultNetworkProvider, DefaultDiskProvider defaultDiskProvider)
+    public WindowsInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils, WindowsNetworkProvider windowsNetworkProvider, WindowsDiskProvider windowsDiskProvider)
     {
-        super(hal, operatingSystem, utils, defaultNetworkProvider, defaultDiskProvider);
+        super(hal, operatingSystem, utils, windowsNetworkProvider, windowsDiskProvider);
         this.hal = hal;
+        this.windowsNetworkProvider = windowsNetworkProvider;
+        this.windowsDiskProvider = windowsDiskProvider;
     }
 
     @Override
@@ -109,28 +113,6 @@ public class WindowsInfoProvider extends DefaultInfoProvider  {
         return gpus;
     }
 
-    @Override
-    public Optional<NetworkInterfaceSpeed> getNetworkInterfaceSpeed(String id)
-    {
-        Optional<NetworkIF> networkOptional = Arrays.stream(hal.getNetworkIFs()).filter(n -> id.equals(n.getName())).findAny();
-        if(!networkOptional.isPresent()){
-            throw new NoSuchElementException(String.format("No NIC with id %s was found", id));
-        }
-        NetworkIF networkIF = networkOptional.get();
-
-        monitorManager.Update();
-        NetworkMonitor networkMonitor = monitorManager.getNetworkMonitor();
-        NicInfo[] nics = networkMonitor.getNics();
-        Optional<NicInfo> nicInfoOptional = Arrays.stream(nics).filter(n -> networkIF.getMacaddr().equals(n.getPhysicalAddress())).findAny();
-
-        if(!nicInfoOptional.isPresent()){
-            LOGGER.warn("Unable to find any OHM NicInfo matching with HW Address of {} for NIC {}. Defaulting to speed measurement.", networkIF.getMacaddr(), networkIF.getName());
-            return super.getNetworkInterfaceSpeed(id);
-        }
-        NicInfo nicInfo = nicInfoOptional.get();
-        return Optional.of(new NetworkInterfaceSpeed((long) (nicInfo.getInBandwidth().getValue() * 1000), (long) (nicInfo.getOutBandwidth().getValue() * 1000)));
-    }
-
     private boolean initBridge() {
         LOGGER.info("Enabling OHMJNIWrapper impl. Disable this in the configuration.yml (see README.md)");
         Bridge.setDebug(true);
@@ -146,6 +128,8 @@ public class WindowsInfoProvider extends DefaultInfoProvider  {
             try {
                 factory.init();
                 this.monitorManager = factory.GetManager();
+                this.windowsDiskProvider.setMonitorManager(monitorManager);
+                this.windowsNetworkProvider.setMonitorManager(monitorManager);
                 return true;
             } catch (Exception e) {
                 LOGGER.error("Trouble while initializing JNI4Net Bridge. Do I have admin privileges?", e);
@@ -157,8 +141,11 @@ public class WindowsInfoProvider extends DefaultInfoProvider  {
 
     private OHMManagerFactory loadFromInstallDir() {
         try {
+            LOGGER.debug("Attempting to load {}", OHM_JNI_WRAPPER_DLL);
             Bridge.LoadAndRegisterAssemblyFrom(OHM_JNI_WRAPPER_DLL);
+            LOGGER.debug("Attempting to load {}", OHM_JNI_WRAPPER_J4N_DLL);
             Bridge.LoadAndRegisterAssemblyFrom(OHM_JNI_WRAPPER_J4N_DLL);
+            LOGGER.debug("Attempting to load {}", OPEN_HARDWARE_MONITOR_LIB_DLL);
             Bridge.LoadAndRegisterAssemblyFrom(OPEN_HARDWARE_MONITOR_LIB_DLL);
             return new OHMManagerFactory();
         } catch (Exception e) {
