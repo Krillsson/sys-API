@@ -48,6 +48,10 @@ Download the [latest release](https://github.com/Krillsson/sys-api/releases/late
 
 A GUI in JavaFX is in the making
 
+### Concerned about memory usage
+
+Change the launcher script to this: `java -Xmx256m -Xms128m -jar system-api.jar server configuration.yml`
+
 ## Configuration
 The configuration.yml file is a [Dropwizard configuration file](https://dropwizard.github.io/dropwizard/manual/configuration.html).
 

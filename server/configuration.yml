@@ -16,11 +16,18 @@ server:
   applicationConnectors:
     - type: http
       port: 8080
+  adminConnectors:
+    - type: http
+      port: 8081
 logging:
+
+  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
   level: INFO
-  appenders:
-       - type: console
-         threshold: DEBUG
-# Disabled in the headless version
-#       - type: textarea
-#         threshold: DEBUG
+
+  # Logger-specific levels.
+  loggers:
+    # Enables the SQL query log and redirect it to a separate file
+    "com.krillsson.sysapi":
+      level: INFO
+      appenders:
+        - type: console

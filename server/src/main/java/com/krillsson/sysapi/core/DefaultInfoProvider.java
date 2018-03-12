@@ -47,7 +47,8 @@ import oshi.hardware.PowerSource;
 import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
 
-import java.math.BigDecimal;
+import javax.ws.rs.WebApplicationException;
+import javax.xml.ws.WebServiceException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -177,24 +178,29 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
             long totalCpu = user + nice + sys + idle + iowait + irq + softirq + steal;
             //long totalIdle = idle + iowait;
             //long totalSystem = irq + softirq + sys + steal;
-            coreLoads[i] = new CoreLoad(
-                    BigDecimal.valueOf(100d * user / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
-                    BigDecimal.valueOf(100d * nice / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
-                    BigDecimal.valueOf(100d * sys / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
-                    BigDecimal.valueOf(100d * idle / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
-                    BigDecimal.valueOf(100d * iowait / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
-                    BigDecimal.valueOf(100d * irq / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
-                    BigDecimal.valueOf(100d * softirq / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
-                    BigDecimal.valueOf(100d * steal / totalCpu).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue()
-            );
+            if (totalCpu != 0L) {
+                coreLoads[i] = new CoreLoad(
+                        Utils.round(100d * user / totalCpu, 2),
+                        Utils.round(100d * nice / totalCpu, 2),
+                        Utils.round(100d * sys / totalCpu, 2),
+                        Utils.round(100d * idle / totalCpu, 2),
+                        Utils.round(100d * iowait / totalCpu, 2),
+                        Utils.round(100d * irq / totalCpu, 2),
+                        Utils.round(100d * softirq / totalCpu, 2),
+                        Utils.round(100d * steal / totalCpu, 2)
+                );
+            } else {
+                coreLoads[i] = new CoreLoad(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+                throw new WebApplicationException("Something went wrong with reading CPU core load", 500);
+            }
         }
 
         coreTicks = currentProcessorTicks;
         coreTicksSampledAt = sampledAt;
 
         return new CpuLoad(
-                BigDecimal.valueOf(processor.getSystemCpuLoadBetweenTicks() * 100d).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
-                BigDecimal.valueOf(processor.getSystemCpuLoad() * 100d).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue(),
+                Utils.round(processor.getSystemCpuLoadBetweenTicks() * 100d, 2),
+                Utils.round(processor.getSystemCpuLoad() * 100d, 2),
                 coreLoads
         );
 
@@ -246,11 +252,6 @@ public class DefaultInfoProvider extends InfoProviderBase implements InfoProvide
     @Override
     public Optional<NetworkInterfaceData> getNetworkInterfaceById(String id) {
         return defaultNetworkProvider.getNetworkInterfaceById(id);
-    }
-
-    @Override
-    public Optional<NetworkInterfaceSpeed> getNetworkInterfaceSpeed(String id) {
-        return defaultNetworkProvider.getSpeed(id);
     }
 
     @Override

@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.krillsson.sysapi.auth.BasicAuthenticator;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.SystemApiConfiguration;
@@ -39,13 +40,13 @@ import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.dropwizard.sslreload.SslReloadBundle;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.slf4j.Logger;
 import oshi.SystemInfo;
 import oshi.hardware.HardwareAbstractionLayer;
-import oshi.hardware.Sensors;
 import oshi.software.os.OperatingSystem;
 
 import javax.servlet.*;
@@ -58,7 +59,6 @@ import java.time.Clock;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -77,12 +77,13 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
     }
 
     @Override
-    public void initialize(Bootstrap<SystemApiConfiguration> maintenanceConfigurationBootstrap) {
-        ObjectMapper mapper = maintenanceConfigurationBootstrap.getObjectMapper();
+    public void initialize(Bootstrap<SystemApiConfiguration> bootstrap) {
+        ObjectMapper mapper = bootstrap.getObjectMapper();
         mapper.addMixInAnnotations(NetworkInterface.class, NetworkInterfaceMixin.class);
         FilterProvider filterProvider = new SimpleFilterProvider()
                 .addFilter("networkInterface filter", SimpleBeanPropertyFilter.serializeAllExcept("name", "displayName", "inetAddresses", "interfaceAddresses", "mtu", "subInterfaces"));
         mapper.setFilters(filterProvider);
+        bootstrap.addBundle(new SslReloadBundle());
     }
 
     @Override
@@ -109,7 +110,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         environment.jersey().register(new AuthDynamicFeature(userBasicCredentialAuthFilter));
         environment.jersey().register(new AuthValueFactoryProvider.Binder(UserConfiguration.class));
 
-        SpeedMeasurementManager speedMeasurementManager = new SpeedMeasurementManager(Executors.newScheduledThreadPool(5), Clock.systemUTC(), 5);
+        SpeedMeasurementManager speedMeasurementManager = new SpeedMeasurementManager(Executors.newScheduledThreadPool(2, new ThreadFactoryBuilder().setNameFormat("speed-mgr-%d").build()), Clock.systemUTC(), 5);
         InfoProvider provider = new InfoProviderFactory(hal, os, SystemInfo.getCurrentPlatformEnum(), config, speedMeasurementManager).provide();
         environment.lifecycle().manage(speedMeasurementManager);
 
@@ -162,7 +163,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
                 "/META-INF/MANIFEST.MF";
         Manifest manifest = new Manifest(new URL(manifestPath).openStream());
         Attributes attr = manifest.getMainAttributes();
-        return "v."+ attr.getValue("Version");
+        return "v." + attr.getValue("Version");
     }
 
     public Environment getEnvironment() {
