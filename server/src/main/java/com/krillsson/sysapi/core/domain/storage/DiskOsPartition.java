@@ -8,7 +8,7 @@ public class DiskOsPartition extends DiskPartition {
     private final long usableSpace;
     private final long totalSpace;
 
-    public DiskOsPartition(String volume, String logicalVolume, String mount, String description, long usableSpace, long totalSpace) {
+    public DiskOsPartition(String identification, String name, String type, String uuid, long size, int major, int minor, String mountPoint, String volume, String logicalVolume, String mount, String description, long usableSpace, long totalSpace) {
         super(identification, name, type, uuid, size, major, minor, mountPoint);
         this.volume = volume;
         this.logicalVolume = logicalVolume;

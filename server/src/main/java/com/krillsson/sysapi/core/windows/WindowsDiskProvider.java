@@ -22,13 +22,13 @@ package com.krillsson.sysapi.core.windows;
 
 import com.krillsson.sysapi.core.DefaultDiskProvider;
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
+import com.krillsson.sysapi.core.domain.storage.DiskOsPartition;
 import com.krillsson.sysapi.core.domain.storage.DiskSpeed;
 import ohmwrapper.DriveMonitor;
 import ohmwrapper.MonitorManager;
 import org.slf4j.Logger;
 import oshi.hardware.HWDiskStore;
 import oshi.hardware.HardwareAbstractionLayer;
-import oshi.software.os.OSFileStore;
 import oshi.software.os.OperatingSystem;
 
 import java.util.Arrays;
@@ -48,7 +48,7 @@ public class WindowsDiskProvider extends DefaultDiskProvider {
     }
 
     @Override
-    protected DiskSpeed diskSpeedForStore(HWDiskStore diskStore, OSFileStore osFileStore) {
+    protected DiskSpeed diskSpeedForStore(HWDiskStore diskStore, DiskOsPartition osFileStore) {
         if(osFileStore == null){
             return DEFAULT_DISK_SPEED;
         }

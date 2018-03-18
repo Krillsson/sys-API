@@ -14,5 +14,5 @@ public interface DiskInfoProvider {
 
     Optional<DiskLoad> diskLoadByName(String name);
 
-    Optional<DiskInfo> getDiskInfoByName(String name);
+    Optional<DiskInfo> diskInfoByName(String name);
 }

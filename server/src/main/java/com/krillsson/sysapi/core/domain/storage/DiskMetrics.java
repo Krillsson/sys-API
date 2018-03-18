@@ -20,4 +20,36 @@ public class DiskMetrics {
         this.writes = writes;
         this.writeBytes = writeBytes;
     }
+
+    public long getUsableSpace() {
+        return usableSpace;
+    }
+
+    public long getTotalSpace() {
+        return totalSpace;
+    }
+
+    public long getOpenFileDescriptors() {
+        return openFileDescriptors;
+    }
+
+    public long getMaxFileDescriptors() {
+        return maxFileDescriptors;
+    }
+
+    public long getReads() {
+        return reads;
+    }
+
+    public long getReadBytes() {
+        return readBytes;
+    }
+
+    public long getWrites() {
+        return writes;
+    }
+
+    public long getWriteBytes() {
+        return writeBytes;
+    }
 }

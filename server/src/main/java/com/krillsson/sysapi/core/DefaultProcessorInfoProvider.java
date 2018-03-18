@@ -25,7 +25,7 @@ public class DefaultProcessorInfoProvider implements ProcessorInfoProvider {
     private long coreTicksSampledAt = -1;
     private long[][] coreTicks = new long[0][0];
 
-    protected DefaultProcessorInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils, DefaultNetworkProvider defaultNetworkProvider, DefaultDiskProvider defaultDiskProvider) {
+    protected DefaultProcessorInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils) {
         this.hal = hal;
         this.operatingSystem = operatingSystem;
         this.utils = utils;

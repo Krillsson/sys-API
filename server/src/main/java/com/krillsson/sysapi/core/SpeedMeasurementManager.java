@@ -7,10 +7,7 @@ import org.slf4j.Logger;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -73,13 +70,8 @@ public class SpeedMeasurementManager implements Managed {
         speedSources.remove(speedSource);
     }
 
-    CurrentSpeed getCurrentSpeedForName(String name){
-        CurrentSpeed currentSpeed = currentSpeedStore.get(name);
-        if(currentSpeed == null){
-            // no valid measurement yet
-            return new CurrentSpeed(0, 0);
-        }
-        return currentSpeed;
+    Optional<CurrentSpeed> getCurrentSpeedForName(String name){
+        return Optional.ofNullable(currentSpeedStore.get(name));
     }
 
     private void execute() {
