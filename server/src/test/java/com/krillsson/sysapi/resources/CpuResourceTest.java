@@ -29,9 +29,8 @@ public class CpuResourceTest {
     @Test
     public void getCpuHappyPath() throws Exception {
         oshi.hardware.CentralProcessor centralProcessor = mock(oshi.hardware.CentralProcessor.class);
-        when(provider.cpuInfo()).thenReturn(new CpuInfo(centralProcessor, 4, 80,
-                new CpuLoad(100, 0, new CoreLoad[]{}),
-                new CpuHealth(new double[0], 120, 1000, 10)));
+        when(provider.cpuInfo()).thenReturn(new CpuInfo(centralProcessor, new CpuLoad(100, 0, new CoreLoad[]{}, cpuHealth, processCount, threadCount), new CpuHealth(new double[0], 120, 1000, 10)
+        ));
 
         final com.krillsson.sysapi.dto.cpu.CpuInfo response = RESOURCES.getJerseyTest().target("/cpu")
                 .request(MediaType.APPLICATION_JSON_TYPE)

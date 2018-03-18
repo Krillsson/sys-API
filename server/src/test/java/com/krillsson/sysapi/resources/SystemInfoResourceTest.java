@@ -74,9 +74,8 @@ public class SystemInfoResourceTest {
         GlobalMemory globalMemory = mock(GlobalMemory.class);
         when(provider.systemInfo()).thenReturn(
                 new com.krillsson.sysapi.core.domain.system.SystemInfo("theHost", PlatformEnum.LINUX, operatingSystem,
-                        new CpuInfo(centralProcessor, 4, 80,
-                                new CpuLoad(100, 0, new CoreLoad[]{}),
-                                new CpuHealth(new double[0], 120, 1000, 10)),
+                        new CpuInfo(centralProcessor, new CpuLoad(100, 0, new CoreLoad[]{}, cpuHealth, processCount, threadCount), new CpuHealth(new double[0], 120, 1000, 10)
+                        ),
                         globalMemory,
                         new PowerSource[0]));
 

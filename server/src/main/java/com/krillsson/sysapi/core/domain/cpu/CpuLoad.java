@@ -24,11 +24,16 @@ public class CpuLoad {
     private final double cpuLoadCountingTicks;
     private final double cpuLoadOsMxBean;
     private final CoreLoad[] coreLoads;
+    private final CpuHealth cpuHealth;
+    private final int processCount;
+    private final int threadCount;
 
-
-    public CpuLoad(double cpuLoadCountingTicks, double cpuLoadOsMxBean, CoreLoad[] coreLoads) {
+    public CpuLoad(double cpuLoadCountingTicks, double cpuLoadOsMxBean, CoreLoad[] coreLoads, CpuHealth cpuHealth, int processCount, int threadCount) {
         this.cpuLoadCountingTicks = cpuLoadCountingTicks;
         this.cpuLoadOsMxBean = cpuLoadOsMxBean;
+        this.cpuHealth = cpuHealth;
+        this.processCount = processCount;
+        this.threadCount = threadCount;
         this.coreLoads = coreLoads;
     }
 
@@ -42,5 +47,17 @@ public class CpuLoad {
 
     public CoreLoad[] getCoreLoads() {
         return coreLoads;
+    }
+
+    public CpuHealth getCpuHealth() {
+        return cpuHealth;
+    }
+
+    public int getProcessCount() {
+        return processCount;
+    }
+
+    public int getThreadCount() {
+        return threadCount;
     }
 }

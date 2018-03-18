@@ -29,7 +29,7 @@ import oshi.hardware.NetworkIF;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class DefaultNetworkProvider {
+public class DefaultNetworkProvider implements NetworkInfoProvider{
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultNetworkProvider.class);
 
@@ -66,15 +66,18 @@ public class DefaultNetworkProvider {
         speedMeasurementManager.register(collect);
     }
 
-    String[] getNetworkInterfaceNames(){
+    @Override
+    public String[] getNetworkInterfaceNames(){
         return Arrays.stream(hal.getNetworkIFs()).map(NetworkIF::getName).toArray(String[]::new);
     }
 
-    NetworkInterfaceData[] getAllNetworkInterfaces() {
+    @Override
+    public NetworkInterfaceData[] getAllNetworkInterfaces() {
         return Arrays.stream(hal.getNetworkIFs()).map(n -> new NetworkInterfaceData(n, getSpeed(n.getName()))).toArray(NetworkInterfaceData[]::new);
     }
 
-    Optional<NetworkInterfaceData> getNetworkInterfaceById(String id) {
+    @Override
+    public Optional<NetworkInterfaceData> getNetworkInterfaceById(String id) {
         return Arrays.stream(hal.getNetworkIFs()).filter(n -> id.equals(n.getName())).map(nic -> new NetworkInterfaceData(nic, getSpeed(nic.getName()))).findFirst();
     }
 

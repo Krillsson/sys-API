@@ -37,7 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class DefaultDiskProvider {
+public class DefaultDiskProvider implements DiskInfoProvider {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultDiskProvider.class);
     protected static final DiskSpeed DEFAULT_DISK_SPEED = new DiskSpeed(0, 0);
 
@@ -57,7 +57,8 @@ public class DefaultDiskProvider {
         }
     }
 
-    protected StorageInfo storageInfo() {
+    @Override
+    public StorageInfo diskInfos() {
         List<DiskInfo> diskInfos = new ArrayList<>();
         for (HWDiskStore diskStore : hal.getDiskStores()) {
             OSFileStore associatedFileStore = findAssociatedFileStore(diskStore);
@@ -69,7 +70,8 @@ public class DefaultDiskProvider {
         return new StorageInfo(diskInfos.toArray(/*type reference*/new DiskInfo[0]), fileSystem.getOpenFileDescriptors(), fileSystem.getMaxFileDescriptors());
     }
 
-    Optional<DiskInfo> getDiskInfoByName(String name) {
+    @Override
+    public Optional<DiskInfo> getDiskInfoByName(String name) {
         return Arrays.stream(hal.getDiskStores()).filter(d -> d.getName().equals(name)).map(di -> {
             OSFileStore associatedFileStore = findAssociatedFileStore(di);
             String mount = associatedFileStore != null ? associatedFileStore.getName() : "N/A";
@@ -86,7 +88,8 @@ public class DefaultDiskProvider {
         }
     }
 
-    DiskHealth diskHealth(String name) {
+    @Override
+    public DiskHealth diskHealth(String name) {
         return null;
     }
 

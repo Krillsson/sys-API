@@ -46,55 +46,16 @@ import java.util.Optional;
 
 public interface InfoProvider {
 
-    CpuInfo cpuInfo();
 
-    CentralProcessor processor();
 
-    double cpuVoltage();
 
-    long[] systemCpuLoadTicks();
 
-    SystemInfo systemInfo();
 
-    DiskHealth diskHealth(String name);
 
-    double[] cpuTemperatures();
 
-    double cpuFanRpm();
 
-    double cpuFanPercent();
 
-    HealthData[] mainboardHealthData();
 
-    Gpu[] gpus();
 
-    Map<String, GpuHealth> gpuHealths();
 
-    CpuLoad cpuLoad();
-
-    OperatingSystem operatingSystem();
-
-    NetworkInterfaceData[] getAllNetworkInterfaces();
-
-    Optional<NetworkInterfaceData> getNetworkInterfaceById(String id);
-
-    String[] getNetworkInterfaceNames();
-
-    ProcessesInfo processesInfo(OperatingSystem.ProcessSort sortBy, int limit);
-
-    Optional<Process> getProcessByPid(int pid);
-
-    SensorsInfo sensorsInfo();
-
-    StorageInfo storageInfo();
-
-    Optional<DiskInfo> getDiskInfoByName(String name);
-
-    GlobalMemory globalMemory();
-
-    PowerSource[] powerSources();
-
-    GpuInfo gpuInfo();
-
-    Motherboard motherboard();
 }

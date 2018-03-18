@@ -25,8 +25,8 @@ public class MacDiskProvider extends DefaultDiskProvider {
      * @return
      */
     @Override
-    protected StorageInfo storageInfo() {
-        StorageInfo storageInfo = super.storageInfo();
+    protected StorageInfo diskInfos() {
+        StorageInfo storageInfo = super.diskInfos();
         fixDuplicateDrive(storageInfo);
         return storageInfo;
     }

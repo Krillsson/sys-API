@@ -20,35 +20,41 @@
  */
 package com.krillsson.sysapi.core.domain.storage;
 
-import oshi.hardware.HWDiskStore;
-import oshi.software.os.OSFileStore;
+import java.util.List;
+import java.util.Optional;
 
 public class DiskInfo {
-    private final HWDiskStore hwDiskStore;
-    private final DiskHealth health;
-    private final DiskSpeed diskSpeed;
-    private final OSFileStore osFileStore;
+    private final String model;
+    private final String name;
+    private final String serial;
+    private final List<DiskPartition> diskPartitions;
+    private final DiskOsPartition diskOsPartition;
 
-    public DiskInfo(HWDiskStore hwDiskStore, DiskHealth health, DiskSpeed diskSpeed, OSFileStore osFileStore) {
-        this.hwDiskStore = hwDiskStore;
-        this.health = health;
-        this.diskSpeed = diskSpeed;
-        this.osFileStore = osFileStore;
+    public DiskInfo(String model, String name, String serial, DiskOsPartition diskOsPartition, List<DiskPartition> diskPartitions) {
+        this.model = model;
+        this.name = name;
+        this.serial = serial;
+        this.diskOsPartition = diskOsPartition;
+        this.diskPartitions = diskPartitions;
     }
 
-    public HWDiskStore getHwDiskStore() {
-        return hwDiskStore;
+    public String getModel() {
+        return model;
     }
 
-    public DiskHealth getDiskHealth() {
-        return health;
+    public String getName() {
+        return name;
     }
 
-    public DiskSpeed getDiskSpeed() {
-        return diskSpeed;
+    public String getSerial() {
+        return serial;
     }
 
-    public OSFileStore getOsFileStore() {
-        return osFileStore;
+    public List<DiskPartition> getDiskPartitions() {
+        return diskPartitions;
+    }
+
+    public DiskOsPartition getDiskOsPartition() {
+        return diskOsPartition;
     }
 }
