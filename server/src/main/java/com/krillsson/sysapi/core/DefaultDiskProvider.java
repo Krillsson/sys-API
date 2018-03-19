@@ -93,13 +93,15 @@ public class DefaultDiskProvider implements DiskInfoProvider {
 
     @Override
     public List<DiskLoad> diskLoads() {
-        return Stream.of(hal.getDiskStores()).map(d -> {
-            DiskOsPartition partition = findAssociatedFileStore(d).orElse(DEFAULT_OS_PART);
-            DiskHealth health = diskHealth(d.getName());
-            DiskMetrics metrics = diskMetrics(d, partition, operatingSystem.getFileSystem());
-            DiskSpeed speed = diskSpeedForStore(d, partition).orElse(DEFAULT_DISK_SPEED);
-            return new DiskLoad(d.getName(), metrics, speed, health);
-        }).collect(Collectors.toList());
+        return Stream.of(hal.getDiskStores()).map(this::createDiskLoad).collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<DiskLoad> diskLoadByName(String name) {
+        return Stream.of(hal.getDiskStores())
+                .filter(n -> n.getName().equalsIgnoreCase(name))
+                .map(this::createDiskLoad)
+                .findAny();
     }
 
     protected DiskMetrics diskMetrics(HWDiskStore disk, DiskOsPartition partition, FileSystem fileSystem) {
@@ -117,52 +119,24 @@ public class DefaultDiskProvider implements DiskInfoProvider {
 
 
     @Override
-    public Optional<DiskLoad> diskLoadByName(String name) {
-        return Optional.empty();
-    }
-
-    @Override
     public Optional<DiskInfo> diskInfoByName(String name) {
-        return Optional.empty();
-    }
-
-    public StorageInfo diskInfoss() {
-        List<DiskInfo> diskInfos = new ArrayList<>();
-        Stream.of(hal.getDiskStores()).map(halDisk -> {
-            return new DiskInfo(
-                    halDisk.getModel(),
-                    halDisk.getName(),
-                    halDisk.getSerial(),
-                    findAssociatedFileStore(halDisk)
-            )
-        });
-
-
-        for (HWDiskStore diskStore : hal.getDiskStores()) {
-            OSFileStore associatedFileStore = findAssociatedFileStore(diskStore);
-            String name = associatedFileStore != null ? associatedFileStore.getName() : "N/A";
-            diskInfos.add(new DiskInfo(
-                    diskStore,
-                    diskHealth(name),
-                    diskSpeedForStore(diskStore, associatedFileStore),
-                    associatedFileStore
-            ));
-        }
-
-        FileSystem fileSystem = operatingSystem.getFileSystem();
-        return new StorageInfo(
-                diskInfos.toArray(/*type reference*/new DiskInfo[0]),
-                fileSystem.getOpenFileDescriptors(),
-                fileSystem.getMaxFileDescriptors()
-        );
-    }
-
-    public Optional<DiskInfo> getDiskInfoByName(String name) {
-        return Arrays.stream(hal.getDiskStores()).filter(d -> d.getName().equals(name)).map(di -> {
-            DiskOsPartition associatedFileStore = findAssociatedFileStore(di);
-            String mount = associatedFileStore != null ? associatedFileStore.getName() : "N/A";
-            return new DiskInfo(di, diskHealth(mount), diskSpeedForStore(di, associatedFileStore), associatedFileStore);
-        }).findFirst();
+        return Stream.of(hal.getDiskStores()).filter(n -> n.getName().equalsIgnoreCase(name)).map(d -> new DiskInfo(
+                d.getModel(),
+                d.getName(),
+                d.getSerial(),
+                findAssociatedFileStore(d).orElse(DEFAULT_OS_PART),
+                Stream.of(d.getPartitions())
+                        .map(p -> new DiskPartition(
+                                p.getIdentification(),
+                                p.getName(),
+                                p.getType(),
+                                p.getUuid(),
+                                p.getSize(),
+                                p.getMajor(),
+                                p.getMinor(),
+                                p.getMountPoint()
+                        )).collect(Collectors.toList())
+        )).findAny();
     }
 
     protected Optional<DiskSpeed> diskSpeedForStore(HWDiskStore diskStore, DiskOsPartition osFileStore) {
@@ -205,8 +179,15 @@ public class DefaultDiskProvider implements DiskInfoProvider {
         return Optional.empty();
     }
 
-    private static class DiskSpeedSource implements SpeedMeasurementManager.SpeedSource {
+    private DiskLoad createDiskLoad(HWDiskStore d) {
+        DiskOsPartition partition = findAssociatedFileStore(d).orElse(DEFAULT_OS_PART);
+        DiskHealth health = diskHealth(d.getName());
+        DiskMetrics metrics = diskMetrics(d, partition, operatingSystem.getFileSystem());
+        DiskSpeed speed = diskSpeedForStore(d, partition).orElse(DEFAULT_DISK_SPEED);
+        return new DiskLoad(d.getName(), metrics, speed, health);
+    }
 
+    private static class DiskSpeedSource implements SpeedMeasurementManager.SpeedSource {
         private final String name;
         private final HardwareAbstractionLayer hal;
 
