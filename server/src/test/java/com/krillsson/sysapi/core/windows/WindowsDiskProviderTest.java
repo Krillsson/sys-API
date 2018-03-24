@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.core.windows;
 
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
+import com.krillsson.sysapi.core.domain.storage.DiskOsPartition;
 import com.krillsson.sysapi.core.domain.storage.DiskSpeed;
 import ohmwrapper.DriveMonitor;
 import ohmwrapper.MonitorManager;
@@ -23,14 +24,14 @@ public class WindowsDiskProviderTest {
 
     WindowsDiskProvider diskProvider;
     private HWDiskStore store;
-    private OSFileStore osFileStore;
+    private DiskOsPartition osFileStore;
     private DriveMonitor driveMonitor;
 
     @Before
     public void setUp() throws Exception {
         monitorManager = mock(MonitorManager.class);
         store = mock(HWDiskStore.class);
-        osFileStore = mock(OSFileStore.class);
+        osFileStore = mock(DiskOsPartition.class);
         driveMonitor = mock(DriveMonitor.class);
 
         diskProvider = new WindowsDiskProvider(mock(OperatingSystem.class), mock(HardwareAbstractionLayer.class), mock(SpeedMeasurementManager.class));
