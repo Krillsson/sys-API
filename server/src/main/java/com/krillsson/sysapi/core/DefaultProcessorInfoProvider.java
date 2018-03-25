@@ -33,7 +33,6 @@ public class DefaultProcessorInfoProvider implements ProcessorInfoProvider {
 
     @Override
     public CpuInfo cpuInfo() {
-
         return new CpuInfo(
                 hal.getProcessor());
     }
@@ -41,7 +40,10 @@ public class DefaultProcessorInfoProvider implements ProcessorInfoProvider {
     @Override
     public CpuLoad cpuLoad() {
         CentralProcessor processor = hal.getProcessor();
-        if (Arrays.equals(coreTicks, new long[0][0]) || utils.isOutsideMaximumDuration(coreTicksSampledAt, MAX_SAMPLING_THRESHOLD)) {
+        if (Arrays.equals(coreTicks, new long[0][0]) || utils.isOutsideMaximumDuration(
+                coreTicksSampledAt,
+                MAX_SAMPLING_THRESHOLD
+        )) {
             LOGGER.debug("Sleeping thread since we don't have enough sample data. Hold on!");
             coreTicks = processor.getProcessorCpuLoadTicks();
             coreTicksSampledAt = utils.currentSystemTime();
@@ -101,23 +103,23 @@ public class DefaultProcessorInfoProvider implements ProcessorInfoProvider {
                 temperature,
                 cpuVoltage,
                 fanRpm,
-                fanPercent);
+                fanPercent
+        );
     }
 
     double cpuVoltage() {
         return hal.getSensors().getCpuVoltage();
     }
 
-
-    public double[] cpuTemperatures() {
+    double[] cpuTemperatures() {
         return new double[]{hal.getSensors().getCpuTemperature()};
     }
 
-    public double cpuFanRpm() {
+    double cpuFanRpm() {
         return Arrays.stream(hal.getSensors().getFanSpeeds()).findFirst().orElse(0);
     }
 
-    public double cpuFanPercent() {
+    double cpuFanPercent() {
         return 0;
     }
 }

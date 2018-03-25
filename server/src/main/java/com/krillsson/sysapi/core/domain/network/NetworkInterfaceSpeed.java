@@ -1,19 +1,19 @@
 package com.krillsson.sysapi.core.domain.network;
 
 public class NetworkInterfaceSpeed {
-    private final long rxbps;
-    private final long txbps;
+    private final long receiveBytesPerSecond;
+    private final long sendBytesPerSecond;
 
-    public NetworkInterfaceSpeed(long rxbps, long txbps) {
-        this.rxbps = rxbps;
-        this.txbps = txbps;
+    public NetworkInterfaceSpeed(long receiveBytesPerSecond, long sendBytesPerSecond) {
+        this.receiveBytesPerSecond = receiveBytesPerSecond;
+        this.sendBytesPerSecond = sendBytesPerSecond;
     }
 
-    public long getRxbps() {
-        return rxbps;
+    public long getReceiveBytesPerSecond() {
+        return receiveBytesPerSecond;
     }
 
-    public long getTxbps() {
-        return txbps;
+    public long getSendBytesPerSecond() {
+        return sendBytesPerSecond;
     }
 }

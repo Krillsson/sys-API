@@ -31,11 +31,11 @@ public class NetworkInterfacesResourceTest {
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
             .addResource(new NetworkInterfacesResource(provider))
             .build();
-    private com.krillsson.sysapi.core.domain.network.NetworkInterfaceData networkInterfaceData;
+    private com.krillsson.sysapi.core.domain.network.NetworkInterface networkInterfaceData;
 
     @Before
     public void setUp() throws Exception {
-        networkInterfaceData = new com.krillsson.sysapi.core.domain.network.NetworkInterfaceData(getNetworkIf(), new NetworkInterfaceSpeed(1, 1));
+        networkInterfaceData = new com.krillsson.sysapi.core.domain.network.NetworkInterface(getNetworkIf(), new NetworkInterfaceSpeed(1, 1));
     }
 
     @Test
@@ -58,7 +58,7 @@ public class NetworkInterfacesResourceTest {
 
     @Test
     public void shouldReturnReasonableArrayData() throws Exception {
-        when(provider.getAllNetworkInterfaces()).thenReturn(new com.krillsson.sysapi.core.domain.network.NetworkInterfaceData[]{networkInterfaceData});
+        when(provider.getAllNetworkInterfaces()).thenReturn(new com.krillsson.sysapi.core.domain.network.NetworkInterface[]{networkInterfaceData});
         NetworkInterfaceData[] networkInterfaceData = RESOURCES.getJerseyTest().target("/nics")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(NetworkInterfaceData[].class);

@@ -59,8 +59,8 @@ public class WindowsNetworkProviderTest {
         when(nicInfo.getPhysicalAddress()).thenReturn("01:23:45:67:89:AB");
 
         NetworkInterfaceSpeed en0 = nicProvider.getSpeed("en0");
-        assertThat(en0.getRxbps(), is(123L));
-        assertThat(en0.getTxbps(), is(321L));
+        assertThat(en0.getReceiveBytesPerSecond(), is(123L));
+        assertThat(en0.getSendBytesPerSecond(), is(321L));
         verify(monitorManager).Update();
     }
 

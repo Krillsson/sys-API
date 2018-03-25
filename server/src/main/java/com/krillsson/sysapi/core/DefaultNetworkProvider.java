@@ -20,16 +20,20 @@
  */
 package com.krillsson.sysapi.core;
 
-import com.krillsson.sysapi.core.domain.network.NetworkInterfaceData;
+import com.krillsson.sysapi.core.domain.network.NetworkInterface;
+import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad;
+import com.krillsson.sysapi.core.domain.network.NetworkInterfaceMetrics;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
 import org.slf4j.Logger;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
 
+import java.net.SocketException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class DefaultNetworkProvider implements NetworkInfoProvider{
+public class DefaultNetworkProvider implements NetworkInfoProvider {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultNetworkProvider.class);
 
@@ -45,55 +49,100 @@ public class DefaultNetworkProvider implements NetworkInfoProvider{
     }
 
     public void register() {
-        List<SpeedMeasurementManager.SpeedSource> collect = Arrays.stream(hal.getNetworkIFs()).map(n -> new SpeedMeasurementManager.SpeedSource() {
-            @Override
-            public String getName() {
-                return n.getName();
-            }
+        List<SpeedMeasurementManager.SpeedSource> collect = Arrays.stream(hal.getNetworkIFs())
+                .map(n -> new SpeedMeasurementManager.SpeedSource() {
+                    @Override
+                    public String getName() {
+                        return n.getName();
+                    }
 
-            @Override
-            public long getCurrentRead() {
-                n.updateNetworkStats();
-                return n.getBytesRecv() * BYTE_TO_BIT;
-            }
+                    @Override
+                    public long getCurrentRead() {
+                        n.updateNetworkStats();
+                        return n.getBytesRecv() * BYTE_TO_BIT;
+                    }
 
-            @Override
-            public long getCurrentWrite() {
-                n.updateNetworkStats();
-                return n.getBytesSent() * BYTE_TO_BIT;
-            }
-        }).collect(Collectors.toList());
+                    @Override
+                    public long getCurrentWrite() {
+                        //TODO: maybe it's good enough to do this in getCurrentRead since getCurrentWrite is called immediately after
+                        n.updateNetworkStats();
+                        return n.getBytesSent() * BYTE_TO_BIT;
+                    }
+                })
+                .collect(Collectors.toList());
         speedMeasurementManager.register(collect);
     }
 
     @Override
-    public String[] getNetworkInterfaceNames(){
-        return Arrays.stream(hal.getNetworkIFs()).map(NetworkIF::getName).toArray(String[]::new);
+    public List<NetworkInterface> networkInterfaces() {
+        return Arrays.stream(hal.getNetworkIFs()).map(mapToNetworkInterface()).collect(Collectors.toList());
     }
 
     @Override
-    public NetworkInterfaceData[] getAllNetworkInterfaces() {
-        return Arrays.stream(hal.getNetworkIFs()).map(n -> new NetworkInterfaceData(n, getSpeed(n.getName()))).toArray(NetworkInterfaceData[]::new);
+    public Optional<NetworkInterface> networkInterfaceById(String id) {
+        return Arrays.stream(hal.getNetworkIFs()).filter(n -> n.getName().equalsIgnoreCase(id)).map(
+                mapToNetworkInterface()).findAny();
     }
 
     @Override
-    public Optional<NetworkInterfaceData> getNetworkInterfaceById(String id) {
-        return Arrays.stream(hal.getNetworkIFs()).filter(n -> id.equals(n.getName())).map(nic -> new NetworkInterfaceData(nic, getSpeed(nic.getName()))).findFirst();
+    public List<NetworkInterfaceLoad> networkInterfaceLoads() {
+        return Arrays.stream(hal.getNetworkIFs())
+                .map(mapToLoad())
+                .collect(Collectors.toList());
     }
 
-    protected NetworkInterfaceSpeed getSpeed(String id) {
-        Optional<NetworkIF> networkOptional = Arrays.stream(hal.getNetworkIFs()).filter(n -> id.equals(n.getName())).findAny();
-        if (networkOptional.isPresent()) {
-            NetworkIF networkIF = networkOptional.get();
-            return networkInterfaceSpeed(networkIF.getName());
-        } else {
-            return EMPTY_INTERFACE_SPEED;
-        }
+    @Override
+    public Optional<NetworkInterfaceLoad> networkInterfaceLoadById(String id) {
+        return Arrays.stream(hal.getNetworkIFs())
+                .filter(n -> n.getName().equalsIgnoreCase(id))
+                .map(mapToLoad())
+                .findAny();
     }
 
-    private NetworkInterfaceSpeed networkInterfaceSpeed(String name){
-        SpeedMeasurementManager.CurrentSpeed currentSpeedForName = speedMeasurementManager.getCurrentSpeedForName(name);
-        return new NetworkInterfaceSpeed(currentSpeedForName.getReadPerSeconds(), currentSpeedForName.getWritePerSeconds());
+
+    private NetworkInterfaceSpeed speedForInterfaceWithName(String name) {
+        Optional<SpeedMeasurementManager.CurrentSpeed> currentSpeedForName = speedMeasurementManager.getCurrentSpeedForName(
+                name);
+        return currentSpeedForName.map(s -> new NetworkInterfaceSpeed(
+                s.getReadPerSeconds(),
+                s.getWritePerSeconds()
+        )).orElse(EMPTY_INTERFACE_SPEED);
     }
 
+
+    Function<NetworkIF, NetworkInterface> mapToNetworkInterface() {
+        return nic -> {
+            boolean loopback = false;
+            try {
+                loopback = nic.getNetworkInterface().isLoopback();
+            } catch (SocketException e) {
+                //ignore
+                LOGGER.warn("Socket exception while queering for loopback parameter", e);
+            }
+            return new NetworkInterface(
+                    nic.getName(),
+                    nic.getDisplayName(),
+                    nic.getMacaddr(),
+                    nic.getMTU(),
+                    loopback,
+                    nic.getIPv4addr(),
+                    nic.getIPv6addr()
+            );
+        };
+    }
+
+    Function<NetworkIF, NetworkInterfaceLoad> mapToLoad() {
+        return n -> new NetworkInterfaceLoad(
+                new NetworkInterfaceMetrics(
+                        n.getSpeed(),
+                        n.getBytesRecv(),
+                        n.getBytesSent(),
+                        n.getPacketsRecv(),
+                        n.getPacketsSent(),
+                        n.getInErrors(),
+                        n.getOutErrors()
+                ),
+                speedForInterfaceWithName(n.getName())
+        );
+    }
 }

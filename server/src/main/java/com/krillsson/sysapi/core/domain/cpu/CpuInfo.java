@@ -29,4 +29,7 @@ public class CpuInfo {
         this.centralProcessor = centralProcessor;
     }
 
+    public CentralProcessor getCentralProcessor() {
+        return centralProcessor;
+    }
 }

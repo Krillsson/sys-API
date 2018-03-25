@@ -23,6 +23,7 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.InfoProvider;
+import com.krillsson.sysapi.core.domain.network.NetworkInterface;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfacesDataMapper;
 import com.krillsson.sysapi.dto.network.NetworkInterfaceData;
 import io.dropwizard.auth.Auth;
@@ -54,7 +55,7 @@ public class NetworkInterfacesResource {
     @Path("{id}")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public NetworkInterfaceData getNetworkInterface(@Auth UserConfiguration user, @PathParam("id") String id) {
-        final Optional<com.krillsson.sysapi.core.domain.network.NetworkInterfaceData> networkInterface = infoProvider.getNetworkInterfaceById(id);
+        final Optional<NetworkInterface> networkInterface = infoProvider.getNetworkInterfaceById(id);
         if (!networkInterface.isPresent()) {
             throw new WebApplicationException(NOT_FOUND);
         }

@@ -1,11 +1,13 @@
 package com.krillsson.sysapi.core;
 
+import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.util.Utils;
 import org.junit.Before;
 import org.junit.Test;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.HardwareAbstractionLayer;
+import oshi.hardware.Sensors;
 import oshi.software.os.OperatingSystem;
 
 import static junit.framework.Assert.assertNotNull;
@@ -18,15 +20,19 @@ public class DefaultProcessorInfoProviderTest {
     HardwareAbstractionLayer hal;
     OperatingSystem os;
     Utils utils;
-    private CentralProcessor centralProcessor;
+    Sensors sensors;
+
+    CentralProcessor centralProcessor;
 
     @Before
     public void setUp() throws Exception {
         hal = mock(HardwareAbstractionLayer.class);
         os = mock(OperatingSystem.class);
         utils = mock(Utils.class);
+        sensors = mock(Sensors.class);
 
         centralProcessor = mock(CentralProcessor.class);
+        when(hal.getSensors()).thenReturn(sensors);
         infoProvider = new DefaultProcessorInfoProvider(hal, os, utils);
 
     }
@@ -69,5 +75,18 @@ public class DefaultProcessorInfoProviderTest {
         assertFalse(cpuLoad.getCoreLoads()[0].getSys() == secondCpuLoad.getCoreLoads()[0].getSys());
 
         verify(utils, times(1)).sleep(anyLong());
+    }
+
+    @Test
+    public void cpuHealthHappyPath() {
+        when(sensors.getCpuTemperature()).thenReturn(30.0);
+        when(sensors.getCpuVoltage()).thenReturn(1.35);
+        when(sensors.getFanSpeeds()).thenReturn(new int[]{1200});
+        when(sensors.getFanSpeeds()).thenReturn(new int[]{1200});
+        CpuHealth cpuHealth = infoProvider.cpuHealth();
+        assertEquals(cpuHealth.getFanPercent(), 0, 0);
+        assertEquals(cpuHealth.getFanRpm(), 1200, 0);
+        assertEquals(cpuHealth.getTemperatures()[0], 30.0, 0);
+        assertEquals(cpuHealth.getVoltage(), 1.35, 0);
     }
 }
