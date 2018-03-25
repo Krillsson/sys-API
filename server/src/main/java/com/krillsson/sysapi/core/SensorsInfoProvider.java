@@ -6,13 +6,5 @@ import oshi.hardware.PowerSource;
 public interface SensorsInfoProvider {
     SensorsInfo sensorsInfo();
 
-    double[] cpuTemperatures();
-
-    double cpuVoltage();
-
-    double cpuFanRpm();
-
-    double cpuFanPercent();
-
     PowerSource[] powerSources();
 }

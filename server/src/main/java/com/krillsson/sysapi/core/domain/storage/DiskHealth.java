@@ -23,8 +23,8 @@ package com.krillsson.sysapi.core.domain.storage;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
 
 public class DiskHealth {
-    private double temperature;
-    private HealthData[] healthData;
+    private final double temperature;
+    private final HealthData[] healthData;
 
     public DiskHealth(double temperature, HealthData[] healthData) {
         this.temperature = temperature;

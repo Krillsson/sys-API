@@ -33,7 +33,7 @@ public class DefaultCpuInfoProviderTest {
 
         centralProcessor = mock(CentralProcessor.class);
         when(hal.getSensors()).thenReturn(sensors);
-        infoProvider = new DefaultCpuInfoProvider(hal, os, utils);
+        infoProvider = new DefaultCpuInfoProvider(hal, os, cpuSensors, utils);
 
     }
 

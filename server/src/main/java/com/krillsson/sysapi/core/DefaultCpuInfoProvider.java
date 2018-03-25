@@ -1,7 +1,6 @@
 package com.krillsson.sysapi.core;
 
 import com.krillsson.sysapi.core.domain.cpu.CoreLoad;
-import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.util.Utils;
@@ -20,14 +19,16 @@ public class DefaultCpuInfoProvider implements CpuInfoProvider {
     private final HardwareAbstractionLayer hal;
     private final OperatingSystem operatingSystem;
     private final Utils utils;
+    private final DefaultCpuSensors cpuSensors;
     private static final long MAX_SAMPLING_THRESHOLD = TimeUnit.SECONDS.toMillis(10);
     private static final int SLEEP_SAMPLE_PERIOD = 1000;
     private long coreTicksSampledAt = -1;
     private long[][] coreTicks = new long[0][0];
 
-    protected DefaultCpuInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils) {
+    DefaultCpuInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, DefaultCpuSensors cpuSensors, Utils utils) {
         this.hal = hal;
         this.operatingSystem = operatingSystem;
+        this.cpuSensors = cpuSensors;
         this.utils = utils;
     }
 
@@ -89,37 +90,7 @@ public class DefaultCpuInfoProvider implements CpuInfoProvider {
         return new CpuLoad(
                 Utils.round(processor.getSystemCpuLoadBetweenTicks() * 100d, 2),
                 Utils.round(processor.getSystemCpuLoad() * 100d, 2),
-                coreLoads, cpuHealth(), operatingSystem.getProcessCount(), operatingSystem.getThreadCount()
+                coreLoads, cpuSensors.cpuHealth(), operatingSystem.getProcessCount(), operatingSystem.getThreadCount()
         );
-
-    }
-
-    public CpuHealth cpuHealth() {
-        double[] temperature = cpuTemperatures();
-        double fanRpm = cpuFanRpm();
-        double fanPercent = cpuFanPercent();
-        double cpuVoltage = cpuVoltage();
-        return new CpuHealth(
-                temperature,
-                cpuVoltage,
-                fanRpm,
-                fanPercent
-        );
-    }
-
-    double cpuVoltage() {
-        return hal.getSensors().getCpuVoltage();
-    }
-
-    double[] cpuTemperatures() {
-        return new double[]{hal.getSensors().getCpuTemperature()};
-    }
-
-    double cpuFanRpm() {
-        return Arrays.stream(hal.getSensors().getFanSpeeds()).findFirst().orElse(0);
-    }
-
-    double cpuFanPercent() {
-        return 0;
     }
 }
