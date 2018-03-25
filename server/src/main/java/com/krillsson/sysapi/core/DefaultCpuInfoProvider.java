@@ -13,7 +13,7 @@ import oshi.software.os.OperatingSystem;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public class DefaultProcessorInfoProvider implements ProcessorInfoProvider {
+public class DefaultCpuInfoProvider implements CpuInfoProvider {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultInfoProvider.class);
 
@@ -25,7 +25,7 @@ public class DefaultProcessorInfoProvider implements ProcessorInfoProvider {
     private long coreTicksSampledAt = -1;
     private long[][] coreTicks = new long[0][0];
 
-    protected DefaultProcessorInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils) {
+    protected DefaultCpuInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils) {
         this.hal = hal;
         this.operatingSystem = operatingSystem;
         this.utils = utils;

@@ -15,8 +15,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.*;
 
-public class DefaultProcessorInfoProviderTest {
-    DefaultProcessorInfoProvider infoProvider;
+public class DefaultCpuInfoProviderTest {
+    DefaultCpuInfoProvider infoProvider;
     HardwareAbstractionLayer hal;
     OperatingSystem os;
     Utils utils;
@@ -33,7 +33,7 @@ public class DefaultProcessorInfoProviderTest {
 
         centralProcessor = mock(CentralProcessor.class);
         when(hal.getSensors()).thenReturn(sensors);
-        infoProvider = new DefaultProcessorInfoProvider(hal, os, utils);
+        infoProvider = new DefaultCpuInfoProvider(hal, os, utils);
 
     }
 

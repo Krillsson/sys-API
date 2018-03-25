@@ -43,12 +43,12 @@ public class DefaultNetworkProvider implements NetworkInfoProvider {
     private final HardwareAbstractionLayer hal;
     private final SpeedMeasurementManager speedMeasurementManager;
 
-    protected DefaultNetworkProvider(HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
+    DefaultNetworkProvider(HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
         this.hal = hal;
         this.speedMeasurementManager = speedMeasurementManager;
     }
 
-    public void register() {
+    void register() {
         List<SpeedMeasurementManager.SpeedSource> collect = Arrays.stream(hal.getNetworkIFs())
                 .map(n -> new SpeedMeasurementManager.SpeedSource() {
                     @Override
