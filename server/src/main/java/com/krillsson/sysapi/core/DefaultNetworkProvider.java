@@ -43,7 +43,7 @@ public class DefaultNetworkProvider implements NetworkInfoProvider {
     private final HardwareAbstractionLayer hal;
     private final SpeedMeasurementManager speedMeasurementManager;
 
-    DefaultNetworkProvider(HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
+    protected DefaultNetworkProvider(HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
         this.hal = hal;
         this.speedMeasurementManager = speedMeasurementManager;
     }
@@ -100,7 +100,7 @@ public class DefaultNetworkProvider implements NetworkInfoProvider {
     }
 
 
-    private NetworkInterfaceSpeed speedForInterfaceWithName(String name) {
+    protected NetworkInterfaceSpeed speedForInterfaceWithName(String name) {
         Optional<SpeedMeasurementManager.CurrentSpeed> currentSpeedForName = speedMeasurementManager.getCurrentSpeedForName(
                 name);
         return currentSpeedForName.map(s -> new NetworkInterfaceSpeed(

@@ -48,21 +48,21 @@ public class WindowsDiskProvider extends DefaultDiskProvider {
     }
 
     @Override
-    protected DiskSpeed diskSpeedForStore(HWDiskStore diskStore, DiskOsPartition osFileStore) {
+    protected Optional<DiskSpeed> diskSpeedForStore(HWDiskStore diskStore, DiskOsPartition osFileStore) {
         if(osFileStore == null){
-            return DEFAULT_DISK_SPEED;
+            return Optional.empty();
         }
         monitorManager.Update();
 
         Optional<DriveMonitor> diskOptional = Arrays.stream(monitorManager.DriveMonitors()).filter(d -> osFileStore.getMount().equalsIgnoreCase(d.getLogicalName())).findAny();
         if (!diskOptional.isPresent()) {
             LOGGER.warn("No disk with id {} was found", diskStore.getName());
-            return DEFAULT_DISK_SPEED;
+            return Optional.empty();
         }
 
         DriveMonitor driveInfo = diskOptional.get();
         double writeRate = driveInfo.getWriteRate();
         double readRate = driveInfo.getReadRate();
-        return new DiskSpeed((long) readRate, (long) writeRate);
+        return Optional.of(new DiskSpeed((long) readRate, (long) writeRate));
     }
 }
