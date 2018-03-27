@@ -25,14 +25,12 @@ public class Gpu {
     private String model;
     private double coreMhz;
     private double memoryMhz;
-    private GpuHealth gpuHealth;
 
-    public Gpu(String vendor, String model, double coreMhz, double memoryMhz, GpuHealth gpuHealth) {
+    public Gpu(String vendor, String model, double coreMhz, double memoryMhz) {
         this.vendor = vendor;
         this.model = model;
         this.coreMhz = coreMhz;
         this.memoryMhz = memoryMhz;
-        this.gpuHealth = gpuHealth;
     }
 
     public String getVendor() {
@@ -51,7 +49,4 @@ public class Gpu {
         return memoryMhz;
     }
 
-    public GpuHealth getGpuHealth() {
-        return gpuHealth;
-    }
 }

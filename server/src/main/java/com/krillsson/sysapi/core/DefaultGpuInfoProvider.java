@@ -1,14 +1,13 @@
 package com.krillsson.sysapi.core;
 
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
-import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.core.domain.gpu.GpuInfo;
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad;
 import oshi.hardware.HardwareAbstractionLayer;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class DefaultGpuInfoProvider implements GpuInfoProvider {
 
@@ -25,11 +24,11 @@ public class DefaultGpuInfoProvider implements GpuInfoProvider {
 
     @Override
     public GpuInfo gpuInfo() {
-        return new GpuInfo(hal.getDisplays(), gpus());
+        return new GpuInfo(Arrays.asList(hal.getDisplays()), gpus());
     }
 
-    public Gpu[] gpus() {
-        return new Gpu[0];
+    public List<Gpu> gpus() {
+        return Collections.EMPTY_LIST;
     }
 
 }
