@@ -28,7 +28,6 @@ public class NullSafeOhmMonitor {
 
     public static final NullSafeOHMSensor DEFAULT_SENSOR = new NullSafeOHMSensor();
 
-
     public static OHMSensor nullSafe(OHMSensor sensor) {
         if (sensor != null) {
             return sensor;

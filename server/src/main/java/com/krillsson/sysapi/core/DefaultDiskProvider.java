@@ -54,7 +54,7 @@ public class DefaultDiskProvider implements DiskInfoProvider {
             0
 
     );
-    public static final DiskHealth DEFAULT_DISK_HEALTH = new DiskHealth(-1, Collections.EMPTY_LIST);
+    public static final DiskHealth DEFAULT_DISK_HEALTH = new DiskHealth(-1, Collections.emptyList());
 
     private final OperatingSystem operatingSystem;
     private final HardwareAbstractionLayer hal;
@@ -155,8 +155,8 @@ public class DefaultDiskProvider implements DiskInfoProvider {
     }
 
     private Optional<DiskOsPartition> findAssociatedFileStore(HWDiskStore diskStore) {
-        for (OSFileStore osStore : Arrays.asList(operatingSystem.getFileSystem().getFileStores())) {
-            List<HWPartition> asList = Arrays.asList(diskStore.getPartitions());
+        for (OSFileStore osStore : Stream.of(operatingSystem.getFileSystem().getFileStores()).collect(Collectors.toList())) {
+            List<HWPartition> asList = Stream.of(diskStore.getPartitions()).collect(Collectors.toList());
             for (HWPartition partition : asList) {
                 if (osStore.getUUID().equalsIgnoreCase(partition.getUuid())) {
                     return Optional.of(new DiskOsPartition(

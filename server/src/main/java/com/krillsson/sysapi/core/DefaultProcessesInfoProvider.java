@@ -16,7 +16,7 @@ public class DefaultProcessesInfoProvider implements ProcessesInfoProvider {
     private final OperatingSystem operatingSystem;
     private final HardwareAbstractionLayer hal;
 
-    DefaultProcessesInfoProvider(OperatingSystem operatingSystem, HardwareAbstractionLayer hal) {
+    public DefaultProcessesInfoProvider(OperatingSystem operatingSystem, HardwareAbstractionLayer hal) {
         this.operatingSystem = operatingSystem;
         this.hal = hal;
     }
