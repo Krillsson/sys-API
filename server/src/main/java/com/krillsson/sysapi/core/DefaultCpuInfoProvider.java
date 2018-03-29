@@ -11,6 +11,8 @@ import oshi.software.os.OperatingSystem;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DefaultCpuInfoProvider implements CpuInfoProvider {
 
@@ -25,7 +27,7 @@ public class DefaultCpuInfoProvider implements CpuInfoProvider {
     private long coreTicksSampledAt = -1;
     private long[][] coreTicks = new long[0][0];
 
-    DefaultCpuInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, DefaultCpuSensors cpuSensors, Utils utils) {
+    protected DefaultCpuInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, DefaultCpuSensors cpuSensors, Utils utils) {
         this.hal = hal;
         this.operatingSystem = operatingSystem;
         this.cpuSensors = cpuSensors;
@@ -90,7 +92,7 @@ public class DefaultCpuInfoProvider implements CpuInfoProvider {
         return new CpuLoad(
                 Utils.round(processor.getSystemCpuLoadBetweenTicks() * 100d, 2),
                 Utils.round(processor.getSystemCpuLoad() * 100d, 2),
-                coreLoads, cpuSensors.cpuHealth(), operatingSystem.getProcessCount(), operatingSystem.getThreadCount()
+                Stream.of(coreLoads).collect(Collectors.toList()), cpuSensors.cpuHealth(), operatingSystem.getProcessCount(), operatingSystem.getThreadCount()
         );
     }
 }

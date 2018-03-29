@@ -42,9 +42,10 @@ public class WindowsNetworkProvider extends DefaultNetworkProvider {
     private HardwareAbstractionLayer hal;
 
 
-    public WindowsNetworkProvider(HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
+    public WindowsNetworkProvider(HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager, MonitorManager monitorManager) {
         super(hal, speedMeasurementManager);
         this.hal = hal;
+        this.monitorManager = monitorManager;
     }
 
     @Override
@@ -72,9 +73,5 @@ public class WindowsNetworkProvider extends DefaultNetworkProvider {
                 (long) (nicInfo.getInBandwidth().getValue()),
                 (long) (nicInfo.getOutBandwidth().getValue())
         );
-    }
-
-    public void setMonitorManager(MonitorManager monitorManager) {
-        this.monitorManager = monitorManager;
     }
 }

@@ -20,20 +20,22 @@
  */
 package com.krillsson.sysapi.core.domain.cpu;
 
+import java.util.List;
+
 public class CpuHealth {
-    private final double[] temperatures;
+    private final List<Double> temperatures;
     private final double voltage;
     private final double fanRpm;
     private final double fanPercent;
 
-    public CpuHealth(double[] temperatures, double voltage, double fanRpm, double fanPercent) {
+    public CpuHealth(List<Double> temperatures, double voltage, double fanRpm, double fanPercent) {
         this.temperatures = temperatures;
         this.voltage = voltage;
         this.fanRpm = fanRpm;
         this.fanPercent = fanPercent;
     }
 
-    public double[] getTemperatures() {
+    public List<Double> getTemperatures() {
         return temperatures;
     }
 

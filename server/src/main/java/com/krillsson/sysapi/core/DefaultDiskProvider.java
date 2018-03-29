@@ -20,6 +20,7 @@
  */
 package com.krillsson.sysapi.core;
 
+import com.krillsson.sysapi.core.domain.sensors.HealthData;
 import com.krillsson.sysapi.core.domain.storage.*;
 import org.slf4j.Logger;
 import oshi.hardware.HWDiskStore;
@@ -53,6 +54,7 @@ public class DefaultDiskProvider implements DiskInfoProvider {
             0
 
     );
+    public static final DiskHealth DEFAULT_DISK_HEALTH = new DiskHealth(-1, Collections.EMPTY_LIST);
 
     private final OperatingSystem operatingSystem;
     private final HardwareAbstractionLayer hal;
@@ -149,7 +151,7 @@ public class DefaultDiskProvider implements DiskInfoProvider {
     }
 
     public DiskHealth diskHealth(String name) {
-        return null;
+        return DEFAULT_DISK_HEALTH;
     }
 
     private Optional<DiskOsPartition> findAssociatedFileStore(HWDiskStore diskStore) {

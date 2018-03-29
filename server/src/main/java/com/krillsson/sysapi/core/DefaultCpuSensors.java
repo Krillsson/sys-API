@@ -4,6 +4,7 @@ import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
 import oshi.hardware.HardwareAbstractionLayer;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class DefaultCpuSensors {
 
@@ -13,8 +14,8 @@ public class DefaultCpuSensors {
         this.hal = hal;
     }
 
-    public CpuHealth cpuHealth() {
-        double[] temperature = cpuTemperatures();
+    protected CpuHealth cpuHealth() {
+        List<Double> temperature = cpuTemperatures();
         double fanRpm = cpuFanRpm();
         double fanPercent = cpuFanPercent();
         double cpuVoltage = cpuVoltage();
@@ -26,19 +27,19 @@ public class DefaultCpuSensors {
         );
     }
 
-    double cpuVoltage() {
+    protected double cpuVoltage() {
         return hal.getSensors().getCpuVoltage();
     }
 
-    double[] cpuTemperatures() {
-        return new double[]{hal.getSensors().getCpuTemperature()};
+    protected List<Double> cpuTemperatures() {
+        return Arrays.asList(hal.getSensors().getCpuTemperature());
     }
 
-    double cpuFanRpm() {
+    protected double cpuFanRpm() {
         return Arrays.stream(hal.getSensors().getFanSpeeds()).findFirst().orElse(0);
     }
 
-    double cpuFanPercent() {
+    protected double cpuFanPercent() {
         return 0;
     }
 }

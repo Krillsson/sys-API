@@ -20,15 +20,17 @@
  */
 package com.krillsson.sysapi.core.domain.cpu;
 
+import java.util.List;
+
 public class CpuLoad {
     private final double cpuLoadCountingTicks;
     private final double cpuLoadOsMxBean;
-    private final CoreLoad[] coreLoads;
+    private final List<CoreLoad> coreLoads;
     private final CpuHealth cpuHealth;
     private final int processCount;
     private final int threadCount;
 
-    public CpuLoad(double cpuLoadCountingTicks, double cpuLoadOsMxBean, CoreLoad[] coreLoads, CpuHealth cpuHealth, int processCount, int threadCount) {
+    public CpuLoad(double cpuLoadCountingTicks, double cpuLoadOsMxBean, List<CoreLoad> coreLoads, CpuHealth cpuHealth, int processCount, int threadCount) {
         this.cpuLoadCountingTicks = cpuLoadCountingTicks;
         this.cpuLoadOsMxBean = cpuLoadOsMxBean;
         this.cpuHealth = cpuHealth;
@@ -45,7 +47,7 @@ public class CpuLoad {
         return cpuLoadOsMxBean;
     }
 
-    public CoreLoad[] getCoreLoads() {
+    public List<CoreLoad> getCoreLoads() {
         return coreLoads;
     }
 

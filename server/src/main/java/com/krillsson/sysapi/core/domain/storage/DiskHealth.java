@@ -22,11 +22,13 @@ package com.krillsson.sysapi.core.domain.storage;
 
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
 
+import java.util.List;
+
 public class DiskHealth {
     private final double temperature;
-    private final HealthData[] healthData;
+    private final List<HealthData> healthData;
 
-    public DiskHealth(double temperature, HealthData[] healthData) {
+    public DiskHealth(double temperature, List<HealthData> healthData) {
         this.temperature = temperature;
         this.healthData = healthData;
     }
@@ -35,7 +37,7 @@ public class DiskHealth {
         return temperature;
     }
 
-    public HealthData[] getHealthData() {
+    public List<HealthData> getHealthData() {
         return healthData;
     }
 

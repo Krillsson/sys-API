@@ -22,7 +22,13 @@ package com.krillsson.sysapi.core.windows.util;
 
 import ohmwrapper.OHMSensor;
 
+import java.util.Optional;
+
 public class NullSafeOhmMonitor {
+
+    public static final NullSafeOHMSensor DEFAULT_SENSOR = new NullSafeOHMSensor();
+
+
     public static OHMSensor nullSafe(OHMSensor sensor) {
         if (sensor != null) {
             return sensor;
@@ -35,6 +41,10 @@ public class NullSafeOhmMonitor {
         } else {
             return new OHMSensor[0];
         }
+    }
+
+    public static double nullSafeGetValue(OHMSensor sensor) {
+        return Optional.ofNullable(sensor).orElse(DEFAULT_SENSOR).getValue();
     }
 
     public static class NullSafeOHMSensor extends OHMSensor {

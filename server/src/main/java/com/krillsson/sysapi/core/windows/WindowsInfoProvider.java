@@ -72,46 +72,6 @@ public class WindowsInfoProvider extends DefaultInfoProvider  {
                 initBridge();
     }
 
-    public Gpu[] gpus() {
-        List<Gpu> gpus = new ArrayList<>();
-        monitorManager.Update();
-        final GpuMonitor[] gpuMonitors = monitorManager.GpuMonitors();
-        if (gpuMonitors != null && gpuMonitors.length > 0) {
-            for (GpuMonitor gpuMonitor : gpuMonitors) {
-                GpuHealth gpuHealth = new GpuHealth(
-                        nullSafe(gpuMonitor.getFanRPM()).getValue(), nullSafe(gpuMonitor.getFanPercent()).getValue(), nullSafe(gpuMonitor.getTemperature()).getValue(),
-                        nullSafe(gpuMonitor.getCoreLoad()).getValue(),
-                        nullSafe(gpuMonitor.getMemoryClock()).getValue());
-                Gpu gpu = new Gpu(
-                        gpuMonitor.getVendor(),
-                        gpuMonitor.getName(),
-                        nullSafe(gpuMonitor.getCoreClock()).getValue(),
-                        nullSafe(gpuMonitor.getMemoryClock()).getValue(),
-                        gpuHealth
-                );
-                gpus.add(gpu);
-            }
-        }
-        return gpus.toArray(/*type reference*/new Gpu[0]);
-    }
-
-    public Map<String, GpuHealth> gpuHealths() {
-        Map<String, GpuHealth> gpus = new HashMap<>();
-        monitorManager.Update();
-        final GpuMonitor[] gpuMonitors = monitorManager.GpuMonitors();
-        if (gpuMonitors != null && gpuMonitors.length > 0) {
-            for (GpuMonitor gpuMonitor : gpuMonitors) {
-                GpuHealth gpuHealth = new GpuHealth(
-                        nullSafe(gpuMonitor.getFanRPM()).getValue(),
-                        nullSafe(gpuMonitor.getFanPercent()).getValue(),
-                        nullSafe(gpuMonitor.getTemperature()).getValue(),
-                        nullSafe(gpuMonitor.getCoreLoad()).getValue(),
-                        nullSafe(gpuMonitor.getMemoryClock()).getValue());
-                gpus.put(gpuMonitor.getName(), gpuHealth);
-            }
-        }
-        return gpus;
-    }
 
     private boolean initBridge() {
         LOGGER.info("Enabling OHMJNIWrapper impl. Disable this in the configuration.yml (see README.md)");
