@@ -1,6 +1,6 @@
-package com.krillsson.sysapi.core.domain.storage;
+package com.krillsson.sysapi.core.domain.drives;
 
-public class DiskPartition {
+public class Partition {
     private final String identification;
     private final String name;
     private final String type;
@@ -10,7 +10,7 @@ public class DiskPartition {
     private final int minor;
     private final String mountPoint;
 
-    public DiskPartition(String identification, String name, String type, String uuid, long size, int major, int minor, String mountPoint) {
+    public Partition(String identification, String name, String type, String uuid, long size, int major, int minor, String mountPoint) {
         this.identification = identification;
         this.name = name;
         this.type = type;

@@ -18,24 +18,46 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.storage;
+package com.krillsson.sysapi.dto.drives;
 
 import java.util.List;
-import java.util.Optional;
 
-public class DiskInfo {
-    private final String model;
-    private final String name;
-    private final String serial;
-    private final List<DiskPartition> diskPartitions;
-    private final DiskOsPartition diskOsPartition;
+public class Drive {
+    private String model;
+    private String name;
+    private String serial;
+    private List<Partition> partitions;
+    private OsPartition diskOsPartition;
 
-    public DiskInfo(String model, String name, String serial, DiskOsPartition diskOsPartition, List<DiskPartition> diskPartitions) {
+    public Drive(String model, String name, String serial, OsPartition diskOsPartition, List<Partition> partitions) {
         this.model = model;
         this.name = name;
         this.serial = serial;
         this.diskOsPartition = diskOsPartition;
-        this.diskPartitions = diskPartitions;
+        this.partitions = partitions;
+    }
+
+    public Drive() {
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
+    public void setPartitions(List<Partition> partitions) {
+        this.partitions = partitions;
+    }
+
+    public void setDiskOsPartition(OsPartition diskOsPartition) {
+        this.diskOsPartition = diskOsPartition;
     }
 
     public String getModel() {
@@ -50,11 +72,11 @@ public class DiskInfo {
         return serial;
     }
 
-    public List<DiskPartition> getDiskPartitions() {
-        return diskPartitions;
+    public List<Partition> getPartitions() {
+        return partitions;
     }
 
-    public DiskOsPartition getDiskOsPartition() {
+    public OsPartition getDiskOsPartition() {
         return diskOsPartition;
     }
 }

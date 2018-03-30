@@ -1,10 +1,10 @@
-package com.krillsson.sysapi.core.domain.storage;
+package com.krillsson.sysapi.dto.drives;
 
-public class DiskSpeed {
+public class DriveSpeed {
     private final long readBytesPerSecond;
     private final long writeBytesPerSecond;
 
-    public DiskSpeed(long readBytesPerSecond, long writeBytesPerSecond) {
+    public DriveSpeed(long readBytesPerSecond, long writeBytesPerSecond) {
         this.readBytesPerSecond = readBytesPerSecond;
         this.writeBytesPerSecond = writeBytesPerSecond;
     }

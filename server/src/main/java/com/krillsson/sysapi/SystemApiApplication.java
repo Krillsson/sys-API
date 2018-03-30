@@ -29,6 +29,7 @@ import com.krillsson.sysapi.auth.BasicAuthenticator;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.config.UserConfiguration;
+import com.krillsson.sysapi.core.metrics.MetricsFactory;
 import com.krillsson.sysapi.core.metrics.MetricsProvider;
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceMixin;
@@ -110,11 +111,12 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         environment.jersey().register(new AuthValueFactoryProvider.Binder(UserConfiguration.class));
 
         SpeedMeasurementManager speedMeasurementManager = new SpeedMeasurementManager(Executors.newScheduledThreadPool(2, new ThreadFactoryBuilder().setNameFormat("speed-mgr-%d").build()), Clock.systemUTC(), 5);
-        InfoProvider provider = new MetricsProvider(hal, os, SystemInfo.getCurrentPlatformEnum(), config, speedMeasurementManager).create();
+        MetricsFactory provider = new MetricsProvider(hal, os, SystemInfo.getCurrentPlatformEnum(), config, speedMeasurementManager).create();
+        provider.cpuInfoProvider();
         environment.lifecycle().manage(speedMeasurementManager);
 
         environment.jersey().register(new SystemResource(provider));
-        environment.jersey().register(new DiskStoresResource(provider));
+        environment.jersey().register(new DrivesResource(provider));
         environment.jersey().register(new GpuResource(provider));
         environment.jersey().register(new MemoryResource(provider));
         environment.jersey().register(new NetworkInterfacesResource(provider));

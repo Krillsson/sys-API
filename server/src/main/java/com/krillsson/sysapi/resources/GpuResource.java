@@ -23,6 +23,8 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.domain.gpu.GpuInfoMapper;
+import com.krillsson.sysapi.core.domain.gpu.GpuLoad;
+import com.krillsson.sysapi.core.metrics.GpuMetrics;
 import io.dropwizard.auth.Auth;
 
 import javax.annotation.security.RolesAllowed;
@@ -30,14 +32,15 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("gpus")
 @Produces(MediaType.APPLICATION_JSON)
 public class GpuResource {
 
-    private InfoProvider provider;
+    private GpuMetrics provider;
 
-    public GpuResource(InfoProvider provider) {
+    public GpuResource(GpuMetrics provider) {
         this.provider = provider;
     }
 
@@ -45,6 +48,14 @@ public class GpuResource {
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public com.krillsson.sysapi.dto.gpu.GpuInfo getRoot(@Auth UserConfiguration user) {
         return GpuInfoMapper.INSTANCE.map(provider.gpuInfo());
+    }
+
+
+    @GET
+    @Path("load")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public List<GpuLoad> getLoad(@Auth UserConfiguration user) {
+        return GpuInfoMapper.INSTANCE.map(provider.gpuLoads());
     }
 
 }

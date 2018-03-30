@@ -1,8 +1,8 @@
 package com.krillsson.sysapi.core.metrics.windows;
 
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
-import com.krillsson.sysapi.core.domain.storage.DiskOsPartition;
-import com.krillsson.sysapi.core.domain.storage.DiskSpeed;
+import com.krillsson.sysapi.core.domain.drives.OsPartition;
+import com.krillsson.sysapi.core.domain.drives.DriveSpeed;
 import ohmwrapper.DriveMonitor;
 import ohmwrapper.MonitorManager;
 import org.junit.Before;
@@ -23,19 +23,19 @@ public class WindowsDiskProviderTest {
 
     MonitorManager monitorManager;
 
-    WindowsDiskProvider diskProvider;
+    WindowsDriveProvider diskProvider;
     private HWDiskStore store;
-    private DiskOsPartition osFileStore;
+    private OsPartition osFileStore;
     private DriveMonitor driveMonitor;
 
     @Before
     public void setUp() throws Exception {
         monitorManager = mock(MonitorManager.class);
         store = mock(HWDiskStore.class);
-        osFileStore = mock(DiskOsPartition.class);
+        osFileStore = mock(OsPartition.class);
         driveMonitor = mock(DriveMonitor.class);
 
-        diskProvider = new WindowsDiskProvider(mock(OperatingSystem.class), mock(HardwareAbstractionLayer.class), mock(SpeedMeasurementManager.class));
+        diskProvider = new WindowsDriveProvider(mock(OperatingSystem.class), mock(HardwareAbstractionLayer.class), mock(SpeedMeasurementManager.class));
         diskProvider.setMonitorManager(monitorManager);
     }
 
@@ -46,18 +46,18 @@ public class WindowsDiskProviderTest {
         when(driveMonitor.getLogicalName()).thenReturn("C:/");
         when(driveMonitor.getWriteRate()).thenReturn(123d);
         when(driveMonitor.getReadRate()).thenReturn(321d);
-        Optional<DiskSpeed> diskSpeedOptional = diskProvider.diskSpeedForStore(store, osFileStore);
-        DiskSpeed diskSpeed = diskSpeedOptional.get();
-        assertThat(diskSpeed.getWriteBytesPerSecond(), is(123L));
-        assertThat(diskSpeed.getReadBytesPerSecond(), is(321L));
+        Optional<DriveSpeed> diskSpeedOptional = diskProvider.diskSpeedForStore(store, osFileStore);
+        DriveSpeed driveSpeed = diskSpeedOptional.get();
+        assertThat(driveSpeed.getWriteBytesPerSecond(), is(123L));
+        assertThat(driveSpeed.getReadBytesPerSecond(), is(321L));
         verify(monitorManager).Update();
     }
 
     @Test
     public void nullReturnsDefaultValues() {
-        Optional<DiskSpeed> diskSpeedOptional = diskProvider.diskSpeedForStore(null, null);
-        DiskSpeed diskSpeed = diskSpeedOptional.get();
-        assertThat(diskSpeed.getReadBytesPerSecond(), is(0L));
-        assertThat(diskSpeed.getWriteBytesPerSecond(), is(0L));
+        Optional<DriveSpeed> diskSpeedOptional = diskProvider.diskSpeedForStore(null, null);
+        DriveSpeed driveSpeed = diskSpeedOptional.get();
+        assertThat(driveSpeed.getReadBytesPerSecond(), is(0L));
+        assertThat(driveSpeed.getWriteBytesPerSecond(), is(0L));
     }
 }

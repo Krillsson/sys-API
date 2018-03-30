@@ -1,6 +1,5 @@
 package com.krillsson.sysapi.core.metrics.windows;
 
-import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.core.*;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMemoryMetrics;
@@ -42,7 +41,7 @@ public class WindowsMetricsFactory extends DefaultMetricsFactory {
             setCpuMetrics(new WindowsCpuMetrics(hal, operatingSystem, monitorManager, utils));
             setNetworkMetrics(new WindowsNetworkMetrics(hal, speedMeasurementManager, monitorManager));
             setGpuMetrics(new WindowsGpuMetrics(hal, monitorManager));
-            setDiskMetrics(new WindowsDiskProvider(operatingSystem, hal, speedMeasurementManager));
+            setDriveMetrics(new WindowsDriveProvider(operatingSystem, hal, speedMeasurementManager));
             setProcessesMetrics(new DefaultProcessesMetrics(operatingSystem, hal));
             setMotherboardMetrics(new WindowsMotherboardMetrics(hal, monitorManager));
             setMemoryMetrics(new DefaultMemoryMetrics(hal));

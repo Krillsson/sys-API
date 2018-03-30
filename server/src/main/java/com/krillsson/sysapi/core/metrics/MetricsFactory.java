@@ -1,7 +1,5 @@
 package com.krillsson.sysapi.core.metrics;
 
-import com.krillsson.sysapi.core.metrics.*;
-
 public interface MetricsFactory {
     boolean prerequisitesFilled();
 
@@ -11,7 +9,7 @@ public interface MetricsFactory {
 
     NetworkMetrics networkInfoProvider();
 
-    DiskMetrics diskInfoProvider();
+    DriveMetrics diskInfoProvider();
 
     MemoryMetrics memoryInfoProvider();
 

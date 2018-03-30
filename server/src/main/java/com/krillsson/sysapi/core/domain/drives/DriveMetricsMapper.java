@@ -19,7 +19,7 @@
  * contact[at]christian-jensen[dot]se
  */
 
-package com.krillsson.sysapi.core.domain.storage;
+package com.krillsson.sysapi.core.domain.drives;
 
 import com.krillsson.sysapi.core.domain.sensors.DataType;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
@@ -30,33 +30,33 @@ import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import oshi.software.os.OSFileStore;
 
+import java.util.List;
+
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.ERROR
 )
-public interface StorageInfoMapper {
-    StorageInfoMapper INSTANCE = Mappers.getMapper(StorageInfoMapper.class);
+public interface DriveMetricsMapper {
+    DriveMetricsMapper INSTANCE = Mappers.getMapper(DriveMetricsMapper.class);
 
-    com.krillsson.sysapi.dto.storage.StorageInfo map(StorageInfo value);
+    List<com.krillsson.sysapi.dto.drives.Drive> map(List<Drive> value);
+    List<com.krillsson.sysapi.dto.drives.DriveLoad> mapLoads(List<DriveLoad> value);
+    com.krillsson.sysapi.dto.drives.DriveLoad map(DriveLoad value);
 
-    @Mappings(
-            @Mapping(source = "hwDiskStore", target = "diskStore")
-    )
-    com.krillsson.sysapi.dto.storage.DiskInfo map(DiskInfo value);
+
+    com.krillsson.sysapi.dto.drives.Drive map(Drive value);
 
     com.krillsson.sysapi.dto.sensors.HealthData map(HealthData value);
 
     @Mappings(
             @Mapping(source = "UUID", target = "uuid")
     )
-    com.krillsson.sysapi.dto.storage.OsFileStore map(OSFileStore value);
+    com.krillsson.sysapi.dto.drives.OsPartition map(OsPartition value);
 
-    com.krillsson.sysapi.dto.storage.DiskSpeed map(com.krillsson.sysapi.core.domain.storage.DiskSpeed value);
+    com.krillsson.sysapi.dto.drives.DriveSpeed map(DriveSpeed value);
 
-    com.krillsson.sysapi.dto.storage.DiskHealth map(DiskHealth value);
+    com.krillsson.sysapi.dto.drives.DriveHealth map(DriveHealth value);
 
-    com.krillsson.sysapi.dto.storage.DiskStore map(oshi.hardware.HWDiskStore value);
-
-    com.krillsson.sysapi.dto.storage.Partition map(oshi.hardware.HWPartition value);
+    com.krillsson.sysapi.dto.drives.Partition map(oshi.hardware.HWPartition value);
 
     com.krillsson.sysapi.dto.sensors.DataType map(DataType value);
 }

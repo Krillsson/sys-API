@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.core.metrics.rasbian;
 
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDiskProvider;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDriveProvider;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultNetworkMetrics;
 import com.krillsson.sysapi.util.Utils;
 import org.junit.Before;
@@ -17,7 +17,7 @@ public class RaspbianLinuxInfoProviderTest {
     HardwareAbstractionLayer hal;
     OperatingSystem os;
     Utils utils;
-    DefaultDiskProvider diskProvider;
+    DefaultDriveProvider diskProvider;
     DefaultNetworkMetrics networkProvider;
 
     @Before
@@ -25,7 +25,7 @@ public class RaspbianLinuxInfoProviderTest {
         hal = mock(HardwareAbstractionLayer.class);
         os = mock(OperatingSystem.class);
         utils = mock(Utils.class);
-        diskProvider = mock(DefaultDiskProvider.class);
+        diskProvider = mock(DefaultDriveProvider.class);
         networkProvider = mock(DefaultNetworkMetrics.class);
         infoProvider = new TestableRaspbianLinuxInfoProvider(hal, os, utils, networkProvider, diskProvider);
     }
@@ -58,7 +58,7 @@ public class RaspbianLinuxInfoProviderTest {
 
         private String commandOutput;
 
-        TestableRaspbianLinuxInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils, DefaultNetworkMetrics defaultNetworkMetrics, DefaultDiskProvider defaultDiskProvider) {
+        TestableRaspbianLinuxInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils, DefaultNetworkMetrics defaultNetworkMetrics, DefaultDriveProvider defaultDiskProvider) {
             super(hal, operatingSystem, utils, defaultNetworkMetrics, defaultDiskProvider);
         }
 

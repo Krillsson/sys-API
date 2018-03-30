@@ -17,7 +17,7 @@ public class DefaultMetricsFactory implements MetricsFactory {
     private CpuMetrics cpuMetrics;
     private NetworkMetrics networkMetrics;
     private GpuMetrics gpuMetrics;
-    private DiskMetrics diskMetrics;
+    private DriveMetrics driveMetrics;
     private ProcessesMetrics processesMetrics;
     private MotherboardMetrics motherboardMetrics;
     private MemoryMetrics memoryMetrics;
@@ -41,9 +41,9 @@ public class DefaultMetricsFactory implements MetricsFactory {
         networkInfoProvider.register();
         setNetworkMetrics(networkInfoProvider);
         setGpuMetrics(new DefaultGpuMetrics(hal));
-        DefaultDiskProvider diskInfoProvider = new DefaultDiskProvider(operatingSystem, hal, speedMeasurementManager);
+        DefaultDriveProvider diskInfoProvider = new DefaultDriveProvider(operatingSystem, hal, speedMeasurementManager);
         diskInfoProvider.register();
-        setDiskMetrics(diskInfoProvider);
+        setDriveMetrics(diskInfoProvider);
         setProcessesMetrics(new DefaultProcessesMetrics(operatingSystem, hal));
         setMotherboardMetrics(new DefaultMotherboardMetrics(hal));
         setMemoryMetrics(new DefaultMemoryMetrics(hal));
@@ -61,8 +61,8 @@ public class DefaultMetricsFactory implements MetricsFactory {
     }
 
     @Override
-    public DiskMetrics diskInfoProvider() {
-        return diskMetrics;
+    public DriveMetrics diskInfoProvider() {
+        return driveMetrics;
     }
 
     @Override
@@ -97,8 +97,8 @@ public class DefaultMetricsFactory implements MetricsFactory {
         this.gpuMetrics = gpuMetrics;
     }
 
-    protected void setDiskMetrics(DiskMetrics diskMetrics) {
-        this.diskMetrics = diskMetrics;
+    protected void setDriveMetrics(DriveMetrics driveMetrics) {
+        this.driveMetrics = driveMetrics;
     }
 
     protected void setProcessesMetrics(ProcessesMetrics processesMetrics) {

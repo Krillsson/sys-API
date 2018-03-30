@@ -1,6 +1,6 @@
-package com.krillsson.sysapi.core.domain.storage;
+package com.krillsson.sysapi.dto.drives;
 
-public class DiskOsPartition extends DiskPartition {
+public class OsPartition extends Partition {
     private final String volume;
     private final String logicalVolume;
     private final String mount;
@@ -8,7 +8,7 @@ public class DiskOsPartition extends DiskPartition {
     private final long usableSpace;
     private final long totalSpace;
 
-    public DiskOsPartition(String identification, String name, String type, String uuid, long size, int major, int minor, String mountPoint, String volume, String logicalVolume, String mount, String description, long usableSpace, long totalSpace) {
+    public OsPartition(String identification, String name, String type, String uuid, long size, int major, int minor, String mountPoint, String volume, String logicalVolume, String mount, String description, long usableSpace, long totalSpace) {
         super(identification, name, type, uuid, size, major, minor, mountPoint);
         this.volume = volume;
         this.logicalVolume = logicalVolume;

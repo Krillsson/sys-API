@@ -20,13 +20,13 @@
  */
 package com.krillsson.sysapi.core.metrics.windows;
 
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDiskProvider;
+import com.krillsson.sysapi.core.domain.drives.DriveHealth;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDriveProvider;
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.domain.sensors.DataType;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
-import com.krillsson.sysapi.core.domain.storage.DiskHealth;
-import com.krillsson.sysapi.core.domain.storage.DiskOsPartition;
-import com.krillsson.sysapi.core.domain.storage.DiskSpeed;
+import com.krillsson.sysapi.core.domain.drives.OsPartition;
+import com.krillsson.sysapi.core.domain.drives.DriveSpeed;
 import com.krillsson.sysapi.util.Streams;
 import ohmwrapper.DriveMonitor;
 import ohmwrapper.MonitorManager;
@@ -42,8 +42,8 @@ import java.util.stream.Collectors;
 
 import static com.krillsson.sysapi.core.metrics.windows.util.NullSafeOhmMonitor.nullSafeGetValue;
 
-public class WindowsDiskProvider extends DefaultDiskProvider {
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(WindowsDiskProvider.class);
+public class WindowsDriveProvider extends DefaultDriveProvider {
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(WindowsDriveProvider.class);
 
     private MonitorManager monitorManager;
 
@@ -51,12 +51,12 @@ public class WindowsDiskProvider extends DefaultDiskProvider {
         this.monitorManager = monitorManager;
     }
 
-    public WindowsDiskProvider(OperatingSystem operatingSystem, HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
+    public WindowsDriveProvider(OperatingSystem operatingSystem, HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
         super(operatingSystem, hal, speedMeasurementManager);
     }
 
     @Override
-    protected Optional<DiskSpeed> diskSpeedForStore(HWDiskStore diskStore, DiskOsPartition osFileStore) {
+    protected Optional<DriveSpeed> diskSpeedForStore(HWDiskStore diskStore, OsPartition osFileStore) {
         if (osFileStore == null) {
             return Optional.empty();
         }
@@ -73,11 +73,11 @@ public class WindowsDiskProvider extends DefaultDiskProvider {
         DriveMonitor driveInfo = diskOptional.get();
         double writeRate = driveInfo.getWriteRate();
         double readRate = driveInfo.getReadRate();
-        return Optional.of(new DiskSpeed((long) readRate, (long) writeRate));
+        return Optional.of(new DriveSpeed((long) readRate, (long) writeRate));
     }
 
     @Override
-    public DiskHealth diskHealth(String name) {
+    public DriveHealth diskHealth(String name) {
         monitorManager.Update();
         return Streams.ofNullable(monitorManager.DriveMonitors())
                 .filter(d -> name.equalsIgnoreCase(d.getLogicalName()))
@@ -95,7 +95,7 @@ public class WindowsDiskProvider extends DefaultDiskProvider {
                                  ))
                                  .collect(Collectors.toList());
                          healthDatas.add(healthData);
-                         return new DiskHealth(nullSafeGetValue(dm.getTemperature()), healthDatas);
+                         return new DriveHealth(nullSafeGetValue(dm.getTemperature()), healthDatas);
 
                      }
                 ).findAny().orElse(DEFAULT_DISK_HEALTH);

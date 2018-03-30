@@ -24,6 +24,10 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.domain.cpu.CpuInfoMapper;
+import com.krillsson.sysapi.core.domain.drives.DriveMetricsMapper;
+import com.krillsson.sysapi.core.metrics.CpuMetrics;
+import com.krillsson.sysapi.dto.cpu.CpuLoad;
+import com.krillsson.sysapi.dto.drives.DriveLoad;
 import io.dropwizard.auth.Auth;
 
 import javax.annotation.security.RolesAllowed;
@@ -31,14 +35,15 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("cpu")
 @Produces(MediaType.APPLICATION_JSON)
 public class CpuResource {
 
-    private final InfoProvider provider;
+    private final CpuMetrics provider;
 
-    public CpuResource(InfoProvider provider) {
+    public CpuResource(CpuMetrics provider) {
         this.provider = provider;
     }
 
@@ -48,11 +53,11 @@ public class CpuResource {
         return CpuInfoMapper.INSTANCE.map(provider.cpuInfo());
     }
 
-    @GET
-    @Path("ticks")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public long[] getTicks(@Auth UserConfiguration user) {
-        return provider.systemCpuLoadTicks();
-    }
 
+    @GET
+    @Path("load")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public CpuLoad getLoad(@Auth UserConfiguration user) {
+        return CpuInfoMapper.INSTANCE.map(provider.cpuLoad());
+    }
 }

@@ -20,9 +20,9 @@
  */
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
-import com.krillsson.sysapi.core.metrics.DiskMetrics;
+import com.krillsson.sysapi.core.metrics.DriveMetrics;
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
-import com.krillsson.sysapi.core.domain.storage.*;
+import com.krillsson.sysapi.core.domain.drives.*;
 import org.slf4j.Logger;
 import oshi.hardware.HWDiskStore;
 import oshi.hardware.HWPartition;
@@ -35,10 +35,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DefaultDiskProvider implements DiskMetrics {
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultDiskProvider.class);
-    protected static final DiskSpeed DEFAULT_DISK_SPEED = new DiskSpeed(0, 0);
-    private static final DiskOsPartition DEFAULT_OS_PART = new DiskOsPartition(
+public class DefaultDriveProvider implements DriveMetrics {
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultDriveProvider.class);
+    protected static final DriveSpeed DEFAULT_DISK_SPEED = new DriveSpeed(0, 0);
+    private static final OsPartition DEFAULT_OS_PART = new OsPartition(
             "n/a",
             "n/a",
             "n/a",
@@ -55,13 +55,13 @@ public class DefaultDiskProvider implements DiskMetrics {
             0
 
     );
-    public static final DiskHealth DEFAULT_DISK_HEALTH = new DiskHealth(-1, Collections.emptyList());
+    public static final DriveHealth DEFAULT_DISK_HEALTH = new DriveHealth(-1, Collections.emptyList());
 
     private final OperatingSystem operatingSystem;
     private final HardwareAbstractionLayer hal;
     private final SpeedMeasurementManager speedMeasurementManager;
 
-    protected DefaultDiskProvider(OperatingSystem operatingSystem, HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
+    protected DefaultDriveProvider(OperatingSystem operatingSystem, HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
         this.operatingSystem = operatingSystem;
         this.hal = hal;
         this.speedMeasurementManager = speedMeasurementManager;
@@ -74,14 +74,14 @@ public class DefaultDiskProvider implements DiskMetrics {
     }
 
     @Override
-    public List<DiskInfo> diskInfos() {
-        return Stream.of(hal.getDiskStores()).map(d -> new DiskInfo(
+    public List<Drive> drives() {
+        return Stream.of(hal.getDiskStores()).map(d -> new Drive(
                 d.getModel(),
                 d.getName(),
                 d.getSerial(),
                 findAssociatedFileStore(d).orElse(DEFAULT_OS_PART),
                 Stream.of(d.getPartitions())
-                        .map(p -> new DiskPartition(
+                        .map(p -> new Partition(
                                 p.getIdentification(),
                                 p.getName(),
                                 p.getType(),
@@ -95,20 +95,20 @@ public class DefaultDiskProvider implements DiskMetrics {
     }
 
     @Override
-    public List<DiskLoad> diskLoads() {
+    public List<DriveLoad> driveLoads() {
         return Stream.of(hal.getDiskStores()).map(this::createDiskLoad).collect(Collectors.toList());
     }
 
     @Override
-    public Optional<DiskLoad> diskLoadByName(String name) {
+    public Optional<DriveLoad> driveLoadByName(String name) {
         return Stream.of(hal.getDiskStores())
                 .filter(n -> n.getName().equalsIgnoreCase(name))
                 .map(this::createDiskLoad)
                 .findAny();
     }
 
-    protected com.krillsson.sysapi.core.domain.storage.DiskMetrics diskMetrics(HWDiskStore disk, DiskOsPartition partition, FileSystem fileSystem) {
-        return new com.krillsson.sysapi.core.domain.storage.DiskMetrics(
+    protected DriveValues diskMetrics(HWDiskStore disk, OsPartition partition, FileSystem fileSystem) {
+        return new DriveValues(
                 partition.getUsableSpace(),
                 partition.getTotalSpace(),
                 fileSystem.getOpenFileDescriptors(),
@@ -122,14 +122,14 @@ public class DefaultDiskProvider implements DiskMetrics {
 
 
     @Override
-    public Optional<DiskInfo> diskInfoByName(String name) {
-        return Stream.of(hal.getDiskStores()).filter(n -> n.getName().equalsIgnoreCase(name)).map(d -> new DiskInfo(
+    public Optional<Drive> driveByName(String name) {
+        return Stream.of(hal.getDiskStores()).filter(n -> n.getName().equalsIgnoreCase(name)).map(d -> new Drive(
                 d.getModel(),
                 d.getName(),
                 d.getSerial(),
                 findAssociatedFileStore(d).orElse(DEFAULT_OS_PART),
                 Stream.of(d.getPartitions())
-                        .map(p -> new DiskPartition(
+                        .map(p -> new Partition(
                                 p.getIdentification(),
                                 p.getName(),
                                 p.getType(),
@@ -142,25 +142,25 @@ public class DefaultDiskProvider implements DiskMetrics {
         )).findAny();
     }
 
-    protected Optional<DiskSpeed> diskSpeedForStore(HWDiskStore diskStore, DiskOsPartition osFileStore) {
+    protected Optional<DriveSpeed> diskSpeedForStore(HWDiskStore diskStore, OsPartition osFileStore) {
         Optional<SpeedMeasurementManager.CurrentSpeed> currentSpeedForName = speedMeasurementManager.getCurrentSpeedForName(
                 diskStore.getName());
-        return currentSpeedForName.map(s -> new DiskSpeed(
+        return currentSpeedForName.map(s -> new DriveSpeed(
                 s.getReadPerSeconds(),
                 s.getWritePerSeconds()
         ));
     }
 
-    public DiskHealth diskHealth(String name) {
+    public DriveHealth diskHealth(String name) {
         return DEFAULT_DISK_HEALTH;
     }
 
-    private Optional<DiskOsPartition> findAssociatedFileStore(HWDiskStore diskStore) {
+    private Optional<OsPartition> findAssociatedFileStore(HWDiskStore diskStore) {
         for (OSFileStore osStore : Stream.of(operatingSystem.getFileSystem().getFileStores()).collect(Collectors.toList())) {
             List<HWPartition> asList = Stream.of(diskStore.getPartitions()).collect(Collectors.toList());
             for (HWPartition partition : asList) {
                 if (osStore.getUUID().equalsIgnoreCase(partition.getUuid())) {
-                    return Optional.of(new DiskOsPartition(
+                    return Optional.of(new OsPartition(
                             partition.getIdentification(),
                             partition.getName(),
                             osStore.getType(),
@@ -182,12 +182,12 @@ public class DefaultDiskProvider implements DiskMetrics {
         return Optional.empty();
     }
 
-    private DiskLoad createDiskLoad(HWDiskStore d) {
-        DiskOsPartition partition = findAssociatedFileStore(d).orElse(DEFAULT_OS_PART);
-        DiskHealth health = diskHealth(d.getName());
-        com.krillsson.sysapi.core.domain.storage.DiskMetrics metrics = diskMetrics(d, partition, operatingSystem.getFileSystem());
-        DiskSpeed speed = diskSpeedForStore(d, partition).orElse(DEFAULT_DISK_SPEED);
-        return new DiskLoad(d.getName(), metrics, speed, health);
+    private DriveLoad createDiskLoad(HWDiskStore d) {
+        OsPartition partition = findAssociatedFileStore(d).orElse(DEFAULT_OS_PART);
+        DriveHealth health = diskHealth(d.getName());
+        DriveValues metrics = diskMetrics(d, partition, operatingSystem.getFileSystem());
+        DriveSpeed speed = diskSpeedForStore(d, partition).orElse(DEFAULT_DISK_SPEED);
+        return new DriveLoad(d.getName(), metrics, speed, health);
     }
 
     private static class DiskSpeedSource implements SpeedMeasurementManager.SpeedSource {

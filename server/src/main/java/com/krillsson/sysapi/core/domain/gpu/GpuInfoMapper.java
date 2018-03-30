@@ -35,6 +35,8 @@ public interface GpuInfoMapper {
 
     com.krillsson.sysapi.dto.gpu.GpuInfo map(com.krillsson.sysapi.core.domain.gpu.GpuInfo value);
 
+    com.krillsson.sysapi.dto.gpu.GpuLoad map()
+
     com.krillsson.sysapi.dto.gpu.Display map(oshi.hardware.Display value);
 
     com.krillsson.sysapi.dto.gpu.Gpu map(com.krillsson.sysapi.core.domain.gpu.Gpu value);

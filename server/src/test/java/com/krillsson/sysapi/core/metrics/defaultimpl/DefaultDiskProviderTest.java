@@ -1,9 +1,8 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDiskProvider;
-import com.krillsson.sysapi.core.domain.storage.DiskInfo;
-import com.krillsson.sysapi.core.domain.storage.DiskLoad;
+import com.krillsson.sysapi.core.domain.drives.Drive;
+import com.krillsson.sysapi.core.domain.drives.DriveLoad;
 import org.junit.Before;
 import org.junit.Test;
 import oshi.hardware.HWDiskStore;
@@ -23,7 +22,7 @@ import static org.mockito.Mockito.when;
 
 public class DefaultDiskProviderTest {
 
-    DefaultDiskProvider provider;
+    DefaultDriveProvider provider;
     SpeedMeasurementManager measurementManager;
     OperatingSystem os;
     HardwareAbstractionLayer hal;
@@ -45,7 +44,7 @@ public class DefaultDiskProviderTest {
         measurementManager = mock(SpeedMeasurementManager.class);
         os = mock(OperatingSystem.class);
         hal = mock(HardwareAbstractionLayer.class);
-        provider = new DefaultDiskProvider(os, hal, measurementManager);
+        provider = new DefaultDriveProvider(os, hal, measurementManager);
 
         disk1 = mock(HWDiskStore.class);
         when(disk1.getName()).thenReturn("/dev/sda1");
@@ -72,37 +71,37 @@ public class DefaultDiskProviderTest {
 
     @Test
     public void diskLoadHappyPath() {
-        List<DiskLoad> diskLoads = provider.diskLoads();
+        List<DriveLoad> driveLoads = provider.driveLoads();
 
-        assertThat(diskLoads.size(), is(2));
+        assertThat(driveLoads.size(), is(2));
     }
 
     @Test
     public void shouldReturnAllDrivesPossible() {
-        List<DiskInfo> diskInfos = provider.diskInfos();
+        List<Drive> drives = provider.drives();
 
-        assertThat(diskInfos.size(), is(2));
-        assertEquals(diskInfos.get(0).getDiskOsPartition().getUuid(), osPartitionDisk1Uuid);
+        assertThat(drives.size(), is(2));
+        assertEquals(drives.get(0).getDiskOsPartition().getUuid(), osPartitionDisk1Uuid);
     }
 
     @Test
     public void shouldHandleDrivesNotMappingToOsDrive() {
         when(disk1Partition2.getUuid()).thenReturn(UUID.randomUUID().toString());
 
-        List<DiskInfo> diskInfos = provider.diskInfos();
+        List<Drive> drives = provider.drives();
 
-        assertNotNull(diskInfos.get(0).getDiskOsPartition());
+        assertNotNull(drives.get(0).getDiskOsPartition());
     }
 
     @Test
     public void shouldHandleNoDrivesWithThatName() {
-        Optional<DiskInfo> diskInfo = provider.diskInfoByName("/dev/sda3");
+        Optional<Drive> diskInfo = provider.driveByName("/dev/sda3");
         assertFalse(diskInfo.isPresent());
     }
 
     @Test
     public void shouldHandleNoLoadForDriveWithThatName() {
-        Optional<DiskLoad> diskInfo = provider.diskLoadByName("/dev/sda3");
+        Optional<DriveLoad> diskInfo = provider.driveLoadByName("/dev/sda3");
         assertFalse(diskInfo.isPresent());
     }
 }

@@ -18,18 +18,30 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.storage;
+package com.krillsson.sysapi.dto.drives;
 
-import com.krillsson.sysapi.core.domain.sensors.HealthData;
+
+import com.krillsson.sysapi.dto.sensors.HealthData;
 
 import java.util.List;
 
-public class DiskHealth {
-    private final double temperature;
-    private final List<HealthData> healthData;
+public class DriveHealth {
+    private double temperature;
+    private List<HealthData> healthData;
 
-    public DiskHealth(double temperature, List<HealthData> healthData) {
+    public DriveHealth(double temperature, List<HealthData> healthData) {
         this.temperature = temperature;
+        this.healthData = healthData;
+    }
+
+    public DriveHealth() {
+    }
+
+    public void setTemperature(double temperature) {
+        this.temperature = temperature;
+    }
+
+    public void setHealthData(List<HealthData> healthData) {
         this.healthData = healthData;
     }
 

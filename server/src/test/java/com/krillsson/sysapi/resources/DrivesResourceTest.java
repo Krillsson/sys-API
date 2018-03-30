@@ -1,10 +1,9 @@
 package com.krillsson.sysapi.resources;
 
+import com.krillsson.sysapi.core.domain.drives.Drive;
+import com.krillsson.sysapi.core.domain.drives.DriveSpeed;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
-import com.krillsson.sysapi.core.domain.storage.DiskHealth;
-import com.krillsson.sysapi.core.domain.storage.DiskInfo;
-import com.krillsson.sysapi.core.domain.storage.DiskSpeed;
-import com.krillsson.sysapi.core.domain.storage.StorageInfo;
+import com.krillsson.sysapi.core.domain.drives.DriveHealth;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.*;
 import oshi.hardware.HWDiskStore;
@@ -23,22 +22,22 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
-public class DiskStoresResourceTest {
+public class DrivesResourceTest {
     private static final InfoProvider provider = mock(InfoProvider.class);
 
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
-            .addResource(new DiskStoresResource(provider))
+            .addResource(new DrivesResource(provider))
             .build();
     private StorageInfo diskSd0;
-    private DiskInfo diskInfo;
+    private Drive drive;
 
     @Before
     public void setUp() throws Exception {
-        diskInfo = new DiskInfo(new HWDiskStore(), new DiskHealth(0, new HealthData[0]),
-                new DiskSpeed(0,0), new OSFileStore("diskInfo", "", "", "", "", "", 0, 0));
-        diskInfo.getHwDiskStore().setName("sd0");
-        diskSd0 = new StorageInfo(new DiskInfo[]{diskInfo}, 0, 0);
+        drive = new Drive(new HWDiskStore(), new DriveHealth(0, new HealthData[0]),
+                          new DriveSpeed(0, 0), new OSFileStore("drive", "", "", "", "", "", 0, 0));
+        drive.getHwDiskStore().setName("sd0");
+        diskSd0 = new StorageInfo(new Drive[]{drive}, 0, 0);
     }
 
     @Test
@@ -46,20 +45,20 @@ public class DiskStoresResourceTest {
         when(provider.storageInfo())
                 .thenReturn(diskSd0);
 
-        final com.krillsson.sysapi.dto.storage.StorageInfo response = RESOURCES.getJerseyTest().target("/storage")
+        final com.krillsson.sysapi.dto.storage.StorageInfo response = RESOURCES.getJerseyTest().target("/drives")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(com.krillsson.sysapi.dto.storage.StorageInfo.class);
 
         assertNotNull(response);
         assertEquals(response.getDiskInfo().length, 1);
-        assertThat(response.getDiskInfo()[0].getOsFileStore().getName(), is(equalToIgnoringCase("diskInfo")));
+        assertThat(response.getDiskInfo()[0].getOsFileStore().getName(), is(equalToIgnoringCase("drive")));
     }
 
     @Test
     public void getStorageInfoSadPath() throws Exception {
         when(provider.storageInfo())
                 .thenThrow(new RuntimeException("What"));
-        final Response response = RESOURCES.getJerseyTest().target("/storage")
+        final Response response = RESOURCES.getJerseyTest().target("/drives")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get();
         Assert.assertEquals(response.getStatus(), 500);
@@ -67,9 +66,9 @@ public class DiskStoresResourceTest {
 
     @Test
     public void getDiskInfoByNameDiskExists() throws Exception {
-        Optional<DiskInfo> diskInfoOptional = Optional.of(this.diskInfo);
+        Optional<Drive> diskInfoOptional = Optional.of(this.drive);
         when(provider.getDiskInfoByName("sd0")).thenReturn(diskInfoOptional);
-        final com.krillsson.sysapi.dto.storage.DiskInfo response = RESOURCES.getJerseyTest().target(String.format("/storage/%s", "sd0"))
+        final com.krillsson.sysapi.dto.storage.DiskInfo response = RESOURCES.getJerseyTest().target(String.format("/drives/%s", "sd0"))
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(com.krillsson.sysapi.dto.storage.DiskInfo.class);
 
@@ -79,9 +78,9 @@ public class DiskStoresResourceTest {
 
     @Test
     public void getDiskInfoByNameDiskDoesNotExist() throws Exception {
-        Optional<DiskInfo> type = Optional.ofNullable(null);
+        Optional<Drive> type = Optional.ofNullable(null);
         when(provider.getDiskInfoByName("sd0")).thenReturn(type);
-        Response response = RESOURCES.getJerseyTest().target(String.format("/storage/%s", "sd0"))
+        Response response = RESOURCES.getJerseyTest().target(String.format("/drives/%s", "sd0"))
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get();
         assertEquals(404, response.getStatus());
