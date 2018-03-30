@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.core;
+package com.krillsson.sysapi.core.metrics.defaultimpl;
 
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultProcessesMetrics;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;

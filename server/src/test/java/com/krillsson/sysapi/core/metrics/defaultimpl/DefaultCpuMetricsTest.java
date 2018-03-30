@@ -1,8 +1,9 @@
-package com.krillsson.sysapi.core;
+package com.krillsson.sysapi.core.metrics.defaultimpl;
 
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuMetrics;
 import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuSensors;
 import com.krillsson.sysapi.util.Utils;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,6 +23,7 @@ public class DefaultCpuMetricsTest {
     OperatingSystem os;
     Utils utils;
     Sensors sensors;
+    DefaultCpuSensors cpuSensors;
 
     CentralProcessor centralProcessor;
 
@@ -50,9 +52,9 @@ public class DefaultCpuMetricsTest {
 
         CpuLoad cpuLoad = infoProvider.cpuLoad();
 
-        assertEquals(38.0, cpuLoad.getCoreLoads()[0].getUser(), 0.0);
-        assertEquals(51.18, cpuLoad.getCoreLoads()[0].getIdle(), 0.0);
-        assertEquals(10.81, cpuLoad.getCoreLoads()[0].getSys(), 0.0);
+        assertEquals(38.0, cpuLoad.getCoreLoads().get(0).getUser(), 0.0);
+        assertEquals(51.18, cpuLoad.getCoreLoads().get(0).getIdle(), 0.0);
+        assertEquals(10.81, cpuLoad.getCoreLoads().get(0).getSys(), 0.0);
         assertNotNull(cpuLoad);
         verify(utils, times(1)).sleep(anyLong());
     }
@@ -71,9 +73,9 @@ public class DefaultCpuMetricsTest {
         CpuLoad secondCpuLoad = infoProvider.cpuLoad();
 
 
-        assertFalse(cpuLoad.getCoreLoads()[0].getUser() == secondCpuLoad.getCoreLoads()[0].getUser());
-        assertFalse(cpuLoad.getCoreLoads()[0].getIdle() == secondCpuLoad.getCoreLoads()[0].getIdle());
-        assertFalse(cpuLoad.getCoreLoads()[0].getSys() == secondCpuLoad.getCoreLoads()[0].getSys());
+        assertFalse(cpuLoad.getCoreLoads().get(0).getUser() == secondCpuLoad.getCoreLoads().get(0).getUser());
+        assertFalse(cpuLoad.getCoreLoads().get(0).getIdle() == secondCpuLoad.getCoreLoads().get(0).getIdle());
+        assertFalse(cpuLoad.getCoreLoads().get(0).getSys() == secondCpuLoad.getCoreLoads().get(0).getSys());
 
         verify(utils, times(1)).sleep(anyLong());
     }
@@ -84,10 +86,10 @@ public class DefaultCpuMetricsTest {
         when(sensors.getCpuVoltage()).thenReturn(1.35);
         when(sensors.getFanSpeeds()).thenReturn(new int[]{1200});
         when(sensors.getFanSpeeds()).thenReturn(new int[]{1200});
-        CpuHealth cpuHealth = infoProvider.cpuHealth();
+        CpuHealth cpuHealth = infoProvider.cpuLoad().getCpuHealth();
         assertEquals(cpuHealth.getFanPercent(), 0, 0);
         assertEquals(cpuHealth.getFanRpm(), 1200, 0);
-        assertEquals(cpuHealth.getTemperatures()[0], 30.0, 0);
+        assertEquals(cpuHealth.getTemperatures().get(0), 30.0, 0);
         assertEquals(cpuHealth.getVoltage(), 1.35, 0);
     }
 }

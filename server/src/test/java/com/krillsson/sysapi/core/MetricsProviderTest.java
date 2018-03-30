@@ -1,6 +1,11 @@
 package com.krillsson.sysapi.core;
 
 import com.krillsson.sysapi.config.SystemApiConfiguration;
+import com.krillsson.sysapi.core.metrics.MetricsFactory;
+import com.krillsson.sysapi.core.metrics.MetricsProvider;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory;
+import com.krillsson.sysapi.core.metrics.rasbian.RaspbianLinuxInfoProviderTest;
+import com.krillsson.sysapi.core.metrics.rasbian.RaspbianMetricsFactory;
 import org.junit.Before;
 import org.junit.Test;
 import oshi.PlatformEnum;
@@ -34,9 +39,9 @@ public class MetricsProviderTest {
     public void providingDefaultIfPlatformIsUnknown() throws Exception {
         MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.UNKNOWN, config, measurementManager);
 
-        InfoProvider provider = factory.create();
+        MetricsFactory provider = factory.create();
         assertNotNull(provider);
-        assertTrue(provider instanceof DefaultInfoProvider);
+        assertTrue(provider instanceof DefaultMetricsFactory);
     }
 
     @Test
@@ -44,9 +49,9 @@ public class MetricsProviderTest {
         when(os.getFamily()).thenReturn("Raspbian GNU/Linux");
         MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.LINUX, config, measurementManager);
 
-        InfoProvider provider = factory.create();
+        MetricsFactory provider = factory.create();
         assertNotNull(provider);
-        assertTrue(provider instanceof RaspbianLinuxInfoProvider);
+        assertTrue(provider instanceof RaspbianMetricsFactory);
     }
 
     @Test
@@ -54,10 +59,10 @@ public class MetricsProviderTest {
         when(os.getFamily()).thenReturn("Debian GNU/Linux");
         MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.LINUX, config, measurementManager);
 
-        InfoProvider provider = factory.create();
+        MetricsFactory provider = factory.create();
         assertNotNull(provider);
-        assertFalse(provider instanceof RaspbianLinuxInfoProvider);
-        assertTrue(provider instanceof DefaultInfoProvider);
+        assertFalse(provider instanceof RaspbianMetricsFactory);
+        assertTrue(provider instanceof DefaultMetricsFactory);
     }
 
 }

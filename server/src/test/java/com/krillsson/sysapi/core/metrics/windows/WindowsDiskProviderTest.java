@@ -11,6 +11,8 @@ import oshi.hardware.HWDiskStore;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.software.os.OperatingSystem;
 
+import java.util.Optional;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -44,7 +46,8 @@ public class WindowsDiskProviderTest {
         when(driveMonitor.getLogicalName()).thenReturn("C:/");
         when(driveMonitor.getWriteRate()).thenReturn(123d);
         when(driveMonitor.getReadRate()).thenReturn(321d);
-        DiskSpeed diskSpeed = diskProvider.diskSpeedForStore(store, osFileStore);
+        Optional<DiskSpeed> diskSpeedOptional = diskProvider.diskSpeedForStore(store, osFileStore);
+        DiskSpeed diskSpeed = diskSpeedOptional.get();
         assertThat(diskSpeed.getWriteBytesPerSecond(), is(123L));
         assertThat(diskSpeed.getReadBytesPerSecond(), is(321L));
         verify(monitorManager).Update();
@@ -52,8 +55,9 @@ public class WindowsDiskProviderTest {
 
     @Test
     public void nullReturnsDefaultValues() {
-        DiskSpeed actual = diskProvider.diskSpeedForStore(null, null);
-        assertThat(actual.getReadBytesPerSecond(), is(0L));
-        assertThat(actual.getWriteBytesPerSecond(), is(0L));
+        Optional<DiskSpeed> diskSpeedOptional = diskProvider.diskSpeedForStore(null, null);
+        DiskSpeed diskSpeed = diskSpeedOptional.get();
+        assertThat(diskSpeed.getReadBytesPerSecond(), is(0L));
+        assertThat(diskSpeed.getWriteBytesPerSecond(), is(0L));
     }
 }

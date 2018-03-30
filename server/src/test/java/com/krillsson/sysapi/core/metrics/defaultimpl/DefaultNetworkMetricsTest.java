@@ -1,5 +1,6 @@
-package com.krillsson.sysapi.core;
+package com.krillsson.sysapi.core.metrics.defaultimpl;
 
+import com.krillsson.sysapi.core.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultNetworkMetrics;
 import com.krillsson.sysapi.core.domain.network.NetworkInterface;
 import org.junit.Before;

@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.core;
+package com.krillsson.sysapi.core.metrics;
 
 import com.krillsson.sysapi.core.metrics.*;
 

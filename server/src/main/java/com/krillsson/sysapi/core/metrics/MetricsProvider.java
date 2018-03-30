@@ -18,9 +18,10 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core;
+package com.krillsson.sysapi.core.metrics;
 
 import com.krillsson.sysapi.config.SystemApiConfiguration;
+import com.krillsson.sysapi.core.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory;
 import com.krillsson.sysapi.core.metrics.rasbian.RaspbianMetricsFactory;
 import com.krillsson.sysapi.core.metrics.windows.MonitorManagerFactory;

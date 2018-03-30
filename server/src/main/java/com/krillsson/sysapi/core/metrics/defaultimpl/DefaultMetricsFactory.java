@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
-import com.krillsson.sysapi.core.MetricsFactory;
+import com.krillsson.sysapi.core.metrics.MetricsFactory;
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.metrics.*;
 import com.krillsson.sysapi.util.Utils;
