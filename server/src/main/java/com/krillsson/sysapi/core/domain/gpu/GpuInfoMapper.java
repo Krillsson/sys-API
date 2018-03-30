@@ -26,6 +26,8 @@ import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import oshi.util.EdidUtil;
 
+import java.util.List;
+
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.ERROR
 )
@@ -33,13 +35,14 @@ public interface GpuInfoMapper {
 
     GpuInfoMapper INSTANCE = Mappers.getMapper(GpuInfoMapper.class);
 
-    com.krillsson.sysapi.dto.gpu.GpuInfo map(com.krillsson.sysapi.core.domain.gpu.GpuInfo value);
 
-    com.krillsson.sysapi.dto.gpu.GpuLoad map()
+    com.krillsson.sysapi.dto.gpu.GpuLoad map(GpuLoad value);
+    List<com.krillsson.sysapi.dto.gpu.GpuLoad> map(List<GpuLoad> value);
 
     com.krillsson.sysapi.dto.gpu.Display map(oshi.hardware.Display value);
 
     com.krillsson.sysapi.dto.gpu.Gpu map(com.krillsson.sysapi.core.domain.gpu.Gpu value);
+    List<com.krillsson.sysapi.dto.gpu.Gpu> mapGpus(List<com.krillsson.sysapi.core.domain.gpu.Gpu> value);
 
     com.krillsson.sysapi.dto.gpu.GpuHealth map(com.krillsson.sysapi.core.domain.gpu.GpuHealth value);
 

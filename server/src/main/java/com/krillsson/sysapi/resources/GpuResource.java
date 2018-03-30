@@ -46,15 +46,14 @@ public class GpuResource {
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public com.krillsson.sysapi.dto.gpu.GpuInfo getRoot(@Auth UserConfiguration user) {
-        return GpuInfoMapper.INSTANCE.map(provider.gpuInfo());
+    public List<com.krillsson.sysapi.dto.gpu.Gpu> getRoot(@Auth UserConfiguration user) {
+        return GpuInfoMapper.INSTANCE.mapGpus(provider.gpus());
     }
 
-
     @GET
-    @Path("load")
+    @Path("loads")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<GpuLoad> getLoad(@Auth UserConfiguration user) {
+    public List<com.krillsson.sysapi.dto.gpu.GpuLoad> getLoad(@Auth UserConfiguration user) {
         return GpuInfoMapper.INSTANCE.map(provider.gpuLoads());
     }
 

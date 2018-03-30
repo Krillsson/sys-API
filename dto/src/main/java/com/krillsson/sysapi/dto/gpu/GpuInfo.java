@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.util.List;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "displays",
@@ -12,35 +14,35 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class GpuInfo {
 
     @JsonProperty("displays")
-    private Display[] displays = null;
+    private List<Display> displays = null;
     @JsonProperty("gpus")
-    private Gpu[] gpus = null;
+    private List<Gpu> gpus = null;
 
     public GpuInfo() {
     }
 
-    public GpuInfo(Display[] displays, Gpu[] gpus) {
+    public GpuInfo(List<Display> displays, List<Gpu> gpus) {
         this.displays = displays;
         this.gpus = gpus;
     }
 
     @JsonProperty("displays")
-    public Display[] getDisplays() {
+    public List<Display> getDisplays() {
         return displays;
     }
 
     @JsonProperty("displays")
-    public void setDisplays(Display[] displays) {
+    public void setDisplays(List<Display> displays) {
         this.displays = displays;
     }
 
     @JsonProperty("gpus")
-    public Gpu[] getGpus() {
+    public List<Gpu> getGpus() {
         return gpus;
     }
 
     @JsonProperty("gpus")
-    public void setGpus(Gpu[] gpus) {
+    public void setGpus(List<Gpu> gpus) {
         this.gpus = gpus;
     }
 
