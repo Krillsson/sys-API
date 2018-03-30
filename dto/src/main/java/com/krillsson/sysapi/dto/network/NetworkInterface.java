@@ -1,116 +1,84 @@
 package com.krillsson.sysapi.dto.network;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-        "index",
-        "parent",
-        "virtual",
-        "hardwareAddress",
-        "loopback",
-        "pointToPoint",
-        "up"
-})
-public class NetworkInterface {
-
-    @JsonProperty("index")
-    private int index;
-    @JsonProperty("parent")
-    private NetworkInterface parent;
-    @JsonProperty("virtual")
-    private boolean virtual;
-    @JsonProperty("loopback")
+public class NetworkInterface
+{
+    private String name;
+    private String displayName;
+    private String mac;
+    private List<String> ipv4;
+    private List<String> ipv6;
+    private int mtu;
     private boolean loopback;
-    @JsonProperty("pointToPoint")
-    private boolean pointToPoint;
-    @JsonProperty("up")
-    private boolean up;
 
-    /**
-     * No args constructor for use in serialization
-     */
+
+    public NetworkInterface(String name, String displayName, String mac, int mtu, boolean loopback, List<String> ipv4, List<String> ipv6) {
+        this.name = name;
+        this.displayName = displayName;
+        this.mac = mac;
+        this.mtu = mtu;
+        this.loopback = loopback;
+        this.ipv4 = ipv4;
+        this.ipv6 = ipv6;
+    }
+
     public NetworkInterface() {
     }
 
-    /**
-     * @param virtual
-     * @param index
-     * @param loopback
-     * @param pointToPoint
-     * @param parent
-     * @param up
-     */
-    public NetworkInterface(int index, NetworkInterface parent, boolean virtual, boolean loopback, boolean pointToPoint, boolean up) {
-        super();
-        this.index = index;
-        this.parent = parent;
-        this.virtual = virtual;
-        this.loopback = loopback;
-        this.pointToPoint = pointToPoint;
-        this.up = up;
+    public String getName() {
+        return name;
     }
 
-    @JsonProperty("index")
-    public int getIndex() {
-        return index;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    @JsonProperty("index")
-    public void setIndex(int index) {
-        this.index = index;
+    public String getMac() {
+        return mac;
     }
 
-    @JsonProperty("parent")
-    public NetworkInterface getParent() {
-        return parent;
+    public List<String> getIpv4() {
+        return ipv4;
     }
 
-    @JsonProperty("parent")
-    public void setParent(NetworkInterface parent) {
-        this.parent = parent;
+    public List<String> getIpv6() {
+        return ipv6;
     }
 
-    @JsonProperty("virtual")
-    public boolean getVirtual() {
-        return virtual;
+    public int getMtu() {
+        return mtu;
     }
 
-    @JsonProperty("virtual")
-    public void setVirtual(boolean virtual) {
-        this.virtual = virtual;
-    }
-
-    @JsonProperty("loopback")
-    public boolean getLoopback() {
+    public boolean isLoopback() {
         return loopback;
     }
 
-    @JsonProperty("loopback")
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
+
+    public void setIpv4(List<String> ipv4) {
+        this.ipv4 = ipv4;
+    }
+
+    public void setIpv6(List<String> ipv6) {
+        this.ipv6 = ipv6;
+    }
+
+    public void setMtu(int mtu) {
+        this.mtu = mtu;
+    }
+
     public void setLoopback(boolean loopback) {
         this.loopback = loopback;
     }
-
-    @JsonProperty("pointToPoint")
-    public boolean getPointToPoint() {
-        return pointToPoint;
-    }
-
-    @JsonProperty("pointToPoint")
-    public void setPointToPoint(boolean pointToPoint) {
-        this.pointToPoint = pointToPoint;
-    }
-
-    @JsonProperty("up")
-    public boolean getUp() {
-        return up;
-    }
-
-    @JsonProperty("up")
-    public void setUp(boolean up) {
-        this.up = up;
-    }
-
 }

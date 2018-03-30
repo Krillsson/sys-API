@@ -1,51 +1,27 @@
 package com.krillsson.sysapi.dto.network;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-        "rxbps",
-        "txbps"
-})
 public class NetworkInterfaceSpeed {
-    private long rxbps;
-    private long txbps;
+    private long receiveBytesPerSecond;
+    private long sendBytesPerSecond;
 
-    /**
-     * No args constructor for use in serialization
-     */
-    public NetworkInterfaceSpeed() {
+    public NetworkInterfaceSpeed(long receiveBytesPerSecond, long sendBytesPerSecond) {
+        this.receiveBytesPerSecond = receiveBytesPerSecond;
+        this.sendBytesPerSecond = sendBytesPerSecond;
     }
 
-    /**
-     * @param rxbps
-     * @param txbps
-     */
-    public NetworkInterfaceSpeed(long rxbps, long txbps) {
-        this.rxbps = rxbps;
-        this.txbps = txbps;
+    public long getReceiveBytesPerSecond() {
+        return receiveBytesPerSecond;
     }
 
-    @JsonProperty("rxbps")
-    public long getRxbps() {
-        return rxbps;
+    public long getSendBytesPerSecond() {
+        return sendBytesPerSecond;
     }
 
-    @JsonProperty("rxbps")
-    public void setRxbps(long rxbps) {
-        this.rxbps = rxbps;
+    public void setReceiveBytesPerSecond(long receiveBytesPerSecond) {
+        this.receiveBytesPerSecond = receiveBytesPerSecond;
     }
 
-    @JsonProperty("txbps")
-    public long getTxbps() {
-        return txbps;
+    public void setSendBytesPerSecond(long sendBytesPerSecond) {
+        this.sendBytesPerSecond = sendBytesPerSecond;
     }
-
-    @JsonProperty("txbps")
-    public void setTxbps(long txbps) {
-        this.txbps = txbps;
-    }
-
 }

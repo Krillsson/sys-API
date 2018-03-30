@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.dto.network;
+package com.krillsson.sysapi.dto.networkold;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

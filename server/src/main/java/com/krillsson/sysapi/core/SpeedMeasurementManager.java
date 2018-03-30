@@ -1,6 +1,5 @@
 package com.krillsson.sysapi.core;
 
-import com.krillsson.sysapi.core.domain.network.SpeedMeasurement;
 import io.dropwizard.lifecycle.Managed;
 import org.slf4j.Logger;
 

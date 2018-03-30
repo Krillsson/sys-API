@@ -24,7 +24,7 @@ import com.krillsson.sysapi.core.metrics.NetworkMetrics;
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.domain.network.NetworkInterface;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad;
-import com.krillsson.sysapi.core.domain.network.NetworkInterfaceMetrics;
+import com.krillsson.sysapi.core.domain.network.NetworkInterfaceValues;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
 import org.slf4j.Logger;
 import oshi.hardware.HardwareAbstractionLayer;
@@ -34,6 +34,7 @@ import java.net.SocketException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DefaultNetworkMetrics implements NetworkMetrics {
 
@@ -127,15 +128,15 @@ public class DefaultNetworkMetrics implements NetworkMetrics {
                     nic.getMacaddr(),
                     nic.getMTU(),
                     loopback,
-                    nic.getIPv4addr(),
-                    nic.getIPv6addr()
+                    Stream.of(nic.getIPv4addr()).collect(Collectors.toList()),
+                    Stream.of(nic.getIPv6addr()).collect(Collectors.toList())
             );
         };
     }
 
     Function<NetworkIF, NetworkInterfaceLoad> mapToLoad() {
         return n -> new NetworkInterfaceLoad(
-                new NetworkInterfaceMetrics(
+                new NetworkInterfaceValues(
                         n.getSpeed(),
                         n.getBytesRecv(),
                         n.getBytesSent(),

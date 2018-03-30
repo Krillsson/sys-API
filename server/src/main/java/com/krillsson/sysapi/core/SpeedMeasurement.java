@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.core.domain.network;
+package com.krillsson.sysapi.core;
 
 import java.time.LocalDateTime;
 

@@ -23,6 +23,7 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.domain.memory.GlobalMemoryMapper;
+import com.krillsson.sysapi.core.metrics.MemoryMetrics;
 import com.krillsson.sysapi.dto.processes.Memory;
 import io.dropwizard.auth.Auth;
 
@@ -36,9 +37,9 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public class MemoryResource {
 
-    private InfoProvider provider;
+    private MemoryMetrics provider;
 
-    public MemoryResource(InfoProvider provider) {
+    public MemoryResource(MemoryMetrics provider) {
         this.provider = provider;
     }
 

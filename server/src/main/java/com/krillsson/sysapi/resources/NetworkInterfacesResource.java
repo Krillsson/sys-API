@@ -22,15 +22,14 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.domain.network.NetworkInterface;
-import com.krillsson.sysapi.core.domain.network.NetworkInterfacesDataMapper;
-import com.krillsson.sysapi.dto.network.NetworkInterfaceData;
+import com.krillsson.sysapi.core.domain.network.NetworkInterfacesMapper;
+import com.krillsson.sysapi.core.metrics.NetworkMetrics;
 import io.dropwizard.auth.Auth;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.Optional;
+import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
@@ -38,27 +37,39 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 @Produces(MediaType.APPLICATION_JSON)
 public class NetworkInterfacesResource {
 
-    private final InfoProvider infoProvider;
+    private final NetworkMetrics infoProvider;
 
-    public NetworkInterfacesResource(InfoProvider infoProvider) {
+    public NetworkInterfacesResource(NetworkMetrics infoProvider) {
         this.infoProvider = infoProvider;
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public NetworkInterfaceData[] getNetworkInterfaces(@Auth UserConfiguration user) {
-        return NetworkInterfacesDataMapper.INSTANCE.map(infoProvider.getAllNetworkInterfaces());
+    public List<com.krillsson.sysapi.dto.network.NetworkInterface> networkInterfaces(@Auth UserConfiguration user) {
+        return NetworkInterfacesMapper.INSTANCE.map(infoProvider.networkInterfaces());
+    }
+
+    @GET
+    @Path("loads")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad> networkInterfaceLoads(@Auth UserConfiguration user) {
+        return NetworkInterfacesMapper.INSTANCE.mapLoads(infoProvider.networkInterfaceLoads());
     }
 
     @GET
     @Path("{id}")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public NetworkInterfaceData getNetworkInterface(@Auth UserConfiguration user, @PathParam("id") String id) {
-        final Optional<NetworkInterface> networkInterface = infoProvider.getNetworkInterfaceById(id);
-        if (!networkInterface.isPresent()) {
-            throw new WebApplicationException(NOT_FOUND);
-        }
-        return NetworkInterfacesDataMapper.INSTANCE.map(networkInterface.get());
+    public com.krillsson.sysapi.dto.network.NetworkInterface networkInterfaceById(@Auth UserConfiguration user, @PathParam("id") String id) {
+        return NetworkInterfacesMapper.INSTANCE.map(infoProvider.networkInterfaceById(id)
+                                                            .orElseThrow(() -> new WebApplicationException(NOT_FOUND)));
+    }
+
+    @GET
+    @Path("loads/{id}")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public com.krillsson.sysapi.dto.network.NetworkInterfaceLoad networkInterfaceLoadById(@Auth UserConfiguration user, @PathParam("id") String id) {
+        return NetworkInterfacesMapper.INSTANCE.map(infoProvider.networkInterfaceLoadById(id)
+                                                            .orElseThrow(() -> new WebApplicationException(NOT_FOUND)));
     }
 
 }

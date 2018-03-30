@@ -1,17 +1,19 @@
 package com.krillsson.sysapi.core.domain.network;
 
+import java.util.List;
+
 public class NetworkInterface
 {
     private final String name;
     private final String displayName;
     private final String mac;
-    private final String[] ipv4;
-    private final String[] ipv6;
+    private final List<String> ipv4;
+    private final List<String> ipv6;
     private final int mtu;
     private final boolean loopback;
 
 
-    public NetworkInterface(String name, String displayName, String mac, int mtu, boolean loopback, String[] ipv4, String[] ipv6) {
+    public NetworkInterface(String name, String displayName, String mac, int mtu, boolean loopback, List<String> ipv4, List<String> ipv6) {
         this.name = name;
         this.displayName = displayName;
         this.mac = mac;
@@ -33,11 +35,11 @@ public class NetworkInterface
         return mac;
     }
 
-    public String[] getIpv4() {
+    public List<String> getIpv4() {
         return ipv4;
     }
 
-    public String[] getIpv6() {
+    public List<String> getIpv6() {
         return ipv6;
     }
 

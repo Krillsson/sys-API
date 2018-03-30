@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.core.domain.network;
 
-public class NetworkInterfaceMetrics {
+public class NetworkInterfaceValues {
     private final long speed;
     private final long bytesReceived;
     private final long bytesSent;
@@ -9,7 +9,7 @@ public class NetworkInterfaceMetrics {
     private final long inErrors;
     private final long outErrors;
 
-    public NetworkInterfaceMetrics(long speed, long bytesReceived, long bytesSent, long packetsReceived, long packetsSent, long inErrors, long outErrors) {
+    public NetworkInterfaceValues(long speed, long bytesReceived, long bytesSent, long packetsReceived, long packetsSent, long inErrors, long outErrors) {
         this.bytesReceived = bytesReceived;
         this.bytesSent = bytesSent;
         this.packetsReceived = packetsReceived;

@@ -27,24 +27,21 @@ import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.ERROR
 )
-public interface NetworkInterfacesDataMapper {
-    NetworkInterfacesDataMapper INSTANCE = Mappers.getMapper(NetworkInterfacesDataMapper.class);
+public interface NetworkInterfacesMapper {
+    NetworkInterfacesMapper INSTANCE = Mappers.getMapper(NetworkInterfacesMapper.class);
 
-    com.krillsson.sysapi.dto.network.NetworkInterfaceData map(NetworkInterface value);
+    com.krillsson.sysapi.dto.network.NetworkInterface map(NetworkInterface value);
 
     com.krillsson.sysapi.dto.network.NetworkInterfaceSpeed map(com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed value);
+    com.krillsson.sysapi.dto.network.NetworkInterfaceLoad map(com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad value);
 
-    com.krillsson.sysapi.dto.network.NetworkInterfaceData[] map(NetworkInterface[] value);
-
-    @Mappings({
-            @Mapping(target = "mtu", source = "MTU"),
-            @Mapping(target = "ipv6addr", source = "IPv6addr"),
-            @Mapping(target = "ipv4addr", source = "IPv4addr")
-    })
-    com.krillsson.sysapi.dto.network.NetworkIF map(oshi.hardware.NetworkIF value);
+    List<com.krillsson.sysapi.dto.network.NetworkInterface> map(List<NetworkInterface> value);
+    List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad> mapLoads(List<NetworkInterfaceLoad> value);
 
     com.krillsson.sysapi.dto.network.NetworkInterface map(java.net.NetworkInterface value) throws java.net.SocketException;
 }
