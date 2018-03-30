@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
-import com.krillsson.sysapi.core.metrics.CpuInfoProvider;
+import com.krillsson.sysapi.core.metrics.CpuMetrics;
 import com.krillsson.sysapi.core.domain.cpu.CoreLoad;
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
@@ -15,9 +15,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DefaultCpuInfoProvider implements CpuInfoProvider {
+public class DefaultCpuMetrics implements CpuMetrics {
 
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultInfoProvider.class);
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultCpuMetrics.class);
 
     private final HardwareAbstractionLayer hal;
     private final OperatingSystem operatingSystem;
@@ -28,7 +28,7 @@ public class DefaultCpuInfoProvider implements CpuInfoProvider {
     private long coreTicksSampledAt = -1;
     private long[][] coreTicks = new long[0][0];
 
-    protected DefaultCpuInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, DefaultCpuSensors cpuSensors, Utils utils) {
+    protected DefaultCpuMetrics(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, DefaultCpuSensors cpuSensors, Utils utils) {
         this.hal = hal;
         this.operatingSystem = operatingSystem;
         this.cpuSensors = cpuSensors;

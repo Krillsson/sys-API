@@ -29,7 +29,7 @@ import com.krillsson.sysapi.auth.BasicAuthenticator;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.InfoProviderFactory;
+import com.krillsson.sysapi.core.MetricsProvider;
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceMixin;
 import com.krillsson.sysapi.resources.*;
@@ -110,7 +110,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         environment.jersey().register(new AuthValueFactoryProvider.Binder(UserConfiguration.class));
 
         SpeedMeasurementManager speedMeasurementManager = new SpeedMeasurementManager(Executors.newScheduledThreadPool(2, new ThreadFactoryBuilder().setNameFormat("speed-mgr-%d").build()), Clock.systemUTC(), 5);
-        InfoProvider provider = new InfoProviderFactory(hal, os, SystemInfo.getCurrentPlatformEnum(), config, speedMeasurementManager).provide();
+        InfoProvider provider = new MetricsProvider(hal, os, SystemInfo.getCurrentPlatformEnum(), config, speedMeasurementManager).create();
         environment.lifecycle().manage(speedMeasurementManager);
 
         environment.jersey().register(new SystemResource(provider));

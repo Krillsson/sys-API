@@ -1,7 +1,7 @@
 package com.krillsson.sysapi.core;
 
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDiskProvider;
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultNetworkProvider;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultNetworkMetrics;
 import com.krillsson.sysapi.util.Utils;
 import org.junit.Before;
 import oshi.hardware.CentralProcessor;
@@ -20,7 +20,7 @@ public class DefaultInfoProviderTest {
     OperatingSystem os;
     Utils utils;
     DefaultDiskProvider diskProvider;
-    DefaultNetworkProvider networkProvider;
+    DefaultNetworkMetrics networkProvider;
     private CentralProcessor centralProcessor;
 
     @Before
@@ -29,7 +29,7 @@ public class DefaultInfoProviderTest {
         os = mock(OperatingSystem.class);
         utils = mock(Utils.class);
         diskProvider = mock(DefaultDiskProvider.class);
-        networkProvider = mock(DefaultNetworkProvider.class);
+        networkProvider = mock(DefaultNetworkMetrics.class);
         centralProcessor = mock(CentralProcessor.class);
         infoProvider = new DefaultInfoProvider(hal, os, utils, networkProvider, diskProvider);
 

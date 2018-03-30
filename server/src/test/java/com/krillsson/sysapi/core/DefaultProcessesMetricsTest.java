@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.core;
 
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultProcessesInfoProvider;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultProcessesMetrics;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,11 +16,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.junit.Assert.*;
 
-public class DefaultProcessesInfoProviderTest {
+public class DefaultProcessesMetricsTest {
     HardwareAbstractionLayer hal;
     GlobalMemory memory;
     OperatingSystem os;
-    DefaultProcessesInfoProvider provider;
+    DefaultProcessesMetrics provider;
 
     @Before
     public void setUp() throws Exception {
@@ -29,7 +29,7 @@ public class DefaultProcessesInfoProviderTest {
         when(hal.getMemory()).thenReturn(memory);
         os = mock(OperatingSystem.class);
 
-        provider = new DefaultProcessesInfoProvider(os, hal);
+        provider = new DefaultProcessesMetrics(os, hal);
     }
 
     @Test

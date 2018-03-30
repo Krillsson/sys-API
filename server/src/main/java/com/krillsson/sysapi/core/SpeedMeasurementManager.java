@@ -16,7 +16,7 @@ public class SpeedMeasurementManager implements Managed {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SpeedMeasurementManager.class);
     private final long measurementInterval;
 
-    interface SpeedSource {
+    public interface SpeedSource {
         String getName();
 
         long getCurrentRead();
@@ -24,7 +24,7 @@ public class SpeedMeasurementManager implements Managed {
         long getCurrentWrite();
     }
 
-    static class CurrentSpeed {
+    public static class CurrentSpeed {
         private final long readPerSeconds;
         private final long writePerSeconds;
 
@@ -33,11 +33,11 @@ public class SpeedMeasurementManager implements Managed {
             this.writePerSeconds = writePerSeconds;
         }
 
-        long getReadPerSeconds() {
+        public long getReadPerSeconds() {
             return readPerSeconds;
         }
 
-        long getWritePerSeconds() {
+        public long getWritePerSeconds() {
             return writePerSeconds;
         }
     }
@@ -56,21 +56,21 @@ public class SpeedMeasurementManager implements Managed {
         this.measurementInterval = Duration.ofSeconds(measurementInterval).getSeconds();
     }
 
-    void register(Collection<SpeedSource> sources){
+    public void register(Collection<SpeedSource> sources){
         LOGGER.debug("Registering {}", sources.parallelStream().map(SpeedSource::getName).toArray());
         speedSources.addAll(sources);
     }
 
-    void register(SpeedSource speedSource){
+    public void register(SpeedSource speedSource){
         LOGGER.debug("Registering {}", speedSource.getName());
         speedSources.add(speedSource);
     }
 
-    void unregister(SpeedSource speedSource){
+    public void unregister(SpeedSource speedSource){
         speedSources.remove(speedSource);
     }
 
-    Optional<CurrentSpeed> getCurrentSpeedForName(String name){
+    public Optional<CurrentSpeed> getCurrentSpeedForName(String name){
         return Optional.ofNullable(currentSpeedStore.get(name));
     }
 

@@ -20,7 +20,7 @@
  */
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
-import com.krillsson.sysapi.core.metrics.DiskInfoProvider;
+import com.krillsson.sysapi.core.metrics.DiskMetrics;
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.domain.storage.*;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DefaultDiskProvider implements DiskInfoProvider {
+public class DefaultDiskProvider implements DiskMetrics {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultDiskProvider.class);
     protected static final DiskSpeed DEFAULT_DISK_SPEED = new DiskSpeed(0, 0);
     private static final DiskOsPartition DEFAULT_OS_PART = new DiskOsPartition(
@@ -107,8 +107,8 @@ public class DefaultDiskProvider implements DiskInfoProvider {
                 .findAny();
     }
 
-    protected DiskMetrics diskMetrics(HWDiskStore disk, DiskOsPartition partition, FileSystem fileSystem) {
-        return new DiskMetrics(
+    protected com.krillsson.sysapi.core.domain.storage.DiskMetrics diskMetrics(HWDiskStore disk, DiskOsPartition partition, FileSystem fileSystem) {
+        return new com.krillsson.sysapi.core.domain.storage.DiskMetrics(
                 partition.getUsableSpace(),
                 partition.getTotalSpace(),
                 fileSystem.getOpenFileDescriptors(),
@@ -185,7 +185,7 @@ public class DefaultDiskProvider implements DiskInfoProvider {
     private DiskLoad createDiskLoad(HWDiskStore d) {
         DiskOsPartition partition = findAssociatedFileStore(d).orElse(DEFAULT_OS_PART);
         DiskHealth health = diskHealth(d.getName());
-        DiskMetrics metrics = diskMetrics(d, partition, operatingSystem.getFileSystem());
+        com.krillsson.sysapi.core.domain.storage.DiskMetrics metrics = diskMetrics(d, partition, operatingSystem.getFileSystem());
         DiskSpeed speed = diskSpeedForStore(d, partition).orElse(DEFAULT_DISK_SPEED);
         return new DiskLoad(d.getName(), metrics, speed, health);
     }

@@ -1,7 +1,6 @@
 package com.krillsson.sysapi.core;
 
 import com.krillsson.sysapi.config.SystemApiConfiguration;
-import com.krillsson.sysapi.core.metrics.rasbian.RaspbianLinuxInfoProvider;
 import org.junit.Before;
 import org.junit.Test;
 import oshi.PlatformEnum;
@@ -14,7 +13,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class InfoProviderFactoryTest {
+public class MetricsProviderTest {
 
     private HardwareAbstractionLayer hal;
     private oshi.software.os.OperatingSystem os;
@@ -33,9 +32,9 @@ public class InfoProviderFactoryTest {
 
     @Test
     public void providingDefaultIfPlatformIsUnknown() throws Exception {
-        InfoProviderFactory factory = new InfoProviderFactory(hal, os, PlatformEnum.UNKNOWN, config, measurementManager);
+        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.UNKNOWN, config, measurementManager);
 
-        InfoProvider provider = factory.provide();
+        InfoProvider provider = factory.create();
         assertNotNull(provider);
         assertTrue(provider instanceof DefaultInfoProvider);
     }
@@ -43,9 +42,9 @@ public class InfoProviderFactoryTest {
     @Test
     public void providerDetectsRaspbian() throws Exception {
         when(os.getFamily()).thenReturn("Raspbian GNU/Linux");
-        InfoProviderFactory factory = new InfoProviderFactory(hal, os, PlatformEnum.LINUX, config, measurementManager);
+        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.LINUX, config, measurementManager);
 
-        InfoProvider provider = factory.provide();
+        InfoProvider provider = factory.create();
         assertNotNull(provider);
         assertTrue(provider instanceof RaspbianLinuxInfoProvider);
     }
@@ -53,9 +52,9 @@ public class InfoProviderFactoryTest {
     @Test
     public void providerDetectsLinux() throws Exception {
         when(os.getFamily()).thenReturn("Debian GNU/Linux");
-        InfoProviderFactory factory = new InfoProviderFactory(hal, os, PlatformEnum.LINUX, config, measurementManager);
+        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.LINUX, config, measurementManager);
 
-        InfoProvider provider = factory.provide();
+        InfoProvider provider = factory.create();
         assertNotNull(provider);
         assertFalse(provider instanceof RaspbianLinuxInfoProvider);
         assertTrue(provider instanceof DefaultInfoProvider);

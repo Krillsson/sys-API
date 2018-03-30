@@ -20,7 +20,7 @@
  */
 package com.krillsson.sysapi.core.metrics.windows;
 
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultNetworkProvider;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultNetworkMetrics;
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
 import ohmwrapper.MonitorManager;
@@ -34,15 +34,15 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-public class WindowsNetworkProvider extends DefaultNetworkProvider {
+public class WindowsNetworkMetrics extends DefaultNetworkMetrics {
 
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(WindowsNetworkProvider.class);
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(WindowsNetworkMetrics.class);
 
     private MonitorManager monitorManager;
     private HardwareAbstractionLayer hal;
 
 
-    public WindowsNetworkProvider(HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager, MonitorManager monitorManager) {
+    public WindowsNetworkMetrics(HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager, MonitorManager monitorManager) {
         super(hal, speedMeasurementManager);
         this.hal = hal;
         this.monitorManager = monitorManager;

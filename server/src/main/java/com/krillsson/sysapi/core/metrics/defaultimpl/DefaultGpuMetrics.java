@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
-import com.krillsson.sysapi.core.metrics.GpuInfoProvider;
+import com.krillsson.sysapi.core.metrics.GpuMetrics;
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuInfo;
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad;
@@ -10,11 +10,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class DefaultGpuInfoProvider implements GpuInfoProvider {
+public class DefaultGpuMetrics implements GpuMetrics {
 
     private final HardwareAbstractionLayer hal;
 
-    public DefaultGpuInfoProvider(HardwareAbstractionLayer hal) {
+    public DefaultGpuMetrics(HardwareAbstractionLayer hal) {
         this.hal = hal;
     }
 

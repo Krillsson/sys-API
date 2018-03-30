@@ -1,7 +1,7 @@
 package com.krillsson.sysapi.core.metrics.rasbian;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuInfoProvider;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuMetrics;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuSensors;
 import com.krillsson.sysapi.util.Utils;
 import org.slf4j.Logger;
@@ -13,8 +13,10 @@ import oshi.util.FileUtil;
 import java.util.Collections;
 import java.util.List;
 
-public class RaspbianCpuInfoProvider extends DefaultCpuInfoProvider {
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(RaspbianLinuxInfoProvider.class);
+public class RaspbianCpuMetrics extends DefaultCpuMetrics {
+
+
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(RaspbianCpuMetrics.class);
 
     public static final String RASPBIAN_QUALIFIER = "raspbian";
 
@@ -23,7 +25,7 @@ public class RaspbianCpuInfoProvider extends DefaultCpuInfoProvider {
     private static final String VCGENCMD_VOLT = VCGENCMD + "measure_volts core";
 
 
-    protected RaspbianCpuInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils) {
+    protected RaspbianCpuMetrics(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils) {
         super(hal, operatingSystem, new RaspbianCpuSensors(hal), utils);
     }
 

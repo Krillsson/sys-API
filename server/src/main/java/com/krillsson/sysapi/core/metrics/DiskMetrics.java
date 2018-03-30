@@ -7,7 +7,7 @@ import com.krillsson.sysapi.core.domain.storage.StorageInfo;
 import java.util.List;
 import java.util.Optional;
 
-public interface DiskInfoProvider {
+public interface DiskMetrics {
     List<DiskInfo> diskInfos();
 
     List<DiskLoad> diskLoads();

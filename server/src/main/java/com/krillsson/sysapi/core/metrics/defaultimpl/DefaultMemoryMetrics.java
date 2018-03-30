@@ -1,13 +1,13 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
-import com.krillsson.sysapi.core.metrics.MemoryInfoProvider;
+import com.krillsson.sysapi.core.metrics.MemoryMetrics;
 import oshi.hardware.GlobalMemory;
 import oshi.hardware.HardwareAbstractionLayer;
 
-public class DefaultMemoryInfoProvider implements MemoryInfoProvider {
+public class DefaultMemoryMetrics implements MemoryMetrics {
     private final HardwareAbstractionLayer hal;
 
-    public DefaultMemoryInfoProvider(HardwareAbstractionLayer hal) {
+    public DefaultMemoryMetrics(HardwareAbstractionLayer hal) {
         this.hal = hal;
     }
 

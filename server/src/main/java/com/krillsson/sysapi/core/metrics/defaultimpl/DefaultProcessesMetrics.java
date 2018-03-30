@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
-import com.krillsson.sysapi.core.metrics.ProcessesInfoProvider;
+import com.krillsson.sysapi.core.metrics.ProcessesMetrics;
 import com.krillsson.sysapi.core.domain.processes.Process;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import oshi.hardware.GlobalMemory;
@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class DefaultProcessesInfoProvider implements ProcessesInfoProvider {
+public class DefaultProcessesMetrics implements ProcessesMetrics {
     private final OperatingSystem operatingSystem;
     private final HardwareAbstractionLayer hal;
 
-    public DefaultProcessesInfoProvider(OperatingSystem operatingSystem, HardwareAbstractionLayer hal) {
+    public DefaultProcessesMetrics(OperatingSystem operatingSystem, HardwareAbstractionLayer hal) {
         this.operatingSystem = operatingSystem;
         this.hal = hal;
     }

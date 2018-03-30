@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.core.metrics.windows;
 
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultGpuInfoProvider;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultGpuMetrics;
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad;
@@ -13,12 +13,12 @@ import java.util.stream.Collectors;
 
 import static com.krillsson.sysapi.core.metrics.windows.util.NullSafeOhmMonitor.nullSafeGetValue;
 
-public class WindowsGpuInfoProvider extends DefaultGpuInfoProvider {
+public class WindowsGpuMetrics extends DefaultGpuMetrics {
 
     private final MonitorManager monitorManager;
 
 
-    public WindowsGpuInfoProvider(HardwareAbstractionLayer hal, MonitorManager monitorManager) {
+    public WindowsGpuMetrics(HardwareAbstractionLayer hal, MonitorManager monitorManager) {
         super(hal);
         this.monitorManager = monitorManager;
     }

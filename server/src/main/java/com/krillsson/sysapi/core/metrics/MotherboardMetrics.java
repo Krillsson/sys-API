@@ -5,7 +5,7 @@ import com.krillsson.sysapi.core.domain.sensors.HealthData;
 
 import java.util.List;
 
-public interface MotherboardInfoProvider {
+public interface MotherboardMetrics {
     Motherboard motherboard();
 
     List<HealthData> motherboardHealth();

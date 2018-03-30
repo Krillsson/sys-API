@@ -29,7 +29,7 @@ public class WindowsNetworkProviderTest {
     Bandwidth inBandwidth;
     Bandwidth outBandwidth;
 
-    WindowsNetworkProvider nicProvider;
+    WindowsNetworkMetrics nicProvider;
 
     @Before
     public void setUp() throws Exception {
@@ -46,7 +46,7 @@ public class WindowsNetworkProviderTest {
         when(inBandwidth.getValue()).thenReturn(123d);
         when(outBandwidth.getValue()).thenReturn(321d);
 
-        nicProvider = new WindowsNetworkProvider(hal, mock(SpeedMeasurementManager.class));
+        nicProvider = new WindowsNetworkMetrics(hal, mock(SpeedMeasurementManager.class));
         nicProvider.setMonitorManager(monitorManager);
     }
 

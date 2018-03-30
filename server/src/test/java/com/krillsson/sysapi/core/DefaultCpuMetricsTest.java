@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.core;
 
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuInfoProvider;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuMetrics;
 import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.util.Utils;
@@ -16,8 +16,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.*;
 
-public class DefaultCpuInfoProviderTest {
-    DefaultCpuInfoProvider infoProvider;
+public class DefaultCpuMetricsTest {
+    DefaultCpuMetrics infoProvider;
     HardwareAbstractionLayer hal;
     OperatingSystem os;
     Utils utils;
@@ -34,7 +34,7 @@ public class DefaultCpuInfoProviderTest {
 
         centralProcessor = mock(CentralProcessor.class);
         when(hal.getSensors()).thenReturn(sensors);
-        infoProvider = new DefaultCpuInfoProvider(hal, os, cpuSensors, utils);
+        infoProvider = new DefaultCpuMetrics(hal, os, cpuSensors, utils);
 
     }
 

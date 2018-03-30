@@ -8,7 +8,7 @@ import com.krillsson.sysapi.core.domain.gpu.GpuLoad;
 import java.util.List;
 import java.util.Map;
 
-public interface GpuInfoProvider {
+public interface GpuMetrics {
     GpuInfo gpuInfo();
     List<GpuLoad> gpuLoads();
 }

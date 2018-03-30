@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.core;
 
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultNetworkProvider;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultNetworkMetrics;
 import com.krillsson.sysapi.core.domain.network.NetworkInterface;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,9 +14,9 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class DefaultNetworkProviderTest {
+public class DefaultNetworkMetricsTest {
 
-    DefaultNetworkProvider provider;
+    DefaultNetworkMetrics provider;
     HardwareAbstractionLayer hal;
     SpeedMeasurementManager speedMeasurementManager;
 
@@ -28,7 +28,7 @@ public class DefaultNetworkProviderTest {
     public void setUp() {
         hal = mock(HardwareAbstractionLayer.class);
         speedMeasurementManager = mock(SpeedMeasurementManager.class);
-        provider = new DefaultNetworkProvider(hal, speedMeasurementManager);
+        provider = new DefaultNetworkMetrics(hal, speedMeasurementManager);
 
         nic1 = mock(NetworkIF.class);
         when(nic1.getName()).thenReturn("en0");
