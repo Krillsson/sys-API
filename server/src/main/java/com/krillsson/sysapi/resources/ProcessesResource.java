@@ -26,6 +26,7 @@ import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.domain.processes.ProcessInfoMapper;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
+import com.krillsson.sysapi.core.metrics.ProcessesMetrics;
 import com.krillsson.sysapi.dto.processes.ProcessInfo;
 import com.krillsson.sysapi.dto.processes.Process;
 import io.dropwizard.auth.Auth;
@@ -48,9 +49,9 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 public class ProcessesResource {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ProcessesResource.class);
 
-    private final InfoProvider provider;
+    private final ProcessesMetrics provider;
 
-    public ProcessesResource(InfoProvider provider) {
+    public ProcessesResource(ProcessesMetrics provider) {
         this.provider = provider;
     }
 

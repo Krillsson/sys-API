@@ -22,6 +22,7 @@ package com.krillsson.sysapi.core.metrics;
 
 import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
+import com.krillsson.sysapi.core.metrics.cache.Cache;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory;
 import com.krillsson.sysapi.core.metrics.rasbian.RaspbianMetricsFactory;
 import com.krillsson.sysapi.core.metrics.windows.MonitorManagerFactory;
@@ -67,7 +68,7 @@ public class MetricsProvider {
                     );
                     if (windowsMetricsFactory.prerequisitesFilled()) {
                         windowsMetricsFactory.initialize();
-                        return windowsMetricsFactory;
+                        return Cache.wrap(windowsMetricsFactory);
                     }
                     LOGGER.error("Unable to use Windows specific implementation: falling through to default one");
                 }
@@ -83,7 +84,7 @@ public class MetricsProvider {
                     );
                     if (raspbianMetricsFactory.prerequisitesFilled()) {
                         raspbianMetricsFactory.initialize();
-                        return raspbianMetricsFactory;
+                        return Cache.wrap(raspbianMetricsFactory);
                     }
                 }
                 break;
@@ -103,7 +104,7 @@ public class MetricsProvider {
         );
         if (metricsFactory.prerequisitesFilled()) {
             metricsFactory.initialize();
-            return metricsFactory;
+            return Cache.wrap(metricsFactory);
         } else {
             throw new IllegalStateException("No metrics factory available");
         }

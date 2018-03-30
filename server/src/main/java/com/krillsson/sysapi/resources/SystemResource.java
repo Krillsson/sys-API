@@ -40,16 +40,15 @@ import java.util.Properties;
 @Produces(MediaType.APPLICATION_JSON)
 public class SystemResource {
 
-    private final InfoProvider provider;
 
-    public SystemResource(InfoProvider provider) {
-        this.provider = provider;
+    public SystemResource() {
+
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public com.krillsson.sysapi.dto.system.SystemInfo getRoot(@Auth UserConfiguration user) {
-        SystemInfo value = provider.systemInfo();
+        SystemInfo value = null;
         return SystemInfoMapper.INSTANCE.map(value);
     }
 
@@ -57,16 +56,11 @@ public class SystemResource {
     @Path("uptime")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public long getUptime(@Auth UserConfiguration user) {
-        return provider.cpuInfo().getCentralProcessor().getSystemUptime();
-    }
 
 
-        @GET
-    @Path("os")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public com.krillsson.sysapi.dto.system.OperatingSystem getOperatingSystem(@Auth UserConfiguration user) {
-        return SystemInfoMapper.INSTANCE.map(provider.operatingSystem());
+        return 0L;
     }
+
 
     @GET
     @Path("jvm")

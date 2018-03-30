@@ -120,10 +120,8 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         environment.jersey().register(new GpuResource(provider));
         environment.jersey().register(new MemoryResource(provider));
         environment.jersey().register(new NetworkInterfacesResource(provider));
-        environment.jersey().register(new PowerSourcesResource(provider));
         environment.jersey().register(new ProcessesResource(provider));
         environment.jersey().register(new CpuResource(provider));
-        environment.jersey().register(new SensorsResource(provider));
         environment.jersey().register(new MotherboardResource(provider));
         environment.jersey().register(new MetaInfoResource(getVersionFromManifest(), getEndpoints(environment), os.getProcessId()));
     }
