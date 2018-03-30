@@ -22,11 +22,9 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.domain.memory.GlobalMemoryMapper;
 import com.krillsson.sysapi.dto.processes.Memory;
 import io.dropwizard.auth.Auth;
-import oshi.hardware.GlobalMemory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;

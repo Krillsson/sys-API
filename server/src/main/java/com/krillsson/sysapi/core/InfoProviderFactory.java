@@ -21,17 +21,14 @@
 package com.krillsson.sysapi.core;
 
 import com.krillsson.sysapi.config.SystemApiConfiguration;
-import com.krillsson.sysapi.core.linux.rasbian.RaspbianLinuxInfoProvider;
-import com.krillsson.sysapi.core.windows.WindowsDiskProvider;
-import com.krillsson.sysapi.core.windows.WindowsInfoProvider;
-import com.krillsson.sysapi.core.windows.WindowsNetworkProvider;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultInfoProviderFactory;
 import com.krillsson.sysapi.util.Utils;
 import org.slf4j.Logger;
 import oshi.PlatformEnum;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.software.os.OperatingSystem;
 
-import static com.krillsson.sysapi.core.linux.rasbian.RaspbianLinuxInfoProvider.RASPBIAN_QUALIFIER;
+import static com.krillsson.sysapi.core.metrics.rasbian.RaspbianLinuxInfoProvider.RASPBIAN_QUALIFIER;
 
 public class InfoProviderFactory {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(InfoProviderFactory.class);
@@ -53,53 +50,27 @@ public class InfoProviderFactory {
         this.utils = new Utils();
     }
 
-    public InfoProvider provide() {
-        InfoProvider infoProvider = null;
+    public DefaultInfoProviderFactory provide() {
         switch (os) {
             case WINDOWS:
                 if (configuration.windows() == null || configuration.windows().enableOhmJniWrapper()) {
-                    WindowsInfoProvider windowsInfoProvider = new WindowsInfoProvider(hal, operatingSystem, utils, new WindowsNetworkProvider(hal, speedMeasurementManager), new WindowsDiskProvider(operatingSystem, hal, speedMeasurementManager));
-                    if (windowsInfoProvider.canProvide()) {
-                        infoProvider = windowsInfoProvider;
-                    }
+
                 }
                 break;
             //falling through to default case
             case LINUX:
                 if (operatingSystem.getFamily().toLowerCase().contains(RASPBIAN_QUALIFIER)) {
                     LOGGER.info("Raspberry Pi detected");
-                    infoProvider = new RaspbianLinuxInfoProvider(hal, operatingSystem, utils, createDefaultNetworkProvider(), getDefaultDiskProvider());
                 }
                 break;
-            //falling through to default case
             case MACOSX:
                 //https://github.com/Chris911/iStats
-                MacDiskProvider defaultDiskProvider = new MacDiskProvider(operatingSystem, hal, speedMeasurementManager);
-                defaultDiskProvider.register();
-                infoProvider = new DefaultInfoProvider(hal, operatingSystem, utils, createDefaultNetworkProvider(), defaultDiskProvider);
-                break;
             case FREEBSD:
             case SOLARIS:
             case UNKNOWN:
             default:
                 break;
         }
-        if (infoProvider == null) {
-            infoProvider = new DefaultInfoProvider(hal, operatingSystem, utils, createDefaultNetworkProvider(), getDefaultDiskProvider());
-        }
-        return infoProvider;
-    }
-
-    private DefaultDiskProvider getDefaultDiskProvider() {
-        DefaultDiskProvider defaultDiskProvider = new DefaultDiskProvider(operatingSystem, hal, speedMeasurementManager);
-        defaultDiskProvider.register();
-        return defaultDiskProvider;
-    }
-
-    private DefaultNetworkProvider createDefaultNetworkProvider() {
-        DefaultNetworkProvider defaultNetworkProvider = new DefaultNetworkProvider(hal, speedMeasurementManager);
-        defaultNetworkProvider.register();
-        return defaultNetworkProvider;
     }
 
 }

@@ -1,6 +1,5 @@
 package com.krillsson.sysapi.resources;
 
-import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.domain.motherboard.Motherboard;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.After;

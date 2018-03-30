@@ -1,9 +1,9 @@
 package com.krillsson.sysapi.core;
 
-import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDiskProvider;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultNetworkProvider;
 import com.krillsson.sysapi.util.Utils;
 import org.junit.Before;
-import org.junit.Test;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.software.os.OperatingSystem;

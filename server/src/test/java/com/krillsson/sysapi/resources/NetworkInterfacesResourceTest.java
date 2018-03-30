@@ -1,6 +1,5 @@
 package com.krillsson.sysapi.resources;
 
-import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
 import com.krillsson.sysapi.dto.network.NetworkInterfaceData;
 import io.dropwizard.testing.junit.ResourceTestRule;

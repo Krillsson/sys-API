@@ -22,24 +22,14 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.InfoProvider;
-import com.krillsson.sysapi.core.domain.processes.ProcessInfoMapper;
 import com.krillsson.sysapi.core.domain.storage.DiskInfo;
 import com.krillsson.sysapi.core.domain.storage.StorageInfo;
 import com.krillsson.sysapi.core.domain.storage.StorageInfoMapper;
-import com.krillsson.sysapi.dto.processes.Process;
 import io.dropwizard.auth.Auth;
-import oshi.hardware.HWDiskStore;
-import oshi.hardware.HWPartition;
-import oshi.software.os.FileSystem;
-import oshi.software.os.OSFileStore;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;

@@ -1,10 +1,10 @@
 package com.krillsson.sysapi.core;
 
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDiskProvider;
 import com.krillsson.sysapi.core.domain.storage.DiskInfo;
 import com.krillsson.sysapi.core.domain.storage.DiskLoad;
 import org.junit.Before;
 import org.junit.Test;
-import oshi.SystemInfo;
 import oshi.hardware.HWDiskStore;
 import oshi.hardware.HWPartition;
 import oshi.hardware.HardwareAbstractionLayer;

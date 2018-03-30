@@ -1,6 +1,5 @@
 package com.krillsson.sysapi.resources;
 
-import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.core.domain.gpu.GpuInfo;

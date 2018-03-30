@@ -1,6 +1,5 @@
 package com.krillsson.sysapi.resources;
 
-import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
 import com.krillsson.sysapi.core.domain.storage.DiskHealth;
 import com.krillsson.sysapi.core.domain.storage.DiskInfo;

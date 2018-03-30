@@ -1,5 +1,7 @@
 package com.krillsson.sysapi.core;
 
+import com.krillsson.sysapi.core.metrics.*;
+
 public interface InfoProviderFactoryFactory {
     boolean prerequisitesFilled();
 

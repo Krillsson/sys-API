@@ -1,8 +1,7 @@
 package com.krillsson.sysapi.core;
 
 import com.krillsson.sysapi.config.SystemApiConfiguration;
-import com.krillsson.sysapi.core.linux.rasbian.RaspbianLinuxInfoProvider;
-import com.krillsson.sysapi.core.windows.WindowsInfoProvider;
+import com.krillsson.sysapi.core.metrics.rasbian.RaspbianLinuxInfoProvider;
 import org.junit.Before;
 import org.junit.Test;
 import oshi.PlatformEnum;

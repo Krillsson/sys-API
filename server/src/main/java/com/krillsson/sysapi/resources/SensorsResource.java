@@ -22,13 +22,8 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.InfoProvider;
-import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
-import com.krillsson.sysapi.core.domain.sensors.HealthData;
-import com.krillsson.sysapi.core.domain.sensors.SensorsInfo;
 import com.krillsson.sysapi.core.domain.sensors.SensorsInfoMapper;
 import io.dropwizard.auth.Auth;
-import oshi.hardware.Sensors;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;

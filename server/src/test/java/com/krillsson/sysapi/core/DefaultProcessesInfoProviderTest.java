@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core;
 
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultProcessesInfoProvider;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import org.junit.Before;
 import org.junit.Test;

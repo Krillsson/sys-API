@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core;
 
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultNetworkProvider;
 import com.krillsson.sysapi.core.domain.network.NetworkInterface;
 import org.junit.Before;
 import org.junit.Test;

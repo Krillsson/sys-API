@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core;
 
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuInfoProvider;
 import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.util.Utils;
