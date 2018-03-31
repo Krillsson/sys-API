@@ -1,6 +1,5 @@
 package com.krillsson.sysapi.core.metrics.cache;
 
-import com.codahale.metrics.Metric;
 import com.krillsson.sysapi.core.metrics.*;
 
 public class Cache implements MetricsFactory {
@@ -12,14 +11,18 @@ public class Cache implements MetricsFactory {
     private final MotherboardMetrics motherboardMetrics;
     private final MemoryMetrics memoryMetrics;
 
-    public static MetricsFactory wrap(MetricsFactory factory)
-    {
-        return new Cache(factory);
+    private Cache(MetricsFactory provider) {
+        this.cpuMetrics = new CachingCpuMetrics(provider.cpuInfoProvider());
+        this.networkMetrics = new CachingNetworkMetrics(provider.networkInfoProvider());
+        this.gpuMetrics = new CachingGpuMetrics(provider.gpuInfoProvider());
+        this.driveMetrics = new CachingDriveMetrics(provider.diskInfoProvider());
+        this.processesMetrics = new CachingProcessesMetrics(provider.processesInfoProvider());
+        this.motherboardMetrics = new CachingMotherboardMetrics(provider.motherboardInfoProvider());
+        this.memoryMetrics = new CachingMemoryMetrics(provider.memoryInfoProvider());
     }
 
-    private Cache(MetricsFactory provider)
-    {
-        this.cpuMetrics = new CachingCpuMetrics(provider.cpuInfoProvider());
+    public static MetricsFactory wrap(MetricsFactory factory) {
+        return new Cache(factory);
     }
 
     @Override
