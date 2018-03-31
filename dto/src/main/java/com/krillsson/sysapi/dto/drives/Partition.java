@@ -1,14 +1,14 @@
 package com.krillsson.sysapi.dto.drives;
 
 public class Partition {
-    private final String identification;
-    private final String name;
-    private final String type;
-    private final String uuid;
-    private final long size;
-    private final int major;
-    private final int minor;
-    private final String mountPoint;
+    private String identification;
+    private String name;
+    private String type;
+    private String uuid;
+    private long size;
+    private int major;
+    private int minor;
+    private String mountPoint;
 
     public Partition(String identification, String name, String type, String uuid, long size, int major, int minor, String mountPoint) {
         this.identification = identification;
@@ -19,6 +19,9 @@ public class Partition {
         this.major = major;
         this.minor = minor;
         this.mountPoint = mountPoint;
+    }
+
+    public Partition() {
     }
 
     public String getIdentification() {
@@ -51,5 +54,37 @@ public class Partition {
 
     public String getMountPoint() {
         return mountPoint;
+    }
+
+    public void setIdentification(String identification) {
+        this.identification = identification;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
+    }
+
+    public void setMajor(int major) {
+        this.major = major;
+    }
+
+    public void setMinor(int minor) {
+        this.minor = minor;
+    }
+
+    public void setMountPoint(String mountPoint) {
+        this.mountPoint = mountPoint;
     }
 }

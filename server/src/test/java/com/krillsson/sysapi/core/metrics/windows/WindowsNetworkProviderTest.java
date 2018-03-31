@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.core.metrics.windows;
 
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
+import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
 import ohmwrapper.Bandwidth;
 import ohmwrapper.MonitorManager;
@@ -12,6 +13,7 @@ import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -46,8 +48,7 @@ public class WindowsNetworkProviderTest {
         when(inBandwidth.getValue()).thenReturn(123d);
         when(outBandwidth.getValue()).thenReturn(321d);
 
-        nicProvider = new WindowsNetworkMetrics(hal, mock(SpeedMeasurementManager.class));
-        nicProvider.setMonitorManager(monitorManager);
+        nicProvider = new WindowsNetworkMetrics(hal, mock(SpeedMeasurementManager.class), monitorManager);
     }
 
     @Test
@@ -58,15 +59,16 @@ public class WindowsNetworkProviderTest {
         when(networkMonitor.getNics()).thenReturn(new NicInfo[]{nicInfo});
         when(nicInfo.getPhysicalAddress()).thenReturn("01:23:45:67:89:AB");
 
-        NetworkInterfaceSpeed en0 = nicProvider.getSpeed("en0");
-        assertThat(en0.getReceiveBytesPerSecond(), is(123L));
-        assertThat(en0.getSendBytesPerSecond(), is(321L));
+        Optional<NetworkInterfaceLoad> en0Optional = nicProvider.networkInterfaceLoadById("en0");
+        NetworkInterfaceLoad en0 = en0Optional.get();
+        assertThat(en0.getSpeed().getReceiveBytesPerSecond(), is(123L));
+        assertThat(en0.getSpeed().getSendBytesPerSecond(), is(321L));
         verify(monitorManager).Update();
     }
 
     @Test(expected = NoSuchElementException.class)
     public void noAvailableSpeedRecordsReturnsDefaultValues() throws Exception {
         when(hal.getNetworkIFs()).thenReturn(new NetworkIF[0]);
-        nicProvider.getSpeed("en0");
+        assertFalse(nicProvider.networkInterfaceLoadById("en0").isPresent());
     }
 }

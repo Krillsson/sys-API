@@ -112,17 +112,16 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
 
         SpeedMeasurementManager speedMeasurementManager = new SpeedMeasurementManager(Executors.newScheduledThreadPool(2, new ThreadFactoryBuilder().setNameFormat("speed-mgr-%d").build()), Clock.systemUTC(), 5);
         MetricsFactory provider = new MetricsProvider(hal, os, SystemInfo.getCurrentPlatformEnum(), config, speedMeasurementManager).create();
-        provider.cpuInfoProvider();
         environment.lifecycle().manage(speedMeasurementManager);
 
-        environment.jersey().register(new SystemResource(provider));
-        environment.jersey().register(new DrivesResource(provider));
-        environment.jersey().register(new GpuResource(provider));
-        environment.jersey().register(new MemoryResource(provider));
-        environment.jersey().register(new NetworkInterfacesResource(provider));
-        environment.jersey().register(new ProcessesResource(provider));
-        environment.jersey().register(new CpuResource(provider));
-        environment.jersey().register(new MotherboardResource(provider));
+        //environment.jersey().register(new SystemResource(provider.));
+        environment.jersey().register(new DrivesResource(provider.driveMetrics()));
+        environment.jersey().register(new GpuResource(provider.gpuMetrics()));
+        environment.jersey().register(new MemoryResource(provider.memoryMetrics()));
+        environment.jersey().register(new NetworkInterfacesResource(provider.networkMetrics()));
+        environment.jersey().register(new ProcessesResource(provider.processesMetrics()));
+        environment.jersey().register(new CpuResource(provider.cpuMetrics()));
+        environment.jersey().register(new MotherboardResource(provider.motherboardMetrics()));
         environment.jersey().register(new MetaInfoResource(getVersionFromManifest(), getEndpoints(environment), os.getProcessId()));
     }
 

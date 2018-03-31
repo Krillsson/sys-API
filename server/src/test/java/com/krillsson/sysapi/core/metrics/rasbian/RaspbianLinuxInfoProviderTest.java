@@ -13,7 +13,7 @@ import static org.mockito.Mockito.mock;
 
 public class RaspbianLinuxInfoProviderTest {
 
-    RaspbianLinuxInfoProvider infoProvider;
+    RaspbianCpuMetrics.RaspbianCpuSensors infoProvider;
     HardwareAbstractionLayer hal;
     OperatingSystem os;
     Utils utils;
@@ -27,7 +27,7 @@ public class RaspbianLinuxInfoProviderTest {
         utils = mock(Utils.class);
         diskProvider = mock(DefaultDriveProvider.class);
         networkProvider = mock(DefaultNetworkMetrics.class);
-        infoProvider = new TestableRaspbianLinuxInfoProvider(hal, os, utils, networkProvider, diskProvider);
+        infoProvider = new TestableRaspbianLinuxInfoProvider(hal);
     }
 
     @Test
@@ -54,13 +54,14 @@ public class RaspbianLinuxInfoProviderTest {
         assertEquals(0.0, voltage, 0.0);
     }
 
-    private static class TestableRaspbianLinuxInfoProvider extends RaspbianLinuxInfoProvider{
+    private static class TestableRaspbianLinuxInfoProvider extends RaspbianCpuMetrics.RaspbianCpuSensors {
 
         private String commandOutput;
 
-        TestableRaspbianLinuxInfoProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils, DefaultNetworkMetrics defaultNetworkMetrics, DefaultDriveProvider defaultDiskProvider) {
-            super(hal, operatingSystem, utils, defaultNetworkMetrics, defaultDiskProvider);
+        public TestableRaspbianLinuxInfoProvider(HardwareAbstractionLayer hal) {
+            super(hal);
         }
+
 
         public void setCommandOutput(String commandOutput) {
             this.commandOutput = commandOutput;

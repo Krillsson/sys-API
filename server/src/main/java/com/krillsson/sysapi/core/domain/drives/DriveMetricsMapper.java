@@ -47,9 +47,6 @@ public interface DriveMetricsMapper {
 
     com.krillsson.sysapi.dto.sensors.HealthData map(HealthData value);
 
-    @Mappings(
-            @Mapping(source = "UUID", target = "uuid")
-    )
     com.krillsson.sysapi.dto.drives.OsPartition map(OsPartition value);
 
     com.krillsson.sysapi.dto.drives.DriveSpeed map(DriveSpeed value);
@@ -59,4 +56,7 @@ public interface DriveMetricsMapper {
     com.krillsson.sysapi.dto.drives.Partition map(oshi.hardware.HWPartition value);
 
     com.krillsson.sysapi.dto.sensors.DataType map(DataType value);
+
+    com.krillsson.sysapi.dto.drives.DriveValues map(com.krillsson.sysapi.core.domain.drives.DriveValues value);
+    com.krillsson.sysapi.dto.drives.Partition map(com.krillsson.sysapi.core.domain.drives.Partition value);
 }

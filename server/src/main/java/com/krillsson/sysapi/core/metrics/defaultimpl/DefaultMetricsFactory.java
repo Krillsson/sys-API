@@ -51,37 +51,37 @@ public class DefaultMetricsFactory implements MetricsFactory {
     }
 
     @Override
-    public CpuMetrics cpuInfoProvider() {
+    public CpuMetrics cpuMetrics() {
         return cpuMetrics;
     }
 
     @Override
-    public NetworkMetrics networkInfoProvider() {
+    public NetworkMetrics networkMetrics() {
         return networkMetrics;
     }
 
     @Override
-    public DriveMetrics diskInfoProvider() {
+    public DriveMetrics driveMetrics() {
         return driveMetrics;
     }
 
     @Override
-    public MemoryMetrics memoryInfoProvider() {
+    public MemoryMetrics memoryMetrics() {
         return memoryMetrics;
     }
 
     @Override
-    public ProcessesMetrics processesInfoProvider() {
+    public ProcessesMetrics processesMetrics() {
         return processesMetrics;
     }
 
     @Override
-    public GpuMetrics gpuInfoProvider() {
+    public GpuMetrics gpuMetrics() {
         return gpuMetrics;
     }
 
     @Override
-    public MotherboardMetrics motherboardInfoProvider() {
+    public MotherboardMetrics motherboardMetrics() {
         return motherboardMetrics;
     }
 

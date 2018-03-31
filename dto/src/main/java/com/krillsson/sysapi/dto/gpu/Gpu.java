@@ -22,18 +22,15 @@ public class Gpu {
     private double coreMhz;
     @JsonProperty("memoryMhz")
     private double memoryMhz;
-    @JsonProperty("gpuHealth")
-    private GpuHealth gpuHealth;
 
     public Gpu() {
     }
 
-    public Gpu(String vendor, String model, double coreMhz, double memoryMhz, GpuHealth gpuHealth) {
+    public Gpu(String vendor, String model, double coreMhz, double memoryMhz) {
         this.vendor = vendor;
         this.model = model;
         this.coreMhz = coreMhz;
         this.memoryMhz = memoryMhz;
-        this.gpuHealth = gpuHealth;
     }
 
     @JsonProperty("vendor")
@@ -74,16 +71,6 @@ public class Gpu {
     @JsonProperty("memoryMhz")
     public void setMemoryMhz(double memoryMhz) {
         this.memoryMhz = memoryMhz;
-    }
-
-    @JsonProperty("gpuHealth")
-    public GpuHealth getGpuHealth() {
-        return gpuHealth;
-    }
-
-    @JsonProperty("gpuHealth")
-    public void setGpuHealth(GpuHealth gpuHealth) {
-        this.gpuHealth = gpuHealth;
     }
 
 }

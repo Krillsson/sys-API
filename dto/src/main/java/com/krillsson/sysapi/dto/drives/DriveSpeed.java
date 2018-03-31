@@ -1,12 +1,15 @@
 package com.krillsson.sysapi.dto.drives;
 
 public class DriveSpeed {
-    private final long readBytesPerSecond;
-    private final long writeBytesPerSecond;
+    private long readBytesPerSecond;
+    private long writeBytesPerSecond;
 
     public DriveSpeed(long readBytesPerSecond, long writeBytesPerSecond) {
         this.readBytesPerSecond = readBytesPerSecond;
         this.writeBytesPerSecond = writeBytesPerSecond;
+    }
+
+    public DriveSpeed() {
     }
 
     public long getReadBytesPerSecond() {
@@ -15,5 +18,13 @@ public class DriveSpeed {
 
     public long getWriteBytesPerSecond() {
         return writeBytesPerSecond;
+    }
+
+    public void setReadBytesPerSecond(long readBytesPerSecond) {
+        this.readBytesPerSecond = readBytesPerSecond;
+    }
+
+    public void setWriteBytesPerSecond(long writeBytesPerSecond) {
+        this.writeBytesPerSecond = writeBytesPerSecond;
     }
 }

@@ -43,5 +43,4 @@ public interface NetworkInterfacesMapper {
     List<com.krillsson.sysapi.dto.network.NetworkInterface> map(List<NetworkInterface> value);
     List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad> mapLoads(List<NetworkInterfaceLoad> value);
 
-    com.krillsson.sysapi.dto.network.NetworkInterface map(java.net.NetworkInterface value) throws java.net.SocketException;
 }

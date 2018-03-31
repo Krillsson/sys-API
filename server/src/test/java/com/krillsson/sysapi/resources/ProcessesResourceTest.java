@@ -2,6 +2,7 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.core.domain.processes.Process;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
+import com.krillsson.sysapi.core.metrics.ProcessesMetrics;
 import com.krillsson.sysapi.dto.processes.ProcessInfo;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.*;
@@ -14,6 +15,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static junit.framework.Assert.assertEquals;
@@ -30,7 +32,7 @@ import static org.mockito.Mockito.when;
 
 public class ProcessesResourceTest {
 
-    private static final InfoProvider provider = mock(InfoProvider.class);
+    private static final ProcessesMetrics provider = mock(ProcessesMetrics.class);
 
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
@@ -97,7 +99,7 @@ public class ProcessesResourceTest {
         ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
         when(provider.processesInfo(any(OperatingSystem.ProcessSort.class), captor.capture()))
                 .thenReturn(new ProcessesInfo(mock(GlobalMemory.class), 0, 0, 0,
-                        new Process[]{process}));
+                        Arrays.asList(process)));
 
         ProcessInfo processInfo = RESOURCES.getJerseyTest().target("/processes")
                 .queryParam("limit", "10")
@@ -114,7 +116,7 @@ public class ProcessesResourceTest {
         ArgumentCaptor<OperatingSystem.ProcessSort> captor = ArgumentCaptor.forClass(OperatingSystem.ProcessSort.class);
         when(provider.processesInfo(captor.capture(), anyInt()))
                 .thenReturn(new ProcessesInfo(mock(GlobalMemory.class), 0, 0, 0,
-                        new Process[]{process}));
+                                              Arrays.asList(process)));
 
         ProcessInfo processInfo = RESOURCES.getJerseyTest().target("/processes")
                 .queryParam("sortBy", "MEMORY")
@@ -130,7 +132,7 @@ public class ProcessesResourceTest {
     public void getProcessesHappyPath() throws Exception {
         when(provider.processesInfo(any(OperatingSystem.ProcessSort.class), anyInt()))
                 .thenReturn(new ProcessesInfo(mock(GlobalMemory.class), 0, 0, 0,
-                        new Process[]{process}));
+                        Arrays.asList(process)));
 
         final ProcessInfo response = RESOURCES.getJerseyTest().target("/processes")
                 .request(MediaType.APPLICATION_JSON_TYPE)

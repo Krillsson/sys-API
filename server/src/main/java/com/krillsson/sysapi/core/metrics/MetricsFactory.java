@@ -5,17 +5,17 @@ public interface MetricsFactory {
 
     boolean initialize();
 
-    CpuMetrics cpuInfoProvider();
+    CpuMetrics cpuMetrics();
 
-    NetworkMetrics networkInfoProvider();
+    NetworkMetrics networkMetrics();
 
-    DriveMetrics diskInfoProvider();
+    DriveMetrics driveMetrics();
 
-    MemoryMetrics memoryInfoProvider();
+    MemoryMetrics memoryMetrics();
 
-    ProcessesMetrics processesInfoProvider();
+    ProcessesMetrics processesMetrics();
 
-    GpuMetrics gpuInfoProvider();
+    GpuMetrics gpuMetrics();
 
-    MotherboardMetrics motherboardInfoProvider();
+    MotherboardMetrics motherboardMetrics();
 }

@@ -1,49 +1,48 @@
 package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.core.domain.drives.Drive;
-import com.krillsson.sysapi.core.domain.drives.DriveSpeed;
-import com.krillsson.sysapi.core.domain.sensors.HealthData;
-import com.krillsson.sysapi.core.domain.drives.DriveHealth;
+import com.krillsson.sysapi.core.domain.drives.OsPartition;
+import com.krillsson.sysapi.core.metrics.DriveMetrics;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.*;
-import oshi.hardware.HWDiskStore;
-import oshi.software.os.OSFileStore;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 
 public class DrivesResourceTest {
-    private static final InfoProvider provider = mock(InfoProvider.class);
+    private static final DriveMetrics provider = mock(DriveMetrics.class);
 
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
             .addResource(new DrivesResource(provider))
             .build();
-    private StorageInfo diskSd0;
     private Drive drive;
 
     @Before
     public void setUp() throws Exception {
-        drive = new Drive(new HWDiskStore(), new DriveHealth(0, new HealthData[0]),
-                          new DriveSpeed(0, 0), new OSFileStore("drive", "", "", "", "", "", 0, 0));
-        drive.getHwDiskStore().setName("sd0");
-        diskSd0 = new StorageInfo(new Drive[]{drive}, 0, 0);
+        drive = new Drive(
+                "",
+                "",
+                "",
+                new OsPartition("", "", "", "", 0, 0, 0, "", "", "", "", "", 0, 0),
+                Collections.emptyList()
+        );
     }
 
     @Test
     public void getStorageInfoHappyPath() throws Exception {
-        when(provider.storageInfo())
-                .thenReturn(diskSd0);
+        when(provider.drives())
+                .thenReturn(Arrays.asList(drive));
 
         final com.krillsson.sysapi.dto.storage.StorageInfo response = RESOURCES.getJerseyTest().target("/drives")
                 .request(MediaType.APPLICATION_JSON_TYPE)
@@ -56,7 +55,7 @@ public class DrivesResourceTest {
 
     @Test
     public void getStorageInfoSadPath() throws Exception {
-        when(provider.storageInfo())
+        when(provider.drives())
                 .thenThrow(new RuntimeException("What"));
         final Response response = RESOURCES.getJerseyTest().target("/drives")
                 .request(MediaType.APPLICATION_JSON_TYPE)
@@ -67,8 +66,9 @@ public class DrivesResourceTest {
     @Test
     public void getDiskInfoByNameDiskExists() throws Exception {
         Optional<Drive> diskInfoOptional = Optional.of(this.drive);
-        when(provider.getDiskInfoByName("sd0")).thenReturn(diskInfoOptional);
-        final com.krillsson.sysapi.dto.storage.DiskInfo response = RESOURCES.getJerseyTest().target(String.format("/drives/%s", "sd0"))
+        when(provider.driveByName("sd0")).thenReturn(diskInfoOptional);
+        final com.krillsson.sysapi.dto.storage.DiskInfo response = RESOURCES.getJerseyTest()
+                .target(String.format("/drives/%s", "sd0"))
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(com.krillsson.sysapi.dto.storage.DiskInfo.class);
 
@@ -79,7 +79,7 @@ public class DrivesResourceTest {
     @Test
     public void getDiskInfoByNameDiskDoesNotExist() throws Exception {
         Optional<Drive> type = Optional.ofNullable(null);
-        when(provider.getDiskInfoByName("sd0")).thenReturn(type);
+        when(provider.driveByName("sd0")).thenReturn(type);
         Response response = RESOURCES.getJerseyTest().target(String.format("/drives/%s", "sd0"))
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get();

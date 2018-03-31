@@ -29,7 +29,7 @@ public class RaspbianCpuMetrics extends DefaultCpuMetrics {
         super(hal, operatingSystem, new RaspbianCpuSensors(hal), utils);
     }
 
-    private static class RaspbianCpuSensors extends DefaultCpuSensors {
+    static class RaspbianCpuSensors extends DefaultCpuSensors {
 
         public RaspbianCpuSensors(HardwareAbstractionLayer hal) {
             super(hal);

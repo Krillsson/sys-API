@@ -1,12 +1,12 @@
 package com.krillsson.sysapi.dto.drives;
 
 public class OsPartition extends Partition {
-    private final String volume;
-    private final String logicalVolume;
-    private final String mount;
-    private final String description;
-    private final long usableSpace;
-    private final long totalSpace;
+    private String volume;
+    private String logicalVolume;
+    private String mount;
+    private String description;
+    private long usableSpace;
+    private long totalSpace;
 
     public OsPartition(String identification, String name, String type, String uuid, long size, int major, int minor, String mountPoint, String volume, String logicalVolume, String mount, String description, long usableSpace, long totalSpace) {
         super(identification, name, type, uuid, size, major, minor, mountPoint);
@@ -16,6 +16,9 @@ public class OsPartition extends Partition {
         this.description = description;
         this.usableSpace = usableSpace;
         this.totalSpace = totalSpace;
+    }
+
+    public OsPartition() {
     }
 
     public String getVolume() {
@@ -40,5 +43,29 @@ public class OsPartition extends Partition {
 
     public long getTotalSpace() {
         return totalSpace;
+    }
+
+    public void setVolume(String volume) {
+        this.volume = volume;
+    }
+
+    public void setLogicalVolume(String logicalVolume) {
+        this.logicalVolume = logicalVolume;
+    }
+
+    public void setMount(String mount) {
+        this.mount = mount;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setUsableSpace(long usableSpace) {
+        this.usableSpace = usableSpace;
+    }
+
+    public void setTotalSpace(long totalSpace) {
+        this.totalSpace = totalSpace;
     }
 }

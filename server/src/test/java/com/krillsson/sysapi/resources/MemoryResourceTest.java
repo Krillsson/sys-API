@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.resources;
 
+import com.krillsson.sysapi.core.metrics.MemoryMetrics;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.After;
 import org.junit.ClassRule;
@@ -15,7 +16,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 public class MemoryResourceTest {
-    private static final InfoProvider provider = mock(InfoProvider.class);
+    private static final MemoryMetrics provider = mock(MemoryMetrics.class);
 
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()

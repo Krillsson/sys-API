@@ -9,6 +9,9 @@ public class NetworkInterfaceSpeed {
         this.sendBytesPerSecond = sendBytesPerSecond;
     }
 
+    public NetworkInterfaceSpeed() {
+    }
+
     public long getReceiveBytesPerSecond() {
         return receiveBytesPerSecond;
     }

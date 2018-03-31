@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.core.domain.motherboard.Motherboard;
+import com.krillsson.sysapi.core.metrics.MotherboardMetrics;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.After;
 import org.junit.ClassRule;
@@ -17,7 +18,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 public class MotherboardResourceTest {
-    private static final InfoProvider provider = mock(InfoProvider.class);
+    private static final MotherboardMetrics provider = mock(MotherboardMetrics.class);
 
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()

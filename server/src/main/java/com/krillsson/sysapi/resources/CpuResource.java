@@ -24,10 +24,8 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.domain.cpu.CpuInfoMapper;
-import com.krillsson.sysapi.core.domain.drives.DriveMetricsMapper;
 import com.krillsson.sysapi.core.metrics.CpuMetrics;
 import com.krillsson.sysapi.dto.cpu.CpuLoad;
-import com.krillsson.sysapi.dto.drives.DriveLoad;
 import io.dropwizard.auth.Auth;
 
 import javax.annotation.security.RolesAllowed;
@@ -35,7 +33,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 @Path("cpu")
 @Produces(MediaType.APPLICATION_JSON)

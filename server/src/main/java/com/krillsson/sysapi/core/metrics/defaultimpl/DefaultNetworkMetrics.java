@@ -136,7 +136,7 @@ public class DefaultNetworkMetrics implements NetworkMetrics {
 
     Function<NetworkIF, NetworkInterfaceLoad> mapToLoad() {
         return n -> new NetworkInterfaceLoad(
-                new NetworkInterfaceValues(
+                n.getName(), new NetworkInterfaceValues(
                         n.getSpeed(),
                         n.getBytesRecv(),
                         n.getBytesSent(),

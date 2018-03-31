@@ -20,20 +20,14 @@ public class GpuHealth {
     private double fanPercent;
     @JsonProperty("temperature")
     private double temperature;
-    @JsonProperty("coreLoad")
-    private double coreLoad;
-    @JsonProperty("memoryLoad")
-    private double memoryLoad;
 
     public GpuHealth() {
     }
 
-    public GpuHealth(double fanRpm, double fanPercent, double temperature, double coreLoad, double memoryLoad) {
+    public GpuHealth(double fanRpm, double fanPercent, double temperature) {
         this.fanRpm = fanRpm;
         this.fanPercent = fanPercent;
         this.temperature = temperature;
-        this.coreLoad = coreLoad;
-        this.memoryLoad = memoryLoad;
     }
 
     @JsonProperty("fanRpm")
@@ -64,26 +58,6 @@ public class GpuHealth {
     @JsonProperty("temperature")
     public void setTemperature(double temperature) {
         this.temperature = temperature;
-    }
-
-    @JsonProperty("coreLoad")
-    public double getCoreLoad() {
-        return coreLoad;
-    }
-
-    @JsonProperty("coreLoad")
-    public void setCoreLoad(double coreLoad) {
-        this.coreLoad = coreLoad;
-    }
-
-    @JsonProperty("memoryLoad")
-    public double getMemoryLoad() {
-        return memoryLoad;
-    }
-
-    @JsonProperty("memoryLoad")
-    public void setMemoryLoad(double memoryLoad) {
-        this.memoryLoad = memoryLoad;
     }
 
 }

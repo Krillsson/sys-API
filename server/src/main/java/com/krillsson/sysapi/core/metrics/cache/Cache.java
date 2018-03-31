@@ -12,13 +12,13 @@ public class Cache implements MetricsFactory {
     private final MemoryMetrics memoryMetrics;
 
     private Cache(MetricsFactory provider) {
-        this.cpuMetrics = new CachingCpuMetrics(provider.cpuInfoProvider());
-        this.networkMetrics = new CachingNetworkMetrics(provider.networkInfoProvider());
-        this.gpuMetrics = new CachingGpuMetrics(provider.gpuInfoProvider());
-        this.driveMetrics = new CachingDriveMetrics(provider.diskInfoProvider());
-        this.processesMetrics = new CachingProcessesMetrics(provider.processesInfoProvider());
-        this.motherboardMetrics = new CachingMotherboardMetrics(provider.motherboardInfoProvider());
-        this.memoryMetrics = new CachingMemoryMetrics(provider.memoryInfoProvider());
+        this.cpuMetrics = new CachingCpuMetrics(provider.cpuMetrics());
+        this.networkMetrics = new CachingNetworkMetrics(provider.networkMetrics());
+        this.gpuMetrics = new CachingGpuMetrics(provider.gpuMetrics());
+        this.driveMetrics = new CachingDriveMetrics(provider.driveMetrics());
+        this.processesMetrics = new CachingProcessesMetrics(provider.processesMetrics());
+        this.motherboardMetrics = new CachingMotherboardMetrics(provider.motherboardMetrics());
+        this.memoryMetrics = new CachingMemoryMetrics(provider.memoryMetrics());
     }
 
     public static MetricsFactory wrap(MetricsFactory factory) {
@@ -36,37 +36,37 @@ public class Cache implements MetricsFactory {
     }
 
     @Override
-    public CpuMetrics cpuInfoProvider() {
+    public CpuMetrics cpuMetrics() {
         return cpuMetrics;
     }
 
     @Override
-    public NetworkMetrics networkInfoProvider() {
+    public NetworkMetrics networkMetrics() {
         return networkMetrics;
     }
 
     @Override
-    public DriveMetrics diskInfoProvider() {
+    public DriveMetrics driveMetrics() {
         return driveMetrics;
     }
 
     @Override
-    public MemoryMetrics memoryInfoProvider() {
+    public MemoryMetrics memoryMetrics() {
         return memoryMetrics;
     }
 
     @Override
-    public ProcessesMetrics processesInfoProvider() {
+    public ProcessesMetrics processesMetrics() {
         return processesMetrics;
     }
 
     @Override
-    public GpuMetrics gpuInfoProvider() {
+    public GpuMetrics gpuMetrics() {
         return gpuMetrics;
     }
 
     @Override
-    public MotherboardMetrics motherboardInfoProvider() {
+    public MotherboardMetrics motherboardMetrics() {
         return motherboardMetrics;
     }
 }

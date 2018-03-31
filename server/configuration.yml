@@ -12,6 +12,10 @@ windows:
 ### Dropwizard specific configuration ###
 #########################################
 server:
+  maxThreads: 100
+  minThreads: 1
+  maxQueuedRequests: 100
+  idleThreadTimeout: 1 minute
   applicationContextPath: /v1
   applicationConnectors:
     - type: http

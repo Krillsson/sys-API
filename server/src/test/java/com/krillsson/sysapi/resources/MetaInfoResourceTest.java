@@ -12,7 +12,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 
 public class MetaInfoResourceTest {
-    private static final InfoProvider provider = mock(InfoProvider.class);
 
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
@@ -39,10 +38,5 @@ public class MetaInfoResourceTest {
 
         assertNotNull(response);
         assertEquals(response, "1.0");
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        reset(provider);
     }
 }

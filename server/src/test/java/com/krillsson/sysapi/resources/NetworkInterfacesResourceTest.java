@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
+import com.krillsson.sysapi.core.metrics.NetworkMetrics;
 import com.krillsson.sysapi.dto.networkold.NetworkInterfaceData;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.After;
@@ -24,7 +25,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 public class NetworkInterfacesResourceTest {
-    private static final InfoProvider provider = mock(InfoProvider.class);
+    private static final NetworkMetrics provider = mock(NetworkMetrics.class);
 
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
@@ -34,12 +35,12 @@ public class NetworkInterfacesResourceTest {
 
     @Before
     public void setUp() throws Exception {
-        networkInterfaceData = new com.krillsson.sysapi.core.domain.network.NetworkInterface(getNetworkIf(), new NetworkInterfaceSpeed(1, 1));
+        networkInterfaceData = new com.krillsson.sysapi.core.domain.network.NetworkInterface("", "", "", 0, false, new ArrayList<>(), new ArrayList<>());
     }
 
     @Test
     public void shouldReturnNotFoundIfNoDataPresent() throws Exception {
-        when(provider.getNetworkInterfaceById("en1")).thenReturn(Optional.empty());
+        when(provider.networkInterfaceById("en1")).thenReturn(Optional.empty());
         Response response = RESOURCES.getJerseyTest().target("/nics/en1")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get();
@@ -48,7 +49,7 @@ public class NetworkInterfacesResourceTest {
 
     @Test
     public void shouldReturnReasonableData() throws Exception {
-        when(provider.getNetworkInterfaceById("en0")).thenReturn(Optional.of(networkInterfaceData));
+        when(provider.networkInterfaceById("en0")).thenReturn(Optional.of(networkInterfaceData));
         NetworkInterfaceData networkInterfaceData = RESOURCES.getJerseyTest().target("/nics/en0")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(NetworkInterfaceData.class);
@@ -57,7 +58,7 @@ public class NetworkInterfacesResourceTest {
 
     @Test
     public void shouldReturnReasonableArrayData() throws Exception {
-        when(provider.getAllNetworkInterfaces()).thenReturn(new com.krillsson.sysapi.core.domain.network.NetworkInterface[]{networkInterfaceData});
+        when(provider.networkInterfaces()).thenReturn(Arrays.asList(networkInterfaceData));
         NetworkInterfaceData[] networkInterfaceData = RESOURCES.getJerseyTest().target("/nics")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(NetworkInterfaceData[].class);
