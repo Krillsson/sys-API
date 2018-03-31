@@ -6,18 +6,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-import oshi.hardware.NetworkIF;
 
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 public class NetworkInterfacesResourceTest {
@@ -54,7 +53,8 @@ public class NetworkInterfacesResourceTest {
     @Test
     public void shouldReturnReasonableData() throws Exception {
         when(provider.networkInterfaceById("en0")).thenReturn(Optional.of(networkInterfaceData));
-        com.krillsson.sysapi.dto.network.NetworkInterface networkInterfaceData = RESOURCES.getJerseyTest().target("/nics/en0")
+        com.krillsson.sysapi.dto.network.NetworkInterface networkInterfaceData = RESOURCES.getJerseyTest()
+                .target("/nics/en0")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(com.krillsson.sysapi.dto.network.NetworkInterface.class);
         assertThat(networkInterfaceData, is(networkInterfaceData));
@@ -63,12 +63,13 @@ public class NetworkInterfacesResourceTest {
     @Test
     public void shouldReturnReasonableArrayData() throws Exception {
         when(provider.networkInterfaces()).thenReturn(Arrays.asList(networkInterfaceData));
-        List<com.krillsson.sysapi.dto.network.NetworkInterface> networkInterfaceData = RESOURCES.getJerseyTest().target("/nics")
+        List<com.krillsson.sysapi.dto.network.NetworkInterface> networkInterfaceData = RESOURCES.getJerseyTest()
+                .target("/nics")
                 .request(MediaType.APPLICATION_JSON_TYPE)
-                .get(new GenericType<List<com.krillsson.sysapi.dto.network.NetworkInterface>>(){});
+                .get(new GenericType<List<com.krillsson.sysapi.dto.network.NetworkInterface>>() {
+                });
         assertThat(networkInterfaceData.get(0), is(networkInterfaceData));
     }
-
 
 
     @After
