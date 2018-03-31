@@ -42,28 +42,28 @@ public class CpuHealth {
         return temperatures;
     }
 
-    public double getVoltage() {
-        return voltage;
-    }
-
-    public double getFanRpm() {
-        return fanRpm;
-    }
-
-    public double getFanPercent() {
-        return fanPercent;
-    }
-
     public void setTemperatures(List<Double> temperatures) {
         this.temperatures = temperatures;
+    }
+
+    public double getVoltage() {
+        return voltage;
     }
 
     public void setVoltage(double voltage) {
         this.voltage = voltage;
     }
 
+    public double getFanRpm() {
+        return fanRpm;
+    }
+
     public void setFanRpm(double fanRpm) {
         this.fanRpm = fanRpm;
+    }
+
+    public double getFanPercent() {
+        return fanPercent;
     }
 
     public void setFanPercent(double fanPercent) {

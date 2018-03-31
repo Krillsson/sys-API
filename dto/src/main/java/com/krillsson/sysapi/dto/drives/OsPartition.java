@@ -25,44 +25,44 @@ public class OsPartition extends Partition {
         return volume;
     }
 
-    public String getLogicalVolume() {
-        return logicalVolume;
-    }
-
-    public String getMount() {
-        return mount;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public long getUsableSpace() {
-        return usableSpace;
-    }
-
-    public long getTotalSpace() {
-        return totalSpace;
-    }
-
     public void setVolume(String volume) {
         this.volume = volume;
+    }
+
+    public String getLogicalVolume() {
+        return logicalVolume;
     }
 
     public void setLogicalVolume(String logicalVolume) {
         this.logicalVolume = logicalVolume;
     }
 
+    public String getMount() {
+        return mount;
+    }
+
     public void setMount(String mount) {
         this.mount = mount;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
+    public long getUsableSpace() {
+        return usableSpace;
+    }
+
     public void setUsableSpace(long usableSpace) {
         this.usableSpace = usableSpace;
+    }
+
+    public long getTotalSpace() {
+        return totalSpace;
     }
 
     public void setTotalSpace(long totalSpace) {

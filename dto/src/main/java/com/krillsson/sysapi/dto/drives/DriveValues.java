@@ -28,60 +28,60 @@ public class DriveValues {
         return usableSpace;
     }
 
-    public long getTotalSpace() {
-        return totalSpace;
-    }
-
-    public long getOpenFileDescriptors() {
-        return openFileDescriptors;
-    }
-
-    public long getMaxFileDescriptors() {
-        return maxFileDescriptors;
-    }
-
-    public long getReads() {
-        return reads;
-    }
-
-    public long getReadBytes() {
-        return readBytes;
-    }
-
-    public long getWrites() {
-        return writes;
-    }
-
-    public long getWriteBytes() {
-        return writeBytes;
-    }
-
     public void setUsableSpace(long usableSpace) {
         this.usableSpace = usableSpace;
+    }
+
+    public long getTotalSpace() {
+        return totalSpace;
     }
 
     public void setTotalSpace(long totalSpace) {
         this.totalSpace = totalSpace;
     }
 
+    public long getOpenFileDescriptors() {
+        return openFileDescriptors;
+    }
+
     public void setOpenFileDescriptors(long openFileDescriptors) {
         this.openFileDescriptors = openFileDescriptors;
+    }
+
+    public long getMaxFileDescriptors() {
+        return maxFileDescriptors;
     }
 
     public void setMaxFileDescriptors(long maxFileDescriptors) {
         this.maxFileDescriptors = maxFileDescriptors;
     }
 
+    public long getReads() {
+        return reads;
+    }
+
     public void setReads(long reads) {
         this.reads = reads;
+    }
+
+    public long getReadBytes() {
+        return readBytes;
     }
 
     public void setReadBytes(long readBytes) {
         this.readBytes = readBytes;
     }
 
+    public long getWrites() {
+        return writes;
+    }
+
     public void setWrites(long writes) {
         this.writes = writes;
+    }
+
+    public long getWriteBytes() {
+        return writeBytes;
     }
 
     public void setWriteBytes(long writeBytes) {

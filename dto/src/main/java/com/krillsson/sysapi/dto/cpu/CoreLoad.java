@@ -11,8 +11,7 @@ public class CoreLoad {
     private double softIrq;
     private double steal;
 
-    public CoreLoad(double user, double nice, double sys, double idle, double ioWait, double irq, double softIrq, double steal)
-    {
+    public CoreLoad(double user, double nice, double sys, double idle, double ioWait, double irq, double softIrq, double steal) {
         this.user = user;
         this.nice = nice;
         this.sys = sys;
@@ -26,71 +25,64 @@ public class CoreLoad {
     public CoreLoad() {
     }
 
-    public double getUser()
-    {
+    public double getUser() {
         return user;
-    }
-
-    public double getNice()
-    {
-        return nice;
-    }
-
-    public double getSys()
-    {
-        return sys;
-    }
-
-    public double getIdle()
-    {
-        return idle;
-    }
-
-    public double getIoWait()
-    {
-        return ioWait;
-    }
-
-    public double getIrq()
-    {
-        return irq;
-    }
-
-    public double getSoftIrq()
-    {
-        return softIrq;
-    }
-
-    public double getSteal() {
-        return steal;
     }
 
     public void setUser(double user) {
         this.user = user;
     }
 
+    public double getNice() {
+        return nice;
+    }
+
     public void setNice(double nice) {
         this.nice = nice;
+    }
+
+    public double getSys() {
+        return sys;
     }
 
     public void setSys(double sys) {
         this.sys = sys;
     }
 
+    public double getIdle() {
+        return idle;
+    }
+
     public void setIdle(double idle) {
         this.idle = idle;
+    }
+
+    public double getIoWait() {
+        return ioWait;
     }
 
     public void setIoWait(double ioWait) {
         this.ioWait = ioWait;
     }
 
+    public double getIrq() {
+        return irq;
+    }
+
     public void setIrq(double irq) {
         this.irq = irq;
     }
 
+    public double getSoftIrq() {
+        return softIrq;
+    }
+
     public void setSoftIrq(double softIrq) {
         this.softIrq = softIrq;
+    }
+
+    public double getSteal() {
+        return steal;
     }
 
     public void setSteal(double steal) {

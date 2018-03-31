@@ -37,20 +37,20 @@ public class DriveHealth {
     public DriveHealth() {
     }
 
-    public void setTemperature(double temperature) {
-        this.temperature = temperature;
-    }
-
-    public void setHealthData(List<HealthData> healthData) {
-        this.healthData = healthData;
-    }
-
     public double getTemperature() {
         return temperature;
     }
 
+    public void setTemperature(double temperature) {
+        this.temperature = temperature;
+    }
+
     public List<HealthData> getHealthData() {
         return healthData;
+    }
+
+    public void setHealthData(List<HealthData> healthData) {
+        this.healthData = healthData;
     }
 
 }

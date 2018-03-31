@@ -16,12 +16,12 @@ public class DriveSpeed {
         return readBytesPerSecond;
     }
 
-    public long getWriteBytesPerSecond() {
-        return writeBytesPerSecond;
-    }
-
     public void setReadBytesPerSecond(long readBytesPerSecond) {
         this.readBytesPerSecond = readBytesPerSecond;
+    }
+
+    public long getWriteBytesPerSecond() {
+        return writeBytesPerSecond;
     }
 
     public void setWriteBytesPerSecond(long writeBytesPerSecond) {

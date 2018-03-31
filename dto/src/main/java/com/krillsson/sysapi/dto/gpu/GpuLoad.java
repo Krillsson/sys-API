@@ -18,20 +18,20 @@ public class GpuLoad {
         return coreLoad;
     }
 
-    public double getMemoryLoad() {
-        return memoryLoad;
-    }
-
-    public GpuHealth getHealth() {
-        return health;
-    }
-
     public void setCoreLoad(double coreLoad) {
         this.coreLoad = coreLoad;
     }
 
+    public double getMemoryLoad() {
+        return memoryLoad;
+    }
+
     public void setMemoryLoad(double memoryLoad) {
         this.memoryLoad = memoryLoad;
+    }
+
+    public GpuHealth getHealth() {
+        return health;
     }
 
     public void setHealth(GpuHealth health) {

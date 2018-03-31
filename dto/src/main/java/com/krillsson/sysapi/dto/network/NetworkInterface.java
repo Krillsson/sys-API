@@ -2,8 +2,7 @@ package com.krillsson.sysapi.dto.network;
 
 import java.util.List;
 
-public class NetworkInterface
-{
+public class NetworkInterface {
     private String name;
     private String displayName;
     private String mac;
@@ -30,52 +29,52 @@ public class NetworkInterface
         return name;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public String getMac() {
-        return mac;
-    }
-
-    public List<String> getIpv4() {
-        return ipv4;
-    }
-
-    public List<String> getIpv6() {
-        return ipv6;
-    }
-
-    public int getMtu() {
-        return mtu;
-    }
-
-    public boolean isLoopback() {
-        return loopback;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
 
+    public String getMac() {
+        return mac;
+    }
+
     public void setMac(String mac) {
         this.mac = mac;
+    }
+
+    public List<String> getIpv4() {
+        return ipv4;
     }
 
     public void setIpv4(List<String> ipv4) {
         this.ipv4 = ipv4;
     }
 
+    public List<String> getIpv6() {
+        return ipv6;
+    }
+
     public void setIpv6(List<String> ipv6) {
         this.ipv6 = ipv6;
     }
 
+    public int getMtu() {
+        return mtu;
+    }
+
     public void setMtu(int mtu) {
         this.mtu = mtu;
+    }
+
+    public boolean isLoopback() {
+        return loopback;
     }
 
     public void setLoopback(boolean loopback) {

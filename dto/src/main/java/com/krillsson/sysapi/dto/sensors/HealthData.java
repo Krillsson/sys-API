@@ -21,22 +21,12 @@
 
 package com.krillsson.sysapi.dto.sensors;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-        "description",
-        "data",
-        "dataType"
-})
 public class HealthData {
-    @JsonProperty("description")
+
     private String description;
-    @JsonProperty("data")
+
     private double data;
-    @JsonProperty("dataType")
+
     private DataType dataType;
 
     /**
@@ -51,32 +41,32 @@ public class HealthData {
         this.dataType = dataType;
     }
 
-    @JsonProperty("description")
+
     public String getDescription() {
         return description;
     }
 
-    @JsonProperty("description")
+
     public void setDescription(String description) {
         this.description = description;
     }
 
-    @JsonProperty("data")
+
     public double getData() {
         return data;
     }
 
-    @JsonProperty("data")
+
     public void setData(double data) {
         this.data = data;
     }
 
-    @JsonProperty("dataType")
+
     public DataType getDataType() {
         return dataType;
     }
 
-    @JsonProperty("dataType")
+
     public void setDataType(DataType dataType) {
         this.dataType = dataType;
     }

@@ -20,28 +20,28 @@ public class DriveLoad {
         return name;
     }
 
-    public DriveValues getMetrics() {
-        return metrics;
-    }
-
-    public DriveSpeed getSpeed() {
-        return speed;
-    }
-
-    public DriveHealth getHealth() {
-        return health;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public DriveValues getMetrics() {
+        return metrics;
     }
 
     public void setMetrics(DriveValues metrics) {
         this.metrics = metrics;
     }
 
+    public DriveSpeed getSpeed() {
+        return speed;
+    }
+
     public void setSpeed(DriveSpeed speed) {
         this.speed = speed;
+    }
+
+    public DriveHealth getHealth() {
+        return health;
     }
 
     public void setHealth(DriveHealth health) {

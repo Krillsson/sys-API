@@ -46,44 +46,44 @@ public class CpuLoad {
         return cpuLoadCountingTicks;
     }
 
-    public double getCpuLoadOsMxBean() {
-        return cpuLoadOsMxBean;
-    }
-
-    public List<CoreLoad> getCoreLoads() {
-        return coreLoads;
-    }
-
-    public CpuHealth getCpuHealth() {
-        return cpuHealth;
-    }
-
-    public int getProcessCount() {
-        return processCount;
-    }
-
-    public int getThreadCount() {
-        return threadCount;
-    }
-
     public void setCpuLoadCountingTicks(double cpuLoadCountingTicks) {
         this.cpuLoadCountingTicks = cpuLoadCountingTicks;
+    }
+
+    public double getCpuLoadOsMxBean() {
+        return cpuLoadOsMxBean;
     }
 
     public void setCpuLoadOsMxBean(double cpuLoadOsMxBean) {
         this.cpuLoadOsMxBean = cpuLoadOsMxBean;
     }
 
+    public List<CoreLoad> getCoreLoads() {
+        return coreLoads;
+    }
+
     public void setCoreLoads(List<CoreLoad> coreLoads) {
         this.coreLoads = coreLoads;
+    }
+
+    public CpuHealth getCpuHealth() {
+        return cpuHealth;
     }
 
     public void setCpuHealth(CpuHealth cpuHealth) {
         this.cpuHealth = cpuHealth;
     }
 
+    public int getProcessCount() {
+        return processCount;
+    }
+
     public void setProcessCount(int processCount) {
         this.processCount = processCount;
+    }
+
+    public int getThreadCount() {
+        return threadCount;
     }
 
     public void setThreadCount(int threadCount) {

@@ -16,12 +16,12 @@ public class NetworkInterfaceSpeed {
         return receiveBytesPerSecond;
     }
 
-    public long getSendBytesPerSecond() {
-        return sendBytesPerSecond;
-    }
-
     public void setReceiveBytesPerSecond(long receiveBytesPerSecond) {
         this.receiveBytesPerSecond = receiveBytesPerSecond;
+    }
+
+    public long getSendBytesPerSecond() {
+        return sendBytesPerSecond;
     }
 
     public void setSendBytesPerSecond(long sendBytesPerSecond) {

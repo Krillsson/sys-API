@@ -17,20 +17,20 @@ public class NetworkInterfaceLoad {
         return name;
     }
 
-    public NetworkInterfaceValues getMetrics() {
-        return metrics;
-    }
-
-    public NetworkInterfaceSpeed getSpeed() {
-        return speed;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
+    public NetworkInterfaceValues getMetrics() {
+        return metrics;
+    }
+
     public void setMetrics(NetworkInterfaceValues metrics) {
         this.metrics = metrics;
+    }
+
+    public NetworkInterfaceSpeed getSpeed() {
+        return speed;
     }
 
     public void setSpeed(NetworkInterfaceSpeed speed) {

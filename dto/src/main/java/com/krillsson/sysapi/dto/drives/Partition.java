@@ -28,60 +28,60 @@ public class Partition {
         return identification;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public long getSize() {
-        return size;
-    }
-
-    public int getMajor() {
-        return major;
-    }
-
-    public int getMinor() {
-        return minor;
-    }
-
-    public String getMountPoint() {
-        return mountPoint;
-    }
-
     public void setIdentification(String identification) {
         this.identification = identification;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    public String getType() {
+        return type;
+    }
+
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getUuid() {
+        return uuid;
     }
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 
+    public long getSize() {
+        return size;
+    }
+
     public void setSize(long size) {
         this.size = size;
+    }
+
+    public int getMajor() {
+        return major;
     }
 
     public void setMajor(int major) {
         this.major = major;
     }
 
+    public int getMinor() {
+        return minor;
+    }
+
     public void setMinor(int minor) {
         this.minor = minor;
+    }
+
+    public String getMountPoint() {
+        return mountPoint;
     }
 
     public void setMountPoint(String mountPoint) {

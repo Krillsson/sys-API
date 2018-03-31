@@ -26,52 +26,52 @@ public class NetworkInterfaceValues {
         return speed;
     }
 
-    public long getBytesReceived() {
-        return bytesReceived;
-    }
-
-    public long getBytesSent() {
-        return bytesSent;
-    }
-
-    public long getPacketsReceived() {
-        return packetsReceived;
-    }
-
-    public long getPacketsSent() {
-        return packetsSent;
-    }
-
-    public long getInErrors() {
-        return inErrors;
-    }
-
-    public long getOutErrors() {
-        return outErrors;
-    }
-
     public void setSpeed(long speed) {
         this.speed = speed;
+    }
+
+    public long getBytesReceived() {
+        return bytesReceived;
     }
 
     public void setBytesReceived(long bytesReceived) {
         this.bytesReceived = bytesReceived;
     }
 
+    public long getBytesSent() {
+        return bytesSent;
+    }
+
     public void setBytesSent(long bytesSent) {
         this.bytesSent = bytesSent;
+    }
+
+    public long getPacketsReceived() {
+        return packetsReceived;
     }
 
     public void setPacketsReceived(long packetsReceived) {
         this.packetsReceived = packetsReceived;
     }
 
+    public long getPacketsSent() {
+        return packetsSent;
+    }
+
     public void setPacketsSent(long packetsSent) {
         this.packetsSent = packetsSent;
     }
 
+    public long getInErrors() {
+        return inErrors;
+    }
+
     public void setInErrors(long inErrors) {
         this.inErrors = inErrors;
+    }
+
+    public long getOutErrors() {
+        return outErrors;
     }
 
     public void setOutErrors(long outErrors) {
