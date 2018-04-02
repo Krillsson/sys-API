@@ -24,7 +24,7 @@ import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfacesMapper;
-import com.krillsson.sysapi.core.history.HistoryManager;
+import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.NetworkMetrics;
 import io.dropwizard.auth.Auth;
 
@@ -42,9 +42,9 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 public class NetworkInterfacesResource {
 
     private final NetworkMetrics infoProvider;
-    private final HistoryManager historyManager;
+    private final MetricsHistoryManager historyManager;
 
-    public NetworkInterfacesResource(NetworkMetrics infoProvider, HistoryManager historyManager) {
+    public NetworkInterfacesResource(NetworkMetrics infoProvider, MetricsHistoryManager historyManager) {
         this.infoProvider = infoProvider;
         this.historyManager = historyManager;
     }
@@ -82,9 +82,7 @@ public class NetworkInterfacesResource {
     @Path("loads/history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public Map<String, List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad>> getLoadHistory(@Auth UserConfiguration user) {
-        Map<LocalDateTime, List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad>> history = historyManager.get(
-                NetworkInterfaceLoad.class);
-        return NetworkInterfacesMapper.INSTANCE.mapLoadHistory(history);
+        return NetworkInterfacesMapper.INSTANCE.mapLoadHistory(historyManager.networkInterfaceLoadHistory());
     }
 
 }

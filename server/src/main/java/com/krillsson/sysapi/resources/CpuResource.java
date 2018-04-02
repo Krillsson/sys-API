@@ -24,7 +24,9 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.domain.cpu.CpuInfoMapper;
+import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.core.history.HistoryManager;
+import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.CpuMetrics;
 import io.dropwizard.auth.Auth;
 
@@ -41,9 +43,9 @@ import java.util.Map;
 public class CpuResource {
 
     private final CpuMetrics provider;
-    private final HistoryManager historyManager;
+    private final MetricsHistoryManager historyManager;
 
-    public CpuResource(CpuMetrics provider, HistoryManager historyManager) {
+    public CpuResource(CpuMetrics provider, MetricsHistoryManager historyManager) {
         this.provider = provider;
         this.historyManager = historyManager;
     }
@@ -66,7 +68,7 @@ public class CpuResource {
     @Path("load/history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public Map<String, com.krillsson.sysapi.dto.cpu.CpuLoad> getLoadHistory(@Auth UserConfiguration user) {
-        Map<LocalDateTime, com.krillsson.sysapi.core.domain.cpu.CpuLoad> history = historyManager.get(com.krillsson.sysapi.core.domain.cpu.CpuLoad.class);
-        return CpuInfoMapper.INSTANCE.mapLoadHistory(history);
+        return CpuInfoMapper.INSTANCE.mapLoadHistory(historyManager.cpuLoadHistory());
     }
+
 }

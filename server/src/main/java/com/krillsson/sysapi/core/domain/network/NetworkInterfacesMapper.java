@@ -49,6 +49,6 @@ public interface NetworkInterfacesMapper {
         return localDateTime.toString();
     }
 
-    Map<String, List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad>> mapLoadHistory(Map<LocalDateTime, List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad>> history);
+    Map<String, List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad>> mapLoadHistory(Map<LocalDateTime, List<NetworkInterfaceLoad>> history);
 
 }

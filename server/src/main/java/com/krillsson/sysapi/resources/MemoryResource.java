@@ -23,7 +23,7 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.domain.memory.GlobalMemoryMapper;
-import com.krillsson.sysapi.core.history.HistoryManager;
+import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.MemoryMetrics;
 import com.krillsson.sysapi.dto.processes.Memory;
 import io.dropwizard.auth.Auth;
@@ -42,9 +42,9 @@ import java.util.Map;
 public class MemoryResource {
 
     private final MemoryMetrics provider;
-    private final HistoryManager historyManager;
+    private final MetricsHistoryManager historyManager;
 
-    public MemoryResource(MemoryMetrics provider, HistoryManager historyManager) {
+    public MemoryResource(MemoryMetrics provider, MetricsHistoryManager historyManager) {
         this.provider = provider;
         this.historyManager = historyManager;
     }
@@ -59,8 +59,7 @@ public class MemoryResource {
     @Path("history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public Map<String, Memory> getLoadHistory(@Auth UserConfiguration user) {
-        Map<LocalDateTime, GlobalMemory> history = historyManager.get(GlobalMemory.class);
-        return GlobalMemoryMapper.INSTANCE.mapHistory(history);
+        return GlobalMemoryMapper.INSTANCE.mapHistory(historyManager.memoryHistory());
     }
 
 }

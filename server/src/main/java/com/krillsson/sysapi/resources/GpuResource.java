@@ -23,7 +23,8 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.domain.gpu.GpuInfoMapper;
-import com.krillsson.sysapi.core.history.HistoryManager;
+import com.krillsson.sysapi.core.domain.gpu.GpuLoad;
+import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.GpuMetrics;
 import io.dropwizard.auth.Auth;
 
@@ -41,9 +42,9 @@ import java.util.Map;
 public class GpuResource {
 
     private final GpuMetrics provider;
-    private final HistoryManager historyManager;
+    private final MetricsHistoryManager historyManager;
 
-    public GpuResource(GpuMetrics provider, HistoryManager historyManager) {
+    public GpuResource(GpuMetrics provider, MetricsHistoryManager historyManager) {
         this.provider = provider;
         this.historyManager = historyManager;
     }
@@ -65,8 +66,7 @@ public class GpuResource {
     @Path("loads/history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public Map<String, List<com.krillsson.sysapi.dto.gpu.GpuLoad>> getLoadHistory(@Auth UserConfiguration user) {
-        Map<LocalDateTime, List<com.krillsson.sysapi.core.domain.gpu.GpuLoad>> history = historyManager.get(com.krillsson.sysapi.core.domain.gpu.GpuLoad.class);
-        return GpuInfoMapper.INSTANCE.mapLoadHistory(history);
+        return GpuInfoMapper.INSTANCE.mapLoadHistory(historyManager.gpuLoadHistory());
     }
 
 }

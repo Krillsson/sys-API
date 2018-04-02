@@ -7,6 +7,9 @@ import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad;
 import com.krillsson.sysapi.core.metrics.MetricsFactory;
 import oshi.hardware.GlobalMemory;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Supplier;
 
@@ -15,7 +18,7 @@ public class MetricsHistoryManager extends HistoryManager {
         super(executorService);
     }
 
-    public HistoryManager initializeWith(MetricsFactory provider) {
+    public MetricsHistoryManager initializeWith(MetricsFactory provider) {
         insert(CpuLoad.class, new History() {
             @Override
             Supplier getCurrent() {
@@ -52,5 +55,25 @@ public class MetricsHistoryManager extends HistoryManager {
             }
         });
         return this;
+    }
+
+    public Map<LocalDateTime, CpuLoad> cpuLoadHistory() {
+        return get(CpuLoad.class);
+    }
+
+    public Map<LocalDateTime, List<com.krillsson.sysapi.dto.drives.DriveLoad>> driveLoadHistory() {
+        return get(DriveLoad.class);
+    }
+
+    public Map<LocalDateTime, List<GpuLoad>> gpuLoadHistory() {
+        return get(GpuLoad.class);
+    }
+
+    public Map<LocalDateTime, GlobalMemory> memoryHistory() {
+        return get(GlobalMemory.class);
+    }
+
+    public Map<LocalDateTime, List<NetworkInterfaceLoad>> networkInterfaceLoadHistory() {
+        return get(NetworkInterfaceLoad.class);
     }
 }

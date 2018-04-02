@@ -130,7 +130,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         ).create();
         environment.lifecycle().manage(speedMeasurementManager);
 
-        HistoryManager historyManager = new MetricsHistoryManager(
+        MetricsHistoryManager historyManager = new MetricsHistoryManager(
                 Executors.newSingleThreadScheduledExecutor(
                         new ThreadFactoryBuilder()
                                 .setNameFormat("history-mgr-%d")
