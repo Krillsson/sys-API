@@ -32,7 +32,7 @@ public class RaspbianLinuxInfoProviderTest {
 
     @Test
     public void testHappyPath() throws Exception {
-        ((TestableRaspbianLinuxInfoProvider)infoProvider).setCommandOutput("volt=1.2938V");
+        ((TestableRaspbianLinuxInfoProvider) infoProvider).setCommandOutput("volt=1.2938V");
 
         double voltage = infoProvider.cpuVoltage();
         assertEquals(1.2938, voltage, 0.0);
@@ -40,7 +40,7 @@ public class RaspbianLinuxInfoProviderTest {
 
     @Test
     public void testSadPath() throws Exception {
-        ((TestableRaspbianLinuxInfoProvider)infoProvider).setCommandOutput("volt=NaNV");
+        ((TestableRaspbianLinuxInfoProvider) infoProvider).setCommandOutput("volt=NaNV");
 
         double voltage = infoProvider.cpuVoltage();
         assertEquals(0.0, voltage, 0.0);
@@ -48,7 +48,7 @@ public class RaspbianLinuxInfoProviderTest {
 
     @Test
     public void testInvalidOutput() throws Exception {
-        ((TestableRaspbianLinuxInfoProvider)infoProvider).setCommandOutput("command not found: 127");
+        ((TestableRaspbianLinuxInfoProvider) infoProvider).setCommandOutput("command not found: 127");
 
         double voltage = infoProvider.cpuVoltage();
         assertEquals(0.0, voltage, 0.0);

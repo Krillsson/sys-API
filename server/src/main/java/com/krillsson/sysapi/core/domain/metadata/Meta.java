@@ -21,8 +21,8 @@
 package com.krillsson.sysapi.core.domain.metadata;
 
 public class Meta {
-   private final String[] endpoints;
-   private final String version;
+    private final String[] endpoints;
+    private final String version;
 
     public Meta(String[] endpoints, String version) {
         this.endpoints = endpoints;

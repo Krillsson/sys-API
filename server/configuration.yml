@@ -32,6 +32,6 @@ logging:
   loggers:
     # Enables the SQL query log and redirect it to a separate file
     "com.krillsson.sysapi":
-      level: INFO
+      level: DEBUG
       appenders:
         - type: console

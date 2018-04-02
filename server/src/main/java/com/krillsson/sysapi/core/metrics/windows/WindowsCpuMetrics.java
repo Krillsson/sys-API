@@ -1,8 +1,8 @@
 package com.krillsson.sysapi.core.metrics.windows;
 
+import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuMetrics;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuSensors;
-import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.core.metrics.windows.util.NullSafeOhmMonitor;
 import com.krillsson.sysapi.util.Streams;
 import com.krillsson.sysapi.util.Utils;
@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 
-import static com.krillsson.sysapi.core.metrics.windows.util.NullSafeOhmMonitor.nullSafe;
 import static com.krillsson.sysapi.core.metrics.windows.util.NullSafeOhmMonitor.nullSafeGetValue;
 
 public class WindowsCpuMetrics extends DefaultCpuMetrics {

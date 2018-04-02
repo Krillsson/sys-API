@@ -29,11 +29,15 @@ import com.krillsson.sysapi.auth.BasicAuthenticator;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.metrics.MetricsFactory;
-import com.krillsson.sysapi.core.metrics.MetricsProvider;
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceMixin;
+import com.krillsson.sysapi.core.history.HistoryManager;
+import com.krillsson.sysapi.core.history.MetricsHistoryManager;
+import com.krillsson.sysapi.core.metrics.MetricsFactory;
+import com.krillsson.sysapi.core.metrics.MetricsProvider;
 import com.krillsson.sysapi.resources.*;
+import com.krillsson.sysapi.util.EnvironmentUtils;
+import com.krillsson.sysapi.util.Utils;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -41,30 +45,19 @@ import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.sslreload.SslReloadBundle;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.slf4j.Logger;
 import oshi.SystemInfo;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.software.os.OperatingSystem;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.net.NetworkInterface;
-import java.net.URL;
 import java.time.Clock;
-import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.concurrent.Executors;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
 
 
 public class SystemApiApplication extends Application<SystemApiConfiguration> {
-    private Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SystemApiApplication.class.getSimpleName());
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SystemApiApplication.class);
     private Environment environment;
 
     public static void main(String[] args) throws Exception {
@@ -81,7 +74,17 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         ObjectMapper mapper = bootstrap.getObjectMapper();
         mapper.addMixInAnnotations(NetworkInterface.class, NetworkInterfaceMixin.class);
         FilterProvider filterProvider = new SimpleFilterProvider()
-                .addFilter("networkInterface filter", SimpleBeanPropertyFilter.serializeAllExcept("name", "displayName", "inetAddresses", "interfaceAddresses", "mtu", "subInterfaces"));
+                .addFilter(
+                        "networkInterface filter",
+                        SimpleBeanPropertyFilter.serializeAllExcept(
+                                "name",
+                                "displayName",
+                                "inetAddresses",
+                                "interfaceAddresses",
+                                "mtu",
+                                "subInterfaces"
+                        )
+                );
         mapper.setFilters(filterProvider);
         bootstrap.addBundle(new SslReloadBundle());
     }
@@ -91,7 +94,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         this.environment = environment;
 
         if (config.forwardHttps()) {
-            addHttpsForward(environment.getApplicationContext());
+            EnvironmentUtils.addHttpsForward(environment.getApplicationContext());
         }
         environment.jersey().register(RolesAllowedDynamicFeature.class);
 
@@ -110,74 +113,50 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         environment.jersey().register(new AuthDynamicFeature(userBasicCredentialAuthFilter));
         environment.jersey().register(new AuthValueFactoryProvider.Binder(UserConfiguration.class));
 
-        SpeedMeasurementManager speedMeasurementManager = new SpeedMeasurementManager(Executors.newScheduledThreadPool(2, new ThreadFactoryBuilder().setNameFormat("speed-mgr-%d").build()), Clock.systemUTC(), 5);
-        MetricsFactory provider = new MetricsProvider(hal, os, SystemInfo.getCurrentPlatformEnum(), config, speedMeasurementManager).create();
+        SpeedMeasurementManager speedMeasurementManager = new SpeedMeasurementManager(
+                Executors.newScheduledThreadPool(
+                        2,
+                        new ThreadFactoryBuilder()
+                                .setNameFormat("speed-mgr-%d")
+                                .build()
+                ), Clock.systemUTC(), 5);
+
+        MetricsFactory provider = new MetricsProvider(
+                hal,
+                os,
+                SystemInfo.getCurrentPlatformEnum(),
+                config,
+                speedMeasurementManager
+        ).create();
         environment.lifecycle().manage(speedMeasurementManager);
 
+        HistoryManager historyManager = new MetricsHistoryManager(
+                Executors.newSingleThreadScheduledExecutor(
+                        new ThreadFactoryBuilder()
+                                .setNameFormat("history-mgr-%d")
+                                .build()))
+                .initializeWith(provider);
+        environment.lifecycle().manage(historyManager);
+
         //environment.jersey().register(new SystemResource(provider.));
-        environment.jersey().register(new DrivesResource(provider.driveMetrics()));
-        environment.jersey().register(new GpuResource(provider.gpuMetrics()));
-        environment.jersey().register(new MemoryResource(provider.memoryMetrics()));
-        environment.jersey().register(new NetworkInterfacesResource(provider.networkMetrics()));
+        environment.jersey().register(new DrivesResource(provider.driveMetrics(), historyManager));
+        environment.jersey().register(new GpuResource(provider.gpuMetrics(), historyManager));
+        environment.jersey().register(new MemoryResource(provider.memoryMetrics(), historyManager));
+        environment.jersey().register(new NetworkInterfacesResource(provider.networkMetrics(), historyManager));
         environment.jersey().register(new ProcessesResource(provider.processesMetrics()));
-        environment.jersey().register(new CpuResource(provider.cpuMetrics()));
+        environment.jersey().register(new CpuResource(provider.cpuMetrics(), historyManager));
         environment.jersey().register(new MotherboardResource(provider.motherboardMetrics()));
-        environment.jersey().register(new MetaInfoResource(getVersionFromManifest(), getEndpoints(environment), os.getProcessId()));
+        environment.jersey().register(
+                new MetaInfoResource(
+                        Utils.getVersionFromManifest(),
+                        EnvironmentUtils.getEndpoints(environment),
+                        os.getProcessId()
+                ));
     }
 
-
-    private void addHttpsForward(ServletContextHandler handler) {
-        handler.addFilter(new FilterHolder(new Filter() {
-
-            public void init(FilterConfig filterConfig) throws ServletException {
-            }
-
-            public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-                    throws IOException, ServletException {
-                StringBuffer uri = ((HttpServletRequest) request).getRequestURL();
-                if (uri.toString().startsWith("http://")) {
-                    String location = "https://" + uri.substring("http://".length());
-                    ((HttpServletResponse) response).sendRedirect(location);
-                } else {
-                    chain.doFilter(request, response);
-                }
-            }
-
-            public void destroy() {
-            }
-        }), "/*", EnumSet.of(DispatcherType.REQUEST));
-    }
-
-    private String getVersionFromManifest() throws IOException {
-        Class clazz = SystemApiApplication.class;
-        String className = clazz.getSimpleName() + ".class";
-        String classPath = clazz.getResource(className).toString();
-        if (!classPath.startsWith("jar")) {
-            // Class not from JAR
-            LOGGER.error("Unable to determine version");
-            return "";
-        }
-        String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1) +
-                "/META-INF/MANIFEST.MF";
-        Manifest manifest = new Manifest(new URL(manifestPath).openStream());
-        Attributes attr = manifest.getMainAttributes();
-        return "v." + attr.getValue("Version");
-    }
 
     public Environment getEnvironment() {
         return environment;
-    }
-
-    private String[] getEndpoints(Environment environment) {
-        final String NEWLINE = String.format("%n", new Object[0]);
-
-        String[] arr = environment.jersey().getResourceConfig().getEndpointsInfo()
-                .replace("The following paths were found for the configured resources:", "")
-                .replace("    ", "")
-                .replaceAll(" \\(.+?\\)", "")
-                .split(NEWLINE);
-
-        return Arrays.copyOfRange(arr, 2, arr.length - 1);
     }
 
 }

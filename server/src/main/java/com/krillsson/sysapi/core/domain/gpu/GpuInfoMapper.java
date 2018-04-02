@@ -26,7 +26,9 @@ import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import oshi.util.EdidUtil;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.ERROR
@@ -37,11 +39,13 @@ public interface GpuInfoMapper {
 
 
     com.krillsson.sysapi.dto.gpu.GpuLoad map(GpuLoad value);
+
     List<com.krillsson.sysapi.dto.gpu.GpuLoad> map(List<GpuLoad> value);
 
     com.krillsson.sysapi.dto.gpu.Display map(oshi.hardware.Display value);
 
     com.krillsson.sysapi.dto.gpu.Gpu map(com.krillsson.sysapi.core.domain.gpu.Gpu value);
+
     List<com.krillsson.sysapi.dto.gpu.Gpu> mapGpus(List<com.krillsson.sysapi.core.domain.gpu.Gpu> value);
 
     com.krillsson.sysapi.dto.gpu.GpuHealth map(com.krillsson.sysapi.core.domain.gpu.GpuHealth value);
@@ -49,4 +53,11 @@ public interface GpuInfoMapper {
     default java.lang.String map(byte[] value) {
         return EdidUtil.toString(value);
     }
+
+    Map<String, List<com.krillsson.sysapi.dto.gpu.GpuLoad>> mapLoadHistory(Map<LocalDateTime, List<GpuLoad>> history);
+
+    default String map(LocalDateTime localDateTime) {
+        return localDateTime.toString();
+    }
+
 }

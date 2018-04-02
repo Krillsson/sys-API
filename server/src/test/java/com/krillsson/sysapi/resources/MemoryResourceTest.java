@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.resources;
 
+import com.krillsson.sysapi.core.history.HistoryManager;
 import com.krillsson.sysapi.core.metrics.MemoryMetrics;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.After;
@@ -10,17 +11,17 @@ import oshi.hardware.GlobalMemory;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.*;
 
 public class MemoryResourceTest {
     private static final MemoryMetrics provider = mock(MemoryMetrics.class);
+    private static final HistoryManager historyManager = mock(HistoryManager.class);
 
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
-            .addResource(new MemoryResource(provider))
+            .addResource(new MemoryResource(provider, historyManager))
             .build();
 
     @Test

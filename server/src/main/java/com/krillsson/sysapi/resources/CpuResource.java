@@ -24,8 +24,8 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.domain.cpu.CpuInfoMapper;
+import com.krillsson.sysapi.core.history.HistoryManager;
 import com.krillsson.sysapi.core.metrics.CpuMetrics;
-import com.krillsson.sysapi.dto.cpu.CpuLoad;
 import io.dropwizard.auth.Auth;
 
 import javax.annotation.security.RolesAllowed;
@@ -33,15 +33,19 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.time.LocalDateTime;
+import java.util.Map;
 
 @Path("cpu")
 @Produces(MediaType.APPLICATION_JSON)
 public class CpuResource {
 
     private final CpuMetrics provider;
+    private final HistoryManager historyManager;
 
-    public CpuResource(CpuMetrics provider) {
+    public CpuResource(CpuMetrics provider, HistoryManager historyManager) {
         this.provider = provider;
+        this.historyManager = historyManager;
     }
 
     @GET
@@ -54,7 +58,15 @@ public class CpuResource {
     @GET
     @Path("load")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public CpuLoad getLoad(@Auth UserConfiguration user) {
+    public com.krillsson.sysapi.dto.cpu.CpuLoad getLoad(@Auth UserConfiguration user) {
         return CpuInfoMapper.INSTANCE.map(provider.cpuLoad());
+    }
+
+    @GET
+    @Path("load/history")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public Map<String, com.krillsson.sysapi.dto.cpu.CpuLoad> getLoadHistory(@Auth UserConfiguration user) {
+        Map<LocalDateTime, com.krillsson.sysapi.core.domain.cpu.CpuLoad> history = historyManager.get(com.krillsson.sysapi.core.domain.cpu.CpuLoad.class);
+        return CpuInfoMapper.INSTANCE.mapLoadHistory(history);
     }
 }

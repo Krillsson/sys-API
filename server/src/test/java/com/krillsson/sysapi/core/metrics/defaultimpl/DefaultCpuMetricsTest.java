@@ -1,9 +1,7 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuMetrics;
 import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuSensors;
 import com.krillsson.sysapi.util.Utils;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +11,8 @@ import oshi.hardware.Sensors;
 import oshi.software.os.OperatingSystem;
 
 import static junit.framework.Assert.assertNotNull;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.*;
 

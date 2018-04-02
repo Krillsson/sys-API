@@ -8,5 +8,6 @@ import java.util.Optional;
 
 public interface ProcessesMetrics {
     ProcessesInfo processesInfo(OperatingSystem.ProcessSort sortBy, int limit);
+
     Optional<Process> getProcessByPid(int pid);
 }

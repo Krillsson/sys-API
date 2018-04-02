@@ -1,19 +1,34 @@
 package com.krillsson.sysapi.util;
 
+import com.krillsson.sysapi.SystemApiApplication;
+import org.slf4j.Logger;
+
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URL;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 public class Utils {
-    public long currentSystemTime() {
-        return System.currentTimeMillis();
-    }
 
-    public void sleep(long ms) {
-        oshi.util.Util.sleep(ms);
-    }
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(Utils.class);
 
-    public boolean isOutsideMaximumDuration(long sampleTimeStamp, long maxSampleThreshold) {
-        return currentSystemTime() - sampleTimeStamp > maxSampleThreshold;
+
+    public static String getVersionFromManifest() throws IOException {
+        Class clazz = SystemApiApplication.class;
+        String className = clazz.getSimpleName() + ".class";
+        String classPath = clazz.getResource(className).toString();
+        if (!classPath.startsWith("jar")) {
+            // Class not from JAR
+            LOGGER.error("Unable to determine version");
+            return "";
+        }
+        String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1) +
+                "/META-INF/MANIFEST.MF";
+        Manifest manifest = new Manifest(new URL(manifestPath).openStream());
+        Attributes attr = manifest.getMainAttributes();
+        return "v." + attr.getValue("Version");
     }
 
     public static double round(double value, int places) {
@@ -27,5 +42,17 @@ public class Utils {
         BigDecimal bd = new BigDecimal(value);
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
+    }
+
+    public long currentSystemTime() {
+        return System.currentTimeMillis();
+    }
+
+    public void sleep(long ms) {
+        oshi.util.Util.sleep(ms);
+    }
+
+    public boolean isOutsideMaximumDuration(long sampleTimeStamp, long maxSampleThreshold) {
+        return currentSystemTime() - sampleTimeStamp > maxSampleThreshold;
     }
 }

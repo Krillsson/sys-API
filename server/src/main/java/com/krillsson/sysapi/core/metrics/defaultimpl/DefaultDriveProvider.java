@@ -20,9 +20,9 @@
  */
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
-import com.krillsson.sysapi.core.metrics.DriveMetrics;
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.domain.drives.*;
+import com.krillsson.sysapi.core.metrics.DriveMetrics;
 import org.slf4j.Logger;
 import oshi.hardware.HWDiskStore;
 import oshi.hardware.HWPartition;
@@ -36,8 +36,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DefaultDriveProvider implements DriveMetrics {
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultDriveProvider.class);
+    public static final DriveHealth DEFAULT_DISK_HEALTH = new DriveHealth(-1, Collections.emptyList());
     protected static final DriveSpeed DEFAULT_DISK_SPEED = new DriveSpeed(0, 0);
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultDriveProvider.class);
     private static final OsPartition DEFAULT_OS_PART = new OsPartition(
             "n/a",
             "n/a",
@@ -55,8 +56,6 @@ public class DefaultDriveProvider implements DriveMetrics {
             0
 
     );
-    public static final DriveHealth DEFAULT_DISK_HEALTH = new DriveHealth(-1, Collections.emptyList());
-
     private final OperatingSystem operatingSystem;
     private final HardwareAbstractionLayer hal;
     private final SpeedMeasurementManager speedMeasurementManager;
@@ -156,7 +155,8 @@ public class DefaultDriveProvider implements DriveMetrics {
     }
 
     private Optional<OsPartition> findAssociatedFileStore(HWDiskStore diskStore) {
-        for (OSFileStore osStore : Stream.of(operatingSystem.getFileSystem().getFileStores()).collect(Collectors.toList())) {
+        for (OSFileStore osStore : Stream.of(operatingSystem.getFileSystem().getFileStores())
+                .collect(Collectors.toList())) {
             List<HWPartition> asList = Stream.of(diskStore.getPartitions()).collect(Collectors.toList());
             for (HWPartition partition : asList) {
                 if (osStore.getUUID().equalsIgnoreCase(partition.getUuid())) {

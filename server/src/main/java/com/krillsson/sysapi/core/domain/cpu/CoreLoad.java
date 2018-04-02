@@ -11,8 +11,7 @@ public class CoreLoad {
     private final double softIrq;
     private final double steal;
 
-    public CoreLoad(double user, double nice, double sys, double idle, double ioWait, double irq, double softIrq, double steal)
-    {
+    public CoreLoad(double user, double nice, double sys, double idle, double ioWait, double irq, double softIrq, double steal) {
         this.user = user;
         this.nice = nice;
         this.sys = sys;
@@ -24,38 +23,31 @@ public class CoreLoad {
     }
 
 
-    public double getUser()
-    {
+    public double getUser() {
         return user;
     }
 
-    public double getNice()
-    {
+    public double getNice() {
         return nice;
     }
 
-    public double getSys()
-    {
+    public double getSys() {
         return sys;
     }
 
-    public double getIdle()
-    {
+    public double getIdle() {
         return idle;
     }
 
-    public double getIoWait()
-    {
+    public double getIoWait() {
         return ioWait;
     }
 
-    public double getIrq()
-    {
+    public double getIrq() {
         return irq;
     }
 
-    public double getSoftIrq()
-    {
+    public double getSoftIrq() {
         return softIrq;
     }
 

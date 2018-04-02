@@ -2,8 +2,7 @@ package com.krillsson.sysapi.core.domain.network;
 
 import java.util.List;
 
-public class NetworkInterface
-{
+public class NetworkInterface {
     private final String name;
     private final String displayName;
     private final String mac;

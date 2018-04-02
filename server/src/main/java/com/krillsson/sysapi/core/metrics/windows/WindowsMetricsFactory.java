@@ -1,8 +1,8 @@
 package com.krillsson.sysapi.core.metrics.windows;
 
-import com.krillsson.sysapi.core.*;
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory;
+import com.krillsson.sysapi.core.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMemoryMetrics;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultProcessesMetrics;
 import com.krillsson.sysapi.util.Utils;
 import ohmwrapper.MonitorManager;

@@ -23,13 +23,16 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.domain.drives.DriveMetricsMapper;
+import com.krillsson.sysapi.core.history.HistoryManager;
 import com.krillsson.sysapi.core.metrics.DriveMetrics;
 import io.dropwizard.auth.Auth;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
@@ -38,9 +41,11 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 public class DrivesResource {
 
     private final DriveMetrics provider;
+    private final HistoryManager historyManager;
 
-    public DrivesResource(DriveMetrics provider) {
+    public DrivesResource(DriveMetrics provider, HistoryManager historyManager) {
         this.provider = provider;
+        this.historyManager = historyManager;
     }
 
     @GET
@@ -78,4 +83,11 @@ public class DrivesResource {
         return DriveMetricsMapper.INSTANCE.mapLoads(provider.driveLoads());
     }
 
+    @GET
+    @Path("loads/history")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public Map<String, List<com.krillsson.sysapi.dto.drives.DriveLoad>> getLoadHistory(@Auth UserConfiguration user) {
+        Map<LocalDateTime, List<com.krillsson.sysapi.dto.drives.DriveLoad>> history = historyManager.get(com.krillsson.sysapi.core.domain.drives.DriveLoad.class);
+        return DriveMetricsMapper.INSTANCE.mapLoadHistory(history);
+    }
 }

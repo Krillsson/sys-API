@@ -63,7 +63,7 @@ public class MetaInfoResource {
     @GET
     @Path("pid")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public int getThisPid(){
+    public int getThisPid() {
         return thisPid;
     }
 }

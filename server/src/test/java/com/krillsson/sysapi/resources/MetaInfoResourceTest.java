@@ -1,15 +1,13 @@
 package com.krillsson.sysapi.resources;
 
 import io.dropwizard.testing.junit.ResourceTestRule;
-import org.junit.After;
 import org.junit.ClassRule;
 import org.junit.Test;
 
 import javax.ws.rs.core.MediaType;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class MetaInfoResourceTest {
 

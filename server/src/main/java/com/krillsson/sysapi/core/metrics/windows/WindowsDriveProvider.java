@@ -20,13 +20,13 @@
  */
 package com.krillsson.sysapi.core.metrics.windows;
 
-import com.krillsson.sysapi.core.domain.drives.DriveHealth;
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDriveProvider;
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
+import com.krillsson.sysapi.core.domain.drives.DriveHealth;
+import com.krillsson.sysapi.core.domain.drives.DriveSpeed;
+import com.krillsson.sysapi.core.domain.drives.OsPartition;
 import com.krillsson.sysapi.core.domain.sensors.DataType;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
-import com.krillsson.sysapi.core.domain.drives.OsPartition;
-import com.krillsson.sysapi.core.domain.drives.DriveSpeed;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDriveProvider;
 import com.krillsson.sysapi.util.Streams;
 import ohmwrapper.DriveMonitor;
 import ohmwrapper.MonitorManager;
@@ -47,12 +47,12 @@ public class WindowsDriveProvider extends DefaultDriveProvider {
 
     private MonitorManager monitorManager;
 
-    public void setMonitorManager(MonitorManager monitorManager) {
-        this.monitorManager = monitorManager;
-    }
-
     public WindowsDriveProvider(OperatingSystem operatingSystem, HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
         super(operatingSystem, hal, speedMeasurementManager);
+    }
+
+    public void setMonitorManager(MonitorManager monitorManager) {
+        this.monitorManager = monitorManager;
     }
 
     @Override

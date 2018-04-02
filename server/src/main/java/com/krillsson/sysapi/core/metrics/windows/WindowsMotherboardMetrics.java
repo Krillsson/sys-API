@@ -1,8 +1,8 @@
 package com.krillsson.sysapi.core.metrics.windows;
 
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMotherboardMetrics;
 import com.krillsson.sysapi.core.domain.sensors.DataType;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMotherboardMetrics;
 import com.krillsson.sysapi.util.Streams;
 import ohmwrapper.MonitorManager;
 import oshi.hardware.HardwareAbstractionLayer;

@@ -48,30 +48,6 @@ public class Process {
     private final long bytesRead;
     private final long bytesWritten;
 
-    public static Process create(OSProcess process, GlobalMemory memory) {
-        return new Process(process.getName(),
-                process.getPath(),
-                process.getCommandLine(),
-                process.getUser(),
-                process.getUserID(),
-                process.getGroup(),
-                process.getGroupID(),
-                process.getState(),
-                process.getProcessID(),
-                process.getParentProcessID(),
-                process.getThreadCount(),
-                process.getPriority(),
-                process.getVirtualSize(),
-                process.getResidentSetSize(),
-                100d * process.getResidentSetSize() / memory.getTotal(),
-                process.getKernelTime(), process.getUserTime(),
-                process.getUpTime(),
-                100d * (process.getKernelTime() + process.getUserTime()) / process.getUpTime(),
-                process.getStartTime(),
-                process.getBytesRead(),
-                process.getBytesWritten());
-    }
-
     public Process(String name,
                    String path,
                    String commandLine,
@@ -116,6 +92,31 @@ public class Process {
         this.startTime = startTime;
         this.bytesRead = bytesRead;
         this.bytesWritten = bytesWritten;
+    }
+
+    public static Process create(OSProcess process, GlobalMemory memory) {
+        return new Process(process.getName(),
+                           process.getPath(),
+                           process.getCommandLine(),
+                           process.getUser(),
+                           process.getUserID(),
+                           process.getGroup(),
+                           process.getGroupID(),
+                           process.getState(),
+                           process.getProcessID(),
+                           process.getParentProcessID(),
+                           process.getThreadCount(),
+                           process.getPriority(),
+                           process.getVirtualSize(),
+                           process.getResidentSetSize(),
+                           100d * process.getResidentSetSize() / memory.getTotal(),
+                           process.getKernelTime(), process.getUserTime(),
+                           process.getUpTime(),
+                           100d * (process.getKernelTime() + process.getUserTime()) / process.getUpTime(),
+                           process.getStartTime(),
+                           process.getBytesRead(),
+                           process.getBytesWritten()
+        );
     }
 
     public String getName() {

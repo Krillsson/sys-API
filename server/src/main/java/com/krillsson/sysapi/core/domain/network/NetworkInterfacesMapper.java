@@ -22,12 +22,12 @@
 package com.krillsson.sysapi.core.domain.network;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.ERROR
@@ -38,9 +38,17 @@ public interface NetworkInterfacesMapper {
     com.krillsson.sysapi.dto.network.NetworkInterface map(NetworkInterface value);
 
     com.krillsson.sysapi.dto.network.NetworkInterfaceSpeed map(com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed value);
+
     com.krillsson.sysapi.dto.network.NetworkInterfaceLoad map(com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad value);
 
     List<com.krillsson.sysapi.dto.network.NetworkInterface> map(List<NetworkInterface> value);
+
     List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad> mapLoads(List<NetworkInterfaceLoad> value);
+
+    default String map(LocalDateTime localDateTime) {
+        return localDateTime.toString();
+    }
+
+    Map<String, List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad>> mapLoadHistory(Map<LocalDateTime, List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad>> history);
 
 }

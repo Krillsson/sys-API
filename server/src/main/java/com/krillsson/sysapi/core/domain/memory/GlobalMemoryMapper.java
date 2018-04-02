@@ -21,9 +21,14 @@
 
 package com.krillsson.sysapi.core.domain.memory;
 
+import com.krillsson.sysapi.dto.processes.Memory;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
+import oshi.hardware.GlobalMemory;
+
+import java.time.LocalDateTime;
+import java.util.Map;
 
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.ERROR
@@ -32,4 +37,10 @@ public interface GlobalMemoryMapper {
     GlobalMemoryMapper INSTANCE = Mappers.getMapper(GlobalMemoryMapper.class);
 
     com.krillsson.sysapi.dto.processes.Memory map(oshi.hardware.GlobalMemory value);
+
+    default String map(LocalDateTime localDateTime) {
+        return localDateTime.toString();
+    }
+
+    Map<String, Memory> mapHistory(Map<LocalDateTime, GlobalMemory> history);
 }

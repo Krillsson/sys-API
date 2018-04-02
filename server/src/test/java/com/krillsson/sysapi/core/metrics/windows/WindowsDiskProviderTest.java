@@ -1,8 +1,8 @@
 package com.krillsson.sysapi.core.metrics.windows;
 
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
-import com.krillsson.sysapi.core.domain.drives.OsPartition;
 import com.krillsson.sysapi.core.domain.drives.DriveSpeed;
+import com.krillsson.sysapi.core.domain.drives.OsPartition;
 import ohmwrapper.DriveMonitor;
 import ohmwrapper.MonitorManager;
 import org.junit.Before;
@@ -15,9 +15,7 @@ import java.util.Optional;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class WindowsDiskProviderTest {
 
@@ -35,7 +33,11 @@ public class WindowsDiskProviderTest {
         osFileStore = mock(OsPartition.class);
         driveMonitor = mock(DriveMonitor.class);
 
-        diskProvider = new WindowsDriveProvider(mock(OperatingSystem.class), mock(HardwareAbstractionLayer.class), mock(SpeedMeasurementManager.class));
+        diskProvider = new WindowsDriveProvider(
+                mock(OperatingSystem.class),
+                mock(HardwareAbstractionLayer.class),
+                mock(SpeedMeasurementManager.class)
+        );
         diskProvider.setMonitorManager(monitorManager);
     }
 

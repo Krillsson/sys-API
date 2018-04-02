@@ -1,8 +1,8 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
-import com.krillsson.sysapi.core.metrics.MotherboardMetrics;
 import com.krillsson.sysapi.core.domain.motherboard.Motherboard;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
+import com.krillsson.sysapi.core.metrics.MotherboardMetrics;
 import oshi.hardware.HardwareAbstractionLayer;
 
 import java.util.Collections;

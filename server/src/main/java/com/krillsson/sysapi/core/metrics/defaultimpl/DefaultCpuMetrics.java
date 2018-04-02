@@ -1,9 +1,9 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
-import com.krillsson.sysapi.core.metrics.CpuMetrics;
 import com.krillsson.sysapi.core.domain.cpu.CoreLoad;
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
+import com.krillsson.sysapi.core.metrics.CpuMetrics;
 import com.krillsson.sysapi.util.Utils;
 import org.slf4j.Logger;
 import oshi.hardware.CentralProcessor;
@@ -18,13 +18,12 @@ import java.util.stream.Stream;
 public class DefaultCpuMetrics implements CpuMetrics {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultCpuMetrics.class);
-
+    private static final long MAX_SAMPLING_THRESHOLD = TimeUnit.SECONDS.toMillis(10);
+    private static final int SLEEP_SAMPLE_PERIOD = 1000;
     private final HardwareAbstractionLayer hal;
     private final OperatingSystem operatingSystem;
     private final Utils utils;
     private final DefaultCpuSensors cpuSensors;
-    private static final long MAX_SAMPLING_THRESHOLD = TimeUnit.SECONDS.toMillis(10);
-    private static final int SLEEP_SAMPLE_PERIOD = 1000;
     private long coreTicksSampledAt = -1;
     private long[][] coreTicks = new long[0][0];
 
@@ -58,14 +57,22 @@ public class DefaultCpuMetrics implements CpuMetrics {
         long sampledAt = utils.currentSystemTime();
         for (int i = 0; i < coreLoads.length; i++) {
             long[] currentTicks = currentProcessorTicks[i];
-            long user = currentTicks[CentralProcessor.TickType.USER.getIndex()] - coreTicks[i][CentralProcessor.TickType.USER.getIndex()];
-            long nice = currentTicks[CentralProcessor.TickType.NICE.getIndex()] - coreTicks[i][CentralProcessor.TickType.NICE.getIndex()];
-            long sys = currentTicks[CentralProcessor.TickType.SYSTEM.getIndex()] - coreTicks[i][CentralProcessor.TickType.SYSTEM.getIndex()];
-            long idle = currentTicks[CentralProcessor.TickType.IDLE.getIndex()] - coreTicks[i][CentralProcessor.TickType.IDLE.getIndex()];
-            long iowait = currentTicks[CentralProcessor.TickType.IOWAIT.getIndex()] - coreTicks[i][CentralProcessor.TickType.IOWAIT.getIndex()];
-            long irq = currentTicks[CentralProcessor.TickType.IRQ.getIndex()] - coreTicks[i][CentralProcessor.TickType.IRQ.getIndex()];
-            long softirq = currentTicks[CentralProcessor.TickType.SOFTIRQ.getIndex()] - coreTicks[i][CentralProcessor.TickType.SOFTIRQ.getIndex()];
-            long steal = currentTicks[CentralProcessor.TickType.STEAL.getIndex()] - coreTicks[i][CentralProcessor.TickType.STEAL.getIndex()];
+            long user = currentTicks[CentralProcessor.TickType.USER.getIndex()] - coreTicks[i][CentralProcessor.TickType.USER
+                    .getIndex()];
+            long nice = currentTicks[CentralProcessor.TickType.NICE.getIndex()] - coreTicks[i][CentralProcessor.TickType.NICE
+                    .getIndex()];
+            long sys = currentTicks[CentralProcessor.TickType.SYSTEM.getIndex()] - coreTicks[i][CentralProcessor.TickType.SYSTEM
+                    .getIndex()];
+            long idle = currentTicks[CentralProcessor.TickType.IDLE.getIndex()] - coreTicks[i][CentralProcessor.TickType.IDLE
+                    .getIndex()];
+            long iowait = currentTicks[CentralProcessor.TickType.IOWAIT.getIndex()] - coreTicks[i][CentralProcessor.TickType.IOWAIT
+                    .getIndex()];
+            long irq = currentTicks[CentralProcessor.TickType.IRQ.getIndex()] - coreTicks[i][CentralProcessor.TickType.IRQ
+                    .getIndex()];
+            long softirq = currentTicks[CentralProcessor.TickType.SOFTIRQ.getIndex()] - coreTicks[i][CentralProcessor.TickType.SOFTIRQ
+                    .getIndex()];
+            long steal = currentTicks[CentralProcessor.TickType.STEAL.getIndex()] - coreTicks[i][CentralProcessor.TickType.STEAL
+                    .getIndex()];
 
             long totalCpu = user + nice + sys + idle + iowait + irq + softirq + steal;
             //long totalIdle = idle + iowait;
@@ -93,7 +100,10 @@ public class DefaultCpuMetrics implements CpuMetrics {
         return new CpuLoad(
                 Utils.round(processor.getSystemCpuLoadBetweenTicks() * 100d, 2),
                 Utils.round(processor.getSystemCpuLoad() * 100d, 2),
-                Stream.of(coreLoads).collect(Collectors.toList()), cpuSensors.cpuHealth(), operatingSystem.getProcessCount(), operatingSystem.getThreadCount()
+                Stream.of(coreLoads).collect(Collectors.toList()),
+                cpuSensors.cpuHealth(),
+                operatingSystem.getProcessCount(),
+                operatingSystem.getThreadCount()
         );
     }
 }

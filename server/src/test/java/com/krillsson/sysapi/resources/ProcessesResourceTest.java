@@ -14,7 +14,6 @@ import oshi.software.os.OperatingSystem;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -22,13 +21,11 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class ProcessesResourceTest {
 
@@ -66,7 +63,8 @@ public class ProcessesResourceTest {
                 0,
                 0,
                 0,
-                0);
+                0
+        );
     }
 
     @Test
@@ -99,7 +97,8 @@ public class ProcessesResourceTest {
         ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
         when(provider.processesInfo(any(OperatingSystem.ProcessSort.class), captor.capture()))
                 .thenReturn(new ProcessesInfo(mock(GlobalMemory.class), 0, 0, 0,
-                        Arrays.asList(process)));
+                                              Arrays.asList(process)
+                ));
 
         ProcessInfo processInfo = RESOURCES.getJerseyTest().target("/processes")
                 .queryParam("limit", "10")
@@ -116,7 +115,8 @@ public class ProcessesResourceTest {
         ArgumentCaptor<OperatingSystem.ProcessSort> captor = ArgumentCaptor.forClass(OperatingSystem.ProcessSort.class);
         when(provider.processesInfo(captor.capture(), anyInt()))
                 .thenReturn(new ProcessesInfo(mock(GlobalMemory.class), 0, 0, 0,
-                                              Arrays.asList(process)));
+                                              Arrays.asList(process)
+                ));
 
         ProcessInfo processInfo = RESOURCES.getJerseyTest().target("/processes")
                 .queryParam("sortBy", "MEMORY")
@@ -132,7 +132,8 @@ public class ProcessesResourceTest {
     public void getProcessesHappyPath() throws Exception {
         when(provider.processesInfo(any(OperatingSystem.ProcessSort.class), anyInt()))
                 .thenReturn(new ProcessesInfo(mock(GlobalMemory.class), 0, 0, 0,
-                        Arrays.asList(process)));
+                                              Arrays.asList(process)
+                ));
 
         final ProcessInfo response = RESOURCES.getJerseyTest().target("/processes")
                 .request(MediaType.APPLICATION_JSON_TYPE)
@@ -146,7 +147,8 @@ public class ProcessesResourceTest {
 
     @Test
     public void getProcessesSadPath() throws Exception {
-        when(provider.processesInfo(any(OperatingSystem.ProcessSort.class), anyInt())).thenThrow(new RuntimeException("What"));
+        when(provider.processesInfo(any(OperatingSystem.ProcessSort.class), anyInt())).thenThrow(new RuntimeException(
+                "What"));
         final Response response = RESOURCES.getJerseyTest().target("/processes")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get();
@@ -157,7 +159,8 @@ public class ProcessesResourceTest {
     public void getProcessByPidProcessExists() throws Exception {
         Optional<Process> process = Optional.of(this.process);
         when(provider.getProcessByPid(100)).thenReturn(process);
-        final com.krillsson.sysapi.dto.processes.Process response = RESOURCES.getJerseyTest().target(String.format("/processes/%d", this.process.getProcessID()))
+        final com.krillsson.sysapi.dto.processes.Process response = RESOURCES.getJerseyTest()
+                .target(String.format("/processes/%d", this.process.getProcessID()))
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(com.krillsson.sysapi.dto.processes.Process.class);
 

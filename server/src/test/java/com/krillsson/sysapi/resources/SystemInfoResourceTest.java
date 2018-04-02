@@ -21,33 +21,8 @@
 
 package com.krillsson.sysapi.resources;
 
-import com.krillsson.sysapi.core.domain.cpu.CoreLoad;
-import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
-import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
-import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
-import com.krillsson.sysapi.dto.system.JvmProperties;
-import com.krillsson.sysapi.dto.system.SystemInfo;
-import io.dropwizard.testing.junit.ResourceTestRule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-import oshi.PlatformEnum;
-import oshi.hardware.CentralProcessor;
-import oshi.hardware.GlobalMemory;
-import oshi.hardware.PowerSource;
-import oshi.software.os.OperatingSystem;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link SystemResource}.

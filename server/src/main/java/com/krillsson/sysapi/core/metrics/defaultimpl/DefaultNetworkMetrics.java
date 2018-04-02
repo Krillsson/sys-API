@@ -20,29 +20,29 @@
  */
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
-import com.krillsson.sysapi.core.metrics.NetworkMetrics;
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.domain.network.NetworkInterface;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad;
-import com.krillsson.sysapi.core.domain.network.NetworkInterfaceValues;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
+import com.krillsson.sysapi.core.domain.network.NetworkInterfaceValues;
+import com.krillsson.sysapi.core.metrics.NetworkMetrics;
 import org.slf4j.Logger;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
 
 import java.net.SocketException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DefaultNetworkMetrics implements NetworkMetrics {
 
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultNetworkMetrics.class);
-
-    private static final int BYTE_TO_BIT = 8;
     protected static final NetworkInterfaceSpeed EMPTY_INTERFACE_SPEED = new NetworkInterfaceSpeed(0, 0);
-
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultNetworkMetrics.class);
+    private static final int BYTE_TO_BIT = 8;
     private final HardwareAbstractionLayer hal;
     private final SpeedMeasurementManager speedMeasurementManager;
 
@@ -137,14 +137,14 @@ public class DefaultNetworkMetrics implements NetworkMetrics {
     Function<NetworkIF, NetworkInterfaceLoad> mapToLoad() {
         return n -> new NetworkInterfaceLoad(
                 n.getName(), new NetworkInterfaceValues(
-                        n.getSpeed(),
-                        n.getBytesRecv(),
-                        n.getBytesSent(),
-                        n.getPacketsRecv(),
-                        n.getPacketsSent(),
-                        n.getInErrors(),
-                        n.getOutErrors()
-                ),
+                n.getSpeed(),
+                n.getBytesRecv(),
+                n.getBytesSent(),
+                n.getPacketsRecv(),
+                n.getPacketsSent(),
+                n.getInErrors(),
+                n.getOutErrors()
+        ),
                 speedForInterfaceWithName(n.getName())
         );
     }

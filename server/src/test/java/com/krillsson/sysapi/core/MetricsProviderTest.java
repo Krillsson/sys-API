@@ -4,7 +4,6 @@ import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.core.metrics.MetricsFactory;
 import com.krillsson.sysapi.core.metrics.MetricsProvider;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory;
-import com.krillsson.sysapi.core.metrics.rasbian.RaspbianLinuxInfoProviderTest;
 import com.krillsson.sysapi.core.metrics.rasbian.RaspbianMetricsFactory;
 import org.junit.Before;
 import org.junit.Test;

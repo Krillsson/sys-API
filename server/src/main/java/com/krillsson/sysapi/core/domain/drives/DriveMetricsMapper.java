@@ -24,13 +24,12 @@ package com.krillsson.sysapi.core.domain.drives;
 import com.krillsson.sysapi.core.domain.sensors.DataType;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
-import oshi.software.os.OSFileStore;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.ERROR
@@ -39,9 +38,10 @@ public interface DriveMetricsMapper {
     DriveMetricsMapper INSTANCE = Mappers.getMapper(DriveMetricsMapper.class);
 
     List<com.krillsson.sysapi.dto.drives.Drive> map(List<Drive> value);
-    List<com.krillsson.sysapi.dto.drives.DriveLoad> mapLoads(List<DriveLoad> value);
-    com.krillsson.sysapi.dto.drives.DriveLoad map(DriveLoad value);
 
+    List<com.krillsson.sysapi.dto.drives.DriveLoad> mapLoads(List<DriveLoad> value);
+
+    com.krillsson.sysapi.dto.drives.DriveLoad map(DriveLoad value);
 
     com.krillsson.sysapi.dto.drives.Drive map(Drive value);
 
@@ -58,5 +58,12 @@ public interface DriveMetricsMapper {
     com.krillsson.sysapi.dto.sensors.DataType map(DataType value);
 
     com.krillsson.sysapi.dto.drives.DriveValues map(com.krillsson.sysapi.core.domain.drives.DriveValues value);
+
     com.krillsson.sysapi.dto.drives.Partition map(com.krillsson.sysapi.core.domain.drives.Partition value);
+
+    default String map(LocalDateTime localDateTime) {
+        return localDateTime.toString();
+    }
+
+    Map<String, List<com.krillsson.sysapi.dto.drives.DriveLoad>> mapLoadHistory(Map<LocalDateTime, List<com.krillsson.sysapi.dto.drives.DriveLoad>> history);
 }

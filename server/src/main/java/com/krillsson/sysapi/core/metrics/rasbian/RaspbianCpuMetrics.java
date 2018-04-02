@@ -16,10 +16,8 @@ import java.util.List;
 public class RaspbianCpuMetrics extends DefaultCpuMetrics {
 
 
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(RaspbianCpuMetrics.class);
-
     public static final String RASPBIAN_QUALIFIER = "raspbian";
-
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(RaspbianCpuMetrics.class);
     private static final String CPU_TEMP_FILE_LOCATION = "/sys/class/thermal/thermal_zone0/temp";
     private static final String VCGENCMD = "vcgencmd";
     private static final String VCGENCMD_VOLT = VCGENCMD + "measure_volts core";

@@ -2,30 +2,25 @@ package com.krillsson.sysapi.core;
 
 import java.time.LocalDateTime;
 
-public class SpeedMeasurement
-{
+public class SpeedMeasurement {
     private final long read, write;
     private final LocalDateTime sampledAt;
 
-    public SpeedMeasurement(long read, long write, LocalDateTime sampledAt)
-    {
+    public SpeedMeasurement(long read, long write, LocalDateTime sampledAt) {
         this.read = read;
         this.write = write;
         this.sampledAt = sampledAt;
     }
 
-    public long getRead()
-    {
+    public long getRead() {
         return read;
     }
 
-    public long getWrite()
-    {
+    public long getWrite() {
         return write;
     }
 
-    public LocalDateTime getSampledAt()
-    {
+    public LocalDateTime getSampledAt() {
         return sampledAt;
     }
 }

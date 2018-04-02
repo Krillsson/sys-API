@@ -1,6 +1,5 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultProcessesMetrics;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,12 +8,11 @@ import oshi.hardware.HardwareAbstractionLayer;
 import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.isNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.junit.Assert.*;
 
 public class DefaultProcessesMetricsTest {
     HardwareAbstractionLayer hal;
@@ -59,6 +57,6 @@ public class DefaultProcessesMetricsTest {
 
     @Test
     public void shouldProperlyAssignPercentageUsedOfCpu() {
-        
+
     }
 }

@@ -40,6 +40,7 @@ public interface SensorsInfoMapper {
     com.krillsson.sysapi.dto.sensors.SensorsInfo map(SensorsInfo value);
 
     com.krillsson.sysapi.dto.sensors.HealthData map(com.krillsson.sysapi.core.domain.sensors.HealthData value);
+
     List<com.krillsson.sysapi.dto.sensors.HealthData> mapDatas(List<com.krillsson.sysapi.core.domain.sensors.HealthData> value);
 
     com.krillsson.sysapi.dto.sensors.DataType map(com.krillsson.sysapi.core.domain.sensors.DataType value);

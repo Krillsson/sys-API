@@ -22,14 +22,18 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
+import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfacesMapper;
+import com.krillsson.sysapi.core.history.HistoryManager;
 import com.krillsson.sysapi.core.metrics.NetworkMetrics;
 import io.dropwizard.auth.Auth;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
@@ -38,9 +42,11 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 public class NetworkInterfacesResource {
 
     private final NetworkMetrics infoProvider;
+    private final HistoryManager historyManager;
 
-    public NetworkInterfacesResource(NetworkMetrics infoProvider) {
+    public NetworkInterfacesResource(NetworkMetrics infoProvider, HistoryManager historyManager) {
         this.infoProvider = infoProvider;
+        this.historyManager = historyManager;
     }
 
     @GET
@@ -70,6 +76,15 @@ public class NetworkInterfacesResource {
     public com.krillsson.sysapi.dto.network.NetworkInterfaceLoad networkInterfaceLoadById(@Auth UserConfiguration user, @PathParam("id") String id) {
         return NetworkInterfacesMapper.INSTANCE.map(infoProvider.networkInterfaceLoadById(id)
                                                             .orElseThrow(() -> new WebApplicationException(NOT_FOUND)));
+    }
+
+    @GET
+    @Path("loads/history")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public Map<String, List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad>> getLoadHistory(@Auth UserConfiguration user) {
+        Map<LocalDateTime, List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad>> history = historyManager.get(
+                NetworkInterfaceLoad.class);
+        return NetworkInterfacesMapper.INSTANCE.mapLoadHistory(history);
     }
 
 }

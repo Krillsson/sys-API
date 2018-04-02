@@ -1,7 +1,6 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultNetworkMetrics;
 import com.krillsson.sysapi.core.domain.network.NetworkInterface;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +10,7 @@ import oshi.hardware.NetworkIF;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

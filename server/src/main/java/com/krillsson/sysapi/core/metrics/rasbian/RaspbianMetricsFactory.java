@@ -1,7 +1,7 @@
 package com.krillsson.sysapi.core.metrics.rasbian;
 
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
-import com.krillsson.sysapi.core.metrics.defaultimpl.*;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory;
 import com.krillsson.sysapi.util.Utils;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.software.os.OperatingSystem;

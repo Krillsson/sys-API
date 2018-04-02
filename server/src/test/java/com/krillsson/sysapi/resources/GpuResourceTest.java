@@ -4,6 +4,7 @@ import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.core.domain.gpu.GpuInfo;
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad;
+import com.krillsson.sysapi.core.history.HistoryManager;
 import com.krillsson.sysapi.core.metrics.GpuMetrics;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.After;
@@ -14,7 +15,6 @@ import org.junit.Test;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,6 +24,11 @@ import static org.mockito.Mockito.*;
 
 public class GpuResourceTest {
     private static final GpuMetrics provider = mock(GpuMetrics.class);
+    private static final HistoryManager historyManager = mock(HistoryManager.class);
+    @ClassRule
+    public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
+            .addResource(new GpuResource(provider, historyManager))
+            .build();
     Gpu gpu;
     GpuHealth health;
     GpuLoad load;
@@ -35,18 +40,14 @@ public class GpuResourceTest {
         load = new GpuLoad(0.5, 0.5, health);
     }
 
-    @ClassRule
-    public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
-            .addResource(new GpuResource(provider))
-            .build();
-
     @Test
     public void getGpuInfoHappyPath() throws Exception {
         GpuInfo gpuInfo = mock(GpuInfo.class);
         when(gpuInfo.getGpus()).thenReturn(Arrays.asList(gpu));
         final List<com.krillsson.sysapi.dto.gpu.Gpu> response = RESOURCES.getJerseyTest().target("/gpus")
                 .request(MediaType.APPLICATION_JSON_TYPE)
-                .get(new GenericType<List<com.krillsson.sysapi.dto.gpu.Gpu>>(){});
+                .get(new GenericType<List<com.krillsson.sysapi.dto.gpu.Gpu>>() {
+                });
         assertNotNull(response);
         assertEquals("Nvidia", response.get(0).getVendor());
     }

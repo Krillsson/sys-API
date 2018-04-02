@@ -10,6 +10,6 @@ public class Streams<T> {
     }
 
     public static <T> java.util.stream.Stream<T> ofNullable(T[] arr) {
-        return arr == null || arr.length > 0 ?  java.util.stream.Stream.empty() : Stream.of(arr);
+        return arr == null || arr.length > 0 ? java.util.stream.Stream.empty() : Stream.of(arr);
     }
 }

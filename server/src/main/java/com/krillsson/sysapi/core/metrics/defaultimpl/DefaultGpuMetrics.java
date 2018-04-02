@@ -1,13 +1,11 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
-import com.krillsson.sysapi.core.metrics.GpuMetrics;
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
-import com.krillsson.sysapi.core.domain.gpu.GpuInfo;
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad;
+import com.krillsson.sysapi.core.metrics.GpuMetrics;
 import oshi.hardware.Display;
 import oshi.hardware.HardwareAbstractionLayer;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;

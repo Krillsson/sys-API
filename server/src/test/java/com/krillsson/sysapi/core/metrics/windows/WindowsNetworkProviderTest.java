@@ -2,7 +2,6 @@ package com.krillsson.sysapi.core.metrics.windows;
 
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad;
-import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
 import ohmwrapper.Bandwidth;
 import ohmwrapper.MonitorManager;
 import ohmwrapper.NetworkMonitor;
@@ -16,10 +15,9 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 
 public class WindowsNetworkProviderTest {
 

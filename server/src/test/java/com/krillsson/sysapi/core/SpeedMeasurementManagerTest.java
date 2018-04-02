@@ -48,7 +48,12 @@ public class SpeedMeasurementManagerTest {
         when(speedSource.getCurrentWrite()).thenReturn(2000L, 4000L);
 
         ArgumentCaptor<Runnable> argumentCaptor = ArgumentCaptor.forClass(Runnable.class);
-        when(executorService.scheduleAtFixedRate(argumentCaptor.capture(), anyLong(), anyLong(), any(TimeUnit.class))).thenReturn(null);
+        when(executorService.scheduleAtFixedRate(
+                argumentCaptor.capture(),
+                anyLong(),
+                anyLong(),
+                any(TimeUnit.class)
+        )).thenReturn(null);
 
         measurementManager.register(speedSource);
         measurementManager.start();
@@ -75,7 +80,12 @@ public class SpeedMeasurementManagerTest {
         when(speedSource.getCurrentWrite()).thenReturn(0L, 0L);
 
         ArgumentCaptor<Runnable> argumentCaptor = ArgumentCaptor.forClass(Runnable.class);
-        when(executorService.scheduleAtFixedRate(argumentCaptor.capture(), anyLong(), anyLong(), any(TimeUnit.class))).thenReturn(null);
+        when(executorService.scheduleAtFixedRate(
+                argumentCaptor.capture(),
+                anyLong(),
+                anyLong(),
+                any(TimeUnit.class)
+        )).thenReturn(null);
 
         measurementManager.register(speedSource);
         measurementManager.start();
@@ -105,7 +115,12 @@ public class SpeedMeasurementManagerTest {
         when(secondSpeedSource.getCurrentWrite()).thenReturn(8000L, 16000L);
 
         ArgumentCaptor<Runnable> argumentCaptor = ArgumentCaptor.forClass(Runnable.class);
-        when(executorService.scheduleAtFixedRate(argumentCaptor.capture(), anyLong(), anyLong(), any(TimeUnit.class))).thenReturn(null);
+        when(executorService.scheduleAtFixedRate(
+                argumentCaptor.capture(),
+                anyLong(),
+                anyLong(),
+                any(TimeUnit.class)
+        )).thenReturn(null);
 
         measurementManager.register(Arrays.asList(speedSource, secondSpeedSource));
         measurementManager.start();
@@ -138,7 +153,12 @@ public class SpeedMeasurementManagerTest {
         when(speedSource.getCurrentWrite()).thenReturn(2000L, 4000L);
 
         ArgumentCaptor<Runnable> argumentCaptor = ArgumentCaptor.forClass(Runnable.class);
-        when(executorService.scheduleAtFixedRate(argumentCaptor.capture(), anyLong(), anyLong(), any(TimeUnit.class))).thenReturn(null);
+        when(executorService.scheduleAtFixedRate(
+                argumentCaptor.capture(),
+                anyLong(),
+                anyLong(),
+                any(TimeUnit.class)
+        )).thenReturn(null);
 
         measurementManager.register(speedSource);
         measurementManager.start();
@@ -160,7 +180,12 @@ public class SpeedMeasurementManagerTest {
 
     @Test
     public void stoppingManagerShutsDownExecutorService() throws Exception {
-        when(executorService.scheduleAtFixedRate(any(Runnable.class), anyLong(), anyLong(), any(TimeUnit.class))).thenReturn(null);
+        when(executorService.scheduleAtFixedRate(
+                any(Runnable.class),
+                anyLong(),
+                anyLong(),
+                any(TimeUnit.class)
+        )).thenReturn(null);
 
         measurementManager.start();
         measurementManager.stop();
