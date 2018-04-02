@@ -13,7 +13,7 @@ public abstract class History<T> {
     private final Map<LocalDateTime, T> history;
 
     protected History() {
-        history = new HashMap<>();
+        history = new LinkedHashMap<>();
     }
 
     public Map<LocalDateTime, T> get() {
