@@ -4,6 +4,7 @@ import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.core.domain.drives.DriveLoad;
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad;
+import com.krillsson.sysapi.core.domain.system.SystemLoad;
 import com.krillsson.sysapi.core.metrics.MetricsFactory;
 import oshi.hardware.GlobalMemory;
 
@@ -52,6 +53,22 @@ public class MetricsHistoryManager extends HistoryManager {
             @Override
             Supplier getCurrent() {
                 return () -> provider.memoryMetrics().globalMemory();
+            }
+        });
+
+        //TODO: this is generating a lot of redundant data in RAM. Maybe merge all maps upon query?
+        insert(SystemLoad.class, new History<SystemLoad>() {
+            @Override
+            Supplier<SystemLoad> getCurrent() {
+                return (com.google.common.base.Supplier<SystemLoad>) () -> new SystemLoad(
+                        provider.cpuMetrics().cpuLoad(),
+                        provider.networkMetrics().networkInterfaceLoads(),
+                        provider.driveMetrics().driveLoads(),
+                        provider.memoryMetrics().globalMemory(),
+                        provider.gpuMetrics().gpuLoads(),
+                        provider.motherboardMetrics().motherboardHealth()
+                );
+
             }
         });
         return this;
