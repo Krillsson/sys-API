@@ -21,49 +21,65 @@
 package com.krillsson.sysapi.core.domain.system;
 
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
+import com.krillsson.sysapi.core.domain.drives.Drive;
+import com.krillsson.sysapi.core.domain.gpu.Gpu;
+import com.krillsson.sysapi.core.domain.motherboard.Motherboard;
+import com.krillsson.sysapi.core.domain.network.NetworkInterface;
 import oshi.PlatformEnum;
 import oshi.hardware.GlobalMemory;
-import oshi.hardware.PowerSource;
-import oshi.software.os.OperatingSystem;
+
+import java.util.List;
 
 public class SystemInfo {
     private final String hostName;
-    private final PlatformEnum platformEnum;
-    private final OperatingSystem operatingSystem;
+    private final PlatformEnum platform;
     private final CpuInfo cpuInfo;
+    private final Motherboard motherboard;
     private final GlobalMemory memory;
-    private final PowerSource[] powerSources;
+    private final List<Drive> drives;
+    private final List<NetworkInterface> networkInterfaces;
+    private final List<Gpu> gpus;
 
-    public SystemInfo(String hostName, PlatformEnum platformEnum, OperatingSystem operatingSystem, CpuInfo cpuInfo, GlobalMemory memory, PowerSource[] powerSources) {
+    public SystemInfo(String hostName, PlatformEnum platform, CpuInfo cpuInfo, Motherboard motherboard, GlobalMemory memory, List<Drive> drives, List<NetworkInterface> networkInterfaces, List<Gpu> gpus) {
         this.hostName = hostName;
-        this.platformEnum = platformEnum;
-        this.operatingSystem = operatingSystem;
+        this.platform = platform;
         this.cpuInfo = cpuInfo;
+        this.motherboard = motherboard;
         this.memory = memory;
-        this.powerSources = powerSources;
+        this.drives = drives;
+        this.networkInterfaces = networkInterfaces;
+        this.gpus = gpus;
     }
 
     public String getHostName() {
         return hostName;
     }
 
-    public PlatformEnum getPlatformEnum() {
-        return platformEnum;
-    }
-
-    public OperatingSystem getOperatingSystem() {
-        return operatingSystem;
+    public PlatformEnum getPlatform() {
+        return platform;
     }
 
     public CpuInfo getCpuInfo() {
         return cpuInfo;
     }
 
+    public Motherboard getMotherboard() {
+        return motherboard;
+    }
+
     public GlobalMemory getMemory() {
         return memory;
     }
 
-    public PowerSource[] getPowerSources() {
-        return powerSources;
+    public List<Drive> getDrives() {
+        return drives;
+    }
+
+    public List<NetworkInterface> getNetworkInterfaces() {
+        return networkInterfaces;
+    }
+
+    public List<Gpu> getGpus() {
+        return gpus;
     }
 }

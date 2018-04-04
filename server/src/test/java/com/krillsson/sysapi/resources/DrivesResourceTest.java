@@ -3,6 +3,7 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.core.domain.drives.Drive;
 import com.krillsson.sysapi.core.domain.drives.OsPartition;
 import com.krillsson.sysapi.core.history.HistoryManager;
+import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.DriveMetrics;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.*;
@@ -22,7 +23,7 @@ import static org.mockito.Mockito.*;
 
 public class DrivesResourceTest {
     private static final DriveMetrics provider = mock(DriveMetrics.class);
-    private static final HistoryManager historyManager = mock(HistoryManager.class);
+    private static final MetricsHistoryManager historyManager = mock(MetricsHistoryManager.class);
 
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()

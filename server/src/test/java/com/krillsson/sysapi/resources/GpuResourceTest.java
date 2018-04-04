@@ -5,6 +5,7 @@ import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.core.domain.gpu.GpuInfo;
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad;
 import com.krillsson.sysapi.core.history.HistoryManager;
+import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.GpuMetrics;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.After;
@@ -24,7 +25,7 @@ import static org.mockito.Mockito.*;
 
 public class GpuResourceTest {
     private static final GpuMetrics provider = mock(GpuMetrics.class);
-    private static final HistoryManager historyManager = mock(HistoryManager.class);
+    private static final MetricsHistoryManager historyManager = mock(MetricsHistoryManager.class);
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
             .addResource(new GpuResource(provider, historyManager))

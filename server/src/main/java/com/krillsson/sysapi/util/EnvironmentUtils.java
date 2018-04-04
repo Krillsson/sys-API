@@ -8,6 +8,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.EnumSet;
 
@@ -44,5 +45,13 @@ public class EnvironmentUtils {
                 .split(NEWLINE);
 
         return Arrays.copyOfRange(arr, 2, arr.length - 1);
+    }
+
+    public static String getHostName() {
+        try {
+            return java.net.InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            return "";
+        }
     }
 }

@@ -25,7 +25,11 @@ import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.domain.system.JvmProperties;
 import com.krillsson.sysapi.core.domain.system.SystemInfo;
 import com.krillsson.sysapi.core.domain.system.SystemInfoMapper;
+import com.krillsson.sysapi.core.metrics.*;
+import com.krillsson.sysapi.dto.system.SystemLoad;
+import com.krillsson.sysapi.util.EnvironmentUtils;
 import io.dropwizard.auth.Auth;
+import oshi.PlatformEnum;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
@@ -35,30 +39,71 @@ import javax.ws.rs.core.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.Supplier;
 
 @Path("system")
 @Produces(MediaType.APPLICATION_JSON)
 public class SystemResource {
 
+    private final PlatformEnum platformEnum;
+    private final CpuMetrics cpuMetrics;
+    private final NetworkMetrics networkMetrics;
+    private final DriveMetrics driveMetrics;
+    private final MemoryMetrics memoryMetrics;
+    private final GpuMetrics gpuMetrics;
+    private final MotherboardMetrics motherboardMetrics;
+    private final Supplier<Long> uptimeSupplier;
 
-    public SystemResource() {
-
+    public SystemResource(PlatformEnum platformEnum, CpuMetrics cpuMetrics,
+                          NetworkMetrics networkMetrics,
+                          DriveMetrics driveMetrics,
+                          MemoryMetrics memoryMetrics,
+                          GpuMetrics gpuMetrics,
+                          MotherboardMetrics motherboardMetrics, Supplier<Long> uptimeSupplier) {
+        this.platformEnum = platformEnum;
+        this.cpuMetrics = cpuMetrics;
+        this.networkMetrics = networkMetrics;
+        this.driveMetrics = driveMetrics;
+        this.memoryMetrics = memoryMetrics;
+        this.gpuMetrics = gpuMetrics;
+        this.motherboardMetrics = motherboardMetrics;
+        this.uptimeSupplier = uptimeSupplier;
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public com.krillsson.sysapi.dto.system.SystemInfo getRoot(@Auth UserConfiguration user) {
-        SystemInfo value = null;
-        return SystemInfoMapper.INSTANCE.map(value);
+        return SystemInfoMapper.INSTANCE.map(new SystemInfo(
+                EnvironmentUtils.getHostName(),
+                platformEnum,
+                cpuMetrics.cpuInfo(),
+                motherboardMetrics.motherboard(),
+                memoryMetrics.globalMemory(),
+                driveMetrics.drives(),
+                networkMetrics.networkInterfaces(),
+                gpuMetrics.gpus()
+        ));
+    }
+
+    @GET
+    @Path("load")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public SystemLoad getLoad(@Auth UserConfiguration user) {
+        return SystemInfoMapper.INSTANCE.map(new com.krillsson.sysapi.core.domain.system.SystemLoad(
+                cpuMetrics.cpuLoad(),
+                networkMetrics.networkInterfaceLoads(),
+                driveMetrics.driveLoads(),
+                memoryMetrics.globalMemory(),
+                gpuMetrics.gpuLoads(),
+                motherboardMetrics.motherboardHealth()
+        ));
     }
 
     @GET
     @Path("uptime")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public long getUptime(@Auth UserConfiguration user) {
-
-
-        return 0L;
+        return uptimeSupplier.get();
     }
 
 
@@ -73,5 +118,6 @@ public class SystemResource {
         }
         return SystemInfoMapper.INSTANCE.map(new JvmProperties(propertiesMap));
     }
+
 
 }

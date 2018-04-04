@@ -2,6 +2,7 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
 import com.krillsson.sysapi.core.history.HistoryManager;
+import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.CpuMetrics;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.After;
@@ -17,7 +18,7 @@ import static org.mockito.Mockito.*;
 
 public class CpuResourceTest {
     private static final CpuMetrics provider = mock(CpuMetrics.class);
-    private static final HistoryManager historyManager = mock(HistoryManager.class);
+    private static final MetricsHistoryManager historyManager = mock(MetricsHistoryManager.class);
 
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()

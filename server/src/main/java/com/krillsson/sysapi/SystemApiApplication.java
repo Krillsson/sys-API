@@ -54,6 +54,7 @@ import oshi.software.os.OperatingSystem;
 import java.net.NetworkInterface;
 import java.time.Clock;
 import java.util.concurrent.Executors;
+import java.util.function.Supplier;
 
 
 public class SystemApiApplication extends Application<SystemApiConfiguration> {
@@ -138,7 +139,16 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
                 .initializeWith(provider);
         environment.lifecycle().manage(historyManager);
 
-        //environment.jersey().register(new SystemResource(provider.));
+        environment.jersey().register(new SystemResource(
+                SystemInfo.getCurrentPlatformEnum(),
+                provider.cpuMetrics(),
+                provider.networkMetrics(),
+                provider.driveMetrics(),
+                provider.memoryMetrics(),
+                provider.gpuMetrics(),
+                provider.motherboardMetrics(),
+                () -> hal.getProcessor().getSystemUptime()
+        ));
         environment.jersey().register(new DrivesResource(provider.driveMetrics(), historyManager));
         environment.jersey().register(new GpuResource(provider.gpuMetrics(), historyManager));
         environment.jersey().register(new MemoryResource(provider.memoryMetrics(), historyManager));
