@@ -133,7 +133,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
                 Executors.newSingleThreadScheduledExecutor(
                         new ThreadFactoryBuilder()
                                 .setNameFormat("history-mgr-%d")
-                                .build()))
+                                .build()), historyConfiguration)
                 .initializeWith(provider);
         environment.lifecycle().manage(historyManager);
 

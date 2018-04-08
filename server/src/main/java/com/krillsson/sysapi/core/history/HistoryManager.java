@@ -1,18 +1,20 @@
 package com.krillsson.sysapi.core.history;
 
+import com.krillsson.sysapi.config.HistoryConfiguration;
 import io.dropwizard.lifecycle.Managed;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class HistoryManager implements Managed {
     private final Map<Class, History> histories;
     private final ScheduledExecutorService executorService;
+    private final HistoryConfiguration configuration;
 
-    public HistoryManager(ScheduledExecutorService executorService) {
+    public HistoryManager(ScheduledExecutorService executorService, HistoryConfiguration configuration) {
+        this.configuration = configuration;
         this.histories = new HashMap<>();
         this.executorService = executorService;
     }
@@ -40,8 +42,18 @@ public class HistoryManager implements Managed {
 
     @Override
     public void start() throws Exception {
-        executorService.scheduleAtFixedRate(this::executeRecording, 0, 1, TimeUnit.MINUTES);
-        executorService.scheduleWithFixedDelay(this::executePurging,  12,12, TimeUnit.HOURS);
+        executorService.scheduleAtFixedRate(
+                this::executeRecording,
+                configuration.getInitialDelay(),
+                configuration.getPeriod(),
+                configuration.getPeriodUnit()
+        );
+        executorService.scheduleWithFixedDelay(
+                this::executePurging,
+                configuration.getPurgingConfiguration().getPurgeEveryInitialDelay(),
+                configuration.getPurgingConfiguration().getPurgeEveryDelay(),
+                configuration.getPurgingConfiguration().getPurgeEveryUnit()
+        );
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.history;
 
+import com.krillsson.sysapi.config.HistoryConfiguration;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.core.domain.drives.DriveLoad;
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad;
@@ -16,8 +17,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Supplier;
 
 public class MetricsHistoryManager extends HistoryManager {
-    public MetricsHistoryManager(ScheduledExecutorService executorService) {
-        super(executorService);
+
+    private final HistoryConfiguration historyConfiguration;
+
+    public MetricsHistoryManager(ScheduledExecutorService executorService, HistoryConfiguration historyConfiguration) {
+        super(executorService, historyConfiguration);
+        this.historyConfiguration = historyConfiguration;
     }
 
     public MetricsHistoryManager initializeWith(MetricsFactory provider) {
@@ -59,7 +64,7 @@ public class MetricsHistoryManager extends HistoryManager {
 
         //TODO: this is generating a lot of redundant data in RAM. Maybe merge all maps upon query?
         //TODO: or only save this instead of the above
-        insert(SystemLoad.class, new History<SystemLoad>() {
+        insert(SystemLoad.class, new History<SystemLoad>(historyConfiguration.getPurgingConfiguration()) {
             @Override
             Supplier<SystemLoad> getCurrent() {
                 return (com.google.common.base.Supplier<SystemLoad>) () -> new SystemLoad(

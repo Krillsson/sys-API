@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.history;
 
+import com.krillsson.sysapi.config.HistoryPurgingConfiguration;
 import org.slf4j.Logger;
 
 import java.time.LocalDateTime;
@@ -11,8 +12,10 @@ public abstract class History<T> {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(History.class);
 
     private final Map<LocalDateTime, T> history;
+    private final HistoryPurgingConfiguration configuration;
 
-    protected History() {
+    protected History(HistoryPurgingConfiguration configuration) {
+        this.configuration = configuration;
         history = new LinkedHashMap<>();
     }
 
@@ -27,7 +30,7 @@ public abstract class History<T> {
     }
 
     public void purge() {
-        purge(5, ChronoUnit.DAYS);
+        purge(configuration.getOlderThan(), configuration.getOlderThanUnit());
     }
 
     public void purge(int olderThan, ChronoUnit unit) {
