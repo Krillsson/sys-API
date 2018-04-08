@@ -6,6 +6,7 @@ import com.krillsson.sysapi.core.domain.gpu.GpuLoad;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
 import com.krillsson.sysapi.core.metrics.MetricsFactory;
+import com.krillsson.sysapi.util.Streams;
 import oshi.hardware.GlobalMemory;
 
 import java.time.LocalDateTime;
@@ -20,7 +21,7 @@ public class MetricsHistoryManager extends HistoryManager {
     }
 
     public MetricsHistoryManager initializeWith(MetricsFactory provider) {
-        insert(CpuLoad.class, new History() {
+        /*insert(CpuLoad.class, new History() {
             @Override
             Supplier getCurrent() {
                 return () -> provider.cpuMetrics().cpuLoad();
@@ -54,9 +55,10 @@ public class MetricsHistoryManager extends HistoryManager {
             Supplier getCurrent() {
                 return () -> provider.memoryMetrics().globalMemory();
             }
-        });
+        });*/
 
         //TODO: this is generating a lot of redundant data in RAM. Maybe merge all maps upon query?
+        //TODO: or only save this instead of the above
         insert(SystemLoad.class, new History<SystemLoad>() {
             @Override
             Supplier<SystemLoad> getCurrent() {
@@ -75,22 +77,36 @@ public class MetricsHistoryManager extends HistoryManager {
     }
 
     public Map<LocalDateTime, CpuLoad> cpuLoadHistory() {
-        return get(CpuLoad.class);
+        return systemLoadHistory().entrySet()
+                .stream()
+                .collect(Streams.toLinkedMap(Map.Entry::getKey, e -> e.getValue().getCpuLoad()));
     }
 
-    public Map<LocalDateTime, List<com.krillsson.sysapi.dto.drives.DriveLoad>> driveLoadHistory() {
-        return get(DriveLoad.class);
+    public Map<LocalDateTime, SystemLoad> systemLoadHistory() {
+        return get(SystemLoad.class);
+    }
+
+    public Map<LocalDateTime, List<DriveLoad>> driveLoadHistory() {
+        return systemLoadHistory().entrySet()
+                .stream()
+                .collect(Streams.toLinkedMap(Map.Entry::getKey, e -> e.getValue().getDriveLoads()));
     }
 
     public Map<LocalDateTime, List<GpuLoad>> gpuLoadHistory() {
-        return get(GpuLoad.class);
+        return systemLoadHistory().entrySet()
+                .stream()
+                .collect(Streams.toLinkedMap(Map.Entry::getKey, e -> e.getValue().getGpuLoads()));
     }
 
     public Map<LocalDateTime, GlobalMemory> memoryHistory() {
-        return get(GlobalMemory.class);
+        return systemLoadHistory().entrySet()
+                .stream()
+                .collect(Streams.toLinkedMap(Map.Entry::getKey, e -> e.getValue().getMemory()));
     }
 
     public Map<LocalDateTime, List<NetworkInterfaceLoad>> networkInterfaceLoadHistory() {
-        return get(NetworkInterfaceLoad.class);
+        return systemLoadHistory().entrySet()
+                .stream()
+                .collect(Streams.toLinkedMap(Map.Entry::getKey, e -> e.getValue().getNetworkInterfaceLoads()));
     }
 }

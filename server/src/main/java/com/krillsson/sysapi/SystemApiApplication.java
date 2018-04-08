@@ -31,7 +31,6 @@ import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceMixin;
-import com.krillsson.sysapi.core.history.HistoryManager;
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.MetricsFactory;
 import com.krillsson.sysapi.core.metrics.MetricsProvider;
@@ -54,7 +53,6 @@ import oshi.software.os.OperatingSystem;
 import java.net.NetworkInterface;
 import java.time.Clock;
 import java.util.concurrent.Executors;
-import java.util.function.Supplier;
 
 
 public class SystemApiApplication extends Application<SystemApiConfiguration> {
@@ -147,7 +145,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
                 provider.memoryMetrics(),
                 provider.gpuMetrics(),
                 provider.motherboardMetrics(),
-                () -> hal.getProcessor().getSystemUptime()
+                historyManager, () -> hal.getProcessor().getSystemUptime()
         ));
         environment.jersey().register(new DrivesResource(provider.driveMetrics(), historyManager));
         environment.jersey().register(new GpuResource(provider.gpuMetrics(), historyManager));

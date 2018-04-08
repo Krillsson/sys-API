@@ -34,11 +34,15 @@ import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import oshi.PlatformEnum;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.ERROR,
-        uses = {CpuInfoMapper.class, GlobalMemoryMapper.class,
+        uses = {CpuInfoMapper.class, GlobalMemoryMapper.class, DateMapper.class,
                 NetworkInterfacesMapper.class, DriveMetricsMapper.class,
-                GlobalMemoryMapper.class, GpuInfoMapper.class, MotherboardMapper.class}
+                GpuInfoMapper.class, MotherboardMapper.class}
 )
 public interface SystemInfoMapper {
     SystemInfoMapper INSTANCE = Mappers.getMapper(SystemInfoMapper.class);
@@ -53,4 +57,7 @@ public interface SystemInfoMapper {
     com.krillsson.sysapi.dto.system.Version map(oshi.software.os.OperatingSystemVersion value);
 
     com.krillsson.sysapi.dto.system.JvmProperties map(JvmProperties jvmProperties);
+
+    Map<String, com.krillsson.sysapi.dto.system.SystemLoad> mapLoadHistory(Map<LocalDateTime, SystemLoad> history);
+
 }

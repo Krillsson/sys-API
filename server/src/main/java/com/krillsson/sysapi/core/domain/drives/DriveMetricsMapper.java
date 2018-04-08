@@ -23,6 +23,8 @@ package com.krillsson.sysapi.core.domain.drives;
 
 import com.krillsson.sysapi.core.domain.sensors.DataType;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
+import com.krillsson.sysapi.core.domain.system.DateMapper;
+import com.krillsson.sysapi.core.domain.system.SystemInfoMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
@@ -32,7 +34,8 @@ import java.util.List;
 import java.util.Map;
 
 @Mapper(
-        unmappedTargetPolicy = ReportingPolicy.ERROR
+        unmappedTargetPolicy = ReportingPolicy.ERROR,
+        uses = {DateMapper.class}
 )
 public interface DriveMetricsMapper {
     DriveMetricsMapper INSTANCE = Mappers.getMapper(DriveMetricsMapper.class);
@@ -61,9 +64,5 @@ public interface DriveMetricsMapper {
 
     com.krillsson.sysapi.dto.drives.Partition map(com.krillsson.sysapi.core.domain.drives.Partition value);
 
-    default String map(LocalDateTime localDateTime) {
-        return localDateTime.toString();
-    }
-
-    Map<String, List<com.krillsson.sysapi.dto.drives.DriveLoad>> mapLoadHistory(Map<LocalDateTime, List<com.krillsson.sysapi.dto.drives.DriveLoad>> history);
+    Map<String, List<com.krillsson.sysapi.dto.drives.DriveLoad>> mapLoadHistory(Map<LocalDateTime, List<DriveLoad>> history);
 }

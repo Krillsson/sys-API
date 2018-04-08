@@ -25,6 +25,7 @@ import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.domain.system.JvmProperties;
 import com.krillsson.sysapi.core.domain.system.SystemInfo;
 import com.krillsson.sysapi.core.domain.system.SystemInfoMapper;
+import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.*;
 import com.krillsson.sysapi.dto.system.SystemLoad;
 import com.krillsson.sysapi.util.EnvironmentUtils;
@@ -37,6 +38,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Supplier;
@@ -52,14 +54,16 @@ public class SystemResource {
     private final MemoryMetrics memoryMetrics;
     private final GpuMetrics gpuMetrics;
     private final MotherboardMetrics motherboardMetrics;
+    private final MetricsHistoryManager historyManager;
     private final Supplier<Long> uptimeSupplier;
+
 
     public SystemResource(PlatformEnum platformEnum, CpuMetrics cpuMetrics,
                           NetworkMetrics networkMetrics,
                           DriveMetrics driveMetrics,
                           MemoryMetrics memoryMetrics,
                           GpuMetrics gpuMetrics,
-                          MotherboardMetrics motherboardMetrics, Supplier<Long> uptimeSupplier) {
+                          MotherboardMetrics motherboardMetrics, MetricsHistoryManager historyManager, Supplier<Long> uptimeSupplier) {
         this.platformEnum = platformEnum;
         this.cpuMetrics = cpuMetrics;
         this.networkMetrics = networkMetrics;
@@ -67,6 +71,7 @@ public class SystemResource {
         this.memoryMetrics = memoryMetrics;
         this.gpuMetrics = gpuMetrics;
         this.motherboardMetrics = motherboardMetrics;
+        this.historyManager = historyManager;
         this.uptimeSupplier = uptimeSupplier;
     }
 
@@ -97,6 +102,14 @@ public class SystemResource {
                 gpuMetrics.gpuLoads(),
                 motherboardMetrics.motherboardHealth()
         ));
+    }
+
+
+    @GET
+    @Path("load/history")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public Map<String, SystemLoad> getLoadHistory(@Auth UserConfiguration user) {
+        return SystemInfoMapper.INSTANCE.mapLoadHistory(historyManager.systemLoadHistory());
     }
 
     @GET

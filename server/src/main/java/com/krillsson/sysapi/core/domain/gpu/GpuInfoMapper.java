@@ -21,6 +21,8 @@
 
 package com.krillsson.sysapi.core.domain.gpu;
 
+import com.krillsson.sysapi.core.domain.system.DateMapper;
+import com.krillsson.sysapi.core.domain.system.SystemInfoMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
@@ -31,7 +33,8 @@ import java.util.List;
 import java.util.Map;
 
 @Mapper(
-        unmappedTargetPolicy = ReportingPolicy.ERROR
+        unmappedTargetPolicy = ReportingPolicy.ERROR,
+        uses = {DateMapper.class}
 )
 public interface GpuInfoMapper {
 
@@ -56,8 +59,5 @@ public interface GpuInfoMapper {
 
     Map<String, List<com.krillsson.sysapi.dto.gpu.GpuLoad>> mapLoadHistory(Map<LocalDateTime, List<GpuLoad>> history);
 
-    default String map(LocalDateTime localDateTime) {
-        return localDateTime.toString();
-    }
 
 }

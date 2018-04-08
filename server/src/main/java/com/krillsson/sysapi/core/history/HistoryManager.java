@@ -40,8 +40,8 @@ public class HistoryManager implements Managed {
 
     @Override
     public void start() throws Exception {
-        executorService.scheduleAtFixedRate(this::executeRecording, 1, 1, TimeUnit.MINUTES);
-        executorService.scheduleAtFixedRate(this::executePurging, 1, 12, TimeUnit.HOURS);
+        executorService.scheduleAtFixedRate(this::executeRecording, 0, 1, TimeUnit.MINUTES);
+        executorService.scheduleWithFixedDelay(this::executePurging,  12,12, TimeUnit.HOURS);
     }
 
     @Override

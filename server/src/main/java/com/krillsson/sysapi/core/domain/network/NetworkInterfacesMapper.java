@@ -21,6 +21,8 @@
 
 package com.krillsson.sysapi.core.domain.network;
 
+import com.krillsson.sysapi.core.domain.system.DateMapper;
+import com.krillsson.sysapi.core.domain.system.SystemInfoMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
@@ -30,7 +32,8 @@ import java.util.List;
 import java.util.Map;
 
 @Mapper(
-        unmappedTargetPolicy = ReportingPolicy.ERROR
+        unmappedTargetPolicy = ReportingPolicy.ERROR,
+        uses = {DateMapper.class}
 )
 public interface NetworkInterfacesMapper {
     NetworkInterfacesMapper INSTANCE = Mappers.getMapper(NetworkInterfacesMapper.class);
@@ -44,10 +47,6 @@ public interface NetworkInterfacesMapper {
     List<com.krillsson.sysapi.dto.network.NetworkInterface> map(List<NetworkInterface> value);
 
     List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad> mapLoads(List<NetworkInterfaceLoad> value);
-
-    default String map(LocalDateTime localDateTime) {
-        return localDateTime.toString();
-    }
 
     Map<String, List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad>> mapLoadHistory(Map<LocalDateTime, List<NetworkInterfaceLoad>> history);
 
