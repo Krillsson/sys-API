@@ -44,7 +44,7 @@ public class HistoryManager implements Managed {
     public void start() throws Exception {
         executorService.scheduleAtFixedRate(
                 this::executeRecording,
-                configuration.getDuration(),
+                0,
                 configuration.getDuration(),
                 configuration.getUnit()
         );
