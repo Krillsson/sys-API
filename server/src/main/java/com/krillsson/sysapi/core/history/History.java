@@ -30,7 +30,7 @@ public abstract class History<T> {
     }
 
     public void purge() {
-        purge(configuration.getOlderThan(), configuration.getOlderThanUnit());
+        purge(configuration.getOlderThan(), configuration.getUnit());
     }
 
     public void purge(int olderThan, ChronoUnit unit) {

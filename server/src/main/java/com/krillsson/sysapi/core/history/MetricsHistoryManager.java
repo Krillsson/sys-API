@@ -64,7 +64,7 @@ public class MetricsHistoryManager extends HistoryManager {
 
         //TODO: this is generating a lot of redundant data in RAM. Maybe merge all maps upon query?
         //TODO: or only save this instead of the above
-        insert(SystemLoad.class, new History<SystemLoad>(historyConfiguration.getPurgingConfiguration()) {
+        insert(SystemLoad.class, new History<SystemLoad>(historyConfiguration.getPurging()) {
             @Override
             Supplier<SystemLoad> getCurrent() {
                 return (com.google.common.base.Supplier<SystemLoad>) () -> new SystemLoad(

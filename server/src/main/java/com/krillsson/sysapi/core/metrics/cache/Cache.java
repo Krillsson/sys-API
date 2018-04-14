@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.metrics.cache;
 
+import com.krillsson.sysapi.config.CacheConfiguration;
 import com.krillsson.sysapi.core.metrics.*;
 
 public class Cache implements MetricsFactory {
@@ -11,18 +12,18 @@ public class Cache implements MetricsFactory {
     private final MotherboardMetrics motherboardMetrics;
     private final MemoryMetrics memoryMetrics;
 
-    private Cache(MetricsFactory provider) {
-        this.cpuMetrics = new CachingCpuMetrics(provider.cpuMetrics());
-        this.networkMetrics = new CachingNetworkMetrics(provider.networkMetrics());
-        this.gpuMetrics = new CachingGpuMetrics(provider.gpuMetrics());
-        this.driveMetrics = new CachingDriveMetrics(provider.driveMetrics());
-        this.processesMetrics = new CachingProcessesMetrics(provider.processesMetrics());
-        this.motherboardMetrics = new CachingMotherboardMetrics(provider.motherboardMetrics());
-        this.memoryMetrics = new CachingMemoryMetrics(provider.memoryMetrics());
+    private Cache(MetricsFactory provider, CacheConfiguration cacheConfiguration) {
+        this.cpuMetrics = new CachingCpuMetrics(provider.cpuMetrics(), cacheConfiguration);
+        this.networkMetrics = new CachingNetworkMetrics(provider.networkMetrics(), cacheConfiguration);
+        this.gpuMetrics = new CachingGpuMetrics(provider.gpuMetrics(), cacheConfiguration);
+        this.driveMetrics = new CachingDriveMetrics(provider.driveMetrics(), cacheConfiguration);
+        this.processesMetrics = new CachingProcessesMetrics(provider.processesMetrics(), cacheConfiguration);
+        this.motherboardMetrics = new CachingMotherboardMetrics(provider.motherboardMetrics(), cacheConfiguration);
+        this.memoryMetrics = new CachingMemoryMetrics(provider.memoryMetrics(), cacheConfiguration);
     }
 
-    public static MetricsFactory wrap(MetricsFactory factory) {
-        return new Cache(factory);
+    public static MetricsFactory wrap(MetricsFactory factory, CacheConfiguration cacheConfiguration) {
+        return new Cache(factory, cacheConfiguration);
     }
 
     @Override

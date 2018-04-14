@@ -99,9 +99,9 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
 
         final BasicCredentialAuthFilter<UserConfiguration> userBasicCredentialAuthFilter =
                 new BasicCredentialAuthFilter.Builder<UserConfiguration>()
-                        .setAuthenticator(new BasicAuthenticator(config.getUser()))
+                        .setAuthenticator(new BasicAuthenticator(config.user()))
                         .setRealm("System-Api")
-                        .setAuthorizer(new BasicAuthorizer(config.getUser()))
+                        .setAuthorizer(new BasicAuthorizer(config.user()))
                         .buildAuthFilter();
 
         SystemInfo systemInfo = new SystemInfo();
@@ -133,7 +133,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
                 Executors.newSingleThreadScheduledExecutor(
                         new ThreadFactoryBuilder()
                                 .setNameFormat("history-mgr-%d")
-                                .build()), historyConfiguration)
+                                .build()), config.metrics().getHistory())
                 .initializeWith(provider);
         environment.lifecycle().manage(historyManager);
 

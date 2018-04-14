@@ -44,15 +44,15 @@ public class HistoryManager implements Managed {
     public void start() throws Exception {
         executorService.scheduleAtFixedRate(
                 this::executeRecording,
-                configuration.getInitialDelay(),
-                configuration.getPeriod(),
-                configuration.getPeriodUnit()
+                configuration.getDuration(),
+                configuration.getDuration(),
+                configuration.getUnit()
         );
         executorService.scheduleWithFixedDelay(
                 this::executePurging,
-                configuration.getPurgingConfiguration().getPurgeEveryInitialDelay(),
-                configuration.getPurgingConfiguration().getPurgeEveryDelay(),
-                configuration.getPurgingConfiguration().getPurgeEveryUnit()
+                configuration.getPurging().getPurgeEvery(),
+                configuration.getPurging().getPurgeEvery(),
+                configuration.getPurging().getPurgeEveryUnit()
         );
     }
 

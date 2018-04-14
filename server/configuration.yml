@@ -1,6 +1,18 @@
 #########################################
 ### System-Api configuration          ###
 #########################################
+monitor:
+  history:
+    duration: 30
+    unit: MINUTES
+    purging:
+      olderThan: 3
+      unit: DAYS
+      purgeEvery: 1
+      purgeEveryUnit: DAYS
+  cache:
+    duration: 5
+    unit: SECONDS
 user:
   username: user
   password: password

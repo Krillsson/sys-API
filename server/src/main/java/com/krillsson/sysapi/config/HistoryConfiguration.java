@@ -1,26 +1,43 @@
 package com.krillsson.sysapi.config;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.concurrent.TimeUnit;
 
 public class HistoryConfiguration {
-    private HistoryPurgingConfiguration purgingConfiguration;
-    private long initialDelay;
-    private long period;
-    private TimeUnit periodUnit;
+    @Valid
+    @NotNull
+    @JsonProperty
+    private HistoryPurgingConfiguration purging;
+    @Valid
+    @NotNull
+    @JsonProperty
+    private long duration;
+    @Valid
+    @NotNull
+    @JsonProperty
+    private TimeUnit unit;
 
-    public HistoryPurgingConfiguration getPurgingConfiguration() {
-        return purgingConfiguration;
+    public HistoryConfiguration(HistoryPurgingConfiguration purging, long duration, TimeUnit unit) {
+        this.purging = purging;
+        this.duration = duration;
+        this.unit = unit;
     }
 
-    public long getInitialDelay() {
-        return initialDelay;
+    public HistoryConfiguration() {
     }
 
-    public long getPeriod() {
-        return period;
+    public HistoryPurgingConfiguration getPurging() {
+        return purging;
     }
 
-    public TimeUnit getPeriodUnit() {
-        return periodUnit;
+    public long getDuration() {
+        return duration;
+    }
+
+    public TimeUnit getUnit() {
+        return unit;
     }
 }

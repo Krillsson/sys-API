@@ -5,13 +5,13 @@ import com.google.common.base.Suppliers;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.krillsson.sysapi.config.CacheConfiguration;
 import com.krillsson.sysapi.core.domain.network.NetworkInterface;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad;
 import com.krillsson.sysapi.core.metrics.NetworkMetrics;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 public class CachingNetworkMetrics implements NetworkMetrics {
 
@@ -20,19 +20,17 @@ public class CachingNetworkMetrics implements NetworkMetrics {
     private final LoadingCache<String, Optional<NetworkInterface>> networkInterfaceQueryCache;
     private final LoadingCache<String, Optional<NetworkInterfaceLoad>> networkInterfaceLoadQueryCache;
 
-    public CachingNetworkMetrics(NetworkMetrics networkMetrics) {
+    public CachingNetworkMetrics(NetworkMetrics networkMetrics, CacheConfiguration cacheConfiguration) {
         this.networkInterfacesCache = Suppliers.memoizeWithExpiration(
                 networkMetrics::networkInterfaces,
-                5,
-                TimeUnit.SECONDS
+                cacheConfiguration.getDuration(), cacheConfiguration.getUnit()
         );
         this.networkInterfaceLoadsCache = Suppliers.memoizeWithExpiration(
                 networkMetrics::networkInterfaceLoads,
-                5,
-                TimeUnit.SECONDS
+                cacheConfiguration.getDuration(), cacheConfiguration.getUnit()
         );
         this.networkInterfaceLoadQueryCache = CacheBuilder.newBuilder()
-                .expireAfterWrite(5, TimeUnit.SECONDS)
+                .expireAfterWrite(cacheConfiguration.getDuration(), cacheConfiguration.getUnit())
                 .build(new CacheLoader<String, Optional<NetworkInterfaceLoad>>() {
                     @Override
                     public Optional<NetworkInterfaceLoad> load(String s) throws Exception {
@@ -40,7 +38,7 @@ public class CachingNetworkMetrics implements NetworkMetrics {
                     }
                 });
         this.networkInterfaceQueryCache = CacheBuilder.newBuilder()
-                .expireAfterWrite(5, TimeUnit.SECONDS)
+                .expireAfterWrite(cacheConfiguration.getDuration(), cacheConfiguration.getUnit())
                 .build(new CacheLoader<String, Optional<NetworkInterface>>() {
                     @Override
                     public Optional<NetworkInterface> load(String s) throws Exception {

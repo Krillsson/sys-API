@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.krillsson.sysapi.config.CacheConfiguration;
 import com.krillsson.sysapi.core.domain.processes.Process;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import com.krillsson.sysapi.core.metrics.ProcessesMetrics;
@@ -11,7 +12,6 @@ import oshi.software.os.OperatingSystem;
 
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Using the process sort and limit arguments as the key for the ProcessInfo cache will cause
@@ -25,14 +25,14 @@ public class CachingProcessesMetrics implements ProcessesMetrics {
     private final ProcessesMetrics processesMetrics;
 
 
-    public CachingProcessesMetrics(ProcessesMetrics processesMetrics) {
+    public CachingProcessesMetrics(ProcessesMetrics processesMetrics, CacheConfiguration cacheConfiguration) {
         this.processesMetrics = processesMetrics;
         this.processesInfoCache = CacheBuilder.newBuilder()
                 .maximumSize(1)
-                .expireAfterWrite(5, TimeUnit.SECONDS)
+                .expireAfterWrite(cacheConfiguration.getDuration(), cacheConfiguration.getUnit())
                 .build();
         this.processQueryCache = CacheBuilder.newBuilder()
-                .expireAfterWrite(5, TimeUnit.SECONDS)
+                .expireAfterWrite(cacheConfiguration.getDuration(), cacheConfiguration.getUnit())
                 .build(new CacheLoader<Integer, Optional<Process>>() {
                     @Override
                     public Optional<Process> load(Integer s) throws Exception {
