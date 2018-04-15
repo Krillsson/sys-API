@@ -1,12 +1,15 @@
 #########################################
 ### System-Api configuration          ###
 #########################################
-monitor:
+metricsConfig:
+  monitor:
+    inertia: 1
+    unit: MINUTES
   history:
     duration: 30
-    unit: MINUTES
+    unit: SECONDS
     purging:
-      olderThan: 3
+      olderThan: 1
       unit: DAYS
       purgeEvery: 1
       purgeEveryUnit: DAYS

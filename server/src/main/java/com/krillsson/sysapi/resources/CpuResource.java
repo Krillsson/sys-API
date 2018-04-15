@@ -28,6 +28,7 @@ import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.core.history.HistoryManager;
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.CpuMetrics;
+import com.krillsson.sysapi.dto.history.HistoryEntry;
 import io.dropwizard.auth.Auth;
 
 import javax.annotation.security.RolesAllowed;
@@ -36,6 +37,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Path("cpu")
@@ -67,8 +69,8 @@ public class CpuResource {
     @GET
     @Path("load/history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public Map<String, com.krillsson.sysapi.dto.cpu.CpuLoad> getLoadHistory(@Auth UserConfiguration user) {
-        return CpuInfoMapper.INSTANCE.mapLoadHistory(historyManager.cpuLoadHistory());
+    public List<HistoryEntry<com.krillsson.sysapi.dto.cpu.CpuLoad>> getLoadHistory(@Auth UserConfiguration user) {
+        return CpuInfoMapper.INSTANCE.mapHistory(historyManager.cpuLoadHistory());
     }
 
 }

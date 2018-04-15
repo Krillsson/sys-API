@@ -11,22 +11,33 @@ import java.util.function.Supplier;
 public abstract class History<T> {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(History.class);
 
-    private final Map<LocalDateTime, T> history;
+    private final List<HistoryEntry<T>> history;
     private final HistoryPurgingConfiguration configuration;
+
+
+    public static class HistoryEntry<T> {
+        public final LocalDateTime date;
+        public final T value;
+
+        public HistoryEntry(LocalDateTime date, T value) {
+            this.date = date;
+            this.value = value;
+        }
+    }
 
     protected History(HistoryPurgingConfiguration configuration) {
         this.configuration = configuration;
-        history = new LinkedHashMap<>();
+        history = new ArrayList<>();
     }
 
-    public Map<LocalDateTime, T> get() {
-        return Collections.unmodifiableMap(history);
+    public List<HistoryEntry<T>> get() {
+        return Collections.unmodifiableList(history);
     }
 
     public void record() {
         T value = getCurrent().get();
         LOGGER.trace("Recording history for {}", value.getClass().getSimpleName());
-        history.put(LocalDateTime.now(/* with system timezone */), value);
+        history.add(new HistoryEntry<>(LocalDateTime.now(/* with system timezone */), value));
     }
 
     public void purge() {
@@ -35,9 +46,9 @@ public abstract class History<T> {
 
     public void purge(int olderThan, ChronoUnit unit) {
         LocalDateTime maxAge = LocalDateTime.now().minus(olderThan, unit);
-        Set<LocalDateTime> toBeRemoved = new HashSet<>();
-        for (LocalDateTime historyEntry : history.keySet()) {
-            if (historyEntry.isBefore(maxAge)) {
+        Set<HistoryEntry> toBeRemoved = new HashSet<>();
+        for (HistoryEntry historyEntry : history) {
+            if (historyEntry.date.isBefore(maxAge)) {
                 toBeRemoved.add(historyEntry);
             }
         }

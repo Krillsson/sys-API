@@ -27,6 +27,8 @@ import com.krillsson.sysapi.core.domain.gpu.GpuInfoMapper;
 import com.krillsson.sysapi.core.domain.memory.GlobalMemoryMapper;
 import com.krillsson.sysapi.core.domain.motherboard.MotherboardMapper;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfacesMapper;
+import com.krillsson.sysapi.core.history.History;
+import com.krillsson.sysapi.dto.history.HistoryEntry;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -59,5 +61,6 @@ public interface SystemInfoMapper {
     com.krillsson.sysapi.dto.system.JvmProperties map(JvmProperties jvmProperties);
 
     Map<String, com.krillsson.sysapi.dto.system.SystemLoad> mapLoadHistory(Map<LocalDateTime, SystemLoad> history);
+    List<HistoryEntry<com.krillsson.sysapi.dto.system.SystemLoad>> mapHistory(List<History.HistoryEntry<SystemLoad>> history);
 
 }

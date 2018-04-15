@@ -5,6 +5,7 @@ import io.dropwizard.lifecycle.Managed;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -24,7 +25,7 @@ public class HistoryManager implements Managed {
     }
 
     //TODO: not so pretty with the type system
-    public <T> Map<LocalDateTime, T> get(Class clazz) {
+    public <T> List<History.HistoryEntry<T>> get(Class clazz) {
         return histories.get(clazz).get();
     }
 

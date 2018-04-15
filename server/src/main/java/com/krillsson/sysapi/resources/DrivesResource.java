@@ -26,14 +26,13 @@ import com.krillsson.sysapi.core.domain.drives.DriveMetricsMapper;
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.DriveMetrics;
 import com.krillsson.sysapi.dto.drives.DriveLoad;
+import com.krillsson.sysapi.dto.history.HistoryEntry;
 import io.dropwizard.auth.Auth;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
@@ -87,8 +86,8 @@ public class DrivesResource {
     @GET
     @Path("loads/history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public Map<String, List<com.krillsson.sysapi.dto.drives.DriveLoad>> getLoadHistory(@Auth UserConfiguration user) {
-        return DriveMetricsMapper.INSTANCE.mapLoadHistory(historyManager.driveLoadHistory());
+    public List<HistoryEntry<List<DriveLoad>>> getLoadHistory(@Auth UserConfiguration user) {
+        return DriveMetricsMapper.INSTANCE.mapHistory(historyManager.driveLoadHistory());
     }
 
 }

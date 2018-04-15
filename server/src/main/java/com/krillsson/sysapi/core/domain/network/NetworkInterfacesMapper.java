@@ -23,6 +23,8 @@ package com.krillsson.sysapi.core.domain.network;
 
 import com.krillsson.sysapi.core.domain.system.DateMapper;
 import com.krillsson.sysapi.core.domain.system.SystemInfoMapper;
+import com.krillsson.sysapi.core.history.History;
+import com.krillsson.sysapi.dto.history.HistoryEntry;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
@@ -49,5 +51,7 @@ public interface NetworkInterfacesMapper {
     List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad> mapLoads(List<NetworkInterfaceLoad> value);
 
     Map<String, List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad>> mapLoadHistory(Map<LocalDateTime, List<NetworkInterfaceLoad>> history);
+
+    List<HistoryEntry<List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad>>> mapHistory(List<History.HistoryEntry<List<NetworkInterfaceLoad>>> history);
 
 }

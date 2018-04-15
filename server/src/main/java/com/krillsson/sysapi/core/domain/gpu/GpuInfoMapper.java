@@ -23,6 +23,8 @@ package com.krillsson.sysapi.core.domain.gpu;
 
 import com.krillsson.sysapi.core.domain.system.DateMapper;
 import com.krillsson.sysapi.core.domain.system.SystemInfoMapper;
+import com.krillsson.sysapi.core.history.History;
+import com.krillsson.sysapi.dto.history.HistoryEntry;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
@@ -59,5 +61,6 @@ public interface GpuInfoMapper {
 
     Map<String, List<com.krillsson.sysapi.dto.gpu.GpuLoad>> mapLoadHistory(Map<LocalDateTime, List<GpuLoad>> history);
 
+    List<HistoryEntry<List<com.krillsson.sysapi.dto.gpu.GpuLoad>>> mapHistory(List<History.HistoryEntry<List<GpuLoad>>> history);
 
 }

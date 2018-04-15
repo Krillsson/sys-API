@@ -27,6 +27,7 @@ import com.krillsson.sysapi.core.domain.system.SystemInfo;
 import com.krillsson.sysapi.core.domain.system.SystemInfoMapper;
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.*;
+import com.krillsson.sysapi.dto.history.HistoryEntry;
 import com.krillsson.sysapi.dto.system.SystemLoad;
 import com.krillsson.sysapi.util.EnvironmentUtils;
 import io.dropwizard.auth.Auth;
@@ -108,8 +109,8 @@ public class SystemResource {
     @GET
     @Path("load/history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public Map<String, SystemLoad> getLoadHistory(@Auth UserConfiguration user) {
-        return SystemInfoMapper.INSTANCE.mapLoadHistory(historyManager.systemLoadHistory());
+    public List<HistoryEntry<SystemLoad>> getLoadHistory(@Auth UserConfiguration user) {
+        return SystemInfoMapper.INSTANCE.mapHistory(historyManager.systemLoadHistory());
     }
 
     @GET

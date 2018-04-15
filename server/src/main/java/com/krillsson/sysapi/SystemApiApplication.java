@@ -34,6 +34,8 @@ import com.krillsson.sysapi.core.domain.network.NetworkInterfaceMixin;
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.MetricsFactory;
 import com.krillsson.sysapi.core.metrics.MetricsProvider;
+import com.krillsson.sysapi.core.monitor.DriveMonitor;
+import com.krillsson.sysapi.core.monitor.MonitorManager;
 import com.krillsson.sysapi.resources.*;
 import com.krillsson.sysapi.util.EnvironmentUtils;
 import com.krillsson.sysapi.util.Utils;
@@ -136,6 +138,17 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
                                 .build()), config.metrics().getHistory())
                 .initializeWith(provider);
         environment.lifecycle().manage(historyManager);
+
+        MonitorManager monitorManager = new MonitorManager(
+                Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder()
+                                                                   .setNameFormat(
+                                                                           "monitor-mgr-%d")
+                                                                   .build()),
+                config.metrics().getHistory(),
+                historyManager
+        );
+        environment.lifecycle().manage(monitorManager);
+        monitorManager.addMonitor(new DriveMonitor("disk2", config.metrics().getMonitor().duration(), 16260259840L + 1000L, 16260259840L + 500L));
 
         environment.jersey().register(new SystemResource(
                 SystemInfo.getCurrentPlatformEnum(),

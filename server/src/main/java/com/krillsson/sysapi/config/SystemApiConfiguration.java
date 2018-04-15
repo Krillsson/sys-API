@@ -36,7 +36,7 @@ public class SystemApiConfiguration extends Configuration {
     @Valid
     @NotNull
     @JsonProperty
-    private MetricsConfiguration monitor;
+    private MetricsConfiguration metricsConfig;
 
     @Valid
     @JsonProperty
@@ -47,7 +47,7 @@ public class SystemApiConfiguration extends Configuration {
     private boolean forwardHttps;
 
     public MetricsConfiguration metrics() {
-        return monitor;
+        return metricsConfig;
     }
 
     public UserConfiguration user() {
