@@ -145,7 +145,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
                                                                            "monitor-mgr-%d")
                                                                    .build()),
                 config.metrics().getHistory(),
-                historyManager
+                eventBus
         );
         environment.lifecycle().manage(monitorManager);
         monitorManager.addMonitor(new DriveMonitor("disk2", config.metrics().getMonitor().duration(), 16260259840L + 1000L, 16260259840L + 500L));

@@ -19,50 +19,12 @@ public class MetricsHistoryManager extends HistoryManager {
     private final HistoryConfiguration historyConfiguration;
 
     public MetricsHistoryManager(ScheduledExecutorService executorService, HistoryConfiguration historyConfiguration) {
-        super(executorService, historyConfiguration);
+        super(historyConfiguration);
         this.historyConfiguration = historyConfiguration;
     }
 
     public MetricsHistoryManager initializeWith(MetricsFactory provider) {
-        /*insert(CpuLoad.class, new History() {
-            @Override
-            Supplier getCurrent() {
-                return () -> provider.cpuMetrics().cpuLoad();
-            }
-        });
-
-        insert(DriveLoad.class, new History() {
-            @Override
-            Supplier getCurrent() {
-                return () -> provider.driveMetrics().driveLoads();
-            }
-        });
-
-        insert(GpuLoad.class, new History() {
-            @Override
-            Supplier getCurrent() {
-                return () -> provider.gpuMetrics().gpuLoads();
-            }
-        });
-
-        insert(NetworkInterfaceLoad.class, new History() {
-            @Override
-            Supplier getCurrent() {
-                return () -> provider.networkMetrics().networkInterfaceLoads();
-            }
-        });
-
-        insert(GlobalMemory.class, new History() {
-
-            @Override
-            Supplier getCurrent() {
-                return () -> provider.memoryMetrics().globalMemory();
-            }
-        });*/
-
-        //TODO: this is generating a lot of redundant data in RAM. Maybe merge all maps upon query?
-        //TODO: or only save this instead of the above
-        insert(SystemLoad.class, new History<SystemLoad>(historyConfiguration.getPurging()) {
+        insert(SystemLoad.class, new History<SystemLoad>() {
             @Override
             Supplier<SystemLoad> getCurrent() {
                 return (com.google.common.base.Supplier<SystemLoad>) () -> new SystemLoad(

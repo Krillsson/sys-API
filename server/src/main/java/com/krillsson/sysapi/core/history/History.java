@@ -8,12 +8,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Supplier;
 
-public abstract class History<T> {
+public class History<T> {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(History.class);
 
     private final List<HistoryEntry<T>> history;
-    private final HistoryPurgingConfiguration configuration;
-
 
     public static class HistoryEntry<T> {
         public final LocalDateTime date;
@@ -25,8 +23,7 @@ public abstract class History<T> {
         }
     }
 
-    protected History(HistoryPurgingConfiguration configuration) {
-        this.configuration = configuration;
+    protected History() {
         history = new ArrayList<>();
     }
 
@@ -34,14 +31,9 @@ public abstract class History<T> {
         return Collections.unmodifiableList(history);
     }
 
-    public void record() {
-        T value = getCurrent().get();
+    public void record(T value) {
         LOGGER.trace("Recording history for {}", value.getClass().getSimpleName());
         history.add(new HistoryEntry<>(LocalDateTime.now(/* with system timezone */), value));
-    }
-
-    public void purge() {
-        purge(configuration.getOlderThan(), configuration.getUnit());
     }
 
     public void purge(int olderThan, ChronoUnit unit) {
@@ -56,6 +48,4 @@ public abstract class History<T> {
         LOGGER.trace("Purging {} entries older than {} {}", toBeRemoved.size(), olderThan, unit.name());
         toBeRemoved.forEach(history::remove);
     }
-
-    abstract Supplier<T> getCurrent();
 }

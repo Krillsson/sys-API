@@ -1,65 +1,37 @@
 package com.krillsson.sysapi.core.history;
 
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.krillsson.sysapi.config.HistoryConfiguration;
+import com.krillsson.sysapi.core.domain.system.SystemLoad;
+import com.krillsson.sysapi.core.query.QueryEvent;
 import io.dropwizard.lifecycle.Managed;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ScheduledExecutorService;
-
 public class HistoryManager implements Managed {
-    private final Map<Class, History> histories;
-    private final ScheduledExecutorService executorService;
+    private final History<SystemLoad> history;
+    private final EventBus eventBus;
     private final HistoryConfiguration configuration;
 
-    public HistoryManager(ScheduledExecutorService executorService, HistoryConfiguration configuration) {
+    public HistoryManager(HistoryConfiguration configuration, EventBus eventBus) {
         this.configuration = configuration;
-        this.histories = new HashMap<>();
-        this.executorService = executorService;
+        this.eventBus = eventBus;
+        this.history = new History<>();
     }
 
-    public <T> void insert(Class clazz, History<T> history) {
-        histories.put(clazz, history);
-    }
-
-    //TODO: not so pretty with the type system
-    public <T> List<History.HistoryEntry<T>> get(Class clazz) {
-        return histories.get(clazz).get();
-    }
-
-    private void executeRecording() {
-        for (History history : histories.values()) {
-            history.record();
-        }
-    }
-
-    private void executePurging() {
-        for (History history : histories.values()) {
-            history.purge();
-        }
+    @Subscribe
+    public void onEvent(QueryEvent event)
+    {
+        history.record(event.load());
+        history.purge(configuration.getPurging().getOlderThan(), configuration.getPurging().getUnit());
     }
 
     @Override
     public void start() throws Exception {
-        executorService.scheduleAtFixedRate(
-                this::executeRecording,
-                0,
-                configuration.getDuration(),
-                configuration.getUnit()
-        );
-        executorService.scheduleWithFixedDelay(
-                this::executePurging,
-                configuration.getPurging().getPurgeEvery(),
-                configuration.getPurging().getPurgeEvery(),
-                configuration.getPurging().getPurgeEveryUnit()
-        );
+        eventBus.register(this);
     }
 
     @Override
     public void stop() throws Exception {
-        executorService.shutdownNow();
-        histories.clear();
+        eventBus.unregister(this);
     }
 }
