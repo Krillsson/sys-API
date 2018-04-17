@@ -6,80 +6,76 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static java.time.Duration.between;
+
 public abstract class Monitor<T, R> {
     private final String id;
     //id to monitor
     private final Duration inertia;
-    private boolean steppedOverThreshold;
-    private LocalDateTime steppedOverAt;
+    private LocalDateTime stateChangedAt = null;
+    private State state;
+
+    enum State {
+        BELOW,
+        ABOVE_BEFORE_INERTIA,
+        ABOVE,
+        BELOW_BEFORE_INERTIA
+    }
 
     public Monitor(String id, Duration inertia) {
         this.id = id;
         this.inertia = inertia;
     }
 
-    Optional<MonitorEvent> check(SystemLoad event) {
+    Optional<MonitorEvent> check(SystemLoad systemLoad) {
 
         LocalDateTime now = LocalDateTime.now();
 
-        T value = value(event);
+        T value = value(systemLoad);
+        boolean aboveThreshold = isAboveThreshold(value);
+        boolean pastInertia = stateChangedAt != null && between(now, /* and */ stateChangedAt).compareTo(inertia) > 0;
+        State newState;
 
-        if(isAboveThreshold(value)){
-            if(!steppedOverThreshold){
-                steppedOverThreshold = true;
-                steppedOverAt = now;
+        if (aboveThreshold) {
+            newState = State.ABOVE_BEFORE_INERTIA;
+            if (pastInertia) {
+                newState = State.ABOVE;
             }
-
-            if(Duration.between(now, steppedOverAt).compareTo(inertia) > 0){
-
-            }
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-        //TODO this isn't inertia
-        //TODO inertia: if we detect a raised value. It has to be rasied for x duration before we warn.
-        if (isAboveThreshold(value)) {
-            if (!steppedOverThreshold) {
-                steppedOverThreshold = true;
-                return Optional.of(new MonitorEvent<>(
-                        now,
-                        MonitorEvent.Severity.CRITICAL,
-                        MonitorEvent.Type.START,
-                        average
-                ));
-            } else {
-                /*return Optional.of(new MonitorEvent<>(
-                        now,
-                        MonitorEvent.Severity.CRITICAL,
-                        MonitorEvent.Type.ONGOING,
-                        average
-                ));*/
-                return Optional.empty();
-            }
-        } else if (isNearThreshold(average)) {
-            return Optional.of(new MonitorEvent<>(
-                    now,
-                    MonitorEvent.Severity.WARNING,
-                    MonitorEvent.Type.STANDALONE,
-                    average
-            ));
-        } else if (steppedOverThreshold) {
-            steppedOverThreshold = false;
-            return Optional.of(new MonitorEvent<>(now, MonitorEvent.Severity.NONE, MonitorEvent.Type.STOP, average));
         } else {
-            return Optional.empty();
+            newState = State.BELOW_BEFORE_INERTIA;
+            if (pastInertia) {
+                newState = State.BELOW;
+            }
         }
 
+        MonitorEvent event = null;
+        if (newState != state) {
+            switch (newState) {
+                case BELOW:
+                    stateChangedAt = null;
+                    event = new MonitorEvent<T>(
+                            now,
+                            MonitorEvent.Severity.CRITICAL,
+                            MonitorEvent.Type.STOP,
+                            value
+                    );
+                    break;
+                case BELOW_BEFORE_INERTIA:
+                case ABOVE_BEFORE_INERTIA:
+                    stateChangedAt = now;
+                    break;
+                case ABOVE:
+                    stateChangedAt = null;
+                    event = new MonitorEvent<T>(
+                            now,
+                            MonitorEvent.Severity.CRITICAL,
+                            MonitorEvent.Type.START,
+                            value
+                    );
+                    break;
+            }
+        }
+        return Optional.ofNullable(event);
     }
 
     public String getId() {
