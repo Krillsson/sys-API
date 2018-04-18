@@ -35,7 +35,7 @@ public class MonitorManager implements Managed {
             Optional<MonitorEvent> check = activeMonitor.check(event.load());
             check.ifPresent(events::add);
             if (!check.isPresent()) {
-                LOGGER.debug("No event for {}", activeMonitor);
+                LOGGER.trace("No event for {}", activeMonitor);
             } else {
                 LOGGER.warn("Event: {}", check.get());
             }

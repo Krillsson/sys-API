@@ -24,7 +24,7 @@ public class QueryManager implements Managed {
     }
 
     private void query() {
-        eventBus.post(new QueryEvent(LocalDateTime.now(), new SystemLoad(
+        eventBus.post(new QueryEvent(new SystemLoad(
                 provider.cpuMetrics().cpuLoad(),
                 provider.networkMetrics().networkInterfaceLoads(),
                 provider.driveMetrics().driveLoads(),

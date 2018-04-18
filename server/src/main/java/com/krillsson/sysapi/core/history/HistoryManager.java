@@ -7,6 +7,8 @@ import com.krillsson.sysapi.core.domain.system.SystemLoad;
 import com.krillsson.sysapi.core.query.QueryEvent;
 import io.dropwizard.lifecycle.Managed;
 
+import java.util.List;
+
 public class HistoryManager implements Managed {
     private final History<SystemLoad> history;
     private final EventBus eventBus;
@@ -33,5 +35,9 @@ public class HistoryManager implements Managed {
     @Override
     public void stop() throws Exception {
         eventBus.unregister(this);
+    }
+
+    public List<History.HistoryEntry<SystemLoad>> getHistory() {
+        return history.get();
     }
 }

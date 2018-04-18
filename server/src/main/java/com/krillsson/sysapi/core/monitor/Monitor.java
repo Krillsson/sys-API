@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.core.monitor;
 
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
+import org.slf4j.Logger;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -8,7 +9,8 @@ import java.util.Optional;
 
 import static java.time.Duration.between;
 
-public abstract class Monitor<T, R> {
+public abstract class Monitor<T> {
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(Monitor.class);
     private final String id;
     //id to monitor
     private final Duration inertia;
@@ -33,7 +35,7 @@ public abstract class Monitor<T, R> {
 
         T value = value(systemLoad);
         boolean aboveThreshold = isAboveThreshold(value);
-        boolean pastInertia = stateChangedAt != null && between(now, /* and */ stateChangedAt).compareTo(inertia) > 0;
+        boolean pastInertia = stateChangedAt != null && between(stateChangedAt, /* and */ now).compareTo(inertia) > 0;
         State newState;
 
         if (aboveThreshold) {
@@ -52,7 +54,6 @@ public abstract class Monitor<T, R> {
         if (newState != state) {
             switch (newState) {
                 case BELOW:
-                    stateChangedAt = null;
                     event = new MonitorEvent<T>(
                             now,
                             MonitorEvent.Severity.CRITICAL,
@@ -62,10 +63,11 @@ public abstract class Monitor<T, R> {
                     break;
                 case BELOW_BEFORE_INERTIA:
                 case ABOVE_BEFORE_INERTIA:
+                    LOGGER.debug("Monitor {} is {} the threshold. Current value: {} Threshold: {}", id, aboveThreshold ? "above" : "below", value, threshold());
                     stateChangedAt = now;
                     break;
                 case ABOVE:
-                    stateChangedAt = null;
+                    LOGGER.warn("Monitor {} have been above the threshold for more than {} Current value: {} Threshold: {}", id, inertia.toString(), value, threshold());
                     event = new MonitorEvent<T>(
                             now,
                             MonitorEvent.Severity.CRITICAL,
@@ -74,6 +76,7 @@ public abstract class Monitor<T, R> {
                     );
                     break;
             }
+            state = newState;
         }
         return Optional.ofNullable(event);
     }
@@ -84,7 +87,8 @@ public abstract class Monitor<T, R> {
 
     protected abstract T value(SystemLoad systemLoad);
 
+    protected abstract T threshold();
+
     protected abstract boolean isAboveThreshold(T value);
 
-    protected abstract boolean isNearThreshold(T value);
 }

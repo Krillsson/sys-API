@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.google.common.eventbus.EventBus;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.krillsson.sysapi.auth.BasicAuthenticator;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
@@ -36,6 +37,7 @@ import com.krillsson.sysapi.core.metrics.MetricsFactory;
 import com.krillsson.sysapi.core.metrics.MetricsProvider;
 import com.krillsson.sysapi.core.monitor.DriveMonitor;
 import com.krillsson.sysapi.core.monitor.MonitorManager;
+import com.krillsson.sysapi.core.query.QueryManager;
 import com.krillsson.sysapi.resources.*;
 import com.krillsson.sysapi.util.EnvironmentUtils;
 import com.krillsson.sysapi.util.Utils;
@@ -98,7 +100,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
             EnvironmentUtils.addHttpsForward(environment.getApplicationContext());
         }
         environment.jersey().register(RolesAllowedDynamicFeature.class);
-
+        EventBus eventBus = new EventBus();
         final BasicCredentialAuthFilter<UserConfiguration> userBasicCredentialAuthFilter =
                 new BasicCredentialAuthFilter.Builder<UserConfiguration>()
                         .setAuthenticator(new BasicAuthenticator(config.user()))
@@ -130,25 +132,23 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
                 speedMeasurementManager
         ).create();
         environment.lifecycle().manage(speedMeasurementManager);
-
-        MetricsHistoryManager historyManager = new MetricsHistoryManager(
-                Executors.newSingleThreadScheduledExecutor(
-                        new ThreadFactoryBuilder()
-                                .setNameFormat("history-mgr-%d")
-                                .build()), config.metrics().getHistory())
-                .initializeWith(provider);
+        QueryManager queryManager = new QueryManager(Executors.newSingleThreadScheduledExecutor(
+                new ThreadFactoryBuilder()
+                        .setNameFormat("query-mgr-%d")
+                        .build()
+        ), config.metrics().getHistory(), provider, eventBus);
+        environment.lifecycle().manage(queryManager);
+        MetricsHistoryManager historyManager = new MetricsHistoryManager(config.metrics().getHistory(), eventBus);
         environment.lifecycle().manage(historyManager);
 
-        MonitorManager monitorManager = new MonitorManager(
-                Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder()
-                                                                   .setNameFormat(
-                                                                           "monitor-mgr-%d")
-                                                                   .build()),
-                config.metrics().getHistory(),
-                eventBus
-        );
+        MonitorManager monitorManager = new MonitorManager(eventBus);
         environment.lifecycle().manage(monitorManager);
-        monitorManager.addMonitor(new DriveMonitor("disk2", config.metrics().getMonitor().duration(), 16260259840L + 1000L, 16260259840L + 500L));
+        monitorManager.addMonitor(new DriveMonitor(
+                "disk2",
+                config.metrics().getMonitor().duration(),
+                16260259840L + 1000L,
+                16260259840L + 500L
+        ));
 
         environment.jersey().register(new SystemResource(
                 SystemInfo.getCurrentPlatformEnum(),
