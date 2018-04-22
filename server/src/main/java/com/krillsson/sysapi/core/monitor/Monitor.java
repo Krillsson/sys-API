@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import static java.time.Duration.between;
 
-public abstract class Monitor<T> {
+public abstract class Monitor {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(Monitor.class);
     private final String id;
     //id to monitor
@@ -24,7 +24,7 @@ public abstract class Monitor<T> {
         BELOW_BEFORE_INERTIA
     }
 
-    public Monitor(String id, Duration inertia) {
+    Monitor(String id, Duration inertia) {
         this.id = id;
         this.inertia = inertia;
     }
@@ -33,7 +33,7 @@ public abstract class Monitor<T> {
 
         LocalDateTime now = LocalDateTime.now();
 
-        T value = value(systemLoad);
+        Double value = value(systemLoad);
         boolean aboveThreshold = isAboveThreshold(value);
         boolean pastInertia = stateChangedAt != null && between(stateChangedAt, /* and */ now).compareTo(inertia) > 0;
         State newState;
@@ -54,25 +54,39 @@ public abstract class Monitor<T> {
         if (newState != state) {
             switch (newState) {
                 case BELOW:
-                    event = new MonitorEvent<T>(
+                    event = new MonitorEvent(
                             now,
+                            id,
                             MonitorEvent.Severity.CRITICAL,
                             MonitorEvent.Type.STOP,
-                            value
+                            threshold(), value
                     );
                     break;
                 case BELOW_BEFORE_INERTIA:
                 case ABOVE_BEFORE_INERTIA:
-                    LOGGER.debug("Monitor {} is {} the threshold. Current value: {} Threshold: {}", id, aboveThreshold ? "above" : "below", value, threshold());
+                    LOGGER.debug(
+                            "Monitor {} is {} the threshold. Current value: {} Threshold: {}",
+                            id,
+                            aboveThreshold ? "above" : "below",
+                            value,
+                            threshold()
+                    );
                     stateChangedAt = now;
                     break;
                 case ABOVE:
-                    LOGGER.warn("Monitor {} have been above the threshold for more than {} Current value: {} Threshold: {}", id, inertia.toString(), value, threshold());
-                    event = new MonitorEvent<T>(
+                    LOGGER.warn(
+                            "Monitor {} have been above the threshold for more than {} Current value: {} Threshold: {}",
+                            id,
+                            inertia.toString(),
+                            value,
+                            threshold()
+                    );
+                    event = new MonitorEvent(
                             now,
+                            id,
                             MonitorEvent.Severity.CRITICAL,
                             MonitorEvent.Type.START,
-                            value
+                            threshold(), value
                     );
                     break;
             }
@@ -85,10 +99,13 @@ public abstract class Monitor<T> {
         return id;
     }
 
-    protected abstract T value(SystemLoad systemLoad);
+    protected abstract double value(SystemLoad systemLoad);
 
-    protected abstract T threshold();
+    protected abstract double threshold();
 
-    protected abstract boolean isAboveThreshold(T value);
+    protected abstract boolean isAboveThreshold(double value);
 
+    Duration inertia() {
+        return inertia;
+    }
 }

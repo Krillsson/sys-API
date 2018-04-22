@@ -2,12 +2,13 @@ package com.krillsson.sysapi.core.monitor;
 
 import java.time.LocalDateTime;
 
-public class MonitorEvent<T> {
-
+public class MonitorEvent {
     private final LocalDateTime time;
     private final Severity severity;
+    private final String id;
     private final Type type;
-    private final T item;
+    private final double threshold;
+    private final double value;
 
     public enum Severity {
         NONE,
@@ -22,11 +23,17 @@ public class MonitorEvent<T> {
         STANDALONE
     }
 
-    public MonitorEvent(LocalDateTime time, Severity severity, Type type, T item) {
+    public MonitorEvent(LocalDateTime time, String id, Severity severity, Type type, Double threshold, Double value) {
         this.time = time;
+        this.id = id;
         this.severity = severity;
         this.type = type;
-        this.item = item;
+        this.threshold = threshold;
+        this.value = value;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public LocalDateTime getTime() {
@@ -41,8 +48,12 @@ public class MonitorEvent<T> {
         return type;
     }
 
-    public T getItem() {
-        return item;
+    public double getThreshold() {
+        return threshold;
+    }
+
+    public double getValue() {
+        return value;
     }
 
     @Override
@@ -51,7 +62,7 @@ public class MonitorEvent<T> {
                 "time=" + time +
                 ", severity=" + severity +
                 ", type=" + type +
-                ", item=" + item +
+                ", value=" + value +
                 '}';
     }
 }

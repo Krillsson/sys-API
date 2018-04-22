@@ -4,28 +4,26 @@ import com.krillsson.sysapi.core.domain.system.SystemLoad;
 
 import java.time.Duration;
 
-public class CpuMonitor extends Monitor<Double> {
+public class CpuMonitor extends Monitor {
     private final double threshold;
-    private final double near;
 
-    public CpuMonitor(String id, Duration inertia, double threshold, double near) {
+    public CpuMonitor(String id, Duration inertia, double threshold) {
         super(id, inertia);
         this.threshold = threshold;
-        this.near = near;
     }
 
     @Override
-    protected Double value(SystemLoad systemLoad) {
+    protected double value(SystemLoad systemLoad) {
         return systemLoad.getCpuLoad().getCpuLoadOsMxBean();
     }
 
     @Override
-    protected Double threshold() {
+    protected double threshold() {
         return threshold;
     }
 
     @Override
-    protected boolean isAboveThreshold(Double value) {
+    protected boolean isAboveThreshold(double value) {
         return value > threshold();
     }
 
@@ -33,7 +31,6 @@ public class CpuMonitor extends Monitor<Double> {
     public String toString() {
         return "CpuMonitor{" +
                 "threshold=" + threshold +
-                ", near=" + near +
                 '}';
     }
 }

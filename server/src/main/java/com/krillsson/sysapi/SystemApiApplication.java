@@ -38,6 +38,7 @@ import com.krillsson.sysapi.core.metrics.MetricsProvider;
 import com.krillsson.sysapi.core.monitor.DriveMonitor;
 import com.krillsson.sysapi.core.monitor.MonitorManager;
 import com.krillsson.sysapi.core.query.QueryManager;
+import com.krillsson.sysapi.persistence.LevelDbJacksonKeyValueStore;
 import com.krillsson.sysapi.resources.*;
 import com.krillsson.sysapi.util.EnvironmentUtils;
 import com.krillsson.sysapi.util.Utils;
@@ -141,13 +142,13 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         MetricsHistoryManager historyManager = new MetricsHistoryManager(config.metrics().getHistory(), eventBus);
         environment.lifecycle().manage(historyManager);
 
-        MonitorManager monitorManager = new MonitorManager(eventBus);
+        LevelDbJacksonKeyValueStore<com.krillsson.sysapi.dto.monitor.Monitor> persistentMonitors = new LevelDbJacksonKeyValueStore<>(com.krillsson.sysapi.dto.monitor.Monitor.class, environment.getObjectMapper(), "monitors");
+        MonitorManager monitorManager = new MonitorManager(eventBus, persistentMonitors);
         environment.lifecycle().manage(monitorManager);
         monitorManager.addMonitor(new DriveMonitor(
                 "disk2",
                 config.metrics().getMonitor().duration(),
-                16260259840L + 1000L,
-                16260259840L + 500L
+                16260259840L + 1000L
         ));
 
         environment.jersey().register(new SystemResource(
