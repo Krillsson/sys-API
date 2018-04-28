@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.core.metrics.windows;
 
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
+import com.krillsson.sysapi.core.TickManager;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMemoryMetrics;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultProcessesMetrics;
@@ -15,11 +16,13 @@ public class WindowsMetricsFactory extends DefaultMetricsFactory {
     private final OperatingSystem operatingSystem;
     private final SpeedMeasurementManager speedMeasurementManager;
     private final Utils utils;
+    private final TickManager tickManager;
 
     private MonitorManager monitorManager;
 
-    public WindowsMetricsFactory(MonitorManagerFactory monitorManagerFactory, HardwareAbstractionLayer hal, OperatingSystem operatingSystem, SpeedMeasurementManager speedMeasurementManager, Utils utils) {
-        super(hal, operatingSystem, speedMeasurementManager, utils);
+    public WindowsMetricsFactory(MonitorManagerFactory monitorManagerFactory, HardwareAbstractionLayer hal, OperatingSystem operatingSystem, SpeedMeasurementManager speedMeasurementManager, Utils utils, TickManager tickManager) {
+        super(hal, operatingSystem, speedMeasurementManager, tickManager, utils);
+        this.tickManager = tickManager;
         this.monitorManagerFactory = monitorManagerFactory;
         this.hal = hal;
         this.operatingSystem = operatingSystem;
@@ -38,7 +41,7 @@ public class WindowsMetricsFactory extends DefaultMetricsFactory {
         boolean bridgeInitialized = monitorManagerFactory.initialize();
         if (bridgeInitialized) {
             monitorManager = monitorManagerFactory.getMonitorManager();
-            setCpuMetrics(new WindowsCpuMetrics(hal, operatingSystem, monitorManager, utils));
+            setCpuMetrics(new WindowsCpuMetrics(hal, operatingSystem, monitorManager, tickManager, utils));
             setNetworkMetrics(new WindowsNetworkMetrics(hal, speedMeasurementManager, monitorManager));
             setGpuMetrics(new WindowsGpuMetrics(hal, monitorManager));
             setDriveMetrics(new WindowsDriveProvider(operatingSystem, hal, speedMeasurementManager));

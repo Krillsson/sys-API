@@ -23,12 +23,15 @@ public class MetricsProviderTest {
     private oshi.software.os.OperatingSystem os;
     private SystemApiConfiguration config;
     private SpeedMeasurementManager measurementManager;
+    private TickManager tickManager;
 
     @Before
     public void setUp() throws Exception {
         hal = mock(HardwareAbstractionLayer.class);
         os = mock(OperatingSystem.class);
         config = mock(SystemApiConfiguration.class);
+        tickManager = mock(TickManager.class);
+
         measurementManager = mock(SpeedMeasurementManager.class);
         when(hal.getNetworkIFs()).thenReturn(new NetworkIF[0]);
         when(hal.getDiskStores()).thenReturn(new HWDiskStore[0]);
@@ -36,7 +39,7 @@ public class MetricsProviderTest {
 
     @Test
     public void providingDefaultIfPlatformIsUnknown() throws Exception {
-        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.UNKNOWN, config, measurementManager);
+        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.UNKNOWN, config, measurementManager, tickManager);
 
         MetricsFactory provider = factory.create();
         assertNotNull(provider);
@@ -46,7 +49,7 @@ public class MetricsProviderTest {
     @Test
     public void providerDetectsRaspbian() throws Exception {
         when(os.getFamily()).thenReturn("Raspbian GNU/Linux");
-        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.LINUX, config, measurementManager);
+        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.LINUX, config, measurementManager, tickManager);
 
         MetricsFactory provider = factory.create();
         assertNotNull(provider);
@@ -56,7 +59,7 @@ public class MetricsProviderTest {
     @Test
     public void providerDetectsLinux() throws Exception {
         when(os.getFamily()).thenReturn("Debian GNU/Linux");
-        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.LINUX, config, measurementManager);
+        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.LINUX, config, measurementManager, tickManager);
 
         MetricsFactory provider = factory.create();
         assertNotNull(provider);

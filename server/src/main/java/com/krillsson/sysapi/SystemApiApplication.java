@@ -31,6 +31,7 @@ import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
+import com.krillsson.sysapi.core.TickManager;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceMixin;
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.MetricsFactory;
@@ -116,10 +117,15 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
 
         environment.jersey().register(new AuthDynamicFeature(userBasicCredentialAuthFilter));
         environment.jersey().register(new AuthValueFactoryProvider.Binder(UserConfiguration.class));
-
+        TickManager tickManager = new TickManager(                Executors.newScheduledThreadPool(
+                1,
+                new ThreadFactoryBuilder()
+                        .setNameFormat("tick-mgr-%d")
+                        .build()
+        ), 5);
         SpeedMeasurementManager speedMeasurementManager = new SpeedMeasurementManager(
                 Executors.newScheduledThreadPool(
-                        2,
+                        1,
                         new ThreadFactoryBuilder()
                                 .setNameFormat("speed-mgr-%d")
                                 .build()
@@ -130,9 +136,11 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
                 os,
                 SystemInfo.getCurrentPlatformEnum(),
                 config,
-                speedMeasurementManager
+                speedMeasurementManager,
+                tickManager
         ).create();
         environment.lifecycle().manage(speedMeasurementManager);
+        environment.lifecycle().manage(tickManager);
         QueryManager queryManager = new QueryManager(Executors.newSingleThreadScheduledExecutor(
                 new ThreadFactoryBuilder()
                         .setNameFormat("query-mgr-%d")
@@ -145,11 +153,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         LevelDbJacksonKeyValueStore<com.krillsson.sysapi.dto.monitor.Monitor> persistentMonitors = new LevelDbJacksonKeyValueStore<>(com.krillsson.sysapi.dto.monitor.Monitor.class, environment.getObjectMapper(), "monitors");
         MonitorManager monitorManager = new MonitorManager(eventBus, persistentMonitors);
         environment.lifecycle().manage(monitorManager);
-        monitorManager.addMonitor(new DriveMonitor(
-                "disk2",
-                config.metrics().getMonitor().duration(),
-                16260259840L + 1000L
-        ));
+
 
         environment.jersey().register(new SystemResource(
                 SystemInfo.getCurrentPlatformEnum(),

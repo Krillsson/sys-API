@@ -20,9 +20,9 @@
  */
 package com.krillsson.sysapi.core.metrics;
 
-import com.krillsson.sysapi.config.MetricsConfiguration;
 import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
+import com.krillsson.sysapi.core.TickManager;
 import com.krillsson.sysapi.core.metrics.cache.Cache;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory;
 import com.krillsson.sysapi.core.metrics.rasbian.RaspbianMetricsFactory;
@@ -44,14 +44,16 @@ public class MetricsProvider {
     private final PlatformEnum os;
     private final SystemApiConfiguration configuration;
     private final SpeedMeasurementManager speedMeasurementManager;
+    private final TickManager tickManager;
     private final Utils utils;
 
-    public MetricsProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, PlatformEnum os, SystemApiConfiguration configuration, SpeedMeasurementManager speedMeasurementManager) {
+    public MetricsProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, PlatformEnum os, SystemApiConfiguration configuration, SpeedMeasurementManager speedMeasurementManager, TickManager tickManager) {
         this.hal = hal;
         this.operatingSystem = operatingSystem;
         this.os = os;
         this.configuration = configuration;
         this.speedMeasurementManager = speedMeasurementManager;
+        this.tickManager = tickManager;
         this.utils = new Utils();
     }
 
@@ -65,7 +67,8 @@ public class MetricsProvider {
                             hal,
                             operatingSystem,
                             speedMeasurementManager,
-                            utils
+                            utils,
+                            tickManager
                     );
                     if (windowsMetricsFactory.prerequisitesFilled()) {
                         windowsMetricsFactory.initialize();
@@ -81,6 +84,7 @@ public class MetricsProvider {
                             hal,
                             operatingSystem,
                             speedMeasurementManager,
+                            tickManager,
                             utils
                     );
                     if (raspbianMetricsFactory.prerequisitesFilled()) {
@@ -101,6 +105,7 @@ public class MetricsProvider {
                 hal,
                 operatingSystem,
                 speedMeasurementManager,
+                tickManager,
                 utils
         );
         if (metricsFactory.prerequisitesFilled()) {

@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
+import com.krillsson.sysapi.core.TickManager;
 import com.krillsson.sysapi.core.domain.cpu.CoreLoad;
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
@@ -11,27 +12,35 @@ import oshi.hardware.HardwareAbstractionLayer;
 import oshi.software.os.OperatingSystem;
 
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DefaultCpuMetrics implements CpuMetrics {
+public class DefaultCpuMetrics implements CpuMetrics, TickManager.TickListener {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultCpuMetrics.class);
-    private static final long MAX_SAMPLING_THRESHOLD = TimeUnit.SECONDS.toMillis(10);
     private static final int SLEEP_SAMPLE_PERIOD = 1000;
     private final HardwareAbstractionLayer hal;
     private final OperatingSystem operatingSystem;
     private final Utils utils;
+    private final TickManager tickManager;
     private final DefaultCpuSensors cpuSensors;
-    private long coreTicksSampledAt = -1;
     private long[][] coreTicks = new long[0][0];
+    private CpuLoad cpuLoad;
 
-    protected DefaultCpuMetrics(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, DefaultCpuSensors cpuSensors, Utils utils) {
+    protected DefaultCpuMetrics(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, DefaultCpuSensors cpuSensors, Utils utils, TickManager tickManager) {
         this.hal = hal;
         this.operatingSystem = operatingSystem;
         this.cpuSensors = cpuSensors;
         this.utils = utils;
+        this.tickManager = tickManager;
+    }
+
+    void register() {
+        tickManager.register(this);
+    }
+
+    void unregister(){
+        tickManager.unregister(this);
     }
 
     @Override
@@ -42,19 +51,18 @@ public class DefaultCpuMetrics implements CpuMetrics {
 
     @Override
     public CpuLoad cpuLoad() {
+        return cpuLoad;
+    }
+
+    @Override
+    public void onTick() {
         CentralProcessor processor = hal.getProcessor();
-        if (Arrays.equals(coreTicks, new long[0][0]) || utils.isOutsideMaximumDuration(
-                coreTicksSampledAt,
-                MAX_SAMPLING_THRESHOLD
-        )) {
-            LOGGER.debug("Sleeping thread since we don't have enough sample data. Hold on!");
+        if (Arrays.equals(coreTicks, new long[0][0])) {
             coreTicks = processor.getProcessorCpuLoadTicks();
-            coreTicksSampledAt = utils.currentSystemTime();
             utils.sleep(SLEEP_SAMPLE_PERIOD);
         }
         CoreLoad[] coreLoads = new CoreLoad[processor.getLogicalProcessorCount()];
         long[][] currentProcessorTicks = processor.getProcessorCpuLoadTicks();
-        long sampledAt = utils.currentSystemTime();
         for (int i = 0; i < coreLoads.length; i++) {
             long[] currentTicks = currentProcessorTicks[i];
             long user = currentTicks[CentralProcessor.TickType.USER.getIndex()] - coreTicks[i][CentralProcessor.TickType.USER
@@ -95,9 +103,8 @@ public class DefaultCpuMetrics implements CpuMetrics {
         }
 
         coreTicks = currentProcessorTicks;
-        coreTicksSampledAt = sampledAt;
 
-        return new CpuLoad(
+        this.cpuLoad = new CpuLoad(
                 Utils.round(processor.getSystemCpuLoadBetweenTicks() * 100d, 2),
                 Utils.round(processor.getSystemCpuLoad() * 100d, 2),
                 Stream.of(coreLoads).collect(Collectors.toList()),

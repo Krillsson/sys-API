@@ -56,12 +56,15 @@ public class MonitorEvent {
         return value;
     }
 
+
     @Override
     public String toString() {
         return "MonitorEvent{" +
                 "time=" + time +
                 ", severity=" + severity +
+                ", id='" + id + '\'' +
                 ", type=" + type +
+                ", threshold=" + threshold +
                 ", value=" + value +
                 '}';
     }

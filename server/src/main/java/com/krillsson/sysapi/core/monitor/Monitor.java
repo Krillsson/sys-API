@@ -15,7 +15,7 @@ public abstract class Monitor {
     //id to monitor
     private final Duration inertia;
     private LocalDateTime stateChangedAt = null;
-    private State state;
+    private State state = State.BELOW;
 
     enum State {
         BELOW,
@@ -61,17 +61,29 @@ public abstract class Monitor {
                             MonitorEvent.Type.STOP,
                             threshold(), value
                     );
+                    stateChangedAt = null;
                     break;
                 case BELOW_BEFORE_INERTIA:
+                    if (state == State.ABOVE) {
+                        LOGGER.debug(
+                                "Monitor {} is below the threshold. Current value: {} Threshold: {}",
+                                id,
+                                value,
+                                threshold()
+                        );
+                        stateChangedAt = now;
+                    }
+                    break;
                 case ABOVE_BEFORE_INERTIA:
-                    LOGGER.debug(
-                            "Monitor {} is {} the threshold. Current value: {} Threshold: {}",
-                            id,
-                            aboveThreshold ? "above" : "below",
-                            value,
-                            threshold()
-                    );
-                    stateChangedAt = now;
+                    if (state == State.BELOW) {
+                        LOGGER.debug(
+                                "Monitor {} is above the threshold. Current value: {} Threshold: {}",
+                                id,
+                                value,
+                                threshold()
+                        );
+                        stateChangedAt = now;
+                    }
                     break;
                 case ABOVE:
                     LOGGER.warn(
@@ -88,6 +100,7 @@ public abstract class Monitor {
                             MonitorEvent.Type.START,
                             threshold(), value
                     );
+                    stateChangedAt = null;
                     break;
             }
             state = newState;

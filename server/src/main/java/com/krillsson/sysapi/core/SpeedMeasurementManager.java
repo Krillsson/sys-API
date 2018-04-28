@@ -19,6 +19,7 @@ public class SpeedMeasurementManager implements Managed {
     private final HashMap<String, SpeedMeasurement> speedMeasurementStore = new HashMap<>();
     private final HashMap<String, CurrentSpeed> currentSpeedStore = new HashMap<>();
     private final List<SpeedSource> speedSources = new ArrayList<>();
+
     public SpeedMeasurementManager(ScheduledExecutorService executorService, Clock clock, int measurementInterval) {
         this.executorService = executorService;
         this.clock = clock;

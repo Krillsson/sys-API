@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
 import com.krillsson.sysapi.core.SpeedMeasurementManager;
+import com.krillsson.sysapi.core.TickManager;
 import com.krillsson.sysapi.core.metrics.*;
 import com.krillsson.sysapi.util.Utils;
 import oshi.hardware.HardwareAbstractionLayer;
@@ -11,6 +12,7 @@ public class DefaultMetricsFactory implements MetricsFactory {
     private final HardwareAbstractionLayer hal;
     private final OperatingSystem operatingSystem;
     private final SpeedMeasurementManager speedMeasurementManager;
+    private final TickManager tickManager;
     private final Utils utils;
 
     private CpuMetrics cpuMetrics;
@@ -21,10 +23,11 @@ public class DefaultMetricsFactory implements MetricsFactory {
     private MotherboardMetrics motherboardMetrics;
     private MemoryMetrics memoryMetrics;
 
-    public DefaultMetricsFactory(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, SpeedMeasurementManager speedMeasurementManager, Utils utils) {
+    public DefaultMetricsFactory(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, SpeedMeasurementManager speedMeasurementManager, TickManager tickManager, Utils utils) {
         this.hal = hal;
         this.operatingSystem = operatingSystem;
         this.speedMeasurementManager = speedMeasurementManager;
+        this.tickManager = tickManager;
         this.utils = utils;
     }
 
@@ -35,7 +38,9 @@ public class DefaultMetricsFactory implements MetricsFactory {
 
     @Override
     public boolean initialize() {
-        setCpuMetrics(new DefaultCpuMetrics(hal, operatingSystem, new DefaultCpuSensors(hal), utils));
+        DefaultCpuMetrics cpuMetrics = new DefaultCpuMetrics(hal, operatingSystem, new DefaultCpuSensors(hal), utils, tickManager);
+        cpuMetrics.register();
+        setCpuMetrics(cpuMetrics);
         DefaultNetworkMetrics networkInfoProvider = new DefaultNetworkMetrics(hal, speedMeasurementManager);
         networkInfoProvider.register();
         setNetworkMetrics(networkInfoProvider);

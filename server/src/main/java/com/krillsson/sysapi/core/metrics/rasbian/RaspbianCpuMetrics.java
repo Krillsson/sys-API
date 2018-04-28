@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.core.metrics.rasbian;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.krillsson.sysapi.core.TickManager;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuMetrics;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuSensors;
 import com.krillsson.sysapi.util.Utils;
@@ -23,8 +24,8 @@ public class RaspbianCpuMetrics extends DefaultCpuMetrics {
     private static final String VCGENCMD_VOLT = VCGENCMD + "measure_volts core";
 
 
-    protected RaspbianCpuMetrics(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, Utils utils) {
-        super(hal, operatingSystem, new RaspbianCpuSensors(hal), utils);
+    protected RaspbianCpuMetrics(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, TickManager tickManager, Utils utils) {
+        super(hal, operatingSystem, new RaspbianCpuSensors(hal), utils, tickManager);
     }
 
     static class RaspbianCpuSensors extends DefaultCpuSensors {
