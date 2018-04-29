@@ -24,10 +24,10 @@ public class MonitorManager implements Managed {
     }
 
     public void addMonitor(Monitor monitor) {
-        if (activeMonitors.containsKey(monitor.getId())) {
+        if (activeMonitors.containsKey(monitor.id())) {
             LOGGER.debug("Updating monitor");
         }
-        activeMonitors.put(monitor.getId(), monitor);
+        activeMonitors.put(monitor.id(), monitor);
     }
 
     public void removeMonitor(String id) {
@@ -53,7 +53,10 @@ public class MonitorManager implements Managed {
 
     @Override
     public void start() throws Exception {
-        persistentMonitors.loadAll().forEach(e -> activeMonitors.put(e.key(), MonitorMapper.INSTANCE.map(e.value())));
+        persistentMonitors.loadAll().forEach(e -> {
+            LOGGER.debug("Registering monitor ID: {} threshold: {}", e.key(), e.value().getThreshold());
+            activeMonitors.put(e.key(), MonitorMapper.INSTANCE.map(e.value()));
+        });
         eventBus.register(this);
     }
 

@@ -21,12 +21,12 @@ public interface MonitorMapper {
         } else if (monitor instanceof DriveMonitor) {
             type = MonitorType.DRIVE;
         }
-        return new Monitor(monitor.getId(), monitor.inertia().getSeconds(), type, monitor.threshold());
+        return new Monitor(monitor.id(), monitor.inertia().getSeconds(), type, monitor.threshold());
     }
 
     default Monitor map(DriveMonitor monitor) {
         return new Monitor(
-                monitor.getId(),
+                monitor.id(),
                 monitor.inertia().getSeconds(),
                 MonitorType.DRIVE,
                 monitor.threshold()
@@ -34,7 +34,7 @@ public interface MonitorMapper {
     }
 
     default Monitor map(CpuMonitor monitor) {
-        return new Monitor(monitor.getId(), monitor.inertia().getSeconds(), MonitorType.CPU, monitor.threshold());
+        return new Monitor(monitor.id(), monitor.inertia().getSeconds(), MonitorType.CPU, monitor.threshold());
     }
 
     default com.krillsson.sysapi.core.monitor.Monitor map(Monitor monitor) {

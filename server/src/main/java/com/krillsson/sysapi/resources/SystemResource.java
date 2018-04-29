@@ -64,7 +64,9 @@ public class SystemResource {
                           DriveMetrics driveMetrics,
                           MemoryMetrics memoryMetrics,
                           GpuMetrics gpuMetrics,
-                          MotherboardMetrics motherboardMetrics, MetricsHistoryManager historyManager, Supplier<Long> uptimeSupplier) {
+                          MotherboardMetrics motherboardMetrics,
+                          MetricsHistoryManager historyManager,
+                          Supplier<Long> uptimeSupplier) {
         this.platformEnum = platformEnum;
         this.cpuMetrics = cpuMetrics;
         this.networkMetrics = networkMetrics;

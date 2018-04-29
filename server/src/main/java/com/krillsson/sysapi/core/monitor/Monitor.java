@@ -29,7 +29,141 @@ public abstract class Monitor {
         this.inertia = inertia;
     }
 
+    /**
+     * Valid state changes
+     * <p>
+     * Below -> Below
+     * no action
+     * <p>
+     * Below -> Above before inertia
+     * (conditional: above threshold)
+     * save timestamp of state change
+     * <p>
+     * Above before inertia -> Above before inertia
+     * no action
+     * <p>
+     * Above before inertia -> below
+     * (conditional: below threshold)
+     * reset timestamp
+     * <p>
+     * Above before inertia -> above
+     * (conditional: now-timestamp older than inertia)
+     * record event
+     * reset timestamp (?)
+     * <p>
+     * Above -> above
+     * no action
+     * <p>
+     * Above -> below before inertia
+     * (conditional: below threshold)
+     * save timestamp of state change
+     * <p>
+     * Below before inertia -> below
+     * (conditional: now-timestamp older than inertia)
+     * record event
+     * reset timestamp (?)
+     * <p>
+     * Below before inertia -> Below before inertia
+     * no action
+     * <p>
+     * Below before inertia -> above
+     * reset timestamp
+     *
+     * @param systemLoad
+     * @return
+     */
     Optional<MonitorEvent> check(SystemLoad systemLoad) {
+
+        LocalDateTime now = LocalDateTime.now();
+
+        Double value = value(systemLoad);
+        boolean aboveThreshold = isAboveThreshold(value);
+        boolean pastInertia = stateChangedAt != null && between(stateChangedAt, /* and */ now).compareTo(inertia) > 0;
+        MonitorEvent event = null;
+
+        if(state == State.BELOW){
+            if(aboveThreshold){
+                //Below -> Above before inertia
+                stateChangedAt = now;
+                state = State.ABOVE_BEFORE_INERTIA;
+                LOGGER.debug("{} went above threshold of {} at {}", id(), threshold(), now);
+            }
+            else{
+                LOGGER.debug("Still below threshold");
+            }
+        }
+        else if(state == State.ABOVE_BEFORE_INERTIA){
+            if(aboveThreshold){
+                if(pastInertia){
+                    //Above before inertia -> above
+                    LOGGER.debug("{} still above threshold of {} and {} - {} is past inertia of {} triggering event...", id(), threshold(), now, stateChangedAt, inertia());
+                    state = State.ABOVE;
+                    stateChangedAt = null;
+                    event = new MonitorEvent(
+                            now,
+                            id,
+                            MonitorEvent.Severity.CRITICAL,
+                            MonitorEvent.Type.START,
+                            threshold(), value
+                    );
+                }
+                else{
+                    //Above before inertia -> Above before inertia
+                    LOGGER.debug("{} still above threshold of {} but {} - {} is not past inertia of {}", id(), threshold(), now, stateChangedAt, inertia());
+                }
+            }
+            else{
+                //Above before inertia -> below
+                LOGGER.debug("{} went below threshold inside inertia period", id());
+                stateChangedAt = null;
+                state = State.BELOW;
+            }
+        }
+        else if (state == State.ABOVE){
+            if(aboveThreshold){
+                //Above -> above
+                LOGGER.debug("{} is still above threshold", id());
+            }else{
+                //Above -> Below before inertia
+                stateChangedAt = now;
+                state = State.BELOW_BEFORE_INERTIA;
+                LOGGER.debug("{} went below threshold of {} at {}", id(), threshold(), now);
+            }
+        }
+        else if(state == State.BELOW_BEFORE_INERTIA){
+            if(aboveThreshold){
+                if(pastInertia){
+                    //Below before inertia -> below
+                    LOGGER.debug("{} still below threshold of {} and {} - {} is past inertia of {} triggering event...", id(), threshold(), now, stateChangedAt, inertia());
+                    state = State.BELOW;
+                    stateChangedAt = null;
+                    event = new MonitorEvent(
+                            now,
+                            id,
+                            MonitorEvent.Severity.CRITICAL,
+                            MonitorEvent.Type.STOP,
+                            threshold(), value
+                    );
+                }
+                else{
+                    //Below before inertia -> Below before inertia
+                    LOGGER.debug("{} still below threshold of {} but {} - {} is not past inertia of {}", id(), threshold(), now, stateChangedAt, inertia());
+                }
+            }
+            else{
+                //Below before inertia -> above
+                LOGGER.debug("{} went above threshold again inside inertia period", id());
+                stateChangedAt = null;
+                state = State.ABOVE;
+            }
+        }
+
+        return Optional.ofNullable(event);
+
+    }
+
+
+    Optional<MonitorEvent> checkv1(SystemLoad systemLoad) {
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -40,12 +174,12 @@ public abstract class Monitor {
 
         if (aboveThreshold) {
             newState = State.ABOVE_BEFORE_INERTIA;
-            if (pastInertia) {
+            if (pastInertia || state == State.ABOVE) {
                 newState = State.ABOVE;
             }
         } else {
             newState = State.BELOW_BEFORE_INERTIA;
-            if (pastInertia) {
+            if (pastInertia || state == State.BELOW) {
                 newState = State.BELOW;
             }
         }
@@ -66,7 +200,7 @@ public abstract class Monitor {
                 case BELOW_BEFORE_INERTIA:
                     if (state == State.ABOVE) {
                         LOGGER.debug(
-                                "Monitor {} is below the threshold. Current value: {} Threshold: {}",
+                                "Monitor {} went below the threshold. Current value: {} Threshold: {}",
                                 id,
                                 value,
                                 threshold()
@@ -77,7 +211,7 @@ public abstract class Monitor {
                 case ABOVE_BEFORE_INERTIA:
                     if (state == State.BELOW) {
                         LOGGER.debug(
-                                "Monitor {} is above the threshold. Current value: {} Threshold: {}",
+                                "Monitor {} went above the threshold. Current value: {} Threshold: {}",
                                 id,
                                 value,
                                 threshold()
@@ -104,11 +238,13 @@ public abstract class Monitor {
                     break;
             }
             state = newState;
+        } else {
+            LOGGER.debug("State still at {}", state);
         }
         return Optional.ofNullable(event);
     }
 
-    public String getId() {
+    public String id() {
         return id;
     }
 

@@ -17,7 +17,7 @@ public class DriveMonitor extends Monitor {
     protected double value(SystemLoad systemLoad) {
         return (double) systemLoad.getDriveLoads()
                 .stream()
-                .filter(i -> i.getName().equalsIgnoreCase(getId()))
+                .filter(i -> i.getName().equalsIgnoreCase(id()))
                 .findFirst()
                 .orElse(null)
                 .getMetrics()
