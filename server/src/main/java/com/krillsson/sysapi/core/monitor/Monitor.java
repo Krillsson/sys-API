@@ -86,7 +86,7 @@ public abstract class Monitor {
                 //Below -> Above before inertia
                 stateChangedAt = now;
                 state = State.ABOVE_BEFORE_INERTIA;
-                LOGGER.debug("{} went above threshold of {} at {}", id(), threshold(), now);
+                LOGGER.debug("{} went above threshold of {} with {} at {}", id(), threshold(), value, now);
             }
             else{
                 LOGGER.debug("Still below threshold");
@@ -96,7 +96,7 @@ public abstract class Monitor {
             if(aboveThreshold){
                 if(pastInertia){
                     //Above before inertia -> above
-                    LOGGER.debug("{} still above threshold of {} and {} - {} is past inertia of {} triggering event...", id(), threshold(), now, stateChangedAt, inertia());
+                    LOGGER.debug("{} have now been above threshold of {} for more than {}, triggering event...", id(), threshold(), inertia());
                     state = State.ABOVE;
                     stateChangedAt = null;
                     event = new MonitorEvent(
@@ -109,12 +109,12 @@ public abstract class Monitor {
                 }
                 else{
                     //Above before inertia -> Above before inertia
-                    LOGGER.debug("{} still above threshold of {} but {} - {} is not past inertia of {}", id(), threshold(), now, stateChangedAt, inertia());
+                    LOGGER.debug("{} is still above threshold of {} but inside grace period of {}", id(), threshold(), inertia());
                 }
             }
             else{
                 //Above before inertia -> below
-                LOGGER.debug("{} went below threshold inside inertia period", id());
+                LOGGER.debug("{} went back below threshold of {} inside grace period of {}", id(), threshold(), inertia());
                 stateChangedAt = null;
                 state = State.BELOW;
             }
@@ -134,7 +134,7 @@ public abstract class Monitor {
             if(aboveThreshold){
                 if(pastInertia){
                     //Below before inertia -> below
-                    LOGGER.debug("{} still below threshold of {} and {} - {} is past inertia of {} triggering event...", id(), threshold(), now, stateChangedAt, inertia());
+                    LOGGER.debug("{} have now been below threshold of {} for more than {}, triggering event...", id(), threshold(), inertia());
                     state = State.BELOW;
                     stateChangedAt = null;
                     event = new MonitorEvent(
@@ -147,12 +147,12 @@ public abstract class Monitor {
                 }
                 else{
                     //Below before inertia -> Below before inertia
-                    LOGGER.debug("{} still below threshold of {} but {} - {} is not past inertia of {}", id(), threshold(), now, stateChangedAt, inertia());
+                    LOGGER.debug("{} is still below threshold of {} but inside grace period of {}", id(), threshold(), inertia());
                 }
             }
             else{
                 //Below before inertia -> above
-                LOGGER.debug("{} went above threshold again inside inertia period", id());
+                LOGGER.debug("{} went back above threshold of {} inside grace period of {}", id(), threshold(), inertia());
                 stateChangedAt = null;
                 state = State.ABOVE;
             }
