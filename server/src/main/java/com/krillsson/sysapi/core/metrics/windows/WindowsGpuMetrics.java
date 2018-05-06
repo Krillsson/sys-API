@@ -39,7 +39,7 @@ public class WindowsGpuMetrics extends DefaultGpuMetrics {
         monitorManager.Update();
         return Streams.ofNullable(monitorManager.GpuMonitors())
                 .map(g -> new GpuLoad(
-                        nullSafeGetValue(g.getCoreLoad()),
+                        g.getName(), nullSafeGetValue(g.getCoreLoad()),
                         nullSafeGetValue(g.getMemoryLoad()),
                         new GpuHealth(
                                 nullSafeGetValue(g.getFanRPM()),

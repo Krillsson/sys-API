@@ -36,8 +36,9 @@ import com.krillsson.sysapi.core.domain.network.NetworkInterfaceMixin;
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.MetricsFactory;
 import com.krillsson.sysapi.core.metrics.MetricsProvider;
-import com.krillsson.sysapi.core.monitor.DriveMonitor;
-import com.krillsson.sysapi.core.monitor.MonitorManager;
+import com.krillsson.sysapi.core.monitoring.monitors.CpuMonitor;
+import com.krillsson.sysapi.core.monitoring.monitors.DriveMonitor;
+import com.krillsson.sysapi.core.monitoring.MonitorManager;
 import com.krillsson.sysapi.core.query.QueryManager;
 import com.krillsson.sysapi.persistence.LevelDbJacksonKeyValueStore;
 import com.krillsson.sysapi.resources.*;
@@ -58,6 +59,7 @@ import oshi.software.os.OperatingSystem;
 
 import java.net.NetworkInterface;
 import java.time.Clock;
+import java.time.Duration;
 import java.util.concurrent.Executors;
 
 
@@ -151,8 +153,10 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         environment.lifecycle().manage(historyManager);
 
         LevelDbJacksonKeyValueStore<com.krillsson.sysapi.dto.monitor.Monitor> persistentMonitors = new LevelDbJacksonKeyValueStore<>(com.krillsson.sysapi.dto.monitor.Monitor.class, environment.getObjectMapper(), "monitors");
-        MonitorManager monitorManager = new MonitorManager(eventBus, persistentMonitors);
+        MonitorManager monitorManager = new MonitorManager(eventBus, persistentMonitors, provider);
         environment.lifecycle().manage(monitorManager);
+        monitorManager.addMonitor(new CpuMonitor("cpu0", Duration.ofSeconds(30), 20));
+        monitorManager.addMonitor(new DriveMonitor("disk1", Duration.ofSeconds(30), 20));
 
         environment.jersey().register(new SystemResource(
                 SystemInfo.getCurrentPlatformEnum(),
@@ -171,6 +175,8 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         environment.jersey().register(new ProcessesResource(provider.processesMetrics()));
         environment.jersey().register(new CpuResource(provider.cpuMetrics(), historyManager));
         environment.jersey().register(new MotherboardResource(provider.motherboardMetrics()));
+        environment.jersey().register(new EventResource(monitorManager));
+        environment.jersey().register(new MonitorResource(monitorManager));
         environment.jersey().register(
                 new MetaInfoResource(
                         Utils.getVersionFromManifest(),

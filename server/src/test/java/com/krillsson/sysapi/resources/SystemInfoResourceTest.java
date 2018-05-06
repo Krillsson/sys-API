@@ -68,7 +68,7 @@ public class SystemInfoResourceTest {
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get();
 
-        assertEquals(systemInfo.getStatus(), 500);
+        assertEquals(systemInfo.getMonitorStatus(), 500);
     }
 
     @Test

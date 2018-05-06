@@ -1,16 +1,16 @@
-package com.krillsson.sysapi.core.monitor;
+package com.krillsson.sysapi.core.monitoring.monitors;
 
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
+import com.krillsson.sysapi.core.monitoring.Monitor;
 
 import java.time.Duration;
 
+import static com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDriveProvider.DEFAULT_DRIVE_LOAD;
+
 
 public class DriveMonitor extends Monitor {
-    private final double threshold;
-
     public DriveMonitor(String id, Duration inertia, double threshold) {
-        super(id, inertia);
-        this.threshold = threshold;
+        super(id, inertia, threshold);
     }
 
     @Override
@@ -18,17 +18,10 @@ public class DriveMonitor extends Monitor {
         return (double) systemLoad.getDriveLoads()
                 .stream()
                 .filter(i -> i.getName().equalsIgnoreCase(id()))
-                .findFirst()
-                .orElse(null)
+                .findFirst().orElse(DEFAULT_DRIVE_LOAD)
                 .getMetrics()
                 .getUsableSpace();
     }
-
-    @Override
-    protected double threshold() {
-        return threshold;
-    }
-
 
     @Override
     protected boolean isAboveThreshold(double value) {
@@ -36,9 +29,14 @@ public class DriveMonitor extends Monitor {
     }
 
     @Override
+    protected MonitorType type() {
+        return MonitorType.DRIVE;
+    }
+
+    @Override
     public String toString() {
         return "DriveMonitor{" +
-                "threshold=" + threshold +
+                "threshold=" + threshold() +
                 '}';
     }
 }

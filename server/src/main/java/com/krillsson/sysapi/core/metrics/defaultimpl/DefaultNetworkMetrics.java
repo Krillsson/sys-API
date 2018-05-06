@@ -134,18 +134,27 @@ public class DefaultNetworkMetrics implements NetworkMetrics {
         };
     }
 
-    Function<NetworkIF, NetworkInterfaceLoad> mapToLoad() {
-        return n -> new NetworkInterfaceLoad(
-                n.getName(), new NetworkInterfaceValues(
-                n.getSpeed(),
-                n.getBytesRecv(),
-                n.getBytesSent(),
-                n.getPacketsRecv(),
-                n.getPacketsSent(),
-                n.getInErrors(),
-                n.getOutErrors()
-        ),
-                speedForInterfaceWithName(n.getName())
-        );
+    private Function<NetworkIF, NetworkInterfaceLoad> mapToLoad() {
+        return n -> {
+            boolean up = false;
+            try {
+                up = n.getNetworkInterface().isUp();
+            } catch (SocketException e) {
+                LOGGER.error("Error occured while getting status for NIC", e);
+            }
+            return new NetworkInterfaceLoad(
+                    n.getName(), up,
+                    new NetworkInterfaceValues(
+                            n.getSpeed(),
+                            n.getBytesRecv(),
+                            n.getBytesSent(),
+                            n.getPacketsRecv(),
+                            n.getPacketsSent(),
+                            n.getInErrors(),
+                            n.getOutErrors()
+                    ),
+                    speedForInterfaceWithName(n.getName())
+            );
+        };
     }
 }

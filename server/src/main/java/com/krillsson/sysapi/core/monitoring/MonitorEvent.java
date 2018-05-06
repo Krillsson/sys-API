@@ -1,33 +1,26 @@
-package com.krillsson.sysapi.core.monitor;
+package com.krillsson.sysapi.core.monitoring;
+
 
 import java.time.LocalDateTime;
 
 public class MonitorEvent {
     private final LocalDateTime time;
-    private final Severity severity;
     private final String id;
-    private final Type type;
+    private final MonitorStatus monitorStatus;
+    private final Monitor.MonitorType monitorType;
     private final double threshold;
     private final double value;
 
-    public enum Severity {
-        NONE,
-        WARNING,
-        CRITICAL
-    }
-
-    public enum Type {
+    public enum MonitorStatus {
         START,
-        ONGOING,
         STOP,
-        STANDALONE
     }
 
-    public MonitorEvent(LocalDateTime time, String id, Severity severity, Type type, Double threshold, Double value) {
+    public MonitorEvent(LocalDateTime time, String id, MonitorStatus monitorStatus, Monitor.MonitorType monitorType, Double threshold, Double value) {
         this.time = time;
         this.id = id;
-        this.severity = severity;
-        this.type = type;
+        this.monitorStatus = monitorStatus;
+        this.monitorType = monitorType;
         this.threshold = threshold;
         this.value = value;
     }
@@ -40,12 +33,12 @@ public class MonitorEvent {
         return time;
     }
 
-    public Severity getSeverity() {
-        return severity;
+    public MonitorStatus getMonitorStatus() {
+        return monitorStatus;
     }
 
-    public Type getType() {
-        return type;
+    public Monitor.MonitorType getMonitorType() {
+        return monitorType;
     }
 
     public double getThreshold() {
@@ -61,9 +54,8 @@ public class MonitorEvent {
     public String toString() {
         return "MonitorEvent{" +
                 "time=" + time +
-                ", severity=" + severity +
                 ", id='" + id + '\'' +
-                ", type=" + type +
+                ", monitorStatus=" + monitorStatus +
                 ", threshold=" + threshold +
                 ", value=" + value +
                 '}';

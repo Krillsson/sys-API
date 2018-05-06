@@ -1,5 +1,7 @@
 package com.krillsson.sysapi.core.metrics;
 
+import com.krillsson.sysapi.core.domain.system.SystemLoad;
+
 public interface MetricsFactory {
     boolean prerequisitesFilled();
 
@@ -18,4 +20,14 @@ public interface MetricsFactory {
     GpuMetrics gpuMetrics();
 
     MotherboardMetrics motherboardMetrics();
+
+    default SystemLoad consolidatedMetrics() {
+        return new SystemLoad(
+                cpuMetrics().cpuLoad(),
+                networkMetrics().networkInterfaceLoads(),
+                driveMetrics().driveLoads(),
+                memoryMetrics().globalMemory(),
+                gpuMetrics().gpuLoads(),
+                motherboardMetrics().motherboardHealth());
+    }
 }

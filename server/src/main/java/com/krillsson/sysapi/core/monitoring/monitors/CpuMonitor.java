@@ -1,15 +1,14 @@
-package com.krillsson.sysapi.core.monitor;
+package com.krillsson.sysapi.core.monitoring.monitors;
 
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
+import com.krillsson.sysapi.core.monitoring.Monitor;
 
 import java.time.Duration;
 
 public class CpuMonitor extends Monitor {
-    private final double threshold;
 
     public CpuMonitor(String id, Duration inertia, double threshold) {
-        super(id, inertia);
-        this.threshold = threshold;
+        super(id, inertia, threshold);
     }
 
     @Override
@@ -18,19 +17,19 @@ public class CpuMonitor extends Monitor {
     }
 
     @Override
-    protected double threshold() {
-        return threshold;
-    }
-
-    @Override
     protected boolean isAboveThreshold(double value) {
         return value > threshold();
     }
 
     @Override
+    protected MonitorType type() {
+        return MonitorType.CPU;
+    }
+
+    @Override
     public String toString() {
         return "CpuMonitor{" +
-                "threshold=" + threshold +
+                "threshold=" + threshold() +
                 '}';
     }
 }

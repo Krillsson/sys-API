@@ -37,7 +37,7 @@ import java.util.stream.Stream;
 
 public class DefaultDriveProvider implements DriveMetrics {
     public static final DriveHealth DEFAULT_DISK_HEALTH = new DriveHealth(-1, Collections.emptyList());
-    protected static final DriveSpeed DEFAULT_DISK_SPEED = new DriveSpeed(0, 0);
+    protected static final DriveSpeed DEFAULT_DISK_SPEED = new DriveSpeed(-1, -1);
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultDriveProvider.class);
     private static final OsPartition DEFAULT_OS_PART = new OsPartition(
             "n/a",
@@ -55,6 +55,12 @@ public class DefaultDriveProvider implements DriveMetrics {
             0,
             0
 
+    );
+    public static final DriveLoad DEFAULT_DRIVE_LOAD = new DriveLoad(
+            "N/A",
+            new DriveValues(-1, -1, -1, -1, -1, -1, -1, -1),
+            DEFAULT_DISK_SPEED,
+            DEFAULT_DISK_HEALTH
     );
     private final OperatingSystem operatingSystem;
     private final HardwareAbstractionLayer hal;

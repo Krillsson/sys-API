@@ -24,14 +24,7 @@ public class QueryManager implements Managed {
     }
 
     private void query() {
-        eventBus.post(new QueryEvent(new SystemLoad(
-                provider.cpuMetrics().cpuLoad(),
-                provider.networkMetrics().networkInterfaceLoads(),
-                provider.driveMetrics().driveLoads(),
-                provider.memoryMetrics().globalMemory(),
-                provider.gpuMetrics().gpuLoads(),
-                provider.motherboardMetrics().motherboardHealth()
-        )));
+        eventBus.post(new QueryEvent(provider.consolidatedMetrics()));
     }
 
     @Override

@@ -4,7 +4,6 @@ import com.krillsson.sysapi.core.domain.gpu.Gpu;
 import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.core.domain.gpu.GpuInfo;
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad;
-import com.krillsson.sysapi.core.history.HistoryManager;
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.GpuMetrics;
 import io.dropwizard.testing.junit.ResourceTestRule;
@@ -38,7 +37,7 @@ public class GpuResourceTest {
     public void setUp() throws Exception {
         gpu = new Gpu("Nvidia", "GTX 970", 1000.0, 400.0);
         health = new GpuHealth(0.0, 0.0, 40);
-        load = new GpuLoad(0.5, 0.5, health);
+        load = new GpuLoad("GTX 970", 0.5, 0.5, health);
     }
 
     @Test

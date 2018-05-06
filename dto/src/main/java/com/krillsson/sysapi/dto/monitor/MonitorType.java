@@ -6,5 +6,5 @@ public enum MonitorType {
     DRIVE,
     GPU,
     MEMORY,
-    NETWORK
+    NETWORK_UP
 }
