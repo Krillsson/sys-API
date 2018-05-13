@@ -31,7 +31,7 @@ server:
   minThreads: 1
   maxQueuedRequests: 100
   idleThreadTimeout: 1 minute
-  applicationContextPath: /v1
+  applicationContextPath: /v2
   applicationConnectors:
     - type: http
       port: 8080
