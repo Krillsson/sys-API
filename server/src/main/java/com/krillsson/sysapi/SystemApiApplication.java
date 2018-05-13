@@ -30,16 +30,17 @@ import com.krillsson.sysapi.auth.BasicAuthenticator;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.TickManager;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceMixin;
+import com.krillsson.sysapi.core.domain.system.SystemLoad;
+import com.krillsson.sysapi.core.history.HistoryMetricQueryEvent;
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.MetricsFactory;
 import com.krillsson.sysapi.core.metrics.MetricsProvider;
-import com.krillsson.sysapi.core.monitoring.monitors.CpuMonitor;
-import com.krillsson.sysapi.core.monitoring.monitors.DriveMonitor;
 import com.krillsson.sysapi.core.monitoring.MonitorManager;
-import com.krillsson.sysapi.core.query.QueryManager;
+import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent;
+import com.krillsson.sysapi.core.query.MetricQueryManager;
+import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import com.krillsson.sysapi.persistence.LevelDbJacksonKeyValueStore;
 import com.krillsson.sysapi.resources.*;
 import com.krillsson.sysapi.util.EnvironmentUtils;
@@ -59,8 +60,8 @@ import oshi.software.os.OperatingSystem;
 
 import java.net.NetworkInterface;
 import java.time.Clock;
-import java.time.Duration;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 
 public class SystemApiApplication extends Application<SystemApiConfiguration> {
@@ -119,7 +120,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
 
         environment.jersey().register(new AuthDynamicFeature(userBasicCredentialAuthFilter));
         environment.jersey().register(new AuthValueFactoryProvider.Binder(UserConfiguration.class));
-        TickManager tickManager = new TickManager(                Executors.newScheduledThreadPool(
+        TickManager tickManager = new TickManager(Executors.newScheduledThreadPool(
                 1,
                 new ThreadFactoryBuilder()
                         .setNameFormat("tick-mgr-%d")
@@ -143,16 +144,48 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         ).create();
         environment.lifecycle().manage(speedMeasurementManager);
         environment.lifecycle().manage(tickManager);
-        QueryManager queryManager = new QueryManager(Executors.newSingleThreadScheduledExecutor(
+        ScheduledExecutorService queryScheduledExecutor = Executors.newScheduledThreadPool(
+                2,
                 new ThreadFactoryBuilder()
                         .setNameFormat("query-mgr-%d")
                         .build()
-        ), config.metrics().getHistory(), provider, eventBus);
-        environment.lifecycle().manage(queryManager);
+        );
+
+        MetricQueryManager historyMetricQueryManager = new MetricQueryManager<HistoryMetricQueryEvent>(
+                queryScheduledExecutor,
+                config.metrics().getHistory().getInterval(),
+                config.metrics().getHistory().getUnit(),
+                provider,
+                eventBus
+        ) {
+            @Override
+            protected HistoryMetricQueryEvent event(SystemLoad load) {
+                return new HistoryMetricQueryEvent(load);
+            }
+        };
+        environment.lifecycle().manage(historyMetricQueryManager);
+        MetricQueryManager monitorMetricQueryManager = new MetricQueryManager<MonitorMetricQueryEvent>(
+                queryScheduledExecutor,
+                config.metrics().getMonitor().getInterval(),
+                config.metrics().getMonitor().getUnit(),
+                provider,
+                eventBus
+        ) {
+            @Override
+            protected MonitorMetricQueryEvent event(SystemLoad load) {
+                return new MonitorMetricQueryEvent(load);
+            }
+        };
+        environment.lifecycle().manage(monitorMetricQueryManager);
+
         MetricsHistoryManager historyManager = new MetricsHistoryManager(config.metrics().getHistory(), eventBus);
         environment.lifecycle().manage(historyManager);
 
-        LevelDbJacksonKeyValueStore<com.krillsson.sysapi.dto.monitor.Monitor> persistentMonitors = new LevelDbJacksonKeyValueStore<>(com.krillsson.sysapi.dto.monitor.Monitor.class, environment.getObjectMapper(), "monitors");
+        LevelDbJacksonKeyValueStore<com.krillsson.sysapi.dto.monitor.Monitor> persistentMonitors = new LevelDbJacksonKeyValueStore<>(
+                com.krillsson.sysapi.dto.monitor.Monitor.class,
+                environment.getObjectMapper(),
+                "monitors"
+        );
         MonitorManager monitorManager = new MonitorManager(eventBus, persistentMonitors, provider);
         environment.lifecycle().manage(monitorManager);
 

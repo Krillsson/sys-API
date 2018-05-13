@@ -4,7 +4,6 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.krillsson.sysapi.config.HistoryConfiguration;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
-import com.krillsson.sysapi.core.query.QueryEvent;
 import io.dropwizard.lifecycle.Managed;
 
 import java.util.List;
@@ -21,7 +20,7 @@ public class HistoryManager implements Managed {
     }
 
     @Subscribe
-    public void onEvent(QueryEvent event)
+    public void onEvent(HistoryMetricQueryEvent event)
     {
         history.record(event.load());
         history.purge(configuration.getPurging().getOlderThan(), configuration.getPurging().getUnit());

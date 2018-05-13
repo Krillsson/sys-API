@@ -4,37 +4,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
 
 public class MonitorConfiguration {
     @Valid
     @NotNull
     @JsonProperty
-    private long inertia;
+    private long interval;
     @Valid
     @NotNull
     @JsonProperty
-    private ChronoUnit unit;
+    private TimeUnit unit;
 
-    public MonitorConfiguration(long inertia, ChronoUnit unit) {
-        this.inertia = inertia;
+    public MonitorConfiguration(long interval, TimeUnit unit) {
+        this.interval = interval;
         this.unit = unit;
     }
 
     public MonitorConfiguration() {
     }
 
-    public long getInertia() {
-        return inertia;
+    public long getInterval() {
+        return interval;
     }
 
-    public ChronoUnit getUnit() {
+    public TimeUnit getUnit() {
         return unit;
-    }
-
-    public Duration duration()
-    {
-        return Duration.of(getInertia(), getUnit());
     }
 }

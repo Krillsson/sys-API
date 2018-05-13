@@ -3,7 +3,6 @@ package com.krillsson.sysapi.core.monitoring;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.krillsson.sysapi.core.metrics.MetricsFactory;
-import com.krillsson.sysapi.core.query.QueryEvent;
 import com.krillsson.sysapi.persistence.LevelDbJacksonKeyValueStore;
 import io.dropwizard.lifecycle.Managed;
 import org.slf4j.Logger;
@@ -35,7 +34,7 @@ public class MonitorManager implements Managed {
     }
 
     @Subscribe
-    public void onEvent(QueryEvent event) {
+    public void onEvent(MonitorMetricQueryEvent event) {
         for (Monitor activeMonitor : activeMonitors.values()) {
             Optional<MonitorEvent> check = activeMonitor.check(event.load());
             check.ifPresent(events::add);

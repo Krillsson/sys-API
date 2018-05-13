@@ -97,10 +97,10 @@ public abstract class Monitor {
                 //Inside -> Outside before inertia
                 stateChangedAt = now;
                 state = State.OUTSIDE_BEFORE_INERTIA;
-                LOGGER.debug("{} went outside threshold of {} with {} at {}", id(), threshold(), value, now);
+                LOGGER.trace("{} went outside threshold of {} with {} at {}", id(), threshold(), value, now);
             }
             else{
-                LOGGER.debug("{} is still inside threshold: {} with {}", id(), threshold(), value);
+                LOGGER.trace("{} is still inside threshold: {} with {}", id(), threshold(), value);
             }
         }
         else if(state == State.OUTSIDE_BEFORE_INERTIA){
@@ -120,12 +120,12 @@ public abstract class Monitor {
                 }
                 else{
                     //Outside before inertia -> Outside before inertia
-                    LOGGER.debug("{} is still outside threshold of {} but inside grace period of {}", id(), threshold(), inertia());
+                    LOGGER.trace("{} is still outside threshold of {} but inside grace period of {}", id(), threshold(), inertia());
                 }
             }
             else{
                 //Outside before inertia -> inside
-                LOGGER.debug("{} went back inside threshold of {} inside grace period of {}", id(), threshold(), inertia());
+                LOGGER.trace("{} went back inside threshold of {} inside grace period of {}", id(), threshold(), inertia());
                 stateChangedAt = null;
                 state = State.INSIDE;
             }
@@ -133,12 +133,12 @@ public abstract class Monitor {
         else if (state == State.OUTSIDE){
             if(outsideThreshold){
                 //Outside -> outside
-                LOGGER.debug("{} is still outside threshold of {} at {}", id(), threshold(), value);
+                LOGGER.trace("{} is still outside threshold of {} at {}", id(), threshold(), value);
             }else{
                 //Outside -> Inside before inertia
                 stateChangedAt = now;
                 state = State.INSIDE_BEFORE_INERTIA;
-                LOGGER.debug("{} went inside threshold of {} at {}", id(), threshold(), now);
+                LOGGER.trace("{} went inside threshold of {} at {}", id(), threshold(), now);
             }
         }
         else if(state == State.INSIDE_BEFORE_INERTIA){
@@ -158,12 +158,12 @@ public abstract class Monitor {
                 }
                 else{
                     //Inside before inertia -> Inside before inertia
-                    LOGGER.debug("{} is still inside threshold of {} with {} but inside grace period of {}", id(), threshold(), value, inertia());
+                    LOGGER.trace("{} is still inside threshold of {} with {} but inside grace period of {}", id(), threshold(), value, inertia());
                 }
             }
             else{
                 //Inside before inertia -> outside
-                LOGGER.debug("{} went back outside threshold of {} with {} inside grace period of {}", id(), threshold(), value, inertia());
+                LOGGER.trace("{} went back outside threshold of {} with {} inside grace period of {}", id(), threshold(), value, inertia());
                 stateChangedAt = null;
                 state = State.OUTSIDE;
             }

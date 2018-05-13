@@ -3,13 +3,13 @@
 #########################################
 metricsConfig:
   monitor:
-    inertia: 1
-    unit: MINUTES
-  history:
-    duration: 30
+    interval: 45
     unit: SECONDS
+  history:
+    interval: 30
+    unit: MINUTES
     purging:
-      olderThan: 1
+      olderThan: 3
       unit: DAYS
       purgeEvery: 1
       purgeEveryUnit: DAYS
@@ -45,7 +45,6 @@ logging:
 
   # Logger-specific levels.
   loggers:
-    # Enables the SQL query log and redirect it to a separate file
     "com.krillsson.sysapi":
       additive: false
       level: DEBUG

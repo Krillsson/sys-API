@@ -16,7 +16,7 @@ public class CpuTemperatureMonitor extends Monitor {
     }
 
     @Override
-    protected boolean isAboveThreshold(double value) {
+    protected boolean isOutsideThreshold(double value) {
         return value > threshold();
     }
 
