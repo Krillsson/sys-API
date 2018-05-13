@@ -22,8 +22,6 @@
 package com.krillsson.sysapi.core.domain.cpu;
 
 import com.krillsson.sysapi.core.domain.system.DateMapper;
-import com.krillsson.sysapi.core.domain.system.SystemInfoMapper;
-import com.krillsson.sysapi.core.history.History;
 import com.krillsson.sysapi.dto.history.HistoryEntry;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -52,6 +50,6 @@ public interface CpuInfoMapper {
 
     Map<String, com.krillsson.sysapi.dto.cpu.CpuLoad> mapLoadHistory(Map<LocalDateTime, CpuLoad> history);
 
-    List<HistoryEntry<com.krillsson.sysapi.dto.cpu.CpuLoad>> mapHistory(List<History.HistoryEntry<CpuLoad>> history);
+    List<HistoryEntry<com.krillsson.sysapi.dto.cpu.CpuLoad>> mapHistory(List<com.krillsson.sysapi.core.history.HistoryEntry<CpuLoad>> history);
 
 }

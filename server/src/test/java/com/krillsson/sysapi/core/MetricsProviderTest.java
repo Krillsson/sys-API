@@ -5,6 +5,7 @@ import com.krillsson.sysapi.core.metrics.MetricsFactory;
 import com.krillsson.sysapi.core.metrics.MetricsProvider;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory;
 import com.krillsson.sysapi.core.metrics.rasbian.RaspbianMetricsFactory;
+import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import org.junit.Before;
 import org.junit.Test;
 import oshi.PlatformEnum;

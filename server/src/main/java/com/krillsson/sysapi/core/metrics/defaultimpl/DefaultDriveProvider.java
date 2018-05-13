@@ -20,7 +20,7 @@
  */
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
-import com.krillsson.sysapi.core.SpeedMeasurementManager;
+import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.domain.drives.*;
 import com.krillsson.sysapi.core.metrics.DriveMetrics;
 import org.slf4j.Logger;

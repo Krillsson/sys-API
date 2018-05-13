@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.core;
+package com.krillsson.sysapi.core.speed;
 
 import io.dropwizard.lifecycle.Managed;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ public class SpeedMeasurementManager implements Managed {
     }
 
     public void register(Collection<SpeedSource> sources) {
-        LOGGER.debug("Registering {}", sources.parallelStream().map(SpeedSource::getName).toArray());
+        LOGGER.debug("Registering {}", sources.stream().map(SpeedSource::getName).toArray());
         speedSources.addAll(sources);
     }
 

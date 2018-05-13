@@ -2,7 +2,6 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.domain.cpu.CpuInfoMapper;
 import com.krillsson.sysapi.core.monitoring.MonitorManager;
 import com.krillsson.sysapi.core.monitoring.MonitorMapper;
 import com.krillsson.sysapi.dto.monitor.Monitor;

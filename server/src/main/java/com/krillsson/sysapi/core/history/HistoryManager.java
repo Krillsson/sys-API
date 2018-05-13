@@ -37,7 +37,7 @@ public class HistoryManager implements Managed {
         eventBus.unregister(this);
     }
 
-    public List<History.HistoryEntry<SystemLoad>> getHistory() {
+    public List<HistoryEntry<SystemLoad>> getHistory() {
         return history.get();
     }
 }

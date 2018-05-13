@@ -30,7 +30,7 @@ import com.krillsson.sysapi.auth.BasicAuthenticator;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.SpeedMeasurementManager;
+import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.TickManager;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceMixin;
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
@@ -155,8 +155,6 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         LevelDbJacksonKeyValueStore<com.krillsson.sysapi.dto.monitor.Monitor> persistentMonitors = new LevelDbJacksonKeyValueStore<>(com.krillsson.sysapi.dto.monitor.Monitor.class, environment.getObjectMapper(), "monitors");
         MonitorManager monitorManager = new MonitorManager(eventBus, persistentMonitors, provider);
         environment.lifecycle().manage(monitorManager);
-        monitorManager.addMonitor(new CpuMonitor("cpu0", Duration.ofSeconds(30), 20));
-        monitorManager.addMonitor(new DriveMonitor("disk1", Duration.ofSeconds(30), 20));
 
         environment.jersey().register(new SystemResource(
                 SystemInfo.getCurrentPlatformEnum(),

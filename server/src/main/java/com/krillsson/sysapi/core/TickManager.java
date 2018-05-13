@@ -2,7 +2,6 @@ package com.krillsson.sysapi.core;
 
 import io.dropwizard.lifecycle.Managed;
 
-import java.time.Clock;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 public class TickManager implements Managed {
 
     public interface TickListener {
-
         void onTick();
     }
 

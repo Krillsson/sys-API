@@ -24,8 +24,6 @@ package com.krillsson.sysapi.core.domain.drives;
 import com.krillsson.sysapi.core.domain.sensors.DataType;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
 import com.krillsson.sysapi.core.domain.system.DateMapper;
-import com.krillsson.sysapi.core.domain.system.SystemInfoMapper;
-import com.krillsson.sysapi.core.history.History;
 import com.krillsson.sysapi.dto.history.HistoryEntry;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -68,6 +66,6 @@ public interface DriveMetricsMapper {
 
     Map<String, List<com.krillsson.sysapi.dto.drives.DriveLoad>> mapLoadHistory(Map<LocalDateTime, List<DriveLoad>> history);
 
-    List<HistoryEntry<List<com.krillsson.sysapi.dto.drives.DriveLoad>>> mapHistory(List<History.HistoryEntry<List<DriveLoad>>> history);
+    List<HistoryEntry<List<com.krillsson.sysapi.dto.drives.DriveLoad>>> mapHistory(List<com.krillsson.sysapi.core.history.HistoryEntry<List<DriveLoad>>> history);
 
 }

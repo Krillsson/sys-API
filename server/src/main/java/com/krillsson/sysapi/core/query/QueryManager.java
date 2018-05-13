@@ -31,7 +31,7 @@ public class QueryManager implements Managed {
     public void start() throws Exception {
         executorService.scheduleAtFixedRate(
                 this::query,
-                0,
+                configuration.getDuration(),
                 configuration.getDuration(),
                 configuration.getUnit()
         );

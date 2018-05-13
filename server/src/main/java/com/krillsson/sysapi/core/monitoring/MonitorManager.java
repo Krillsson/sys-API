@@ -39,7 +39,7 @@ public class MonitorManager implements Managed {
         for (Monitor activeMonitor : activeMonitors.values()) {
             Optional<MonitorEvent> check = activeMonitor.check(event.load());
             check.ifPresent(events::add);
-            check.ifPresent(event1 -> LOGGER.warn("Event: {}", check.get()));
+            check.ifPresent(e -> LOGGER.warn("Event: {}", check.get()));
         }
     }
 
@@ -71,7 +71,7 @@ public class MonitorManager implements Managed {
         eventBus.unregister(this);
     }
 
-    void persist() {
+    private void persist() {
         Map<String, com.krillsson.sysapi.dto.monitor.Monitor> map = activeMonitors.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> MonitorMapper.INSTANCE.map(e.getValue())));
         persistentMonitors.removeAll(map.keySet());

@@ -22,8 +22,6 @@
 package com.krillsson.sysapi.core.domain.memory;
 
 import com.krillsson.sysapi.core.domain.system.DateMapper;
-import com.krillsson.sysapi.core.domain.system.SystemInfoMapper;
-import com.krillsson.sysapi.core.history.History;
 import com.krillsson.sysapi.dto.history.HistoryEntry;
 import com.krillsson.sysapi.dto.processes.Memory;
 import org.mapstruct.Mapper;
@@ -46,6 +44,6 @@ public interface GlobalMemoryMapper {
 
     Map<String, Memory> mapHistory(Map<LocalDateTime, GlobalMemory> history);
 
-    List<HistoryEntry<Memory>> mapHistory(List<History.HistoryEntry<GlobalMemory>> history);
+    List<HistoryEntry<Memory>> mapHistory(List<com.krillsson.sysapi.core.history.HistoryEntry<GlobalMemory>> history);
 
 }
