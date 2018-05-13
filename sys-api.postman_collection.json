@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "http://127.0.0.1:8080/v1/cpu",
+					"raw": "http://127.0.0.1:8080/v2/cpu",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -23,7 +23,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"v1",
+						"v2",
 						"cpu"
 					]
 				}
@@ -45,7 +45,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/v1/cpu/ticks",
+					"raw": "http://127.0.0.1:8080/v2/cpu/ticks",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -55,7 +55,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"v1",
+						"v2",
 						"cpu",
 						"ticks"
 					]
@@ -78,7 +78,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/v1/storage",
+					"raw": "http://127.0.0.1:8080/v2/storage",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -88,7 +88,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"v1",
+						"v2",
 						"storage"
 					]
 				}
@@ -110,7 +110,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/v1/powersources",
+					"raw": "http://127.0.0.1:8080/v2/powersources",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -120,7 +120,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"v1",
+						"v2",
 						"powersources"
 					]
 				}
@@ -142,7 +142,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/v1/gpus",
+					"raw": "http://127.0.0.1:8080/v2/gpus",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -152,7 +152,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"v1",
+						"v2",
 						"gpus"
 					]
 				}
@@ -174,7 +174,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/v1/motherboard",
+					"raw": "http://127.0.0.1:8080/v2/motherboard",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -184,7 +184,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"v1",
+						"v2",
 						"motherboard"
 					]
 				}
@@ -206,7 +206,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/v1/memory",
+					"raw": "http://127.0.0.1:8080/v2/memory",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -216,7 +216,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"v1",
+						"v2",
 						"memory"
 					]
 				}
@@ -238,7 +238,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/v1/nics",
+					"raw": "http://127.0.0.1:8080/v2/nics",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -248,7 +248,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"v1",
+						"v2",
 						"nics"
 					]
 				}
@@ -270,7 +270,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/v1/processes",
+					"raw": "http://127.0.0.1:8080/v2/processes",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -280,7 +280,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"v1",
+						"v2",
 						"processes"
 					]
 				}
@@ -302,7 +302,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/v1/sensors",
+					"raw": "http://127.0.0.1:8080/v2/sensors",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -312,7 +312,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"v1",
+						"v2",
 						"sensors"
 					]
 				}
@@ -334,7 +334,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/v1/system",
+					"raw": "http://127.0.0.1:8080/v2/system",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -344,7 +344,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"v1",
+						"v2",
 						"system"
 					]
 				}
@@ -366,7 +366,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/v1/system/jvm",
+					"raw": "http://127.0.0.1:8080/v2/system/jvm",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -376,7 +376,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"v1",
+						"v2",
 						"system",
 						"jvm"
 					]
@@ -399,7 +399,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/v1/system/os",
+					"raw": "http://127.0.0.1:8080/v2/system/os",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -409,7 +409,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"v1",
+						"v2",
 						"system",
 						"os"
 					]
@@ -432,7 +432,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/v1/system/uptime",
+					"raw": "http://127.0.0.1:8080/v2/system/uptime",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -442,7 +442,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"v1",
+						"v2",
 						"system",
 						"uptime"
 					]
@@ -465,7 +465,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/v1/version",
+					"raw": "http://127.0.0.1:8080/v2/version",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -475,7 +475,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"v1",
+						"v2",
 						"version"
 					]
 				}
