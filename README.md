@@ -4,14 +4,15 @@
 [![Coverage Status](https://coveralls.io/repos/github/Krillsson/sys-api/badge.svg?branch=develop)](https://coveralls.io/github/Krillsson/sys-api?branch=develop)
 [![SonarQube Quality Gate](https://sonarqube.com/api/badges/gate?key=com.krillsson:sys-api)](https://sonarqube.com/dashboard?id=com.krillsson%3Asys-api)
 
-System API (sys-api) is a RESTful API to your computers hardware. 
+System API (sys-API) is a RESTful API to your computers hardware.
 
-Sys-api publishes metrics from [OSHI](https://github.com/oshi/oshi) with the help of [Dropwizard](https://github.com/dropwizard/dropwizard). On Windows the information is supplemented with
+Sys-API publishes and monitors metrics from [OSHI](https://github.com/oshi/oshi) with the help of [Dropwizard](https://github.com/dropwizard/dropwizard). On Windows the information is supplemented with
 [OpenHardwareMonitor](https://github.com/openhardwaremonitor/openhardwaremonitor) with a little help from [OhmJni4Net](https://github.com/Krillsson/ohmjni4net).
 
 ## What can it do?
-Use the */system* endpoint to get a summary of the system health.
 
+- Threshold-based monitoring of system metrics
+- List ongoing threshold violations (events)
 - CPU usage & info
 - Memory usage
 - List running processes
@@ -22,21 +23,58 @@ Use the */system* endpoint to get a summary of the system health.
 ## Endpoints
 
 ```
-    GET /cpu
-    GET /cpu/ticks
-    GET /gpus
-    GET /memory
-    GET /motherboard
-    GET /nics
-    GET /nics/{id}
-    GET /powersources
-    GET /processes
-    GET /processes/{pid}
-    GET /sensors
-    GET /storage
-    GET /storage/{name}
-    GET /system
+
+    // Static information about the system
+    GET     /system
+    // Current load of the system
+    GET     /system/load
+    // An array of (date, system load) entries
+    GET     /system/load/history
+
+    // Currently configured monitors
+    GET     /monitors
+    // Configure a new monitor
+    POST    /monitors
+    // Remove an existing monitor
+    DELETE  /monitors/{id}
+
+    // Get currently ongoing threshold violations, if any.
+    GET     /events
+
+    // displays meta info about the Sys-API server
+    GET     /
+
+    GET     /cpu
+    GET     /cpu/load
+    GET     /cpu/load/history
+    GET     /drives
+    GET     /drives/loads
+    GET     /drives/loads/history
+    GET     /drives/loads/{name}
+    GET     /drives/{name}
+    GET     /gpus
+    GET     /gpus/loads
+    GET     /gpus/loads/history
+    GET     /memory
+    GET     /memory/history
+    GET     /motherboard
+    GET     /motherboard/health
+    GET     /nics
+    GET     /nics/loads
+    GET     /nics/loads/history
+    GET     /nics/loads/{id}
+    GET     /nics/{id}
+    GET     /pid
+    GET     /processes
+    GET     /processes/{pid}
+    GET     /system/jvm
+    GET     /system/uptime
+    GET     /version
 ```
+
+## Configuring a monitor
+
+TODO
 
 ## Running
 Download the [latest release](https://github.com/Krillsson/sys-api/releases/latest).
