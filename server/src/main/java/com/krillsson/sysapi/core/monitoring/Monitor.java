@@ -20,8 +20,8 @@ public abstract class Monitor {
 
     enum State {
         INSIDE,
-        PAST_BEFORE_INERTIA,
-        PAST,
+        OUTSIDE_BEFORE_INERTIA,
+        OUTSIDE,
         INSIDE_BEFORE_INERTIA
     }
 
@@ -46,26 +46,26 @@ public abstract class Monitor {
      * Inside -> Inside
      * no action
      * <p>
-     * Inside -> Past before inertia
-     * (conditional: past threshold)
+     * Inside -> Outside before inertia
+     * (conditional: outside threshold)
      * save timestamp of state change
      * <p>
-     * Past before inertia -> Past before inertia
+     * Outside before inertia -> Outside before inertia
      * no action
      * <p>
-     * Past before inertia -> inside
+     * Outside before inertia -> inside
      * (conditional: inside threshold)
      * reset timestamp
      * <p>
-     * Past before inertia -> past
+     * Outside before inertia -> outside
      * (conditional: now-timestamp older than inertia)
      * record event
      * reset timestamp (?)
      * <p>
-     * Past -> past
+     * Outside -> outside
      * no action
      * <p>
-     * Past -> inside before inertia
+     * Outside -> inside before inertia
      * (conditional: inside threshold)
      * save timestamp of state change
      * <p>
@@ -77,7 +77,7 @@ public abstract class Monitor {
      * Inside before inertia -> Inside before inertia
      * no action
      * <p>
-     * Inside before inertia -> past
+     * Inside before inertia -> outside
      * reset timestamp
      *
      * @param systemLoad
@@ -88,27 +88,27 @@ public abstract class Monitor {
         LocalDateTime now = LocalDateTime.now();
 
         Double value = value(systemLoad);
-        boolean pastThreshold = isPastThreshold(value);
+        boolean outsideThreshold = isOutsideThreshold(value);
         boolean pastInertia = stateChangedAt != null && between(stateChangedAt, /* and */ now).compareTo(inertia) > 0;
         MonitorEvent event = null;
 
         if(state == State.INSIDE){
-            if(pastThreshold){
-                //Inside -> Past before inertia
+            if(outsideThreshold){
+                //Inside -> Outside before inertia
                 stateChangedAt = now;
-                state = State.PAST_BEFORE_INERTIA;
-                LOGGER.debug("{} went past threshold of {} with {} at {}", id(), threshold(), value, now);
+                state = State.OUTSIDE_BEFORE_INERTIA;
+                LOGGER.debug("{} went outside threshold of {} with {} at {}", id(), threshold(), value, now);
             }
             else{
                 LOGGER.debug("{} is still inside threshold: {} with {}", id(), threshold(), value);
             }
         }
-        else if(state == State.PAST_BEFORE_INERTIA){
-            if(pastThreshold){
+        else if(state == State.OUTSIDE_BEFORE_INERTIA){
+            if(outsideThreshold){
                 if(pastInertia){
-                    //Past before inertia -> past
-                    LOGGER.debug("{} have now been past threshold of {} for more than {}, triggering event...", id(), threshold(), inertia());
-                    state = State.PAST;
+                    //Outside before inertia -> outside
+                    LOGGER.debug("{} have now been outside threshold of {} for more than {}, triggering event...", id(), threshold(), inertia());
+                    state = State.OUTSIDE;
                     stateChangedAt = null;
                     event = new MonitorEvent(
                             now,
@@ -119,30 +119,30 @@ public abstract class Monitor {
                     );
                 }
                 else{
-                    //Past before inertia -> Past before inertia
-                    LOGGER.debug("{} is still past threshold of {} but inside grace period of {}", id(), threshold(), inertia());
+                    //Outside before inertia -> Outside before inertia
+                    LOGGER.debug("{} is still outside threshold of {} but inside grace period of {}", id(), threshold(), inertia());
                 }
             }
             else{
-                //Past before inertia -> inside
+                //Outside before inertia -> inside
                 LOGGER.debug("{} went back inside threshold of {} inside grace period of {}", id(), threshold(), inertia());
                 stateChangedAt = null;
                 state = State.INSIDE;
             }
         }
-        else if (state == State.PAST){
-            if(pastThreshold){
-                //Past -> past
-                LOGGER.debug("{} is still past threshold of {} at {}", id(), threshold(), value);
+        else if (state == State.OUTSIDE){
+            if(outsideThreshold){
+                //Outside -> outside
+                LOGGER.debug("{} is still outside threshold of {} at {}", id(), threshold(), value);
             }else{
-                //Past -> Inside before inertia
+                //Outside -> Inside before inertia
                 stateChangedAt = now;
                 state = State.INSIDE_BEFORE_INERTIA;
                 LOGGER.debug("{} went inside threshold of {} at {}", id(), threshold(), now);
             }
         }
         else if(state == State.INSIDE_BEFORE_INERTIA){
-            if(pastThreshold){
+            if(outsideThreshold){
                 if(pastInertia){
                     //Inside before inertia -> inside
                     LOGGER.debug("{} have now been inside threshold of {} for more than {}, triggering event...", id(), threshold(), inertia());
@@ -162,10 +162,10 @@ public abstract class Monitor {
                 }
             }
             else{
-                //Inside before inertia -> past
-                LOGGER.debug("{} went back past threshold of {} with {} inside grace period of {}", id(), threshold(), value, inertia());
+                //Inside before inertia -> outside
+                LOGGER.debug("{} went back outside threshold of {} with {} inside grace period of {}", id(), threshold(), value, inertia());
                 stateChangedAt = null;
-                state = State.PAST;
+                state = State.OUTSIDE;
             }
         }
 
@@ -179,7 +179,7 @@ public abstract class Monitor {
 
     protected abstract double value(SystemLoad systemLoad);
 
-    protected abstract boolean isPastThreshold(double value);
+    protected abstract boolean isOutsideThreshold(double value);
 
     protected abstract MonitorType type();
 
