@@ -38,6 +38,10 @@ public class DefaultCpuMetricsTest {
 
         centralProcessor = mock(CentralProcessor.class);
         when(hal.getSensors()).thenReturn(sensors);
+        when(sensors.getCpuTemperature()).thenReturn(30.0);
+        when(sensors.getCpuVoltage()).thenReturn(1.35);
+        when(sensors.getFanSpeeds()).thenReturn(new int[]{1200});
+        cpuSensors = new DefaultCpuSensors(hal);
         infoProvider = new DefaultCpuMetrics(hal, os, cpuSensors, utils, tickManager);
 
     }
@@ -50,8 +54,8 @@ public class DefaultCpuMetricsTest {
         when(hal.getProcessor()).thenReturn(centralProcessor);
         when(centralProcessor.getLogicalProcessorCount()).thenReturn(1);
         when(centralProcessor.getProcessorCpuLoadTicks()).thenReturn(initialTicks, secondTicks);
-        when(utils.currentSystemTime()).thenReturn(1000L, 2000L);
 
+        infoProvider.onTick();
         CpuLoad cpuLoad = infoProvider.cpuLoad();
 
         assertEquals(38.0, cpuLoad.getCoreLoads().get(0).getUser(), 0.0);
@@ -71,7 +75,9 @@ public class DefaultCpuMetricsTest {
         when(centralProcessor.getProcessorCpuLoadTicks()).thenReturn(initialTicks, secondTicks, thirdTicks);
         when(utils.currentSystemTime()).thenReturn(1000L, 2000L, 3000L);
 
+        infoProvider.onTick();
         CpuLoad cpuLoad = infoProvider.cpuLoad();
+        infoProvider.onTick();
         CpuLoad secondCpuLoad = infoProvider.cpuLoad();
 
 
@@ -84,10 +90,13 @@ public class DefaultCpuMetricsTest {
 
     @Test
     public void cpuHealthHappyPath() {
-        when(sensors.getCpuTemperature()).thenReturn(30.0);
-        when(sensors.getCpuVoltage()).thenReturn(1.35);
-        when(sensors.getFanSpeeds()).thenReturn(new int[]{1200});
-        when(sensors.getFanSpeeds()).thenReturn(new int[]{1200});
+        long[][] initialTicks = {{1402976, 0, 448399, 2780631, 0, 0, 0, 0}};
+        long[][] secondTicks = {{1416739, 0, 452315, 2799166, 0, 0, 0, 0}};
+        when(hal.getProcessor()).thenReturn(centralProcessor);
+        when(centralProcessor.getLogicalProcessorCount()).thenReturn(1);
+        when(centralProcessor.getProcessorCpuLoadTicks()).thenReturn(initialTicks, secondTicks);
+
+        infoProvider.onTick();
         CpuHealth cpuHealth = infoProvider.cpuLoad().getCpuHealth();
         assertEquals(cpuHealth.getFanPercent(), 0, 0);
         assertEquals(cpuHealth.getFanRpm(), 1200, 0);
