@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.speed;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.dropwizard.lifecycle.Managed;
 import org.slf4j.Logger;
 
@@ -116,7 +117,8 @@ public class SpeedMeasurementManager implements Managed {
         private final long readPerSeconds;
         private final long writePerSeconds;
 
-        CurrentSpeed(long readPerSeconds, long writePerSeconds) {
+        @VisibleForTesting
+        public CurrentSpeed(long readPerSeconds, long writePerSeconds) {
             this.readPerSeconds = readPerSeconds;
             this.writePerSeconds = writePerSeconds;
         }
