@@ -2,10 +2,12 @@ package com.krillsson.sysapi.core.monitoring;
 
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class MonitorEvent {
+    private final UUID id;
     private final LocalDateTime time;
-    private final String id;
+    private final String itemId;
     private final MonitorStatus monitorStatus;
     private final Monitor.MonitorType monitorType;
     private final double threshold;
@@ -16,17 +18,22 @@ public class MonitorEvent {
         STOP,
     }
 
-    public MonitorEvent(LocalDateTime time, String id, MonitorStatus monitorStatus, Monitor.MonitorType monitorType, Double threshold, Double value) {
-        this.time = time;
+    public MonitorEvent(UUID id, String itemId, LocalDateTime time, MonitorStatus monitorStatus, Monitor.MonitorType monitorType, Double threshold, Double value) {
         this.id = id;
+        this.time = time;
+        this.itemId = itemId;
         this.monitorStatus = monitorStatus;
         this.monitorType = monitorType;
         this.threshold = threshold;
         this.value = value;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
+    }
+
+    public String getItemId() {
+        return itemId;
     }
 
     public LocalDateTime getTime() {
@@ -54,7 +61,7 @@ public class MonitorEvent {
     public String toString() {
         return "MonitorEvent{" +
                 "time=" + time +
-                ", id='" + id + '\'' +
+                ", id='" + itemId + '\'' +
                 ", monitorStatus=" + monitorStatus +
                 ", threshold=" + threshold +
                 ", value=" + value +

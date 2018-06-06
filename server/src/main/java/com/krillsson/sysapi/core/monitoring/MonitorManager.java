@@ -37,16 +37,23 @@ public class MonitorManager implements Managed {
     public void onEvent(MonitorMetricQueryEvent event) {
         for (Monitor activeMonitor : activeMonitors.values()) {
             Optional<MonitorEvent> check = activeMonitor.check(event.load());
-            check.ifPresent(events::add);
-            check.ifPresent(e -> LOGGER.warn("Event: {}", check.get()));
+            check.ifPresent(e -> {
+                LOGGER.warn("Event: {}", check.get());
+                if (e.getMonitorStatus() == MonitorEvent.MonitorStatus.STOP && events.stream()
+                        .anyMatch(me -> me.getId().equals(e.getId()))) {
+                    events.add(e);
+                } else {
+                    LOGGER.warn("Received STOP event for explicitly removed event, ignoring...");
+                }
+            });
         }
     }
 
-    public boolean validate(Monitor monitor){
+    public boolean validate(Monitor monitor) {
         return monitor.value(provider.consolidatedMetrics()) != -1.0;
     }
 
-    public List<Monitor> monitors(){
+    public List<Monitor> monitors() {
         return Collections.unmodifiableList(new ArrayList<>(activeMonitors.values()));
     }
 
@@ -77,9 +84,20 @@ public class MonitorManager implements Managed {
         persistentMonitors.putAll(map);
     }
 
+    public boolean removeEvents(String id) {
+        List<MonitorEvent> toBeRemoved = new ArrayList<>();
+        for (MonitorEvent event : events) {
+            if (event.getId().toString().equalsIgnoreCase(id)) {
+                toBeRemoved.add(event);
+            }
+        }
+        LOGGER.debug("Removed {} events with ID {}", toBeRemoved.size(), id);
+        return events.removeAll(toBeRemoved);
+    }
+
     public boolean remove(String id) {
         boolean status = activeMonitors.remove(id) != null;
-        if(status){
+        if (status) {
             persist();
         }
         return status;

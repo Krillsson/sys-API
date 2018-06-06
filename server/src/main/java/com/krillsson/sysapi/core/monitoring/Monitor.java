@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 import static java.time.Duration.between;
 
@@ -17,6 +18,7 @@ public abstract class Monitor {
     private final Duration inertia;
     private LocalDateTime stateChangedAt = null;
     private State state = State.INSIDE;
+    private UUID eventId;
 
     enum State {
         INSIDE,
@@ -110,9 +112,9 @@ public abstract class Monitor {
                     LOGGER.debug("{} have now been outside threshold of {} for more than {}, triggering event...", id(), threshold(), inertia());
                     state = State.OUTSIDE;
                     stateChangedAt = null;
+                    eventId = UUID.randomUUID();
                     event = new MonitorEvent(
-                            now,
-                            id,
+                            eventId, id, now,
                             MonitorEvent.MonitorStatus.START,
                             type(), threshold(),
                             value
@@ -149,8 +151,7 @@ public abstract class Monitor {
                     state = State.INSIDE;
                     stateChangedAt = null;
                     event = new MonitorEvent(
-                            now,
-                            id,
+                            eventId, id, now,
                             MonitorEvent.MonitorStatus.STOP,
                             type(), threshold(),
                             value

@@ -28,4 +28,14 @@ public class EventResource {
     public List<MonitorEvent> getRoot(@Auth UserConfiguration user) {
         return MonitorMapper.INSTANCE.map(monitorManager.events());
     }
+
+    @DELETE
+    @Path("{id}")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public void delete(@Auth UserConfiguration user, @PathParam("id") String id) {
+        boolean removed = monitorManager.removeEvents(id);
+        if (!removed) {
+            throw new WebApplicationException(NOT_FOUND);
+        }
+    }
 }
