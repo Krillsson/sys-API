@@ -21,13 +21,14 @@
 package com.krillsson.sysapi.core.metrics;
 
 import com.krillsson.sysapi.config.SystemApiConfiguration;
-import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.TickManager;
 import com.krillsson.sysapi.core.metrics.cache.Cache;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory;
+import com.krillsson.sysapi.core.metrics.macos.MacOsMetricsProvider;
 import com.krillsson.sysapi.core.metrics.rasbian.RaspbianMetricsFactory;
 import com.krillsson.sysapi.core.metrics.windows.MonitorManagerFactory;
 import com.krillsson.sysapi.core.metrics.windows.WindowsMetricsFactory;
+import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import com.krillsson.sysapi.util.Utils;
 import org.slf4j.Logger;
 import oshi.PlatformEnum;
@@ -95,6 +96,18 @@ public class MetricsProvider {
                 break;
             case MACOSX:
                 //https://github.com/Chris911/iStats
+                MacOsMetricsProvider macOsMetricsProvider = new MacOsMetricsProvider(
+                        hal,
+                        operatingSystem,
+                        speedMeasurementManager,
+                        tickManager,
+                        utils
+                );
+                if (macOsMetricsProvider.prerequisitesFilled()) {
+                    macOsMetricsProvider.initialize();
+                    return Cache.wrap(macOsMetricsProvider, configuration.metrics().getCache());
+                }
+                break;
             case FREEBSD:
             case SOLARIS:
             case UNKNOWN:

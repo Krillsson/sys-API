@@ -20,6 +20,7 @@
  */
 package com.krillsson.sysapi.core.metrics.windows;
 
+import com.krillsson.sysapi.core.metrics.Empty;
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.domain.drives.DriveHealth;
 import com.krillsson.sysapi.core.domain.drives.DriveSpeed;
@@ -98,6 +99,6 @@ public class WindowsDriveProvider extends DefaultDriveProvider {
                          return new DriveHealth(nullSafeGetValue(dm.getTemperature()), healthDatas);
 
                      }
-                ).findAny().orElse(DEFAULT_DISK_HEALTH);
+                ).findAny().orElse(Empty.DRIVE_HEALTH);
     }
 }

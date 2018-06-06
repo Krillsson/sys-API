@@ -20,9 +20,11 @@
  */
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
-import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.domain.drives.*;
 import com.krillsson.sysapi.core.metrics.DriveMetrics;
+import com.krillsson.sysapi.core.metrics.Empty;
+import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import oshi.hardware.HWDiskStore;
 import oshi.hardware.HWPartition;
@@ -36,32 +38,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DefaultDriveProvider implements DriveMetrics {
-    public static final DriveHealth DEFAULT_DISK_HEALTH = new DriveHealth(-1, Collections.emptyList());
-    protected static final DriveSpeed DEFAULT_DISK_SPEED = new DriveSpeed(-1, -1);
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultDriveProvider.class);
-    private static final OsPartition DEFAULT_OS_PART = new OsPartition(
-            "n/a",
-            "n/a",
-            "n/a",
-            UUID.randomUUID().toString(),
-            0,
-            0,
-            0,
-            "n/a",
-            "n/a",
-            "n/a",
-            "n/a",
-            "n/a",
-            0,
-            0
 
-    );
-    public static final DriveLoad DEFAULT_DRIVE_LOAD = new DriveLoad(
-            "N/A",
-            new DriveValues(-1, -1, -1, -1, -1, -1, -1, -1),
-            DEFAULT_DISK_SPEED,
-            DEFAULT_DISK_HEALTH
-    );
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultDriveProvider.class);
+
     private final OperatingSystem operatingSystem;
     private final HardwareAbstractionLayer hal;
     private final SpeedMeasurementManager speedMeasurementManager;
@@ -84,7 +63,7 @@ public class DefaultDriveProvider implements DriveMetrics {
                 d.getModel(),
                 d.getName(),
                 d.getSerial(),
-                findAssociatedFileStore(d).orElse(DEFAULT_OS_PART),
+                findAssociatedFileStore(d).orElse(Empty.OS_PARTITION),
                 Stream.of(d.getPartitions())
                         .map(p -> new Partition(
                                 p.getIdentification(),
@@ -132,7 +111,7 @@ public class DefaultDriveProvider implements DriveMetrics {
                 d.getModel(),
                 d.getName(),
                 d.getSerial(),
-                findAssociatedFileStore(d).orElse(DEFAULT_OS_PART),
+                findAssociatedFileStore(d).orElse(Empty.OS_PARTITION),
                 Stream.of(d.getPartitions())
                         .map(p -> new Partition(
                                 p.getIdentification(),
@@ -157,42 +136,79 @@ public class DefaultDriveProvider implements DriveMetrics {
     }
 
     public DriveHealth diskHealth(String name) {
-        return DEFAULT_DISK_HEALTH;
+        return Empty.DRIVE_HEALTH;
     }
 
     private Optional<OsPartition> findAssociatedFileStore(HWDiskStore diskStore) {
-        for (OSFileStore osStore : Stream.of(operatingSystem.getFileSystem().getFileStores())
-                .collect(Collectors.toList())) {
-            List<HWPartition> asList = Stream.of(diskStore.getPartitions()).collect(Collectors.toList());
-            for (HWPartition partition : asList) {
-                if (osStore.getUUID().equalsIgnoreCase(partition.getUuid())) {
-                    return Optional.of(new OsPartition(
-                            partition.getIdentification(),
-                            partition.getName(),
-                            osStore.getType(),
-                            partition.getUuid(),
-                            partition.getSize(),
-                            partition.getMajor(),
-                            partition.getMinor(),
-                            osStore.getMount(),
-                            osStore.getVolume(),
-                            osStore.getLogicalVolume(),
-                            osStore.getMount(),
-                            osStore.getDescription(),
-                            osStore.getUsableSpace(),
-                            osStore.getTotalSpace()
-                    ));
-                }
+
+        List<OSFileStore> fileStores = Arrays.asList(operatingSystem.getFileSystem().getFileStores());
+        List<HWPartition> partitions = Arrays.asList(diskStore.getPartitions());
+
+
+        Map<String, HWPartition> hwPartitions = partitions.stream()
+                .collect(Collectors.toMap(f -> f.getUuid().toUpperCase(), f -> f));
+
+        Map<String, OSFileStore> osStores = fileStores.stream()
+                .collect(Collectors.toMap(f -> f.getUUID().toUpperCase(), f -> f));
+
+        Optional<String> matchingUuid = pickMostSuitableOsPartition(hwPartitions, osStores);
+
+        if (matchingUuid.isPresent()) {
+            OSFileStore osStore = osStores.get(matchingUuid.get());
+            HWPartition partition = hwPartitions.get(matchingUuid.get());
+            return Optional.of(new OsPartition(
+                    partition.getIdentification(),
+                    partition.getName(),
+                    osStore.getType(),
+                    partition.getUuid(),
+                    partition.getSize(),
+                    partition.getMajor(),
+                    partition.getMinor(),
+                    osStore.getMount(),
+                    osStore.getVolume(),
+                    osStore.getLogicalVolume(),
+                    osStore.getMount(),
+                    osStore.getDescription(),
+                    osStore.getUsableSpace(),
+                    osStore.getTotalSpace()
+            ));
+        }
+        return Optional.empty();
+    }
+
+    protected Optional<String> pickMostSuitableOsPartition(Map<String, HWPartition> hwPartitions, Map<String, OSFileStore> osStores) {
+        Set<String> strings = hwPartitions.keySet();
+        /*intersection*/
+        strings.retainAll(osStores.keySet());
+        if (strings.size() >= 1) {
+            if (strings.size() > 1) {
+                LOGGER.warn(
+                        "Ops! Looks like there's more than one OS partition associated with this hardware partition. Send this in a bug report: ");
+                LOGGER.warn("-------------------------------------------------");
+                LOGGER.warn("HWPartitions: ");
+                hwPartitions.values()
+                        .forEach(partition -> LOGGER.warn(
+                                "Partition: {}",
+                                ReflectionToStringBuilder.toString(partition)
+                        ));
+                LOGGER.warn("OSFileStores: ");
+                osStores.values()
+                        .forEach(partition -> LOGGER.warn(
+                                "Partition: {}",
+                                ReflectionToStringBuilder.toString(partition)
+                        ));
+                LOGGER.warn("-------------------------------------------------");
             }
+            return Optional.of(strings.toArray(new String[1])[0]);
         }
         return Optional.empty();
     }
 
     private DriveLoad createDiskLoad(HWDiskStore d) {
-        OsPartition partition = findAssociatedFileStore(d).orElse(DEFAULT_OS_PART);
+        OsPartition partition = findAssociatedFileStore(d).orElse(Empty.OS_PARTITION);
         DriveHealth health = diskHealth(d.getName());
         DriveValues metrics = diskMetrics(d, partition, operatingSystem.getFileSystem());
-        DriveSpeed speed = diskSpeedForStore(d, partition).orElse(DEFAULT_DISK_SPEED);
+        DriveSpeed speed = diskSpeedForStore(d, partition).orElse(Empty.DRIVE_SPEED);
         return new DriveLoad(d.getName(), metrics, speed, health);
     }
 

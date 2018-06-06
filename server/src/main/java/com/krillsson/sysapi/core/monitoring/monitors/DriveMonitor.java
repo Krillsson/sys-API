@@ -5,7 +5,7 @@ import com.krillsson.sysapi.core.monitoring.Monitor;
 
 import java.time.Duration;
 
-import static com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDriveProvider.DEFAULT_DRIVE_LOAD;
+import static com.krillsson.sysapi.core.metrics.Empty.DRIVE_LOAD;
 
 
 public class DriveMonitor extends Monitor {
@@ -18,7 +18,7 @@ public class DriveMonitor extends Monitor {
         return (double) systemLoad.getDriveLoads()
                 .stream()
                 .filter(i -> i.getName().equalsIgnoreCase(id()))
-                .findFirst().orElse(DEFAULT_DRIVE_LOAD)
+                .findFirst().orElse(DRIVE_LOAD)
                 .getMetrics()
                 .getUsableSpace();
     }
