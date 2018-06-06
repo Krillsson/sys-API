@@ -18,7 +18,7 @@ public class WindowsMetricsFactory extends DefaultMetricsFactory {
     private final Utils utils;
     private final TickManager tickManager;
 
-    private MonitorManager monitorManager;
+    private DelegatingMonitorManager monitorManager;
 
     public WindowsMetricsFactory(MonitorManagerFactory monitorManagerFactory, HardwareAbstractionLayer hal, OperatingSystem operatingSystem, SpeedMeasurementManager speedMeasurementManager, Utils utils, TickManager tickManager) {
         super(hal, operatingSystem, speedMeasurementManager, tickManager, utils);

@@ -171,12 +171,7 @@ public class SpeedMeasurementManagerTest {
         value.run();
 
         Optional<SpeedMeasurementManager.CurrentSpeed> en0Optional = measurementManager.getCurrentSpeedForName(EN_0);
-
-        SpeedMeasurementManager.CurrentSpeed en0 = en0Optional.get();
-        assertEquals(en0.getReadPerSeconds(), 0);
-        assertEquals(en0.getWritePerSeconds(), 0);
-        verify(speedSource, never()).getCurrentRead();
-        verify(speedSource, never()).getCurrentWrite();
+        assertFalse(en0Optional.isPresent());
     }
 
     @Test

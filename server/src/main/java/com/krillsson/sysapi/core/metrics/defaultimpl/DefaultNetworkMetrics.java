@@ -140,7 +140,7 @@ public class DefaultNetworkMetrics implements NetworkMetrics {
             try {
                 up = n.getNetworkInterface().isUp();
             } catch (SocketException e) {
-                LOGGER.error("Error occured while getting status for NIC", e);
+                LOGGER.error("Error occurred while getting status for NIC", e);
             }
             return new NetworkInterfaceLoad(
                     n.getName(), up,

@@ -19,21 +19,21 @@ import java.util.stream.DoubleStream;
 import static com.krillsson.sysapi.core.metrics.windows.util.NullSafeOhmMonitor.nullSafeGetValue;
 
 public class WindowsCpuMetrics extends DefaultCpuMetrics {
-    WindowsCpuMetrics(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, MonitorManager monitorManager, TickManager tickManager, Utils utils) {
+    WindowsCpuMetrics(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, DelegatingMonitorManager monitorManager, TickManager tickManager, Utils utils) {
         super(hal, operatingSystem, new WindowsCpuSensors(hal, monitorManager), utils, tickManager);
     }
 
     private static class WindowsCpuSensors extends DefaultCpuSensors {
-        private final MonitorManager monitorManager;
+        private final DelegatingMonitorManager monitorManager;
 
-        WindowsCpuSensors(HardwareAbstractionLayer hal, MonitorManager monitorManager) {
+        WindowsCpuSensors(HardwareAbstractionLayer hal, DelegatingMonitorManager monitorManager) {
             super(hal);
             this.monitorManager = monitorManager;
         }
 
         @Override
         protected CpuHealth cpuHealth() {
-            monitorManager.Update();
+            monitorManager.update();
             return super.cpuHealth();
         }
 

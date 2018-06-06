@@ -14,9 +14,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class WindowsMotherboardMetrics extends DefaultMotherboardMetrics {
-    private final MonitorManager monitorManager;
+    private final DelegatingMonitorManager monitorManager;
 
-    public WindowsMotherboardMetrics(HardwareAbstractionLayer hal, MonitorManager monitorManager) {
+    public WindowsMotherboardMetrics(HardwareAbstractionLayer hal, DelegatingMonitorManager monitorManager) {
         super(hal);
         this.monitorManager = monitorManager;
     }

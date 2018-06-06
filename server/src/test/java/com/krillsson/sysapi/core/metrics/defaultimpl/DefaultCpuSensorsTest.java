@@ -38,7 +38,7 @@ public class DefaultCpuSensorsTest {
 
     @Test
     public void sadPath() {
-        when(sensors.getCpuTemperature()).thenReturn(Double.NaN);
+        when(sensors.getCpuTemperature()).thenReturn(0.0);
         when(sensors.getFanSpeeds()).thenReturn(new int[0]);
         when(sensors.getCpuVoltage()).thenReturn(0.0d/*V*/);
 

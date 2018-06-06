@@ -20,6 +20,7 @@
  */
 package com.krillsson.sysapi.core.metrics;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.core.TickManager;
 import com.krillsson.sysapi.core.metrics.cache.Cache;
@@ -35,6 +36,8 @@ import oshi.PlatformEnum;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.software.os.OperatingSystem;
 
+import javax.swing.table.TableRowSorter;
+
 import static com.krillsson.sysapi.core.metrics.rasbian.RaspbianCpuMetrics.RASPBIAN_QUALIFIER;
 
 public class MetricsProvider {
@@ -47,6 +50,7 @@ public class MetricsProvider {
     private final SpeedMeasurementManager speedMeasurementManager;
     private final TickManager tickManager;
     private final Utils utils;
+    private boolean cache = true;
 
     public MetricsProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, PlatformEnum os, SystemApiConfiguration configuration, SpeedMeasurementManager speedMeasurementManager, TickManager tickManager) {
         this.hal = hal;
@@ -73,7 +77,7 @@ public class MetricsProvider {
                     );
                     if (windowsMetricsFactory.prerequisitesFilled()) {
                         windowsMetricsFactory.initialize();
-                        return Cache.wrap(windowsMetricsFactory, configuration.metrics().getCache());
+                        return cache ? Cache.wrap(windowsMetricsFactory, configuration.metrics().getCache()) : windowsMetricsFactory;
                     }
                     LOGGER.error("Unable to use Windows specific implementation: falling through to default one");
                 }
@@ -90,7 +94,7 @@ public class MetricsProvider {
                     );
                     if (raspbianMetricsFactory.prerequisitesFilled()) {
                         raspbianMetricsFactory.initialize();
-                        return Cache.wrap(raspbianMetricsFactory, configuration.metrics().getCache());
+                        return cache ? Cache.wrap(raspbianMetricsFactory, configuration.metrics().getCache()) : raspbianMetricsFactory;
                     }
                 }
                 break;
@@ -105,7 +109,7 @@ public class MetricsProvider {
                 );
                 if (macOsMetricsProvider.prerequisitesFilled()) {
                     macOsMetricsProvider.initialize();
-                    return Cache.wrap(macOsMetricsProvider, configuration.metrics().getCache());
+                    return cache ? Cache.wrap(macOsMetricsProvider, configuration.metrics().getCache()) : macOsMetricsProvider;
                 }
                 break;
             case FREEBSD:
@@ -123,10 +127,14 @@ public class MetricsProvider {
         );
         if (metricsFactory.prerequisitesFilled()) {
             metricsFactory.initialize();
-            return Cache.wrap(metricsFactory, configuration.metrics().getCache());
+            return cache ? Cache.wrap(metricsFactory, configuration.metrics().getCache()) : metricsFactory;
         } else {
             throw new IllegalStateException("No metrics factory available");
         }
     }
 
+    @VisibleForTesting
+    void setCache(boolean cache){
+        this.cache = cache;
+    }
 }

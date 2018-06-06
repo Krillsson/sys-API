@@ -18,7 +18,7 @@ public class MonitorManagerFactory {
     private static final File OPEN_HARDWARE_MONITOR_LIB_DLL = new File(LIB_LOCATION + SEPARATOR + "OpenHardwareMonitorLib.dll");
     private static final File OHM_JNI_WRAPPER_J4N_DLL = new File(LIB_LOCATION + SEPARATOR + "OhmJniWrapper.j4n.dll");
 
-    private MonitorManager monitorManager;
+    private DelegatingMonitorManager monitorManager;
 
     public boolean prerequisitesFilled() {
         return OHM_JNI_WRAPPER_DLL.exists() &&
@@ -26,7 +26,7 @@ public class MonitorManagerFactory {
                 OHM_JNI_WRAPPER_DLL.exists();
     }
 
-    public MonitorManager getMonitorManager() {
+    public DelegatingMonitorManager getMonitorManager() {
         if (monitorManager == null) {
             throw new IllegalStateException("MonitorManager requires initialization. Call initialize");
         }
@@ -47,7 +47,7 @@ public class MonitorManagerFactory {
         if (factory != null) {
             try {
                 factory.init();
-                this.monitorManager = factory.GetManager();
+                this.monitorManager = new DelegatingMonitorManager(factory.GetManager());
                 return true;
             } catch (Exception e) {
                 LOGGER.error("Trouble while initializing JNI4Net Bridge. Do I have admin privileges?", e);

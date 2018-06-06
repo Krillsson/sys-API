@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 
 public class WindowsNetworkProviderTest {
 
-    MonitorManager monitorManager;
+    DelegatingMonitorManager monitorManager;
     NetworkMonitor networkMonitor;
     HardwareAbstractionLayer hal;
     NetworkIF networkIF;
@@ -33,7 +33,7 @@ public class WindowsNetworkProviderTest {
 
     @Before
     public void setUp() throws Exception {
-        monitorManager = mock(MonitorManager.class);
+        monitorManager = mock(DelegatingMonitorManager.class);
         networkMonitor = mock(NetworkMonitor.class);
         when(monitorManager.getNetworkMonitor()).thenReturn(networkMonitor);
         hal = mock(HardwareAbstractionLayer.class);
@@ -61,7 +61,7 @@ public class WindowsNetworkProviderTest {
         NetworkInterfaceLoad en0 = en0Optional.get();
         assertThat(en0.getSpeed().getReceiveBytesPerSecond(), is(123L));
         assertThat(en0.getSpeed().getSendBytesPerSecond(), is(321L));
-        verify(monitorManager).Update();
+        verify(monitorManager).update();
     }
 
     @Test(expected = NoSuchElementException.class)

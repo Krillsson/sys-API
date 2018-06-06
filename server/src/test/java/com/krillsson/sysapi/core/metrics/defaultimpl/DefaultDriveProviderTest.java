@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class DefaultDiskProviderTest {
+public class DefaultDriveProviderTest {
 
     String DEV_SDA1 = "/dev/sda1";
     String DEV_SDA2 = "/dev/sda2";
@@ -116,6 +116,12 @@ public class DefaultDiskProviderTest {
     public void shouldHandleNoDrivesWithThatName() {
         Optional<Drive> diskInfo = provider.driveByName("/dev/sda3");
         assertFalse(diskInfo.isPresent());
+    }
+
+    @Test
+    public void driveByNameHappyPath() {
+        Optional<Drive> diskInfo = provider.driveByName("/dev/sda2");
+        assertTrue(diskInfo.isPresent());
     }
 
     @Test

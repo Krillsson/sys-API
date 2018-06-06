@@ -38,11 +38,11 @@ public class WindowsNetworkMetrics extends DefaultNetworkMetrics {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(WindowsNetworkMetrics.class);
 
-    private MonitorManager monitorManager;
+    private DelegatingMonitorManager monitorManager;
     private HardwareAbstractionLayer hal;
 
 
-    public WindowsNetworkMetrics(HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager, MonitorManager monitorManager) {
+    public WindowsNetworkMetrics(HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager, DelegatingMonitorManager monitorManager) {
         super(hal, speedMeasurementManager);
         this.hal = hal;
         this.monitorManager = monitorManager;
@@ -58,7 +58,7 @@ public class WindowsNetworkMetrics extends DefaultNetworkMetrics {
         }
         NetworkIF networkIF = networkOptional.get();
 
-        monitorManager.Update();
+        monitorManager.update();
         NetworkMonitor networkMonitor = monitorManager.getNetworkMonitor();
         NicInfo[] nics = networkMonitor.getNics();
         Optional<NicInfo> nicInfoOptional = Arrays.stream(nics)

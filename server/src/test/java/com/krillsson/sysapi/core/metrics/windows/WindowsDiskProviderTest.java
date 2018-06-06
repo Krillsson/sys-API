@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 
 public class WindowsDiskProviderTest {
 
-    MonitorManager monitorManager;
+    DelegatingMonitorManager monitorManager;
 
     WindowsDriveProvider diskProvider;
     private HWDiskStore store;
@@ -28,7 +28,7 @@ public class WindowsDiskProviderTest {
 
     @Before
     public void setUp() throws Exception {
-        monitorManager = mock(MonitorManager.class);
+        monitorManager = mock(DelegatingMonitorManager.class);
         store = mock(HWDiskStore.class);
         osFileStore = mock(OsPartition.class);
         driveMonitor = mock(DriveMonitor.class);
@@ -52,7 +52,7 @@ public class WindowsDiskProviderTest {
         DriveSpeed driveSpeed = diskSpeedOptional.get();
         assertThat(driveSpeed.getWriteBytesPerSecond(), is(123L));
         assertThat(driveSpeed.getReadBytesPerSecond(), is(321L));
-        verify(monitorManager).Update();
+        verify(monitorManager).update();
     }
 
     @Test

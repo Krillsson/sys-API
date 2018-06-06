@@ -15,17 +15,17 @@ import static com.krillsson.sysapi.core.metrics.windows.util.NullSafeOhmMonitor.
 
 public class WindowsGpuMetrics extends DefaultGpuMetrics {
 
-    private final MonitorManager monitorManager;
+    private final DelegatingMonitorManager monitorManager;
 
 
-    public WindowsGpuMetrics(HardwareAbstractionLayer hal, MonitorManager monitorManager) {
+    public WindowsGpuMetrics(HardwareAbstractionLayer hal, DelegatingMonitorManager monitorManager) {
         super(hal);
         this.monitorManager = monitorManager;
     }
 
     @Override
     public List<Gpu> gpus() {
-        monitorManager.Update();
+        monitorManager.update();
         return Streams.ofNullable(monitorManager.GpuMonitors()).map(m -> new Gpu(
                 m.getVendor(),
                 m.getName(),
@@ -36,7 +36,7 @@ public class WindowsGpuMetrics extends DefaultGpuMetrics {
 
     @Override
     public List<GpuLoad> gpuLoads() {
-        monitorManager.Update();
+        monitorManager.update();
         return Streams.ofNullable(monitorManager.GpuMonitors())
                 .map(g -> new GpuLoad(
                         g.getName(), nullSafeGetValue(g.getCoreLoad()),

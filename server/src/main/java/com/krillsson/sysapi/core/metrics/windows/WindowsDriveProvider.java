@@ -46,13 +46,13 @@ import static com.krillsson.sysapi.core.metrics.windows.util.NullSafeOhmMonitor.
 public class WindowsDriveProvider extends DefaultDriveProvider {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(WindowsDriveProvider.class);
 
-    private MonitorManager monitorManager;
+    private DelegatingMonitorManager monitorManager;
 
     public WindowsDriveProvider(OperatingSystem operatingSystem, HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
         super(operatingSystem, hal, speedMeasurementManager);
     }
 
-    public void setMonitorManager(MonitorManager monitorManager) {
+    public void setMonitorManager(DelegatingMonitorManager monitorManager) {
         this.monitorManager = monitorManager;
     }
 
@@ -61,7 +61,7 @@ public class WindowsDriveProvider extends DefaultDriveProvider {
         if (osFileStore == null) {
             return Optional.empty();
         }
-        monitorManager.Update();
+        monitorManager.update();
 
         Optional<DriveMonitor> diskOptional = Arrays.stream(monitorManager.DriveMonitors())
                 .filter(d -> osFileStore.getMount().equalsIgnoreCase(d.getLogicalName()))
@@ -79,7 +79,7 @@ public class WindowsDriveProvider extends DefaultDriveProvider {
 
     @Override
     public DriveHealth diskHealth(String name) {
-        monitorManager.Update();
+        monitorManager.update();
         return Streams.ofNullable(monitorManager.DriveMonitors())
                 .filter(d -> name.equalsIgnoreCase(d.getLogicalName()))
                 .map(dm -> {

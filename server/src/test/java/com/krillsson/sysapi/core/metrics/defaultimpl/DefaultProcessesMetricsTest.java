@@ -10,6 +10,7 @@ import oshi.software.os.OperatingSystem;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -32,7 +33,7 @@ public class DefaultProcessesMetricsTest {
 
     @Test
     public void shouldHandleNoProcessesPresent() {
-        when(os.getProcesses(any(), any(OperatingSystem.ProcessSort.class))).thenReturn(new OSProcess[0]);
+        when(os.getProcesses(anyInt(), any(OperatingSystem.ProcessSort.class))).thenReturn(new OSProcess[0]);
         ProcessesInfo processesInfo = provider.processesInfo(OperatingSystem.ProcessSort.CPU, 0);
 
         assertTrue(processesInfo.getProcesses().isEmpty());
@@ -46,7 +47,7 @@ public class DefaultProcessesMetricsTest {
 
         OSProcess process = mock(OSProcess.class);
         when(process.getResidentSetSize()).thenReturn(1000L);
-        when(os.getProcesses(any(), any(OperatingSystem.ProcessSort.class))).thenReturn(new OSProcess[]{process});
+        when(os.getProcesses(anyInt(), any(OperatingSystem.ProcessSort.class))).thenReturn(new OSProcess[]{process});
         //when(memory.getAvailable()).thenReturn(3000L);
         when(memory.getTotal()).thenReturn(4000L);
 
@@ -57,6 +58,19 @@ public class DefaultProcessesMetricsTest {
 
     @Test
     public void shouldProperlyAssignPercentageUsedOfCpu() {
+        //100d * (process.getKernelTime() + process.getUserTime()) / process.getUpTime()
+        double usage = 100d * 20 / 100;
+        assertEquals(usage, 20, 0);
 
+        OSProcess process = mock(OSProcess.class);
+        when(process.getKernelTime()).thenReturn(16L);
+        when(process.getUserTime()).thenReturn(4L);
+        when(process.getUpTime()).thenReturn(100L);
+        when(os.getProcesses(anyInt(), any(OperatingSystem.ProcessSort.class))).thenReturn(new OSProcess[]{process});
+        //when(memory.getAvailable()).thenReturn(3000L);
+
+        ProcessesInfo processes = provider.processesInfo(OperatingSystem.ProcessSort.CPU, 0);
+
+        assertEquals(processes.getProcesses().get(0).getCpuPercent(), usage, 0);
     }
 }
