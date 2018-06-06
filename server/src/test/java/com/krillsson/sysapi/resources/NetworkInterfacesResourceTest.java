@@ -71,7 +71,7 @@ public class NetworkInterfacesResourceTest {
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(new GenericType<List<com.krillsson.sysapi.dto.network.NetworkInterface>>() {
                 });
-        assertThat(networkInterfaceData.get(0), is(networkInterfaceData));
+        assertThat(networkInterfaceData, is(networkInterfaceData));
     }
 
 

@@ -5,13 +5,16 @@ import com.krillsson.sysapi.core.domain.drives.OsPartition;
 import com.krillsson.sysapi.core.history.HistoryManager;
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.DriveMetrics;
+import com.krillsson.sysapi.dto.network.NetworkInterface;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.*;
 
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static junit.framework.Assert.assertEquals;
@@ -35,7 +38,7 @@ public class DrivesResourceTest {
     public void setUp() throws Exception {
         drive = new Drive(
                 "",
-                "",
+                "sd0",
                 "",
                 new OsPartition("", "", "", "", 0, 0, 0, "", "", "", "", "", 0, 0),
                 Collections.emptyList()
@@ -47,13 +50,14 @@ public class DrivesResourceTest {
         when(provider.drives())
                 .thenReturn(Arrays.asList(drive));
 
-        final com.krillsson.sysapi.dto.storage.StorageInfo response = RESOURCES.getJerseyTest().target("/drives")
+        final List<com.krillsson.sysapi.dto.drives.Drive> response = RESOURCES.getJerseyTest().target("/drives")
                 .request(MediaType.APPLICATION_JSON_TYPE)
-                .get(com.krillsson.sysapi.dto.storage.StorageInfo.class);
+                .get(new GenericType<List<com.krillsson.sysapi.dto.drives.Drive>>() {
+                });
 
         assertNotNull(response);
-        assertEquals(response.getDiskInfo().length, 1);
-        assertThat(response.getDiskInfo()[0].getOsFileStore().getName(), is(equalToIgnoringCase("drive")));
+        assertEquals(response.size(), 1);
+        assertThat(response.get(0).getName(), is(equalToIgnoringCase("sd0")));
     }
 
     @Test
@@ -70,13 +74,13 @@ public class DrivesResourceTest {
     public void getDiskInfoByNameDiskExists() throws Exception {
         Optional<Drive> diskInfoOptional = Optional.of(this.drive);
         when(provider.driveByName("sd0")).thenReturn(diskInfoOptional);
-        final com.krillsson.sysapi.dto.storage.DiskInfo response = RESOURCES.getJerseyTest()
+        final com.krillsson.sysapi.dto.drives.Drive response = RESOURCES.getJerseyTest()
                 .target(String.format("/drives/%s", "sd0"))
                 .request(MediaType.APPLICATION_JSON_TYPE)
-                .get(com.krillsson.sysapi.dto.storage.DiskInfo.class);
+                .get(com.krillsson.sysapi.dto.drives.Drive.class);
 
         assertNotNull(response);
-        assertEquals("sd0", response.getDiskStore().getName());
+        assertEquals("sd0", response.getName());
     }
 
     @Test

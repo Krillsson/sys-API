@@ -42,8 +42,7 @@ public class GpuResourceTest {
 
     @Test
     public void getGpuInfoHappyPath() throws Exception {
-        GpuInfo gpuInfo = mock(GpuInfo.class);
-        when(gpuInfo.getGpus()).thenReturn(Arrays.asList(gpu));
+        when(provider.gpus()).thenReturn(Arrays.asList(gpu));
         final List<com.krillsson.sysapi.dto.gpu.Gpu> response = RESOURCES.getJerseyTest().target("/gpus")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(new GenericType<List<com.krillsson.sysapi.dto.gpu.Gpu>>() {
