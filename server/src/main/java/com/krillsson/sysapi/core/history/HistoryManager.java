@@ -13,26 +13,29 @@ public class HistoryManager implements Managed {
     private final EventBus eventBus;
     private final HistoryConfiguration configuration;
 
-    public HistoryManager(HistoryConfiguration configuration, EventBus eventBus) {
+    public HistoryManager(HistoryConfiguration configuration, EventBus eventBus, History<SystemLoad> history) {
         this.configuration = configuration;
         this.eventBus = eventBus;
-        this.history = new History<>();
+        this.history = history;
+    }
+
+    public HistoryManager(HistoryConfiguration configuration, EventBus eventBus) {
+        this(configuration, eventBus, new History<>());
     }
 
     @Subscribe
-    public void onEvent(HistoryMetricQueryEvent event)
-    {
+    public void onEvent(HistoryMetricQueryEvent event) {
         history.record(event.load());
         history.purge(configuration.getPurging().getOlderThan(), configuration.getPurging().getUnit());
     }
 
     @Override
-    public void start() throws Exception {
+    public void start() {
         eventBus.register(this);
     }
 
     @Override
-    public void stop() throws Exception {
+    public void stop() {
         eventBus.unregister(this);
     }
 
