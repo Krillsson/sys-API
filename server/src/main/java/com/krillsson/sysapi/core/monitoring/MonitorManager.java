@@ -3,12 +3,11 @@ package com.krillsson.sysapi.core.monitoring;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.krillsson.sysapi.core.metrics.MetricsFactory;
-import com.krillsson.sysapi.persistence.LevelDbJacksonKeyValueStore;
+import com.krillsson.sysapi.persistence.JsonFile;
 import io.dropwizard.lifecycle.Managed;
 import org.slf4j.Logger;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MonitorManager implements Managed {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(MonitorManager.class);
@@ -16,10 +15,10 @@ public class MonitorManager implements Managed {
     private final Map<String, Monitor> activeMonitors = new HashMap<>();
     private final List<MonitorEvent> events = new ArrayList<>();
     private final EventBus eventBus;
-    private final LevelDbJacksonKeyValueStore<com.krillsson.sysapi.dto.monitor.Monitor> persistentMonitors;
+    private final JsonFile<HashMap<String, com.krillsson.sysapi.dto.monitor.Monitor>> persistentMonitors;
     private final MetricsFactory provider;
 
-    public MonitorManager(EventBus eventBus, LevelDbJacksonKeyValueStore<com.krillsson.sysapi.dto.monitor.Monitor> persistentMonitors, MetricsFactory provider) {
+    public MonitorManager(EventBus eventBus, JsonFile<HashMap<String, com.krillsson.sysapi.dto.monitor.Monitor>> persistentMonitors, MetricsFactory provider) {
         this.eventBus = eventBus;
         this.persistentMonitors = persistentMonitors;
         this.provider = provider;
@@ -38,12 +37,14 @@ public class MonitorManager implements Managed {
         for (Monitor activeMonitor : activeMonitors.values()) {
             Optional<MonitorEvent> check = activeMonitor.check(event.load());
             check.ifPresent(e -> {
-                LOGGER.warn("Event: {}", check.get());
+
+                LOGGER.warn("Event: {}", e);
+
                 if (e.getMonitorStatus() == MonitorEvent.MonitorStatus.STOP && events.stream()
-                        .anyMatch(me -> me.getId().equals(e.getId()))) {
-                    events.add(e);
-                } else {
+                        .noneMatch(me -> me.getId().equals(e.getId()))) {
                     LOGGER.warn("Received STOP event for explicitly removed event, ignoring...");
+                } else {
+                    events.add(e);
                 }
             });
         }
@@ -63,9 +64,13 @@ public class MonitorManager implements Managed {
 
     @Override
     public void start() throws Exception {
-        persistentMonitors.loadAll().forEach(e -> {
-            LOGGER.debug("Registering monitoring ID: {} threshold: {}", e.key(), e.value().getThreshold());
-            activeMonitors.put(e.key(), MonitorMapper.INSTANCE.map(e.value()));
+        persistentMonitors.getPersistedData(false, value -> {
+            value.entrySet().stream().forEach(e -> {
+                LOGGER.debug("Registering monitoring ID: {} threshold: {}", e.getValue(), e.getValue().getThreshold());
+                activeMonitors.put(e.getKey(), MonitorMapper.INSTANCE.map(e.getValue()));
+            });
+            //passed false as parameter so this won't do anything
+            return null;
         });
         eventBus.register(this);
     }
@@ -73,15 +78,14 @@ public class MonitorManager implements Managed {
     @Override
     public void stop() throws Exception {
         persist();
-        persistentMonitors.close();
         eventBus.unregister(this);
     }
 
     private void persist() {
-        Map<String, com.krillsson.sysapi.dto.monitor.Monitor> map = activeMonitors.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> MonitorMapper.INSTANCE.map(e.getValue())));
-        persistentMonitors.removeAll(map.keySet());
-        persistentMonitors.putAll(map);
+        persistentMonitors.getPersistedData(true, persistedMap -> {
+            activeMonitors.forEach((key, value) -> persistedMap.put(key, MonitorMapper.INSTANCE.map(value)));
+            return persistedMap;
+        });
     }
 
     public boolean removeEvents(String id) {

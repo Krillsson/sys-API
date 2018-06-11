@@ -41,7 +41,8 @@ import com.krillsson.sysapi.core.monitoring.MonitorManager;
 import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent;
 import com.krillsson.sysapi.core.query.MetricQueryManager;
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
-import com.krillsson.sysapi.persistence.LevelDbJacksonKeyValueStore;
+import com.krillsson.sysapi.dto.monitor.Monitor;
+import com.krillsson.sysapi.persistence.JsonFile;
 import com.krillsson.sysapi.resources.*;
 import com.krillsson.sysapi.util.EnvironmentUtils;
 import com.krillsson.sysapi.util.Utils;
@@ -60,6 +61,7 @@ import oshi.software.os.OperatingSystem;
 
 import java.net.NetworkInterface;
 import java.time.Clock;
+import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -181,12 +183,15 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         MetricsHistoryManager historyManager = new MetricsHistoryManager(config.metrics().getHistory(), eventBus);
         environment.lifecycle().manage(historyManager);
 
-        LevelDbJacksonKeyValueStore<com.krillsson.sysapi.dto.monitor.Monitor> persistentMonitors = new LevelDbJacksonKeyValueStore<>(
-                com.krillsson.sysapi.dto.monitor.Monitor.class,
-                environment.getObjectMapper(),
-                "monitors"
-        );
-        MonitorManager monitorManager = new MonitorManager(eventBus, persistentMonitors, provider);
+        JsonFile<HashMap<String, Monitor>> persistentMonitorss =
+                new JsonFile<HashMap<String, Monitor>>(
+                        "monitors.json",
+                        JsonFile.<com.krillsson.sysapi.dto.monitor.Monitor>mapTypeReference(),
+                        new HashMap<>(),
+                        environment.getObjectMapper()
+                );
+
+        MonitorManager monitorManager = new MonitorManager(eventBus, persistentMonitorss, provider);
         environment.lifecycle().manage(monitorManager);
 
         environment.jersey().register(new SystemResource(
