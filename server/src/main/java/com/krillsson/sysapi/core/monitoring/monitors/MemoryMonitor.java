@@ -17,7 +17,7 @@ public class MemoryMonitor extends Monitor {
 
     @Override
     protected boolean isOutsideThreshold(double value) {
-        return value > threshold();
+        return value < threshold();
     }
 
     @Override

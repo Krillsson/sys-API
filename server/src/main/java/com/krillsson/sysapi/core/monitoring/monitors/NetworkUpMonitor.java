@@ -22,7 +22,7 @@ public class NetworkUpMonitor extends Monitor {
 
     @Override
     protected boolean isOutsideThreshold(double value) {
-        return value == 0;
+        return value != 0.0;
     }
 
     @Override

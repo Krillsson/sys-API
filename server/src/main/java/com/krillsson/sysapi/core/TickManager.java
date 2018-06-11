@@ -32,7 +32,6 @@ public class TickManager implements Managed {
         listeners.remove(tickListener);
     }
 
-
     @Override
     public void start() throws Exception {
         executorService.scheduleAtFixedRate(this::execute, 1, measurementInterval, TimeUnit.SECONDS);
