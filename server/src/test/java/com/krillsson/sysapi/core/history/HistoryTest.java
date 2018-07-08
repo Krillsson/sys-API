@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.core.history;
 
-import com.krillsson.sysapi.util.TimeMachine;
+import com.krillsson.sysapi.util.Clock;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,22 +14,22 @@ import static org.junit.Assert.assertTrue;
 public class HistoryTest {
 
     History<Object> history;
-    TimeMachine timeMachine;
+    Clock clock;
 
 
     @Before
     public void setUp() throws Exception {
-        timeMachine = new TimeMachine();
-        history = new History<>(timeMachine);
+        clock = new Clock();
+        history = new History<>(clock);
     }
 
     @Test
     public void happyPath() {
 
         LocalDateTime twoMinutesAgo = LocalDateTime.now().minusMinutes(2);
-        timeMachine.useFixedClockAt(twoMinutesAgo);
+        clock.useFixedClockAt(twoMinutesAgo);
         history.record(new Object());
-        timeMachine.useFixedClockAt(twoMinutesAgo.plusMinutes(4));
+        clock.useFixedClockAt(twoMinutesAgo.plusMinutes(4));
         history.record(new Object());
 
         assertThat(history.get().size(), is(2));
@@ -39,9 +39,9 @@ public class HistoryTest {
     @Test
     public void purgingRemovesStuff() {
         LocalDateTime twoMinutesAgo = LocalDateTime.now().minusMinutes(2);
-        timeMachine.useFixedClockAt(twoMinutesAgo);
+        clock.useFixedClockAt(twoMinutesAgo);
         history.record(new Object());
-        timeMachine.useFixedClockAt(twoMinutesAgo.plusMinutes(4));
+        clock.useFixedClockAt(twoMinutesAgo.plusMinutes(4));
         history.record(new Object());
 
         assertThat(history.get().size(), is(2));

@@ -1,7 +1,7 @@
 package com.krillsson.sysapi.core.monitoring;
 
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
-import com.krillsson.sysapi.util.TimeMachine;
+import com.krillsson.sysapi.util.Clock;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,13 +14,13 @@ import static org.mockito.Mockito.mock;
 public class MonitorTest {
 
     TestableMonitor monitor;
-    TimeMachine timeMachine;
+    Clock clock;
     SystemLoad systemLoad;
 
     @Before
     public void setUp() throws Exception {
-        timeMachine = new TimeMachine();
-        monitor = new TestableMonitor("ID", Duration.ofSeconds(20), 20, timeMachine);
+        clock = new Clock();
+        monitor = new TestableMonitor("ID", Duration.ofSeconds(20), 20, clock);
         systemLoad = mock(SystemLoad.class);
     }
 
@@ -35,8 +35,8 @@ public class MonitorTest {
         static final int OUTSIDE = 1;
         static final int INSIDE = 0;
 
-        protected TestableMonitor(String id, Duration inertia, double threshold, TimeMachine timeMachine) {
-            super(id, inertia, threshold, timeMachine);
+        protected TestableMonitor(String id, Duration inertia, double threshold, Clock clock) {
+            super(id, inertia, threshold, clock);
         }
 
         @Override

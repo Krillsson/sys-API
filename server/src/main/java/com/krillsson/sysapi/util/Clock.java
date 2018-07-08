@@ -4,8 +4,8 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-public class TimeMachine {
-    private Clock clock = Clock.systemDefaultZone();
+public class Clock {
+    private java.time.Clock clock = java.time.Clock.systemDefaultZone();
     private ZoneId zoneId = ZoneId.systemDefault();
 
     public LocalDateTime now() {
@@ -13,14 +13,14 @@ public class TimeMachine {
     }
 
     public void useFixedClockAt(LocalDateTime date) {
-        clock = Clock.fixed(date.atZone(zoneId).toInstant(), zoneId);
+        clock = java.time.Clock.fixed(date.atZone(zoneId).toInstant(), zoneId);
     }
 
     public void useSystemDefaultZoneClock() {
-        clock = Clock.systemDefaultZone();
+        clock = java.time.Clock.systemDefaultZone();
     }
 
-    private Clock getClock() {
+    private java.time.Clock getClock() {
         return clock;
     }
 

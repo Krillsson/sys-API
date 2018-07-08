@@ -2,7 +2,7 @@ package com.krillsson.sysapi.core.monitoring;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
-import com.krillsson.sysapi.util.TimeMachine;
+import com.krillsson.sysapi.util.Clock;
 import org.slf4j.Logger;
 
 import java.time.Duration;
@@ -18,7 +18,7 @@ public abstract class Monitor {
     private final double threshold;
     //id to monitoring
     private final Duration inertia;
-    private final TimeMachine timeMachine;
+    private final Clock clock;
     private LocalDateTime stateChangedAt = null;
     private State state = State.INSIDE;
     private UUID eventId;
@@ -40,15 +40,15 @@ public abstract class Monitor {
     }
 
     protected Monitor(String id, Duration inertia, double threshold) {
-        this(id, inertia, threshold, new TimeMachine());
+        this(id, inertia, threshold, new Clock());
     }
 
     @VisibleForTesting
-    protected Monitor(String id, Duration inertia, double threshold, TimeMachine timeMachine){
+    protected Monitor(String id, Duration inertia, double threshold, Clock clock){
         this.id = id;
         this.inertia = inertia;
         this.threshold = threshold;
-        this.timeMachine = timeMachine;
+        this.clock = clock;
     }
 
     /**
@@ -96,7 +96,7 @@ public abstract class Monitor {
      */
     Optional<MonitorEvent> check(SystemLoad systemLoad) {
 
-        LocalDateTime now = timeMachine.now();
+        LocalDateTime now = clock.now();
 
         Double value = value(systemLoad);
         boolean outsideThreshold = isOutsideThreshold(value);
