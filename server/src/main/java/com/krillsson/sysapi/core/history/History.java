@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.history;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.krillsson.sysapi.util.TimeMachine;
 import org.slf4j.Logger;
 
@@ -17,6 +18,7 @@ public class History<T> {
         this(new TimeMachine());
     }
 
+    @VisibleForTesting
     protected History(TimeMachine timeMachine) {
         this.timeMachine = timeMachine;
         this.history = new ArrayList<>();
