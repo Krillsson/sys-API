@@ -1,6 +1,5 @@
 package com.krillsson.sysapi.util;
 
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 

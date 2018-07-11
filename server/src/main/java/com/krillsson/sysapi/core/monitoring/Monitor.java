@@ -200,4 +200,9 @@ public abstract class Monitor {
     Duration inertia() {
         return inertia;
     }
+
+    @VisibleForTesting
+    State getState() {
+        return state;
+    }
 }
