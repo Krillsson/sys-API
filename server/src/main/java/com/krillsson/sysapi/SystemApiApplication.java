@@ -183,7 +183,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         MetricsHistoryManager historyManager = new MetricsHistoryManager(config.metrics().getHistory(), eventBus);
         environment.lifecycle().manage(historyManager);
 
-        JsonFile<HashMap<String, Monitor>> persistentMonitorss =
+        JsonFile<HashMap<String, Monitor>> persistentMonitors =
                 new JsonFile<HashMap<String, Monitor>>(
                         "monitors.json",
                         JsonFile.<com.krillsson.sysapi.dto.monitor.Monitor>mapTypeReference(),
@@ -191,7 +191,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
                         environment.getObjectMapper()
                 );
 
-        MonitorManager monitorManager = new MonitorManager(eventBus, persistentMonitorss, provider);
+        MonitorManager monitorManager = new MonitorManager(eventBus, persistentMonitors, provider);
         environment.lifecycle().manage(monitorManager);
 
         environment.jersey().register(new SystemResource(

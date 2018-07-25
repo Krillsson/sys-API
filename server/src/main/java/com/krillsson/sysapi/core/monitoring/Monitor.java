@@ -153,7 +153,7 @@ public abstract class Monitor {
             }
         }
         else if(state == State.INSIDE_BEFORE_INERTIA){
-            if(outsideThreshold){
+            if(!outsideThreshold){
                 if(pastInertia){
                     //Inside before inertia -> inside
                     LOGGER.debug("{} have now been inside threshold of {} for more than {}, triggering event...", id(), threshold(), inertia());
