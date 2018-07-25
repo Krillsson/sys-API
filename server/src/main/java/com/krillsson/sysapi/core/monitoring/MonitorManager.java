@@ -24,12 +24,17 @@ public class MonitorManager implements Managed {
         this.provider = provider;
     }
 
-    public void addMonitor(Monitor monitor) {
+    public String addMonitor(Monitor monitor) {
+        if(monitor.id() == null){
+            monitor.setId(UUID.randomUUID().toString());
+        }
         if (activeMonitors.containsKey(monitor.id())) {
             LOGGER.debug("Updating monitoring");
         }
         activeMonitors.put(monitor.id(), monitor);
         persist();
+
+        return monitor.id();
     }
 
     @Subscribe

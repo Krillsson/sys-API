@@ -14,7 +14,7 @@ import static java.time.Duration.between;
 
 public abstract class Monitor {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(Monitor.class);
-    private final String id;
+    private String id;
     private final double threshold;
     //id to monitoring
     private final Duration inertia;
@@ -23,12 +23,15 @@ public abstract class Monitor {
     private State state = State.INSIDE;
     private UUID eventId;
 
+
+
     enum State {
         INSIDE,
         OUTSIDE_BEFORE_INERTIA,
         OUTSIDE,
-        INSIDE_BEFORE_INERTIA
+        INSIDE_BEFORE_INERTIA;
     }
+
 
     protected enum MonitorType {
         CPU,
@@ -36,9 +39,8 @@ public abstract class Monitor {
         DRIVE,
         GPU,
         MEMORY,
-        NETWORK_UP
+        NETWORK_UP;
     }
-
     protected Monitor(String id, Duration inertia, double threshold) {
         this(id, inertia, threshold, new Clock());
     }
@@ -199,6 +201,10 @@ public abstract class Monitor {
 
     Duration inertia() {
         return inertia;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @VisibleForTesting

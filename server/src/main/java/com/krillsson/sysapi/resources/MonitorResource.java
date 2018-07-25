@@ -34,7 +34,7 @@ public class MonitorResource {
 
     @POST
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public void createMonitor(@Auth UserConfiguration user, Monitor monitor) {
+    public Object createMonitor(@Auth UserConfiguration user, Monitor monitor) {
 
         com.krillsson.sysapi.core.monitoring.Monitor monitorToBeCreated = Optional.ofNullable(MonitorMapper.INSTANCE.map(
                 monitor)).orElseThrow(() -> new WebApplicationException(BAD_REQUEST));
@@ -45,13 +45,17 @@ public class MonitorResource {
                     monitor.getId()
             ), Response.Status.NOT_FOUND);
         }
-        monitorManager.addMonitor(monitorToBeCreated);
+        String createdId = monitorManager.addMonitor(monitorToBeCreated);
+
+        return new Object(){
+            public String id = createdId;
+        };
     }
 
     @DELETE
     @Path("{id}")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public void getRoot(@Auth UserConfiguration user, @PathParam("id") String id) {
+    public void delete(@Auth UserConfiguration user, @PathParam("id") String id) {
 
         boolean removed = monitorManager.remove(id);
         if (!removed) {
