@@ -1,85 +1,72 @@
+/*
+ * Sys-Api (https://github.com/Krillsson/sys-api)
+ *
+ * Copyright 2017 Christian Jensen / Krillsson
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Maintainers:
+ * contact[at]christian-jensen[dot]se
+ */
 package com.krillsson.sysapi.dto.cpu;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-        "temperatures",
-        "voltage",
-        "fanRpm",
-        "fanPercent"
-})
 public class CpuHealth {
-
-    @JsonProperty("temperatures")
-    private double[] temperatures = null;
-    @JsonProperty("voltage")
+    private List<Double> temperatures;
     private double voltage;
-    @JsonProperty("fanRpm")
     private double fanRpm;
-    @JsonProperty("fanPercent")
     private double fanPercent;
 
-    /**
-     * No args constructor for use in serialization
-     */
-    public CpuHealth() {
-    }
-
-    /**
-     * @param fanRpm
-     * @param voltage
-     * @param fanPercent
-     * @param temperatures
-     */
-    public CpuHealth(double[] temperatures, double voltage, double fanRpm, double fanPercent) {
-        super();
+    public CpuHealth(List<Double> temperatures, double voltage, double fanRpm, double fanPercent) {
         this.temperatures = temperatures;
         this.voltage = voltage;
         this.fanRpm = fanRpm;
         this.fanPercent = fanPercent;
     }
 
-    @JsonProperty("temperatures")
-    public double[] getTemperatures() {
+    public CpuHealth() {
+    }
+
+    public List<Double> getTemperatures() {
         return temperatures;
     }
 
-    @JsonProperty("temperatures")
-    public void setTemperatures(double[] temperatures) {
+    public void setTemperatures(List<Double> temperatures) {
         this.temperatures = temperatures;
     }
 
-    @JsonProperty("voltage")
     public double getVoltage() {
         return voltage;
     }
 
-    @JsonProperty("voltage")
     public void setVoltage(double voltage) {
         this.voltage = voltage;
     }
 
-    @JsonProperty("fanRpm")
     public double getFanRpm() {
         return fanRpm;
     }
 
-    @JsonProperty("fanRpm")
     public void setFanRpm(double fanRpm) {
         this.fanRpm = fanRpm;
     }
 
-    @JsonProperty("fanPercent")
     public double getFanPercent() {
         return fanPercent;
     }
 
-    @JsonProperty("fanPercent")
     public void setFanPercent(double fanPercent) {
         this.fanPercent = fanPercent;
     }
-
 }

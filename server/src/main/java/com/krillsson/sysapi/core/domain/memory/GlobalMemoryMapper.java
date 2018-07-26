@@ -21,15 +21,29 @@
 
 package com.krillsson.sysapi.core.domain.memory;
 
+import com.krillsson.sysapi.core.domain.system.DateMapper;
+import com.krillsson.sysapi.dto.history.HistoryEntry;
+import com.krillsson.sysapi.dto.processes.Memory;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
+import oshi.hardware.GlobalMemory;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 @Mapper(
-        unmappedTargetPolicy = ReportingPolicy.ERROR
+        unmappedTargetPolicy = ReportingPolicy.ERROR,
+        uses = {DateMapper.class}
 )
 public interface GlobalMemoryMapper {
     GlobalMemoryMapper INSTANCE = Mappers.getMapper(GlobalMemoryMapper.class);
 
     com.krillsson.sysapi.dto.processes.Memory map(oshi.hardware.GlobalMemory value);
+
+    Map<String, Memory> mapHistory(Map<LocalDateTime, GlobalMemory> history);
+
+    List<HistoryEntry<Memory>> mapHistory(List<com.krillsson.sysapi.core.history.HistoryEntry<GlobalMemory>> history);
+
 }

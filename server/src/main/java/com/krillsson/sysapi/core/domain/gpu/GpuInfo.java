@@ -22,20 +22,22 @@ package com.krillsson.sysapi.core.domain.gpu;
 
 import oshi.hardware.Display;
 
-public class GpuInfo {
-    private final Display[] displays;
-    private final Gpu[] gpus;
+import java.util.List;
 
-    public GpuInfo(Display[] displays, Gpu[] gpus) {
+public class GpuInfo {
+    private final List<Display> displays;
+    private final List<Gpu> gpus;
+
+    public GpuInfo(List<Display> displays, List<Gpu> gpus) {
         this.displays = displays;
         this.gpus = gpus;
     }
 
-    public Display[] getDisplays() {
+    public List<Display> getDisplays() {
         return displays;
     }
 
-    public Gpu[] getGpus() {
+    public List<Gpu> getGpus() {
         return gpus;
     }
 }

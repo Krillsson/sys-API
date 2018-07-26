@@ -1,20 +1,15 @@
 package com.krillsson.sysapi.resources;
 
-import com.krillsson.sysapi.core.InfoProvider;
-import com.krillsson.sysapi.core.domain.metadata.Meta;
 import io.dropwizard.testing.junit.ResourceTestRule;
-import org.junit.After;
 import org.junit.ClassRule;
 import org.junit.Test;
 
 import javax.ws.rs.core.MediaType;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class MetaInfoResourceTest {
-    private static final InfoProvider provider = mock(InfoProvider.class);
 
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
@@ -41,10 +36,5 @@ public class MetaInfoResourceTest {
 
         assertNotNull(response);
         assertEquals(response, "1.0");
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        reset(provider);
     }
 }

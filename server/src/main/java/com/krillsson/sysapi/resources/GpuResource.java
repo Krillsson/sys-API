@@ -22,32 +22,49 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.InfoProvider;
-import com.krillsson.sysapi.core.domain.gpu.GpuInfo;
 import com.krillsson.sysapi.core.domain.gpu.GpuInfoMapper;
+import com.krillsson.sysapi.core.history.MetricsHistoryManager;
+import com.krillsson.sysapi.core.metrics.GpuMetrics;
+import com.krillsson.sysapi.dto.history.HistoryEntry;
 import io.dropwizard.auth.Auth;
-import oshi.hardware.Display;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("gpus")
 @Produces(MediaType.APPLICATION_JSON)
 public class GpuResource {
 
-    private InfoProvider provider;
+    private final GpuMetrics provider;
+    private final MetricsHistoryManager historyManager;
 
-    public GpuResource(InfoProvider provider) {
+    public GpuResource(GpuMetrics provider, MetricsHistoryManager historyManager) {
         this.provider = provider;
+        this.historyManager = historyManager;
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public com.krillsson.sysapi.dto.gpu.GpuInfo getRoot(@Auth UserConfiguration user) {
-        return GpuInfoMapper.INSTANCE.map(provider.gpuInfo());
+    public List<com.krillsson.sysapi.dto.gpu.Gpu> getRoot(@Auth UserConfiguration user) {
+        return GpuInfoMapper.INSTANCE.mapGpus(provider.gpus());
+    }
+
+    @GET
+    @Path("loads")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public List<com.krillsson.sysapi.dto.gpu.GpuLoad> getLoad(@Auth UserConfiguration user) {
+        return GpuInfoMapper.INSTANCE.map(provider.gpuLoads());
+    }
+
+    @GET
+    @Path("loads/history")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public List<HistoryEntry<List<com.krillsson.sysapi.dto.gpu.GpuLoad>>> getLoadHistory(@Auth UserConfiguration user) {
+        return GpuInfoMapper.INSTANCE.mapHistory(historyManager.gpuLoadHistory());
     }
 
 }

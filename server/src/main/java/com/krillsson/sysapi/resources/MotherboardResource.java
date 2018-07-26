@@ -22,26 +22,26 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.InfoProvider;
-import com.krillsson.sysapi.core.domain.motherboard.Motherboard;
 import com.krillsson.sysapi.core.domain.motherboard.MotherboardMapper;
+import com.krillsson.sysapi.core.domain.sensors.SensorsInfoMapper;
+import com.krillsson.sysapi.core.metrics.MotherboardMetrics;
+import com.krillsson.sysapi.dto.sensors.HealthData;
 import io.dropwizard.auth.Auth;
-import oshi.hardware.ComputerSystem;
-import oshi.hardware.UsbDevice;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("motherboard")
 @Produces(MediaType.APPLICATION_JSON)
 public class MotherboardResource {
 
-    InfoProvider provider;
+    MotherboardMetrics provider;
 
-    public MotherboardResource(InfoProvider provider) {
+    public MotherboardResource(MotherboardMetrics provider) {
         this.provider = provider;
     }
 
@@ -49,6 +49,14 @@ public class MotherboardResource {
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public com.krillsson.sysapi.dto.motherboard.Motherboard getRoot(@Auth UserConfiguration user) {
         return MotherboardMapper.INSTANCE.map(provider.motherboard());
+    }
+
+
+    @GET
+    @Path("health")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public List<HealthData> getHealths(@Auth UserConfiguration user) {
+        return SensorsInfoMapper.INSTANCE.mapDatas(provider.motherboardHealth());
     }
 
 }

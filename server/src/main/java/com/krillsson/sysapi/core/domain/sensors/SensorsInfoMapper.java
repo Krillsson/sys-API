@@ -28,6 +28,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.ERROR,
         uses = {MotherboardMapper.class, CpuInfoMapper.class, GpuInfoMapper.class}
@@ -38,6 +40,8 @@ public interface SensorsInfoMapper {
     com.krillsson.sysapi.dto.sensors.SensorsInfo map(SensorsInfo value);
 
     com.krillsson.sysapi.dto.sensors.HealthData map(com.krillsson.sysapi.core.domain.sensors.HealthData value);
+
+    List<com.krillsson.sysapi.dto.sensors.HealthData> mapDatas(List<com.krillsson.sysapi.core.domain.sensors.HealthData> value);
 
     com.krillsson.sysapi.dto.sensors.DataType map(com.krillsson.sysapi.core.domain.sensors.DataType value);
 }

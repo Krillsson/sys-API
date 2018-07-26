@@ -18,65 +18,75 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-
 package com.krillsson.sysapi.dto.cpu;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-        "cpuLoadCountingTicks",
-        "cpuLoadOsMxBean",
-        "coreLoads",
-})
 public class CpuLoad {
-
-    @JsonProperty("cpuLoadCountingTicks")
     private double cpuLoadCountingTicks;
-    @JsonProperty("cpuLoadOsMxBean")
     private double cpuLoadOsMxBean;
-    @JsonProperty("coreLoads")
-    private CoreLoad[] coreLoads;
+    private List<CoreLoad> coreLoads;
+    private CpuHealth cpuHealth;
+    private int processCount;
+    private int threadCount;
 
-    public CpuLoad() {
-
-    }
-
-    public CpuLoad(double cpuLoadCountingTicks, double cpuLoadOsMxBean, CoreLoad[] coreLoads) {
+    public CpuLoad(double cpuLoadCountingTicks, double cpuLoadOsMxBean, List<CoreLoad> coreLoads, CpuHealth cpuHealth, int processCount, int threadCount) {
         this.cpuLoadCountingTicks = cpuLoadCountingTicks;
         this.cpuLoadOsMxBean = cpuLoadOsMxBean;
+        this.cpuHealth = cpuHealth;
+        this.processCount = processCount;
+        this.threadCount = threadCount;
         this.coreLoads = coreLoads;
     }
 
-    @JsonProperty("cpuLoadCountingTicks")
+    public CpuLoad() {
+    }
+
     public double getCpuLoadCountingTicks() {
         return cpuLoadCountingTicks;
     }
 
-    @JsonProperty("cpuLoadCountingTicks")
     public void setCpuLoadCountingTicks(double cpuLoadCountingTicks) {
         this.cpuLoadCountingTicks = cpuLoadCountingTicks;
     }
 
-    @JsonProperty("cpuLoadOsMxBean")
     public double getCpuLoadOsMxBean() {
         return cpuLoadOsMxBean;
     }
 
-    @JsonProperty("cpuLoadOsMxBean")
     public void setCpuLoadOsMxBean(double cpuLoadOsMxBean) {
         this.cpuLoadOsMxBean = cpuLoadOsMxBean;
     }
 
-    @JsonProperty("coreLoads")
-    public CoreLoad[] getCoreLoads() {
+    public List<CoreLoad> getCoreLoads() {
         return coreLoads;
     }
 
-    @JsonProperty("coreLoads")
-    public void setCoreLoads(CoreLoad[] coreLoads) {
+    public void setCoreLoads(List<CoreLoad> coreLoads) {
         this.coreLoads = coreLoads;
+    }
+
+    public CpuHealth getCpuHealth() {
+        return cpuHealth;
+    }
+
+    public void setCpuHealth(CpuHealth cpuHealth) {
+        this.cpuHealth = cpuHealth;
+    }
+
+    public int getProcessCount() {
+        return processCount;
+    }
+
+    public void setProcessCount(int processCount) {
+        this.processCount = processCount;
+    }
+
+    public int getThreadCount() {
+        return threadCount;
+    }
+
+    public void setThreadCount(int threadCount) {
+        this.threadCount = threadCount;
     }
 }

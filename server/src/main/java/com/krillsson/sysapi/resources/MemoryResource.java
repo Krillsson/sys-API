@@ -22,32 +22,43 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.domain.memory.GlobalMemoryMapper;
+import com.krillsson.sysapi.core.history.MetricsHistoryManager;
+import com.krillsson.sysapi.core.metrics.MemoryMetrics;
+import com.krillsson.sysapi.dto.history.HistoryEntry;
 import com.krillsson.sysapi.dto.processes.Memory;
 import io.dropwizard.auth.Auth;
-import oshi.hardware.GlobalMemory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("memory")
 @Produces(MediaType.APPLICATION_JSON)
 public class MemoryResource {
 
-    private InfoProvider provider;
+    private final MemoryMetrics provider;
+    private final MetricsHistoryManager historyManager;
 
-    public MemoryResource(InfoProvider provider) {
+    public MemoryResource(MemoryMetrics provider, MetricsHistoryManager historyManager) {
         this.provider = provider;
+        this.historyManager = historyManager;
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public Memory getRoot(@Auth UserConfiguration user) {
         return GlobalMemoryMapper.INSTANCE.map(provider.globalMemory());
+    }
+
+    @GET
+    @Path("history")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public List<HistoryEntry<Memory>> getLoadHistory(@Auth UserConfiguration user) {
+        return GlobalMemoryMapper.INSTANCE.mapHistory(historyManager.memoryHistory());
     }
 
 }

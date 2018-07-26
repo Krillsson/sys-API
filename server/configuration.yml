@@ -1,6 +1,21 @@
 #########################################
 ### System-Api configuration          ###
 #########################################
+metricsConfig:
+  monitor:
+    interval: 45
+    unit: SECONDS
+  history:
+    interval: 30
+    unit: MINUTES
+    purging:
+      olderThan: 3
+      unit: DAYS
+      purgeEvery: 1
+      purgeEveryUnit: DAYS
+  cache:
+    duration: 5
+    unit: SECONDS
 user:
   username: user
   password: password
@@ -12,7 +27,11 @@ windows:
 ### Dropwizard specific configuration ###
 #########################################
 server:
-  applicationContextPath: /v1
+  maxThreads: 100
+  minThreads: 1
+  maxQueuedRequests: 100
+  idleThreadTimeout: 1 minute
+  applicationContextPath: /v2
   applicationConnectors:
     - type: http
       port: 8080
@@ -26,8 +45,8 @@ logging:
 
   # Logger-specific levels.
   loggers:
-    # Enables the SQL query log and redirect it to a separate file
     "com.krillsson.sysapi":
-      level: INFO
+      additive: false
+      level: DEBUG
       appenders:
         - type: console

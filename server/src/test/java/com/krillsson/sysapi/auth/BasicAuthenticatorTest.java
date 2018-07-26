@@ -45,7 +45,10 @@ public class BasicAuthenticatorTest {
 
     @Test
     public void correctUserNameAndPassword() throws Exception {
-        Optional<UserConfiguration> authenticate = basicAuthenticator.authenticate(new BasicCredentials(correctUsr, correctPw));
+        Optional<UserConfiguration> authenticate = basicAuthenticator.authenticate(new BasicCredentials(
+                correctUsr,
+                correctPw
+        ));
         assertTrue(authenticate.isPresent());
     }
 

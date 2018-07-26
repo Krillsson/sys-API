@@ -36,7 +36,11 @@ public class JarLocation {
 
     private static File jarLocation() {
         try {
-            return new File(SystemApiApplication.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+            return new File(SystemApiApplication.class.getProtectionDomain()
+                                    .getCodeSource()
+                                    .getLocation()
+                                    .toURI()
+                                    .getPath());
         } catch (URISyntaxException e) {
             return new File(SystemApiApplication.class.getProtectionDomain().getCodeSource().getLocation().getPath());
         }
