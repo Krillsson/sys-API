@@ -5,17 +5,17 @@ import java.util.Date;
 public class MonitorEvent {
 
     private final String id;
-    private final String itemId;
+    private final String monitorId;
     private final Date time;
     private final MonitorType type;
     private final MonitorStatus monitorStatus;
     private final double threshold;
     private final double value;
 
-    public MonitorEvent(String id, String itemId, Date time, MonitorStatus monitorStatus, MonitorType type, Double threshold, Double value) {
+    public MonitorEvent(String id, String monitorId, Date time, MonitorStatus monitorStatus, MonitorType type, Double threshold, Double value) {
         this.id = id;
         this.time = time;
-        this.itemId = itemId;
+        this.monitorId = monitorId;
         this.type = type;
         this.monitorStatus = monitorStatus;
         this.threshold = threshold;
@@ -26,8 +26,8 @@ public class MonitorEvent {
         return id;
     }
 
-    public String getItemId() {
-        return itemId;
+    public String getMonitorId() {
+        return monitorId;
     }
 
     public Date getTime() {
@@ -54,7 +54,7 @@ public class MonitorEvent {
     public String toString() {
         return "MonitorEvent{" +
                 "time=" + time +
-                ", id='" + itemId + '\'' +
+                ", id='" + monitorId + '\'' +
                 ", monitorStatus=" + monitorStatus +
                 ", threshold=" + threshold +
                 ", value=" + value +

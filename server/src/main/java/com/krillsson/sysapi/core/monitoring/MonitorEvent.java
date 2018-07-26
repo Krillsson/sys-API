@@ -7,7 +7,7 @@ import java.util.UUID;
 public class MonitorEvent {
     private final UUID id;
     private final LocalDateTime time;
-    private final String itemId;
+    private final String monitorId;
     private final MonitorStatus monitorStatus;
     private final Monitor.MonitorType monitorType;
     private final double threshold;
@@ -18,10 +18,10 @@ public class MonitorEvent {
         STOP,
     }
 
-    public MonitorEvent(UUID id, String itemId, LocalDateTime time, MonitorStatus monitorStatus, Monitor.MonitorType monitorType, Double threshold, Double value) {
+    public MonitorEvent(UUID id, String monitorId, LocalDateTime time, MonitorStatus monitorStatus, Monitor.MonitorType monitorType, Double threshold, Double value) {
         this.id = id;
         this.time = time;
-        this.itemId = itemId;
+        this.monitorId = monitorId;
         this.monitorStatus = monitorStatus;
         this.monitorType = monitorType;
         this.threshold = threshold;
@@ -32,8 +32,8 @@ public class MonitorEvent {
         return id;
     }
 
-    public String getItemId() {
-        return itemId;
+    public String getMonitorId() {
+        return monitorId;
     }
 
     public LocalDateTime getTime() {
@@ -61,7 +61,7 @@ public class MonitorEvent {
     public String toString() {
         return "MonitorEvent{" +
                 "time=" + time +
-                ", id='" + itemId + '\'' +
+                ", id='" + monitorId + '\'' +
                 ", monitorStatus=" + monitorStatus +
                 ", threshold=" + threshold +
                 ", value=" + value +

@@ -23,8 +23,6 @@ public abstract class Monitor {
     private State state = State.INSIDE;
     private UUID eventId;
 
-
-
     enum State {
         INSIDE,
         OUTSIDE_BEFORE_INERTIA,

@@ -47,7 +47,7 @@ public interface MonitorMapper {
 
     default MonitorEvent map(com.krillsson.sysapi.core.monitoring.MonitorEvent event) {
         return new MonitorEvent(
-                event.getId().toString(), event.getItemId(), map(event.getTime()),
+                event.getId().toString(), event.getMonitorId(), map(event.getTime()),
                 INSTANCE.map(event.getMonitorStatus()),
                 INSTANCE.map(event.getMonitorType()),
                 event.getThreshold(),

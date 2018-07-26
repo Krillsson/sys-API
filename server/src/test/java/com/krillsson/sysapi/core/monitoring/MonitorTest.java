@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Duration;
-import java.time.ZoneOffset;
 import java.util.Optional;
 
 import static com.krillsson.sysapi.core.monitoring.Monitor.MonitorType.CPU;
@@ -131,7 +130,7 @@ public class MonitorTest {
         //should have outside event
         MonitorEvent monitorEvent = event.get();
 
-        assertEquals( "ID", monitorEvent.getItemId());
+        assertEquals( "ID", monitorEvent.getMonitorId());
         assertEquals(clock.now(), monitorEvent.getTime());
         assertEquals(1, monitorEvent.getThreshold(), 0.0);
         assertEquals(CPU, monitorEvent.getMonitorType());
