@@ -27,11 +27,13 @@ import com.krillsson.sysapi.core.domain.motherboard.Motherboard;
 import com.krillsson.sysapi.core.domain.network.NetworkInterface;
 import oshi.PlatformEnum;
 import oshi.hardware.GlobalMemory;
+import oshi.software.os.OperatingSystem;
 
 import java.util.List;
 
 public class SystemInfo {
     private final String hostName;
+    private final OperatingSystem operatingSystem;
     private final PlatformEnum platform;
     private final CpuInfo cpuInfo;
     private final Motherboard motherboard;
@@ -40,8 +42,9 @@ public class SystemInfo {
     private final List<NetworkInterface> networkInterfaces;
     private final List<Gpu> gpus;
 
-    public SystemInfo(String hostName, PlatformEnum platform, CpuInfo cpuInfo, Motherboard motherboard, GlobalMemory memory, List<Drive> drives, List<NetworkInterface> networkInterfaces, List<Gpu> gpus) {
+    public SystemInfo(String hostName, OperatingSystem operatingSystem, PlatformEnum platform, CpuInfo cpuInfo, Motherboard motherboard, GlobalMemory memory, List<Drive> drives, List<NetworkInterface> networkInterfaces, List<Gpu> gpus) {
         this.hostName = hostName;
+        this.operatingSystem = operatingSystem;
         this.platform = platform;
         this.cpuInfo = cpuInfo;
         this.motherboard = motherboard;
@@ -53,6 +56,10 @@ public class SystemInfo {
 
     public String getHostName() {
         return hostName;
+    }
+
+    public OperatingSystem getOperatingSystem() {
+        return operatingSystem;
     }
 
     public PlatformEnum getPlatform() {

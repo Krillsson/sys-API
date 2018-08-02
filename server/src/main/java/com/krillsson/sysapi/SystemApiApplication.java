@@ -194,7 +194,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         MonitorManager monitorManager = new MonitorManager(eventBus, persistentMonitors, provider);
         environment.lifecycle().manage(monitorManager);
 
-        environment.jersey().register(new SystemResource(
+        environment.jersey().register(new SystemResource(os,
                 SystemInfo.getCurrentPlatformEnum(),
                 provider.cpuMetrics(),
                 provider.networkMetrics(),

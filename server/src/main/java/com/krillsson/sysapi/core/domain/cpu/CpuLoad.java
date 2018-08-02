@@ -25,14 +25,16 @@ import java.util.List;
 public class CpuLoad {
     private final double cpuLoadCountingTicks;
     private final double cpuLoadOsMxBean;
+    private final double systemLoadAverage;
     private final List<CoreLoad> coreLoads;
     private final CpuHealth cpuHealth;
     private final int processCount;
     private final int threadCount;
 
-    public CpuLoad(double cpuLoadCountingTicks, double cpuLoadOsMxBean, List<CoreLoad> coreLoads, CpuHealth cpuHealth, int processCount, int threadCount) {
+    public CpuLoad(double cpuLoadCountingTicks, double cpuLoadOsMxBean, double systemLoadAverage, List<CoreLoad> coreLoads, CpuHealth cpuHealth, int processCount, int threadCount) {
         this.cpuLoadCountingTicks = cpuLoadCountingTicks;
         this.cpuLoadOsMxBean = cpuLoadOsMxBean;
+        this.systemLoadAverage = systemLoadAverage;
         this.cpuHealth = cpuHealth;
         this.processCount = processCount;
         this.threadCount = threadCount;
@@ -45,6 +47,10 @@ public class CpuLoad {
 
     public double getCpuLoadOsMxBean() {
         return cpuLoadOsMxBean;
+    }
+
+    public double getSystemLoadAverage() {
+        return systemLoadAverage;
     }
 
     public List<CoreLoad> getCoreLoads() {

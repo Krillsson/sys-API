@@ -12,6 +12,7 @@ import java.util.List;
 
 public class SystemInfo {
     private String hostName;
+    private OperatingSystem operatingSystem;
     private PlatformEnum platform;
     private CpuInfo cpuInfo;
     private Motherboard motherboard;
@@ -20,8 +21,9 @@ public class SystemInfo {
     private List<NetworkInterface> networkInterfaces;
     private List<Gpu> gpus;
 
-    public SystemInfo(String hostName, PlatformEnum platform, CpuInfo cpuInfo, Motherboard motherboard, GlobalMemory memory, List<Drive> drives, List<NetworkInterface> networkInterfaces, List<Gpu> gpus) {
+    public SystemInfo(String hostName, OperatingSystem operatingSystem, PlatformEnum platform, CpuInfo cpuInfo, Motherboard motherboard, GlobalMemory memory, List<Drive> drives, List<NetworkInterface> networkInterfaces, List<Gpu> gpus) {
         this.hostName = hostName;
+        this.operatingSystem = operatingSystem;
         this.platform = platform;
         this.cpuInfo = cpuInfo;
         this.motherboard = motherboard;
@@ -40,6 +42,14 @@ public class SystemInfo {
 
     public void setHostName(String hostName) {
         this.hostName = hostName;
+    }
+
+    public OperatingSystem getOperatingSystem() {
+        return operatingSystem;
+    }
+
+    public void setOperatingSystem(OperatingSystem operatingSystem) {
+        this.operatingSystem = operatingSystem;
     }
 
     public PlatformEnum getPlatform() {

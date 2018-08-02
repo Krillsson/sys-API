@@ -32,6 +32,7 @@ import com.krillsson.sysapi.dto.system.SystemLoad;
 import com.krillsson.sysapi.util.EnvironmentUtils;
 import io.dropwizard.auth.Auth;
 import oshi.PlatformEnum;
+import oshi.software.os.OperatingSystem;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
@@ -48,6 +49,7 @@ import java.util.function.Supplier;
 @Produces(MediaType.APPLICATION_JSON)
 public class SystemResource {
 
+    private final OperatingSystem operatingSystem;
     private final PlatformEnum platformEnum;
     private final CpuMetrics cpuMetrics;
     private final NetworkMetrics networkMetrics;
@@ -59,7 +61,7 @@ public class SystemResource {
     private final Supplier<Long> uptimeSupplier;
 
 
-    public SystemResource(PlatformEnum platformEnum, CpuMetrics cpuMetrics,
+    public SystemResource(OperatingSystem operatingSystem, PlatformEnum platformEnum, CpuMetrics cpuMetrics,
                           NetworkMetrics networkMetrics,
                           DriveMetrics driveMetrics,
                           MemoryMetrics memoryMetrics,
@@ -67,6 +69,7 @@ public class SystemResource {
                           MotherboardMetrics motherboardMetrics,
                           MetricsHistoryManager historyManager,
                           Supplier<Long> uptimeSupplier) {
+        this.operatingSystem = operatingSystem;
         this.platformEnum = platformEnum;
         this.cpuMetrics = cpuMetrics;
         this.networkMetrics = networkMetrics;
@@ -83,6 +86,7 @@ public class SystemResource {
     public com.krillsson.sysapi.dto.system.SystemInfo getRoot(@Auth UserConfiguration user) {
         return SystemInfoMapper.INSTANCE.map(new SystemInfo(
                 EnvironmentUtils.getHostName(),
+                operatingSystem,
                 platformEnum,
                 cpuMetrics.cpuInfo(),
                 motherboardMetrics.motherboard(),
