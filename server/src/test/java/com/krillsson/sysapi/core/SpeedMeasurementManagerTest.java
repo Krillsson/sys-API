@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core;
 
+import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -8,12 +9,11 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -49,7 +49,12 @@ public class SpeedMeasurementManagerTest {
         when(speedSource.getCurrentWrite()).thenReturn(2000L, 4000L);
 
         ArgumentCaptor<Runnable> argumentCaptor = ArgumentCaptor.forClass(Runnable.class);
-        when(executorService.scheduleAtFixedRate(argumentCaptor.capture(), anyLong(), anyLong(), any(TimeUnit.class))).thenReturn(null);
+        when(executorService.scheduleAtFixedRate(
+                argumentCaptor.capture(),
+                anyLong(),
+                anyLong(),
+                any(TimeUnit.class)
+        )).thenReturn(null);
 
         measurementManager.register(speedSource);
         measurementManager.start();
@@ -62,11 +67,11 @@ public class SpeedMeasurementManagerTest {
         // second run will give you a value
         value.run();
 
-        SpeedMeasurementManager.CurrentSpeed en0 = measurementManager.getCurrentSpeedForName(EN_0);
+        Optional<SpeedMeasurementManager.CurrentSpeed> en0 = measurementManager.getCurrentSpeedForName(EN_0);
 
         assertNotNull(en0);
-        assertEquals(200L, en0.getReadPerSeconds());
-        assertEquals(400L, en0.getWritePerSeconds());
+        assertEquals(200L, en0.get().getReadPerSeconds());
+        assertEquals(400L, en0.get().getWritePerSeconds());
     }
 
     @Test
@@ -76,7 +81,12 @@ public class SpeedMeasurementManagerTest {
         when(speedSource.getCurrentWrite()).thenReturn(0L, 0L);
 
         ArgumentCaptor<Runnable> argumentCaptor = ArgumentCaptor.forClass(Runnable.class);
-        when(executorService.scheduleAtFixedRate(argumentCaptor.capture(), anyLong(), anyLong(), any(TimeUnit.class))).thenReturn(null);
+        when(executorService.scheduleAtFixedRate(
+                argumentCaptor.capture(),
+                anyLong(),
+                anyLong(),
+                any(TimeUnit.class)
+        )).thenReturn(null);
 
         measurementManager.register(speedSource);
         measurementManager.start();
@@ -89,11 +99,11 @@ public class SpeedMeasurementManagerTest {
         // second run will give you a value
         value.run();
 
-        SpeedMeasurementManager.CurrentSpeed en0 = measurementManager.getCurrentSpeedForName(EN_0);
+        Optional<SpeedMeasurementManager.CurrentSpeed> en0 = measurementManager.getCurrentSpeedForName(EN_0);
 
-        assertNotNull(en0);
-        assertEquals(0L, en0.getReadPerSeconds());
-        assertEquals(0L, en0.getWritePerSeconds());
+        assertTrue(en0.isPresent());
+        assertEquals(0L, en0.get().getReadPerSeconds());
+        assertEquals(0L, en0.get().getWritePerSeconds());
     }
 
     @Test
@@ -106,7 +116,12 @@ public class SpeedMeasurementManagerTest {
         when(secondSpeedSource.getCurrentWrite()).thenReturn(8000L, 16000L);
 
         ArgumentCaptor<Runnable> argumentCaptor = ArgumentCaptor.forClass(Runnable.class);
-        when(executorService.scheduleAtFixedRate(argumentCaptor.capture(), anyLong(), anyLong(), any(TimeUnit.class))).thenReturn(null);
+        when(executorService.scheduleAtFixedRate(
+                argumentCaptor.capture(),
+                anyLong(),
+                anyLong(),
+                any(TimeUnit.class)
+        )).thenReturn(null);
 
         measurementManager.register(Arrays.asList(speedSource, secondSpeedSource));
         measurementManager.start();
@@ -119,16 +134,16 @@ public class SpeedMeasurementManagerTest {
         // second run will give you a value
         value.run();
 
-        SpeedMeasurementManager.CurrentSpeed en0 = measurementManager.getCurrentSpeedForName(EN_0);
-        SpeedMeasurementManager.CurrentSpeed en1 = measurementManager.getCurrentSpeedForName(EN_1);
+        Optional<SpeedMeasurementManager.CurrentSpeed> en0 = measurementManager.getCurrentSpeedForName(EN_0);
+        Optional<SpeedMeasurementManager.CurrentSpeed> en1 = measurementManager.getCurrentSpeedForName(EN_1);
 
         assertNotNull(en0);
-        assertEquals(200L, en0.getReadPerSeconds());
-        assertEquals(400L, en0.getWritePerSeconds());
+        assertEquals(200L, en0.get().getReadPerSeconds());
+        assertEquals(400L, en0.get().getWritePerSeconds());
 
         assertNotNull(en1);
-        assertEquals(1800L, en1.getReadPerSeconds());
-        assertEquals(1600L, en1.getWritePerSeconds());
+        assertEquals(1800L, en1.get().getReadPerSeconds());
+        assertEquals(1600L, en1.get().getWritePerSeconds());
     }
 
     @Test
@@ -139,7 +154,12 @@ public class SpeedMeasurementManagerTest {
         when(speedSource.getCurrentWrite()).thenReturn(2000L, 4000L);
 
         ArgumentCaptor<Runnable> argumentCaptor = ArgumentCaptor.forClass(Runnable.class);
-        when(executorService.scheduleAtFixedRate(argumentCaptor.capture(), anyLong(), anyLong(), any(TimeUnit.class))).thenReturn(null);
+        when(executorService.scheduleAtFixedRate(
+                argumentCaptor.capture(),
+                anyLong(),
+                anyLong(),
+                any(TimeUnit.class)
+        )).thenReturn(null);
 
         measurementManager.register(speedSource);
         measurementManager.start();
@@ -150,17 +170,18 @@ public class SpeedMeasurementManagerTest {
         value.run();
         value.run();
 
-        SpeedMeasurementManager.CurrentSpeed en0 = measurementManager.getCurrentSpeedForName(EN_0);
-
-        assertEquals(en0.getReadPerSeconds(), 0);
-        assertEquals(en0.getWritePerSeconds(), 0);
-        verify(speedSource, never()).getCurrentRead();
-        verify(speedSource, never()).getCurrentWrite();
+        Optional<SpeedMeasurementManager.CurrentSpeed> en0Optional = measurementManager.getCurrentSpeedForName(EN_0);
+        assertFalse(en0Optional.isPresent());
     }
 
     @Test
     public void stoppingManagerShutsDownExecutorService() throws Exception {
-        when(executorService.scheduleAtFixedRate(any(Runnable.class), anyLong(), anyLong(), any(TimeUnit.class))).thenReturn(null);
+        when(executorService.scheduleAtFixedRate(
+                any(Runnable.class),
+                anyLong(),
+                anyLong(),
+                any(TimeUnit.class)
+        )).thenReturn(null);
 
         measurementManager.start();
         measurementManager.stop();

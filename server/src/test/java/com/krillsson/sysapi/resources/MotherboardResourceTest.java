@@ -1,7 +1,7 @@
 package com.krillsson.sysapi.resources;
 
-import com.krillsson.sysapi.core.InfoProvider;
 import com.krillsson.sysapi.core.domain.motherboard.Motherboard;
+import com.krillsson.sysapi.core.metrics.MotherboardMetrics;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.After;
 import org.junit.ClassRule;
@@ -12,13 +12,12 @@ import oshi.hardware.UsbDevice;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.*;
 
 public class MotherboardResourceTest {
-    private static final InfoProvider provider = mock(InfoProvider.class);
+    private static final MotherboardMetrics provider = mock(MotherboardMetrics.class);
 
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
@@ -37,7 +36,8 @@ public class MotherboardResourceTest {
 
         when(provider.motherboard()).thenReturn(motherboard);
 
-        final com.krillsson.sysapi.dto.motherboard.Motherboard response = RESOURCES.getJerseyTest().target("/motherboard")
+        final com.krillsson.sysapi.dto.motherboard.Motherboard response = RESOURCES.getJerseyTest()
+                .target("/motherboard")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(com.krillsson.sysapi.dto.motherboard.Motherboard.class);
 

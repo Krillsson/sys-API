@@ -21,6 +21,8 @@
 
 package com.krillsson.sysapi.core.domain.motherboard;
 
+import com.krillsson.sysapi.core.domain.system.DateMapper;
+import com.krillsson.sysapi.core.domain.system.SystemInfoMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
@@ -28,7 +30,8 @@ import org.threeten.bp.DateTimeUtils;
 import org.threeten.bp.ZoneId;
 
 @Mapper(
-        unmappedTargetPolicy = ReportingPolicy.ERROR
+        unmappedTargetPolicy = ReportingPolicy.ERROR,
+        uses = {DateMapper.class}
 )
 public interface MotherboardMapper {
 
