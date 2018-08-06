@@ -19,7 +19,7 @@ public class DriveMonitor extends Monitor {
                 .stream()
                 .filter(i -> i.getName().equalsIgnoreCase(id()))
                 .findFirst().orElse(DRIVE_LOAD)
-                .getMetrics()
+                .getValues()
                 .getUsableSpace();
     }
 

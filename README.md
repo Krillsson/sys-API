@@ -6,12 +6,12 @@
 
 System API (sys-API) is a RESTful API to your computers hardware.
 
-Sys-API publishes and monitors metrics from [OSHI](https://github.com/oshi/oshi) with the help of [Dropwizard](https://github.com/dropwizard/dropwizard). On Windows the information is supplemented with
+Sys-API publishes and monitors values from [OSHI](https://github.com/oshi/oshi) with the help of [Dropwizard](https://github.com/dropwizard/dropwizard). On Windows the information is supplemented with
 [OpenHardwareMonitor](https://github.com/openhardwaremonitor/openhardwaremonitor) with a little help from [OhmJni4Net](https://github.com/Krillsson/ohmjni4net).
 
 ## What can it do?
 
-- Threshold-based monitoring of system metrics
+- Threshold-based monitoring of system values
 - List ongoing threshold violations (events)
 - CPU usage & info
 - Memory usage

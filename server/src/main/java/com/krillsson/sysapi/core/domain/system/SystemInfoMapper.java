@@ -24,7 +24,7 @@ package com.krillsson.sysapi.core.domain.system;
 import com.krillsson.sysapi.core.domain.cpu.CpuInfoMapper;
 import com.krillsson.sysapi.core.domain.drives.DriveMetricsMapper;
 import com.krillsson.sysapi.core.domain.gpu.GpuInfoMapper;
-import com.krillsson.sysapi.core.domain.memory.GlobalMemoryMapper;
+import com.krillsson.sysapi.core.domain.memory.MemoryMapper;
 import com.krillsson.sysapi.core.domain.motherboard.MotherboardMapper;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfacesMapper;
 import com.krillsson.sysapi.dto.history.HistoryEntry;
@@ -39,7 +39,7 @@ import java.util.Map;
 
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.ERROR,
-        uses = {CpuInfoMapper.class, GlobalMemoryMapper.class, DateMapper.class,
+        uses = {CpuInfoMapper.class, MemoryMapper.class, DateMapper.class,
                 NetworkInterfacesMapper.class, DriveMetricsMapper.class,
                 GpuInfoMapper.class, MotherboardMapper.class}
 )

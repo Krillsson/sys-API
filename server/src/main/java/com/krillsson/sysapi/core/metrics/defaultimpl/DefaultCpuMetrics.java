@@ -55,6 +55,11 @@ public class DefaultCpuMetrics implements CpuMetrics, TickManager.TickListener {
     }
 
     @Override
+    public long uptime() {
+        return hal.getProcessor().getSystemUptime();
+    }
+
+    @Override
     public void onTick() {
         CentralProcessor processor = hal.getProcessor();
         if (Arrays.equals(coreTicks, new long[0][0])) {
@@ -107,6 +112,7 @@ public class DefaultCpuMetrics implements CpuMetrics, TickManager.TickListener {
         this.cpuLoad = new CpuLoad(
                 Utils.round(processor.getSystemCpuLoadBetweenTicks() * 100d, 2),
                 Utils.round(processor.getSystemCpuLoad() * 100d, 2),
+                Utils.round(processor.getSystemLoadAverage() * 100d, 2),
                 Stream.of(coreLoads).collect(Collectors.toList()),
                 cpuSensors.cpuHealth(),
                 operatingSystem.getProcessCount(),

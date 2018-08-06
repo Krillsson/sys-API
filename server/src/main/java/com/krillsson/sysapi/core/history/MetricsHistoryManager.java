@@ -5,6 +5,7 @@ import com.krillsson.sysapi.config.HistoryConfiguration;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.core.domain.drives.DriveLoad;
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad;
+import com.krillsson.sysapi.core.domain.memory.MemoryLoad;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
 import oshi.hardware.GlobalMemory;
@@ -41,15 +42,15 @@ public class MetricsHistoryManager extends HistoryManager {
                 .collect(Collectors.toList());
     }
 
-    public List<HistoryEntry<GlobalMemory>> memoryHistory() {
+    public List<HistoryEntry<MemoryLoad>> memoryHistory() {
         return systemLoadHistory().stream()
-                .map(e -> new HistoryEntry<GlobalMemory>(e.date, e.value.getMemory()))
+                .map(e -> new HistoryEntry<>(e.date, e.value.getMemory()))
                 .collect(Collectors.toList());
     }
 
     public List<HistoryEntry<List<NetworkInterfaceLoad>>> networkInterfaceLoadHistory() {
         return systemLoadHistory().stream()
-                .map(e -> new HistoryEntry<List<NetworkInterfaceLoad>>(
+                .map(e -> new HistoryEntry<>(
                         e.date,
                         e.value.getNetworkInterfaceLoads()
                 ))

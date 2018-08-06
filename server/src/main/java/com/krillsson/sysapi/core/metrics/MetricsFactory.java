@@ -23,10 +23,10 @@ public interface MetricsFactory {
 
     default SystemLoad consolidatedMetrics() {
         return new SystemLoad(
-                cpuMetrics().cpuLoad(),
+                cpuMetrics().uptime(), cpuMetrics().cpuLoad(),
                 networkMetrics().networkInterfaceLoads(),
                 driveMetrics().driveLoads(),
-                memoryMetrics().globalMemory(),
+                memoryMetrics().memoryLoad(),
                 gpuMetrics().gpuLoads(),
                 motherboardMetrics().motherboardHealth());
     }

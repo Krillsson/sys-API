@@ -1,7 +1,7 @@
 package com.krillsson.sysapi.core.metrics;
 
-import oshi.hardware.GlobalMemory;
+import com.krillsson.sysapi.core.domain.memory.MemoryLoad;
 
 public interface MemoryMetrics {
-    GlobalMemory globalMemory();
+    MemoryLoad memoryLoad();
 }

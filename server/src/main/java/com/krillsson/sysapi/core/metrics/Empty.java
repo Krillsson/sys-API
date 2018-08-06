@@ -10,7 +10,7 @@ public class Empty {
     public static final DriveSpeed DRIVE_SPEED = new DriveSpeed(-1, -1);
     public static final DriveLoad DRIVE_LOAD = new DriveLoad(
             "N/A",
-            new DriveValues(-1, -1, -1, -1, -1, -1, -1, -1),
+            "N/A", new DriveValues(-1, -1, -1, -1, -1, -1, -1, -1),
             DRIVE_SPEED,
             DRIVE_HEALTH
     );

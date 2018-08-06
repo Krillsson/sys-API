@@ -23,10 +23,10 @@ package com.krillsson.sysapi.core.domain.system;
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
 import com.krillsson.sysapi.core.domain.drives.Drive;
 import com.krillsson.sysapi.core.domain.gpu.Gpu;
+import com.krillsson.sysapi.core.domain.memory.MemoryLoad;
 import com.krillsson.sysapi.core.domain.motherboard.Motherboard;
 import com.krillsson.sysapi.core.domain.network.NetworkInterface;
 import oshi.PlatformEnum;
-import oshi.hardware.GlobalMemory;
 import oshi.software.os.OperatingSystem;
 
 import java.util.List;
@@ -37,12 +37,12 @@ public class SystemInfo {
     private final PlatformEnum platform;
     private final CpuInfo cpuInfo;
     private final Motherboard motherboard;
-    private final GlobalMemory memory;
+    private final MemoryLoad memory;
     private final List<Drive> drives;
     private final List<NetworkInterface> networkInterfaces;
     private final List<Gpu> gpus;
 
-    public SystemInfo(String hostName, OperatingSystem operatingSystem, PlatformEnum platform, CpuInfo cpuInfo, Motherboard motherboard, GlobalMemory memory, List<Drive> drives, List<NetworkInterface> networkInterfaces, List<Gpu> gpus) {
+    public SystemInfo(String hostName, OperatingSystem operatingSystem, PlatformEnum platform, CpuInfo cpuInfo, Motherboard motherboard, MemoryLoad memory, List<Drive> drives, List<NetworkInterface> networkInterfaces, List<Gpu> gpus) {
         this.hostName = hostName;
         this.operatingSystem = operatingSystem;
         this.platform = platform;
@@ -74,7 +74,7 @@ public class SystemInfo {
         return motherboard;
     }
 
-    public GlobalMemory getMemory() {
+    public MemoryLoad getMemory() {
         return memory;
     }
 

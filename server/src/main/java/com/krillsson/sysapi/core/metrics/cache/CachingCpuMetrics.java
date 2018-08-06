@@ -11,6 +11,7 @@ public class CachingCpuMetrics implements CpuMetrics {
 
     private final Supplier<CpuInfo> cpuInfoCache;
     private final Supplier<CpuLoad> cpuLoadCache;
+    private final Supplier<Long> uptimeCache;
 
     CachingCpuMetrics(CpuMetrics cpuMetrics, CacheConfiguration cacheConfiguration) {
         this.cpuInfoCache = Suppliers.memoizeWithExpiration(
@@ -23,6 +24,12 @@ public class CachingCpuMetrics implements CpuMetrics {
                 cacheConfiguration.getDuration(),
                 cacheConfiguration.getUnit()
         );
+        this.uptimeCache = Suppliers.memoizeWithExpiration(
+                cpuMetrics::uptime,
+                cacheConfiguration.getDuration(),
+                cacheConfiguration.getUnit()
+        );
+
     }
 
     @Override
@@ -33,5 +40,10 @@ public class CachingCpuMetrics implements CpuMetrics {
     @Override
     public CpuLoad cpuLoad() {
         return cpuLoadCache.get();
+    }
+
+    @Override
+    public long uptime() {
+        return uptimeCache.get();
     }
 }

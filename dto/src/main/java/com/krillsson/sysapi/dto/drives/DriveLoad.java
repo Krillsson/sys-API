@@ -2,13 +2,15 @@ package com.krillsson.sysapi.dto.drives;
 
 public class DriveLoad {
     private String name;
-    private DriveValues metrics;
+    private String serial;
+    private DriveValues values;
     private DriveSpeed speed;
     private DriveHealth health;
 
-    public DriveLoad(String name, DriveValues metrics, DriveSpeed speed, DriveHealth health) {
+    public DriveLoad(String name, String serial, DriveValues values, DriveSpeed speed, DriveHealth health) {
         this.name = name;
-        this.metrics = metrics;
+        this.serial = serial;
+        this.values = values;
         this.speed = speed;
         this.health = health;
     }
@@ -24,12 +26,20 @@ public class DriveLoad {
         this.name = name;
     }
 
-    public DriveValues getMetrics() {
-        return metrics;
+    public String getSerial() {
+        return serial;
     }
 
-    public void setMetrics(DriveValues metrics) {
-        this.metrics = metrics;
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
+    public DriveValues getValues() {
+        return values;
+    }
+
+    public void setValues(DriveValues values) {
+        this.values = values;
     }
 
     public DriveSpeed getSpeed() {

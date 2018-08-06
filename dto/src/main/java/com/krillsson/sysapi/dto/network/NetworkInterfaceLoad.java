@@ -2,11 +2,13 @@ package com.krillsson.sysapi.dto.network;
 
 public class NetworkInterfaceLoad {
     private String name;
-    private NetworkInterfaceValues metrics;
+    private boolean up;
+    private NetworkInterfaceValues values;
     private NetworkInterfaceSpeed speed;
 
-    public NetworkInterfaceLoad(String name, NetworkInterfaceValues metrics, NetworkInterfaceSpeed speed) {
-        this.metrics = metrics;
+    public NetworkInterfaceLoad(String name, boolean up, NetworkInterfaceValues values, NetworkInterfaceSpeed speed) {
+        this.values = values;
+        this.up = up;
         this.speed = speed;
     }
 
@@ -21,12 +23,20 @@ public class NetworkInterfaceLoad {
         this.name = name;
     }
 
-    public NetworkInterfaceValues getMetrics() {
-        return metrics;
+    public boolean isUp() {
+        return up;
     }
 
-    public void setMetrics(NetworkInterfaceValues metrics) {
-        this.metrics = metrics;
+    public void setUp(boolean up) {
+        this.up = up;
+    }
+
+    public NetworkInterfaceValues getValues() {
+        return values;
+    }
+
+    public void setValues(NetworkInterfaceValues values) {
+        this.values = values;
     }
 
     public NetworkInterfaceSpeed getSpeed() {

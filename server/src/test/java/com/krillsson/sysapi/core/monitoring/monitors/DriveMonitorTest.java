@@ -24,7 +24,7 @@ public class DriveMonitorTest {
         driveLoad = mock(DriveLoad.class);
         driveValues = mock(DriveValues.class);
         when(driveLoad.getName()).thenReturn("sd0");
-        when(driveLoad.getMetrics()).thenReturn(driveValues);
+        when(driveLoad.getValues()).thenReturn(driveValues);
     }
 
     @Test

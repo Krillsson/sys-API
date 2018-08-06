@@ -50,7 +50,7 @@ public class DefaultMetricsFactory implements MetricsFactory {
         setDriveMetrics(diskInfoProvider);
         setProcessesMetrics(new DefaultProcessesMetrics(operatingSystem, hal));
         setMotherboardMetrics(new DefaultMotherboardMetrics(hal));
-        setMemoryMetrics(new DefaultMemoryMetrics(hal));
+        setMemoryMetrics(new DefaultMemoryMetrics(hal, operatingSystem));
         return true;
     }
 

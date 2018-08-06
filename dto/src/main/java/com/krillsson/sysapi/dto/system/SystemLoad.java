@@ -4,20 +4,23 @@ import com.krillsson.sysapi.dto.cpu.CpuLoad;
 import com.krillsson.sysapi.dto.drives.DriveLoad;
 import com.krillsson.sysapi.dto.gpu.GpuLoad;
 import com.krillsson.sysapi.dto.memory.GlobalMemory;
+import com.krillsson.sysapi.dto.memory.MemoryLoad;
 import com.krillsson.sysapi.dto.network.NetworkInterfaceLoad;
 import com.krillsson.sysapi.dto.sensors.HealthData;
 
 import java.util.List;
 
 public class SystemLoad {
+    private long uptime;
     private CpuLoad cpuLoad;
     private List<NetworkInterfaceLoad> networkInterfaceLoads;
     private List<DriveLoad> driveLoads;
-    private GlobalMemory memory;
+    private MemoryLoad memory;
     private List<GpuLoad> gpuLoads;
     private List<HealthData> motherboardHealth;
 
-    public SystemLoad(CpuLoad cpuLoad, List<NetworkInterfaceLoad> networkInterfaceLoads, List<DriveLoad> driveLoads, GlobalMemory memory, List<GpuLoad> gpuLoads, List<HealthData> motherboardHealth) {
+    public SystemLoad(long uptime, CpuLoad cpuLoad, List<NetworkInterfaceLoad> networkInterfaceLoads, List<DriveLoad> driveLoads, MemoryLoad memory, List<GpuLoad> gpuLoads, List<HealthData> motherboardHealth) {
+        this.uptime = uptime;
         this.cpuLoad = cpuLoad;
         this.networkInterfaceLoads = networkInterfaceLoads;
         this.driveLoads = driveLoads;
@@ -27,6 +30,14 @@ public class SystemLoad {
     }
 
     public SystemLoad() {
+    }
+
+    public long getUptime() {
+        return uptime;
+    }
+
+    public void setUptime(long uptime) {
+        this.uptime = uptime;
     }
 
     public CpuLoad getCpuLoad() {
@@ -53,11 +64,11 @@ public class SystemLoad {
         this.driveLoads = driveLoads;
     }
 
-    public GlobalMemory getMemory() {
+    public MemoryLoad getMemory() {
         return memory;
     }
 
-    public void setMemory(GlobalMemory memory) {
+    public void setMemory(MemoryLoad memory) {
         this.memory = memory;
     }
 

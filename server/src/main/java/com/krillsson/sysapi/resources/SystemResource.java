@@ -90,7 +90,7 @@ public class SystemResource {
                 platformEnum,
                 cpuMetrics.cpuInfo(),
                 motherboardMetrics.motherboard(),
-                memoryMetrics.globalMemory(),
+                memoryMetrics.memoryLoad(),
                 driveMetrics.drives(),
                 networkMetrics.networkInterfaces(),
                 gpuMetrics.gpus()
@@ -102,10 +102,10 @@ public class SystemResource {
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public SystemLoad getLoad(@Auth UserConfiguration user) {
         return SystemInfoMapper.INSTANCE.map(new com.krillsson.sysapi.core.domain.system.SystemLoad(
-                cpuMetrics.cpuLoad(),
+                uptimeSupplier.get(), cpuMetrics.cpuLoad(),
                 networkMetrics.networkInterfaceLoads(),
                 driveMetrics.driveLoads(),
-                memoryMetrics.globalMemory(),
+                memoryMetrics.memoryLoad(),
                 gpuMetrics.gpuLoads(),
                 motherboardMetrics.motherboardHealth()
         ));

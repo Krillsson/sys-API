@@ -47,7 +47,7 @@ public class WindowsMetricsFactory extends DefaultMetricsFactory {
             setDriveMetrics(new WindowsDriveProvider(operatingSystem, hal, speedMeasurementManager));
             setProcessesMetrics(new DefaultProcessesMetrics(operatingSystem, hal));
             setMotherboardMetrics(new WindowsMotherboardMetrics(hal, monitorManager));
-            setMemoryMetrics(new DefaultMemoryMetrics(hal));
+            setMemoryMetrics(new DefaultMemoryMetrics(hal, operatingSystem));
         }
         return bridgeInitialized;
     }

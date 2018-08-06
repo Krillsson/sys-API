@@ -7,4 +7,6 @@ public interface CpuMetrics {
     CpuInfo cpuInfo();
 
     CpuLoad cpuLoad();
+
+    long uptime();
 }

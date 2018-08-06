@@ -209,7 +209,7 @@ public class DefaultDriveProvider implements DriveMetrics {
         DriveHealth health = diskHealth(d.getName());
         DriveValues metrics = diskMetrics(d, partition, operatingSystem.getFileSystem());
         DriveSpeed speed = diskSpeedForStore(d, partition).orElse(Empty.DRIVE_SPEED);
-        return new DriveLoad(d.getName(), metrics, speed, health);
+        return new DriveLoad(d.getName(), d.getSerial(), metrics, speed, health);
     }
 
     private static class DiskSpeedSource implements SpeedMeasurementManager.SpeedSource {
