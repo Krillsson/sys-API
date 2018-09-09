@@ -62,14 +62,14 @@ public class DefaultNetworkMetrics implements NetworkMetrics {
                     @Override
                     public long getCurrentRead() {
                         n.updateNetworkStats();
-                        return n.getBytesRecv() * BYTE_TO_BIT;
+                        return n.getBytesRecv();
                     }
 
                     @Override
                     public long getCurrentWrite() {
                         //TODO: maybe it's good enough to do this in getCurrentRead since getCurrentWrite is called immediately after
                         n.updateNetworkStats();
-                        return n.getBytesSent() * BYTE_TO_BIT;
+                        return n.getBytesSent();
                     }
                 })
                 .collect(Collectors.toList());
@@ -126,7 +126,7 @@ public class DefaultNetworkMetrics implements NetworkMetrics {
                     nic.getName(),
                     nic.getDisplayName(),
                     nic.getMacaddr(),
-                    nic.getMTU(),
+                    nic.getSpeed(), nic.getMTU(),
                     loopback,
                     Stream.of(nic.getIPv4addr()).collect(Collectors.toList()),
                     Stream.of(nic.getIPv6addr()).collect(Collectors.toList())

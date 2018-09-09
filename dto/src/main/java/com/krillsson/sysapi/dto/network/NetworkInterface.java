@@ -6,16 +6,18 @@ public class NetworkInterface {
     private String name;
     private String displayName;
     private String mac;
+    private long speed;
     private List<String> ipv4;
     private List<String> ipv6;
     private int mtu;
     private boolean loopback;
 
 
-    public NetworkInterface(String name, String displayName, String mac, int mtu, boolean loopback, List<String> ipv4, List<String> ipv6) {
+    public NetworkInterface(String name, String displayName, String mac, long speed, int mtu, boolean loopback, List<String> ipv4, List<String> ipv6) {
         this.name = name;
         this.displayName = displayName;
         this.mac = mac;
+        this.speed = speed;
         this.mtu = mtu;
         this.loopback = loopback;
         this.ipv4 = ipv4;
@@ -47,6 +49,14 @@ public class NetworkInterface {
 
     public void setMac(String mac) {
         this.mac = mac;
+    }
+
+    public long getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(long speed) {
+        this.speed = speed;
     }
 
     public List<String> getIpv4() {
