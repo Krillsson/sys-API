@@ -33,9 +33,9 @@ public class MemoryResourceTest {
         when(memory.getTotal()).thenReturn(100L);
         when(provider.memoryLoad()).thenReturn(memory);
 
-        final com.krillsson.sysapi.dto.memory.GlobalMemory response = RESOURCES.getJerseyTest().target("/memory")
+        final com.krillsson.sysapi.dto.memory.MemoryLoad response = RESOURCES.getJerseyTest().target("/memory")
                 .request(MediaType.APPLICATION_JSON_TYPE)
-                .get(com.krillsson.sysapi.dto.memory.GlobalMemory.class);
+                .get(com.krillsson.sysapi.dto.memory.MemoryLoad.class);
         assertNotNull(response);
         assertEquals(response.getAvailable(), 100, 0);
     }

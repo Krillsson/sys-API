@@ -1,6 +1,5 @@
 package com.krillsson.sysapi.resources;
 
-import com.krillsson.sysapi.core.history.HistoryManager;
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.NetworkMetrics;
 import io.dropwizard.testing.junit.ResourceTestRule;
@@ -37,7 +36,7 @@ public class NetworkInterfacesResourceTest {
                 "en0",
                 "",
                 "",
-                0,
+                0, 0,
                 false,
                 new ArrayList<>(),
                 new ArrayList<>()
