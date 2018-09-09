@@ -23,11 +23,14 @@ package com.krillsson.sysapi.core.domain.motherboard;
 
 import com.krillsson.sysapi.core.domain.system.DateMapper;
 import com.krillsson.sysapi.core.domain.system.SystemInfoMapper;
+import org.joda.time.DateTimeUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
-import org.threeten.bp.DateTimeUtils;
-import org.threeten.bp.ZoneId;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.ERROR,
@@ -47,7 +50,11 @@ public interface MotherboardMapper {
 
     com.krillsson.sysapi.dto.motherboard.Baseboard map(oshi.hardware.Baseboard value);
 
-    default java.util.Date map(org.threeten.bp.LocalDate value) {
-        return value != null ? DateTimeUtils.toDate(value.atStartOfDay(ZoneId.systemDefault()).toInstant()) : null;
+    default java.util.Date map(String value) {
+        try {
+            return value != null && !value.equalsIgnoreCase("unknown") ? new SimpleDateFormat().parse(value ) : null;
+        } catch (ParseException e) {
+            return null;
+        }
     }
 }
