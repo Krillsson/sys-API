@@ -24,6 +24,7 @@ import com.krillsson.sysapi.core.domain.drives.*;
 import com.krillsson.sysapi.core.metrics.DriveMetrics;
 import com.krillsson.sysapi.core.metrics.Empty;
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import oshi.hardware.HWDiskStore;
@@ -62,7 +63,8 @@ public class DefaultDriveProvider implements DriveMetrics {
         return Stream.of(hal.getDiskStores()).map(d -> new Drive(
                 d.getModel(),
                 d.getName(),
-                d.getSerial(),
+                getSerial(d),
+                d.getSize(),
                 findAssociatedFileStore(d).orElse(Empty.OS_PARTITION),
                 Stream.of(d.getPartitions())
                         .map(p -> new Partition(
@@ -110,7 +112,8 @@ public class DefaultDriveProvider implements DriveMetrics {
         return Stream.of(hal.getDiskStores()).filter(n -> n.getName().equalsIgnoreCase(name)).map(d -> new Drive(
                 d.getModel(),
                 d.getName(),
-                d.getSerial(),
+                getSerial(d),
+                d.getSize(),
                 findAssociatedFileStore(d).orElse(Empty.OS_PARTITION),
                 Stream.of(d.getPartitions())
                         .map(p -> new Partition(
@@ -145,7 +148,7 @@ public class DefaultDriveProvider implements DriveMetrics {
         List<HWPartition> partitions = Arrays.asList(diskStore.getPartitions());
 
 
-        Map<String, HWPartition> hwPartitions = partitions.stream()
+        Map<String, HWPartition> hwPartitions = partitions.stream().filter(e -> !StringUtils.isEmpty(e.getUuid()))
                 .collect(Collectors.toMap(f -> f.getUuid().toUpperCase(), f -> f));
 
         Map<String, OSFileStore> osStores = fileStores.stream()
@@ -209,7 +212,11 @@ public class DefaultDriveProvider implements DriveMetrics {
         DriveHealth health = diskHealth(d.getName());
         DriveValues metrics = diskMetrics(d, partition, operatingSystem.getFileSystem());
         DriveSpeed speed = diskSpeedForStore(d, partition).orElse(Empty.DRIVE_SPEED);
-        return new DriveLoad(d.getName(), d.getSerial(), metrics, speed, health);
+        return new DriveLoad(d.getName(), getSerial(d), metrics, speed, health);
+    }
+
+    private String getSerial(HWDiskStore d) {
+        return StringUtils.isEmpty(d.getSerial()) ? "n/a" : d.getSerial();
     }
 
     private static class DiskSpeedSource implements SpeedMeasurementManager.SpeedSource {

@@ -2,10 +2,8 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.core.domain.drives.Drive;
 import com.krillsson.sysapi.core.domain.drives.OsPartition;
-import com.krillsson.sysapi.core.history.HistoryManager;
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.DriveMetrics;
-import com.krillsson.sysapi.dto.network.NetworkInterface;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.*;
 
@@ -40,7 +38,7 @@ public class DrivesResourceTest {
                 "",
                 "sd0",
                 "",
-                new OsPartition("", "", "", "", 0, 0, 0, "", "", "", "", "", 0, 0),
+                0, new OsPartition("", "", "", "", 0, 0, 0, "", "", "", "", "", 0, 0),
                 Collections.emptyList()
         );
     }
