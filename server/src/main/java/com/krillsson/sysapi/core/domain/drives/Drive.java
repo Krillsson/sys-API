@@ -26,13 +26,15 @@ public class Drive {
     private final String model;
     private final String name;
     private final String serial;
+    private final long sizeBytes;
     private final List<Partition> partitions;
     private final OsPartition diskOsPartition;
 
-    public Drive(String model, String name, String serial, OsPartition diskOsPartition, List<Partition> partitions) {
+    public Drive(String model, String name, String serial, long sizeBytes, OsPartition diskOsPartition, List<Partition> partitions) {
         this.model = model;
         this.name = name;
         this.serial = serial;
+        this.sizeBytes = sizeBytes;
         this.diskOsPartition = diskOsPartition;
         this.partitions = partitions;
     }
@@ -47,6 +49,10 @@ public class Drive {
 
     public String getSerial() {
         return serial;
+    }
+
+    public long getSizeBytes() {
+        return sizeBytes;
     }
 
     public List<Partition> getPartitions() {
