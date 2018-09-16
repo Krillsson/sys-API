@@ -2,6 +2,7 @@ package com.krillsson.sysapi.core.metrics.macos;
 
 import com.krillsson.sysapi.core.domain.drives.Drive;
 import com.krillsson.sysapi.core.domain.drives.DriveLoad;
+import com.krillsson.sysapi.core.domain.drives.DriveSpeed;
 import com.krillsson.sysapi.core.domain.drives.DriveValues;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDriveProvider;
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
@@ -36,37 +37,31 @@ public class MacOsDriveProvider extends DefaultDriveProvider {
         map.forEach((s, driveLoads) -> {
             if (driveLoads.size() > 1) {
 
-                Optional<DriveLoad> firstHalf = driveLoads.stream()
-                        .max(Comparator.comparingInt(o -> (int) o.getValues().getUsableSpace()));
-                Optional<DriveLoad> secondHalf = driveLoads.stream()
-                        .max(Comparator.comparingInt(o -> (int) o.getValues().getReads()));
+                DriveValues first = driveLoads.get(0).getValues();
+                DriveValues second = driveLoads.get(1).getValues();
 
+                DriveSpeed speed = first.getReads() > second.getReads() ? driveLoads.get(0).getSpeed() : driveLoads.get(
+                        1).getSpeed();
 
-                if (secondHalf.isPresent() && firstHalf.isPresent()) {
-                    DriveLoad first = firstHalf.get();
-                    DriveLoad second = secondHalf.get();
-                    DriveValues values = new DriveValues(
-                            first.getValues().getUsableSpace(),
-                            first.getValues().getTotalSpace(),
-                            first.getValues().getOpenFileDescriptors(),
-                            first.getValues().getMaxFileDescriptors(),
-                            second.getValues().getReads(),
-                            second.getValues().getReadBytes(),
-                            second.getValues().getWrites(),
-                            second.getValues().getWriteBytes()
-                    );
-                    DriveLoad driveLoad = new DriveLoad(
-                            second.getName(),
-                            first.getSerial(),
-                            values,
-                            second.getSpeed(),
-                            second.getHealth()
-                    );
-                    result.add(driveLoad);
-                } else {
-                    firstHalf.ifPresent(result::add);
-                    secondHalf.ifPresent(result::add);
-                }
+                DriveValues values = new DriveValues(
+                        Math.max(first.getUsableSpace(), second.getUsableSpace()),
+                        Math.max(first.getTotalSpace(), second.getTotalSpace()),
+                        Math.max(first.getOpenFileDescriptors(), second.getOpenFileDescriptors()),
+                        Math.max(first.getMaxFileDescriptors(), second.getMaxFileDescriptors()),
+                        Math.max(first.getReads(), second.getReads()),
+                        Math.max(first.getReadBytes(), second.getReadBytes()),
+                        Math.max(first.getWrites(), second.getWrites()),
+                        Math.max(first.getWriteBytes(), second.getWriteBytes())
+                );
+                DriveLoad driveLoad = new DriveLoad(
+                        driveLoads.get(0).getName(),
+                        driveLoads.get(0).getSerial(),
+                        values,
+                        speed,
+                        driveLoads.get(0).getHealth()
+                );
+                result.add(driveLoad);
+
             } else {
                 result.add(driveLoads.get(0));
             }
