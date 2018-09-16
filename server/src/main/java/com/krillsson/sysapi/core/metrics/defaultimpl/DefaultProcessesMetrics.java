@@ -1,14 +1,15 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
+import com.krillsson.sysapi.core.domain.memory.MemoryLoad;
 import com.krillsson.sysapi.core.domain.processes.Process;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import com.krillsson.sysapi.core.metrics.ProcessesMetrics;
-import oshi.hardware.GlobalMemory;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,12 +25,14 @@ public class DefaultProcessesMetrics implements ProcessesMetrics {
 
     @Override
     public ProcessesInfo processesInfo(OperatingSystem.ProcessSort sortBy, int limit) {
-        GlobalMemory memory = hal.getMemory();
-        List<Process> processes = Arrays
-                .stream(operatingSystem.getProcesses(limit, sortBy))
-                .map(p -> Process.create(p, memory))
-                .collect(Collectors.toList());
-
+        MemoryLoad memory = memoryLoad();
+        List<Process> processes = Collections.emptyList();
+        if (limit > -1) {
+            processes = Arrays
+                    .stream(operatingSystem.getProcesses(limit, sortBy))
+                    .map(p -> Process.create(p, memory))
+                    .collect(Collectors.toList());
+        }
         return new ProcessesInfo(
                 memory,
                 operatingSystem.getProcessId(),
@@ -41,8 +44,19 @@ public class DefaultProcessesMetrics implements ProcessesMetrics {
 
     @Override
     public Optional<Process> getProcessByPid(int pid) {
+        MemoryLoad memory = memoryLoad();
         return Optional
                 .of(operatingSystem.getProcess(pid))
-                .map((OSProcess p) -> Process.create(p, hal.getMemory()));
+                .map((OSProcess p) -> Process.create(p, memory));
+    }
+
+    public MemoryLoad memoryLoad() {
+        return new MemoryLoad(
+                operatingSystem.getProcessCount(),
+                hal.getMemory().getSwapTotal(),
+                hal.getMemory().getSwapUsed(),
+                hal.getMemory().getTotal(),
+                hal.getMemory().getAvailable()
+        );
     }
 }

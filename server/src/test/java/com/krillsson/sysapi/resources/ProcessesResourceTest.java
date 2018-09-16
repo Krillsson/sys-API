@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.resources;
 
+import com.krillsson.sysapi.core.domain.memory.MemoryLoad;
 import com.krillsson.sysapi.core.domain.processes.Process;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import com.krillsson.sysapi.core.metrics.ProcessesMetrics;
@@ -96,7 +97,7 @@ public class ProcessesResourceTest {
     public void getProcessesCorrectLimit() throws Exception {
         ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
         when(provider.processesInfo(any(OperatingSystem.ProcessSort.class), captor.capture()))
-                .thenReturn(new ProcessesInfo(mock(GlobalMemory.class), 0, 0, 0,
+                .thenReturn(new ProcessesInfo(mock(MemoryLoad.class), 0, 0, 0,
                                               Arrays.asList(process)
                 ));
 
@@ -106,15 +107,15 @@ public class ProcessesResourceTest {
                 .get(ProcessInfo.class);
 
         assertEquals(captor.getValue(), new Integer(10));
-        assertThat(processInfo.getProcesses()[0].getName(), is(equalToIgnoringCase("name")));
-        assertThat(processInfo.getProcesses()[0].getState(), is(equalToIgnoringCase(process.getState().name())));
+        assertThat(processInfo.getProcesses().get(0).getName(), is(equalToIgnoringCase("name")));
+        assertThat(processInfo.getProcesses().get(0).getState(), is(equalToIgnoringCase(process.getState().name())));
     }
 
     @Test
     public void getProcessesCorrectSortingMethod() throws Exception {
         ArgumentCaptor<OperatingSystem.ProcessSort> captor = ArgumentCaptor.forClass(OperatingSystem.ProcessSort.class);
         when(provider.processesInfo(captor.capture(), anyInt()))
-                .thenReturn(new ProcessesInfo(mock(GlobalMemory.class), 0, 0, 0,
+                .thenReturn(new ProcessesInfo(mock(MemoryLoad.class), 0, 0, 0,
                                               Arrays.asList(process)
                 ));
 
@@ -124,14 +125,14 @@ public class ProcessesResourceTest {
                 .get(ProcessInfo.class);
 
         assertEquals(captor.getValue(), OperatingSystem.ProcessSort.MEMORY);
-        assertThat(processInfo.getProcesses()[0].getName(), is(equalToIgnoringCase("name")));
-        assertThat(processInfo.getProcesses()[0].getState(), is(equalToIgnoringCase(process.getState().name())));
+        assertThat(processInfo.getProcesses().get(0).getName(), is(equalToIgnoringCase("name")));
+        assertThat(processInfo.getProcesses().get(0).getState(), is(equalToIgnoringCase(process.getState().name())));
     }
 
     @Test
     public void getProcessesHappyPath() throws Exception {
         when(provider.processesInfo(any(OperatingSystem.ProcessSort.class), anyInt()))
-                .thenReturn(new ProcessesInfo(mock(GlobalMemory.class), 0, 0, 0,
+                .thenReturn(new ProcessesInfo(mock(MemoryLoad.class), 0, 0, 0,
                                               Arrays.asList(process)
                 ));
 
@@ -140,9 +141,9 @@ public class ProcessesResourceTest {
                 .get(ProcessInfo.class);
 
         assertNotNull(response);
-        assertEquals(response.getProcesses().length, 1);
-        assertThat(response.getProcesses()[0].getName(), is(equalToIgnoringCase("name")));
-        assertThat(response.getProcesses()[0].getState(), is(equalToIgnoringCase(process.getState().name())));
+        assertEquals(response.getProcesses().size(), 1);
+        assertThat(response.getProcesses().get(0).getName(), is(equalToIgnoringCase("name")));
+        assertThat(response.getProcesses().get(0).getState(), is(equalToIgnoringCase(process.getState().name())));
     }
 
     @Test

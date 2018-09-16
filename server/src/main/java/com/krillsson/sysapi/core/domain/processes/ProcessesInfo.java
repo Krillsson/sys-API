@@ -21,18 +21,19 @@
 
 package com.krillsson.sysapi.core.domain.processes;
 
+import com.krillsson.sysapi.core.domain.memory.MemoryLoad;
 import oshi.hardware.GlobalMemory;
 
 import java.util.List;
 
 public class ProcessesInfo {
-    private final GlobalMemory memory;
+    private final MemoryLoad memory;
     private final long processId;
     private final long threadCount;
     private final long processCount;
     private final List<Process> processes;
 
-    public ProcessesInfo(GlobalMemory memory, long processId, long threadCount, long processCount, List<Process> processes) {
+    public ProcessesInfo(MemoryLoad memory, long processId, long threadCount, long processCount, List<Process> processes) {
         this.memory = memory;
         this.processId = processId;
         this.threadCount = threadCount;
@@ -40,7 +41,7 @@ public class ProcessesInfo {
         this.processes = processes;
     }
 
-    public GlobalMemory getMemory() {
+    public MemoryLoad getMemory() {
         return memory;
     }
 

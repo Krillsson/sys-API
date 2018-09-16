@@ -21,6 +21,7 @@
 
 package com.krillsson.sysapi.core.domain.processes;
 
+import com.krillsson.sysapi.core.domain.memory.MemoryLoad;
 import oshi.hardware.GlobalMemory;
 import oshi.software.os.OSProcess;
 
@@ -94,7 +95,7 @@ public class Process {
         this.bytesWritten = bytesWritten;
     }
 
-    public static Process create(OSProcess process, GlobalMemory memory) {
+    public static Process create(OSProcess process, MemoryLoad memory) {
         return new Process(process.getName(),
                            process.getPath(),
                            process.getCommandLine(),

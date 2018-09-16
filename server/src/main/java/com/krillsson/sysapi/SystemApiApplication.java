@@ -195,14 +195,14 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         environment.lifecycle().manage(monitorManager);
 
         environment.jersey().register(new SystemResource(os,
-                SystemInfo.getCurrentPlatformEnum(),
-                provider.cpuMetrics(),
-                provider.networkMetrics(),
-                provider.driveMetrics(),
-                provider.memoryMetrics(),
-                provider.gpuMetrics(),
-                provider.motherboardMetrics(),
-                historyManager, () -> hal.getProcessor().getSystemUptime()
+                                                         SystemInfo.getCurrentPlatformEnum(),
+                                                         provider.cpuMetrics(),
+                                                         provider.networkMetrics(),
+                                                         provider.driveMetrics(),
+                                                         provider.memoryMetrics(),
+                                                         provider.processesMetrics(), provider.gpuMetrics(),
+                                                         provider.motherboardMetrics(),
+                                                         historyManager, () -> hal.getProcessor().getSystemUptime()
         ));
         environment.jersey().register(new DrivesResource(provider.driveMetrics(), historyManager));
         environment.jersey().register(new GpuResource(provider.gpuMetrics(), historyManager));

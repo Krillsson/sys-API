@@ -1,6 +1,9 @@
 package com.krillsson.sysapi.core.metrics;
 
+import com.krillsson.sysapi.core.domain.system.SystemInfo;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
+import com.krillsson.sysapi.util.EnvironmentUtils;
+import oshi.software.os.OperatingSystem;
 
 public interface MetricsFactory {
     boolean prerequisitesFilled();
@@ -21,13 +24,17 @@ public interface MetricsFactory {
 
     MotherboardMetrics motherboardMetrics();
 
-    default SystemLoad consolidatedMetrics() {
+    default SystemLoad consolidatedMetrics(){
+        return consolidatedMetrics(OperatingSystem.ProcessSort.MEMORY, -1);
+    }
+
+    default SystemLoad consolidatedMetrics(OperatingSystem.ProcessSort sort, int limit) {
         return new SystemLoad(
                 cpuMetrics().uptime(), cpuMetrics().cpuLoad(),
                 networkMetrics().networkInterfaceLoads(),
                 driveMetrics().driveLoads(),
                 memoryMetrics().memoryLoad(),
-                gpuMetrics().gpuLoads(),
+                processesMetrics().processesInfo(sort, limit).getProcesses(), gpuMetrics().gpuLoads(),
                 motherboardMetrics().motherboardHealth());
     }
 }

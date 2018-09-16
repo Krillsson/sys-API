@@ -3,9 +3,9 @@ package com.krillsson.sysapi.dto.system;
 import com.krillsson.sysapi.dto.cpu.CpuLoad;
 import com.krillsson.sysapi.dto.drives.DriveLoad;
 import com.krillsson.sysapi.dto.gpu.GpuLoad;
-import com.krillsson.sysapi.dto.memory.GlobalMemory;
 import com.krillsson.sysapi.dto.memory.MemoryLoad;
 import com.krillsson.sysapi.dto.network.NetworkInterfaceLoad;
+import com.krillsson.sysapi.dto.processes.Process;
 import com.krillsson.sysapi.dto.sensors.HealthData;
 
 import java.util.List;
@@ -16,15 +16,17 @@ public class SystemLoad {
     private List<NetworkInterfaceLoad> networkInterfaceLoads;
     private List<DriveLoad> driveLoads;
     private MemoryLoad memory;
+    private List<Process> processes;
     private List<GpuLoad> gpuLoads;
     private List<HealthData> motherboardHealth;
 
-    public SystemLoad(long uptime, CpuLoad cpuLoad, List<NetworkInterfaceLoad> networkInterfaceLoads, List<DriveLoad> driveLoads, MemoryLoad memory, List<GpuLoad> gpuLoads, List<HealthData> motherboardHealth) {
+    public SystemLoad(long uptime, CpuLoad cpuLoad, List<NetworkInterfaceLoad> networkInterfaceLoads, List<DriveLoad> driveLoads, MemoryLoad memory, List<Process> processes, List<GpuLoad> gpuLoads, List<HealthData> motherboardHealth) {
         this.uptime = uptime;
         this.cpuLoad = cpuLoad;
         this.networkInterfaceLoads = networkInterfaceLoads;
         this.driveLoads = driveLoads;
         this.memory = memory;
+        this.processes = processes;
         this.gpuLoads = gpuLoads;
         this.motherboardHealth = motherboardHealth;
     }
@@ -86,5 +88,13 @@ public class SystemLoad {
 
     public void setMotherboardHealth(List<HealthData> motherboardHealth) {
         this.motherboardHealth = motherboardHealth;
+    }
+
+    public List<Process> getProcesses() {
+        return processes;
+    }
+
+    public void setProcesses(List<Process> processes) {
+        this.processes = processes;
     }
 }

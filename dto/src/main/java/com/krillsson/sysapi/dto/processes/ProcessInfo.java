@@ -1,11 +1,15 @@
 package com.krillsson.sysapi.dto.processes;
 
+import com.krillsson.sysapi.dto.memory.MemoryLoad;
+
+import java.util.List;
+
 public class ProcessInfo {
 
 
-    private Memory memory;
+    private MemoryLoad memory;
 
-    private Process[] processes = null;
+    private List<Process> processes = null;
 
     private long processId;
 
@@ -23,7 +27,7 @@ public class ProcessInfo {
      * @param processes
      * @param memory
      */
-    public ProcessInfo(Memory memory, long processId, long threadCount, long processCount, Process[] processes) {
+    public ProcessInfo(MemoryLoad memory, long processId, long threadCount, long processCount, List<Process> processes) {
         super();
         this.memory = memory;
         this.processId = processId;
@@ -33,12 +37,12 @@ public class ProcessInfo {
     }
 
 
-    public Memory getMemory() {
+    public MemoryLoad getMemory() {
         return memory;
     }
 
 
-    public void setMemory(Memory memory) {
+    public void setMemory(MemoryLoad memory) {
         this.memory = memory;
     }
 
@@ -73,12 +77,12 @@ public class ProcessInfo {
     }
 
 
-    public Process[] getProcesses() {
+    public List<Process> getProcesses() {
         return processes;
     }
 
 
-    public void setProcesses(Process[] processes) {
+    public void setProcesses(List<Process> processes) {
         this.processes = processes;
     }
 

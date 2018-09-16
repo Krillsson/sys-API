@@ -31,23 +31,26 @@ import com.krillsson.sysapi.dto.history.HistoryEntry;
 import com.krillsson.sysapi.dto.system.SystemLoad;
 import com.krillsson.sysapi.util.EnvironmentUtils;
 import io.dropwizard.auth.Auth;
+import org.slf4j.Logger;
 import oshi.PlatformEnum;
 import oshi.software.os.OperatingSystem;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import javax.ws.rs.core.Response;
+import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Path("system")
 @Produces(MediaType.APPLICATION_JSON)
 public class SystemResource {
+
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SystemResource.class);
+
+    private static final int DEFAULT_PROCESS_LIMIT = 10;
+    private static final OperatingSystem.ProcessSort DEFAULT_PROCESS_ORDER = OperatingSystem.ProcessSort.MEMORY;
 
     private final OperatingSystem operatingSystem;
     private final PlatformEnum platformEnum;
@@ -55,6 +58,7 @@ public class SystemResource {
     private final NetworkMetrics networkMetrics;
     private final DriveMetrics driveMetrics;
     private final MemoryMetrics memoryMetrics;
+    private final ProcessesMetrics processesMetrics;
     private final GpuMetrics gpuMetrics;
     private final MotherboardMetrics motherboardMetrics;
     private final MetricsHistoryManager historyManager;
@@ -65,7 +69,7 @@ public class SystemResource {
                           NetworkMetrics networkMetrics,
                           DriveMetrics driveMetrics,
                           MemoryMetrics memoryMetrics,
-                          GpuMetrics gpuMetrics,
+                          ProcessesMetrics processesMetrics, GpuMetrics gpuMetrics,
                           MotherboardMetrics motherboardMetrics,
                           MetricsHistoryManager historyManager,
                           Supplier<Long> uptimeSupplier) {
@@ -75,6 +79,7 @@ public class SystemResource {
         this.networkMetrics = networkMetrics;
         this.driveMetrics = driveMetrics;
         this.memoryMetrics = memoryMetrics;
+        this.processesMetrics = processesMetrics;
         this.gpuMetrics = gpuMetrics;
         this.motherboardMetrics = motherboardMetrics;
         this.historyManager = historyManager;
@@ -100,13 +105,36 @@ public class SystemResource {
     @GET
     @Path("load")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public SystemLoad getLoad(@Auth UserConfiguration user) {
+    public SystemLoad getLoad(@Auth UserConfiguration user, @QueryParam("sortBy") Optional<String> processSort, @QueryParam("limit") Optional<Integer> limit) {
+        OperatingSystem.ProcessSort sortBy = DEFAULT_PROCESS_ORDER;
+        if (processSort.isPresent()) {
+            String method = processSort.get().toUpperCase();
+            try {
+                sortBy = OperatingSystem.ProcessSort.valueOf(method);
+            } catch (IllegalArgumentException e) {
+                String validOptions = Arrays.stream(OperatingSystem.ProcessSort.values())
+                        .map(Enum::name)
+                        .collect(Collectors.joining(", ", "Valid options are: ", "."));
+                LOGGER.error("No process sort method of type {} was found. {}", method, validOptions);
+                throw new WebApplicationException(
+                        String.format("No process sort method of type %s was found. %s", method, validOptions),
+                        Response.Status.BAD_REQUEST
+                );
+            }
+        }
+        Integer theLimit = limit.orElse(DEFAULT_PROCESS_LIMIT);
+        if (theLimit < -1) {
+            String message = String.format("limit cannot be negative (%d)", theLimit);
+            LOGGER.error(message);
+            throw new WebApplicationException(message, Response.Status.BAD_REQUEST);
+        }
+
         return SystemInfoMapper.INSTANCE.map(new com.krillsson.sysapi.core.domain.system.SystemLoad(
                 uptimeSupplier.get(), cpuMetrics.cpuLoad(),
                 networkMetrics.networkInterfaceLoads(),
                 driveMetrics.driveLoads(),
                 memoryMetrics.memoryLoad(),
-                gpuMetrics.gpuLoads(),
+                processesMetrics.processesInfo(sortBy, theLimit).getProcesses(), gpuMetrics.gpuLoads(),
                 motherboardMetrics.motherboardHealth()
         ));
     }

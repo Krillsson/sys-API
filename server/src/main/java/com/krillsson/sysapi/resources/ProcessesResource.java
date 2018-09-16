@@ -47,6 +47,9 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 public class ProcessesResource {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ProcessesResource.class);
 
+    private static final int DEFAULT_PROCESS_LIMIT = 10;
+    private static final OperatingSystem.ProcessSort DEFAULT_PROCESS_ORDER = OperatingSystem.ProcessSort.MEMORY;
+
     private final ProcessesMetrics provider;
 
     public ProcessesResource(ProcessesMetrics provider) {
@@ -56,7 +59,7 @@ public class ProcessesResource {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public ProcessInfo getRoot(@Auth UserConfiguration user, @QueryParam("sortBy") Optional<String> processSort, @QueryParam("limit") Optional<Integer> limit) {
-        OperatingSystem.ProcessSort sortBy = OperatingSystem.ProcessSort.NAME;
+        OperatingSystem.ProcessSort sortBy = DEFAULT_PROCESS_ORDER;
         if (processSort.isPresent()) {
             String method = processSort.get().toUpperCase();
             try {
@@ -72,8 +75,8 @@ public class ProcessesResource {
                 );
             }
         }
-        Integer theLimit = limit.orElse(0);
-        if (theLimit < 0) {
+        Integer theLimit = limit.orElse(DEFAULT_PROCESS_LIMIT);
+        if (theLimit < -1) {
             String message = String.format("limit cannot be negative (%d)", theLimit);
             LOGGER.error(message);
             throw new WebApplicationException(message, Response.Status.BAD_REQUEST);
