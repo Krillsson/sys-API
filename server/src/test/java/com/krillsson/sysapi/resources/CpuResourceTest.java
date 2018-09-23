@@ -4,6 +4,7 @@ import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
 import com.krillsson.sysapi.core.history.HistoryManager;
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.CpuMetrics;
+import com.krillsson.sysapi.util.LocalDateTimeConverter;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.After;
 import org.junit.ClassRule;
@@ -23,6 +24,7 @@ public class CpuResourceTest {
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
             .addResource(new CpuResource(provider, historyManager))
+            .addProvider(LocalDateTimeConverter.class)
             .build();
 
     @Test

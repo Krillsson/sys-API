@@ -21,6 +21,7 @@ public class HistoryTest {
     public void setUp() throws Exception {
         clock = new Clock();
         history = new History<>(clock);
+
     }
 
     @Test
@@ -39,6 +40,11 @@ public class HistoryTest {
     @Test
     public void purgingRemovesStuff() {
         LocalDateTime twoMinutesAgo = LocalDateTime.now().minusMinutes(2);
+
+        System.out.println(LocalDateTime.now().minusDays(2).toString());
+
+
+        System.out.println(LocalDateTime.now().plusHours(2).toString());
         clock.useFixedClockAt(twoMinutesAgo);
         history.record(new Object());
         clock.useFixedClockAt(twoMinutesAgo.plusMinutes(4));

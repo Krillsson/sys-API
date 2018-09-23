@@ -86,6 +86,10 @@ So for example the cpu temperature and usage is under `/cpu`. Some things are ex
 The general idea is that each item has a root endpoint that contain static information, like a processors name or the names of the disks. Then each and every item has a `/load` endpoint that gives you the current
 load of that item and a `/load/history` that gives you the load history over time. Disks or network interfaces always have mappable names or ID's between the root and load/history content.
 
+History endpoints also have the ability to limit it's output. 
+
+Example: `v2/system/load/history?fromDate=2018-09-23T15:11:55.661&toDate=2018-09-23T15:21:25.659`
+
 So if you are building a UI on top of this API you can query the root endpoint once or seldom. And then if you want to display load over time you can query the history endpoint once and
 then continuously poll the load endpoint and append the results to the history collections.
 

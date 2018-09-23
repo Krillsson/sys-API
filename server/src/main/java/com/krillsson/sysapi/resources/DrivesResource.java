@@ -32,6 +32,7 @@ import io.dropwizard.auth.Auth;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
@@ -86,8 +87,8 @@ public class DrivesResource {
     @GET
     @Path("loads/history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<HistoryEntry<List<DriveLoad>>> getLoadHistory(@Auth UserConfiguration user) {
-        return DriveMetricsMapper.INSTANCE.mapHistory(historyManager.driveLoadHistory());
+    public List<HistoryEntry<List<DriveLoad>>> getLoadHistory(@Auth UserConfiguration user, @QueryParam("fromDate") LocalDateTime fromDate, @QueryParam("toDate") LocalDateTime toDate) {
+        return DriveMetricsMapper.INSTANCE.mapHistory(historyManager.driveLoadHistory(fromDate, toDate));
     }
 
 }

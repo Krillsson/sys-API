@@ -2,6 +2,7 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.NetworkMetrics;
+import com.krillsson.sysapi.util.LocalDateTimeConverter;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.After;
 import org.junit.Before;
@@ -27,6 +28,7 @@ public class NetworkInterfacesResourceTest {
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
             .addResource(new NetworkInterfacesResource(provider, historyManager))
+            .addProvider(LocalDateTimeConverter.class)
             .build();
     private com.krillsson.sysapi.core.domain.network.NetworkInterface networkInterfaceData;
 

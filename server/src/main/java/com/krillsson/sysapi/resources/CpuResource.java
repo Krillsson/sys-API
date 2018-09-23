@@ -35,6 +35,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -69,8 +70,8 @@ public class CpuResource {
     @GET
     @Path("load/history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<HistoryEntry<com.krillsson.sysapi.dto.cpu.CpuLoad>> getLoadHistory(@Auth UserConfiguration user) {
-        return CpuInfoMapper.INSTANCE.mapHistory(historyManager.cpuLoadHistory());
+    public List<HistoryEntry<com.krillsson.sysapi.dto.cpu.CpuLoad>> getLoadHistory(@Auth UserConfiguration user, @QueryParam("fromDate") LocalDateTime fromDate, @QueryParam("toDate") LocalDateTime toDate) {
+        return CpuInfoMapper.INSTANCE.mapHistory(historyManager.cpuLoadHistory(fromDate, toDate));
     }
 
 }

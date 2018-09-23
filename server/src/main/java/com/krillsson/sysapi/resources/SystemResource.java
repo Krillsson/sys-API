@@ -35,10 +35,12 @@ import org.slf4j.Logger;
 import oshi.PlatformEnum;
 import oshi.software.os.OperatingSystem;
 
+import javax.annotation.Nullable;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -143,8 +145,8 @@ public class SystemResource {
     @GET
     @Path("load/history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<HistoryEntry<SystemLoad>> getLoadHistory(@Auth UserConfiguration user) {
-        return SystemInfoMapper.INSTANCE.mapHistory(historyManager.systemLoadHistory());
+    public List<HistoryEntry<SystemLoad>> getLoadHistory(@Auth UserConfiguration user, @QueryParam("fromDate") LocalDateTime fromDate, @QueryParam("toDate") LocalDateTime toDate) {
+        return SystemInfoMapper.INSTANCE.mapHistory(historyManager.systemLoadHistory(fromDate, toDate));
     }
 
     @GET

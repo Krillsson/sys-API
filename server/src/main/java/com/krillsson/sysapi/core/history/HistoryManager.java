@@ -6,7 +6,10 @@ import com.krillsson.sysapi.config.HistoryConfiguration;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
 import io.dropwizard.lifecycle.Managed;
 
+import javax.annotation.Nullable;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HistoryManager implements Managed {
     private final History<SystemLoad> history;
@@ -41,5 +44,18 @@ public class HistoryManager implements Managed {
 
     public List<HistoryEntry<SystemLoad>> getHistory() {
         return history.get();
+    }
+
+    public List<HistoryEntry<SystemLoad>> getHistoryLimitedToDates(@Nullable LocalDateTime fromDate, @Nullable LocalDateTime toDate) {
+        if (fromDate == null && toDate == null) {
+            return getHistory();
+        }
+        LocalDateTime from = fromDate != null ? fromDate : LocalDateTime.MIN;
+        LocalDateTime to = toDate != null ? toDate : LocalDateTime.MAX;
+
+        return history.get()
+                .stream()
+                .filter(e -> e.date.isAfter(from) && e.date.isBefore(to))
+                .collect(Collectors.toList());
     }
 }
