@@ -45,7 +45,7 @@ import com.krillsson.sysapi.dto.monitor.Monitor;
 import com.krillsson.sysapi.persistence.JsonFile;
 import com.krillsson.sysapi.resources.*;
 import com.krillsson.sysapi.util.EnvironmentUtils;
-import com.krillsson.sysapi.util.LocalDateTimeConverter;
+import com.krillsson.sysapi.util.ZonedDateTimeConverter;
 import com.krillsson.sysapi.util.Utils;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
@@ -121,7 +121,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         HardwareAbstractionLayer hal = systemInfo.getHardware();
         OperatingSystem os = systemInfo.getOperatingSystem();
 
-        environment.jersey().register(LocalDateTimeConverter.class);
+        environment.jersey().register(ZonedDateTimeConverter.class);
         environment.jersey().register(new AuthDynamicFeature(userBasicCredentialAuthFilter));
         environment.jersey().register(new AuthValueFactoryProvider.Binder(UserConfiguration.class));
         TickManager tickManager = new TickManager(Executors.newScheduledThreadPool(

@@ -2,13 +2,11 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.MemoryMetrics;
-import com.krillsson.sysapi.dto.memory.MemoryLoad;
-import com.krillsson.sysapi.util.LocalDateTimeConverter;
+import com.krillsson.sysapi.util.ZonedDateTimeConverter;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.After;
 import org.junit.ClassRule;
 import org.junit.Test;
-import oshi.hardware.GlobalMemory;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -24,7 +22,7 @@ public class MemoryResourceTest {
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
             .addResource(new MemoryResource(provider, historyManager))
-            .addProvider(LocalDateTimeConverter.class)
+            .addProvider(ZonedDateTimeConverter.class)
             .build();
 
     @Test

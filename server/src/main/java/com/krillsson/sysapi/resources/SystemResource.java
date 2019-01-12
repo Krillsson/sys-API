@@ -41,6 +41,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -145,7 +146,7 @@ public class SystemResource {
     @GET
     @Path("load/history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<HistoryEntry<SystemLoad>> getLoadHistory(@Auth UserConfiguration user, @QueryParam("fromDate") LocalDateTime fromDate, @QueryParam("toDate") LocalDateTime toDate) {
+    public List<HistoryEntry<SystemLoad>> getLoadHistory(@Auth UserConfiguration user, @QueryParam("fromDate") ZonedDateTime fromDate, @QueryParam("toDate") ZonedDateTime toDate) {
         return SystemInfoMapper.INSTANCE.mapHistory(historyManager.systemLoadHistory(fromDate, toDate));
     }
 

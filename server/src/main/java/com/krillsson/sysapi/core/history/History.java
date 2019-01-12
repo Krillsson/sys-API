@@ -5,6 +5,7 @@ import com.krillsson.sysapi.util.Clock;
 import org.slf4j.Logger;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -34,7 +35,7 @@ public class History<T> {
     }
 
     public void purge(int olderThan, ChronoUnit unit) {
-        LocalDateTime maxAge = clock.now().minus(olderThan, unit);
+        ZonedDateTime maxAge = clock.now().minus(olderThan, unit);
         Set<HistoryEntry> toBeRemoved = new HashSet<>();
         for (HistoryEntry historyEntry : history) {
             if (historyEntry.date.isBefore(maxAge)) {

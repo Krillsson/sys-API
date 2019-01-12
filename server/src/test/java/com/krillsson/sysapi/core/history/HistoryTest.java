@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
 import static org.hamcrest.Matchers.is;
@@ -27,7 +28,7 @@ public class HistoryTest {
     @Test
     public void happyPath() {
 
-        LocalDateTime twoMinutesAgo = LocalDateTime.now().minusMinutes(2);
+        ZonedDateTime twoMinutesAgo = ZonedDateTime.now().minusMinutes(2);
         clock.useFixedClockAt(twoMinutesAgo);
         history.record(new Object());
         clock.useFixedClockAt(twoMinutesAgo.plusMinutes(4));
@@ -39,7 +40,7 @@ public class HistoryTest {
 
     @Test
     public void purgingRemovesStuff() {
-        LocalDateTime twoMinutesAgo = LocalDateTime.now().minusMinutes(2);
+        ZonedDateTime twoMinutesAgo = ZonedDateTime.now().minusMinutes(2);
 
         System.out.println(LocalDateTime.now().minusDays(2).toString());
 

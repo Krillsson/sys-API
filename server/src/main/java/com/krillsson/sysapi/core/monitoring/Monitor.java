@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,7 +20,7 @@ public abstract class Monitor {
     //id to monitoring
     private final Duration inertia;
     private final Clock clock;
-    private LocalDateTime stateChangedAt = null;
+    private ZonedDateTime stateChangedAt = null;
     private State state = State.INSIDE;
     private UUID eventId;
 
@@ -96,7 +97,7 @@ public abstract class Monitor {
      */
     Optional<MonitorEvent> check(SystemLoad systemLoad) {
 
-        LocalDateTime now = clock.now();
+        ZonedDateTime now = clock.now();
 
         Double value = value(systemLoad);
         boolean outsideThreshold = isOutsideThreshold(value);

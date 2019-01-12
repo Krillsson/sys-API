@@ -12,6 +12,7 @@ import org.mapstruct.factory.Mappers;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -97,8 +98,8 @@ public interface MonitorMapper {
         return null;
     }
 
-    default java.util.Date map(LocalDateTime value) {
-        return Date.from(value.atZone(ZoneId.systemDefault()).toInstant());
+    default java.util.Date map(ZonedDateTime value) {
+        return Date.from(value.toInstant());
     }
 
     List<MonitorEvent> map(List<com.krillsson.sysapi.core.monitoring.MonitorEvent> events);
