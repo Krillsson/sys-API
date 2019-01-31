@@ -22,7 +22,7 @@ package com.krillsson.sysapi.core.metrics;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.krillsson.sysapi.config.SystemApiConfiguration;
-import com.krillsson.sysapi.core.TickManager;
+import com.krillsson.sysapi.util.Ticker;
 import com.krillsson.sysapi.core.metrics.cache.Cache;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory;
 import com.krillsson.sysapi.core.metrics.macos.MacOsMetricsProvider;
@@ -36,8 +36,6 @@ import oshi.PlatformEnum;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.software.os.OperatingSystem;
 
-import javax.swing.table.TableRowSorter;
-
 import static com.krillsson.sysapi.core.metrics.rasbian.RaspbianCpuMetrics.RASPBIAN_QUALIFIER;
 
 public class MetricsProvider {
@@ -48,17 +46,17 @@ public class MetricsProvider {
     private final PlatformEnum os;
     private final SystemApiConfiguration configuration;
     private final SpeedMeasurementManager speedMeasurementManager;
-    private final TickManager tickManager;
+    private final Ticker ticker;
     private final Utils utils;
     private boolean cache = true;
 
-    public MetricsProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, PlatformEnum os, SystemApiConfiguration configuration, SpeedMeasurementManager speedMeasurementManager, TickManager tickManager) {
+    public MetricsProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, PlatformEnum os, SystemApiConfiguration configuration, SpeedMeasurementManager speedMeasurementManager, Ticker ticker) {
         this.hal = hal;
         this.operatingSystem = operatingSystem;
         this.os = os;
         this.configuration = configuration;
         this.speedMeasurementManager = speedMeasurementManager;
-        this.tickManager = tickManager;
+        this.ticker = ticker;
         this.utils = new Utils();
     }
 
@@ -73,7 +71,7 @@ public class MetricsProvider {
                             operatingSystem,
                             speedMeasurementManager,
                             utils,
-                            tickManager
+                            ticker
                     );
                     if (windowsMetricsFactory.prerequisitesFilled()) {
                         windowsMetricsFactory.initialize();
@@ -89,7 +87,7 @@ public class MetricsProvider {
                             hal,
                             operatingSystem,
                             speedMeasurementManager,
-                            tickManager,
+                            ticker,
                             utils
                     );
                     if (raspbianMetricsFactory.prerequisitesFilled()) {
@@ -104,7 +102,7 @@ public class MetricsProvider {
                         hal,
                         operatingSystem,
                         speedMeasurementManager,
-                        tickManager,
+                        ticker,
                         utils
                 );
                 if (macOsMetricsProvider.prerequisitesFilled()) {
@@ -122,7 +120,7 @@ public class MetricsProvider {
                 hal,
                 operatingSystem,
                 speedMeasurementManager,
-                tickManager,
+                ticker,
                 utils
         );
         if (metricsFactory.prerequisitesFilled()) {

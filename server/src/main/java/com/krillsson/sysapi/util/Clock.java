@@ -22,5 +22,4 @@ public class Clock {
     private java.time.Clock getClock() {
         return clock;
     }
-
 }

@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
-import com.krillsson.sysapi.core.TickManager;
+import com.krillsson.sysapi.util.Ticker;
 import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.util.Utils;
@@ -23,7 +23,7 @@ public class DefaultCpuMetricsTest {
     OperatingSystem os;
     Utils utils;
     Sensors sensors;
-    TickManager tickManager;
+    Ticker ticker;
     DefaultCpuSensors cpuSensors;
 
     CentralProcessor centralProcessor;
@@ -34,7 +34,7 @@ public class DefaultCpuMetricsTest {
         os = mock(OperatingSystem.class);
         utils = mock(Utils.class);
         sensors = mock(Sensors.class);
-        tickManager = mock(TickManager.class);
+        ticker = mock(Ticker.class);
 
         centralProcessor = mock(CentralProcessor.class);
         when(hal.getSensors()).thenReturn(sensors);
@@ -42,7 +42,7 @@ public class DefaultCpuMetricsTest {
         when(sensors.getCpuVoltage()).thenReturn(1.35);
         when(sensors.getFanSpeeds()).thenReturn(new int[]{1200});
         cpuSensors = new DefaultCpuSensors(hal);
-        infoProvider = new DefaultCpuMetrics(hal, os, cpuSensors, utils, tickManager);
+        infoProvider = new DefaultCpuMetrics(hal, os, cpuSensors, utils, ticker);
 
     }
 

@@ -30,7 +30,7 @@ import com.krillsson.sysapi.auth.BasicAuthenticator;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.TickManager;
+import com.krillsson.sysapi.util.Ticker;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceMixin;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
 import com.krillsson.sysapi.core.history.HistoryMetricQueryEvent;
@@ -124,7 +124,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         environment.jersey().register(ZonedDateTimeConverter.class);
         environment.jersey().register(new AuthDynamicFeature(userBasicCredentialAuthFilter));
         environment.jersey().register(new AuthValueFactoryProvider.Binder(UserConfiguration.class));
-        TickManager tickManager = new TickManager(Executors.newScheduledThreadPool(
+        Ticker ticker = new Ticker(Executors.newScheduledThreadPool(
                 1,
                 new ThreadFactoryBuilder()
                         .setNameFormat("tick-mgr-%d")
@@ -144,10 +144,10 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
                 SystemInfo.getCurrentPlatformEnum(),
                 config,
                 speedMeasurementManager,
-                tickManager
+                ticker
         ).create();
         environment.lifecycle().manage(speedMeasurementManager);
-        environment.lifecycle().manage(tickManager);
+        environment.lifecycle().manage(ticker);
         ScheduledExecutorService queryScheduledExecutor = Executors.newScheduledThreadPool(
                 2,
                 new ThreadFactoryBuilder()

@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
-import com.krillsson.sysapi.core.TickManager;
+import com.krillsson.sysapi.util.Ticker;
 import com.krillsson.sysapi.core.domain.cpu.CoreLoad;
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
@@ -15,32 +15,32 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DefaultCpuMetrics implements CpuMetrics, TickManager.TickListener {
+public class DefaultCpuMetrics implements CpuMetrics, Ticker.TickListener {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DefaultCpuMetrics.class);
     private static final int SLEEP_SAMPLE_PERIOD = 1000;
     private final HardwareAbstractionLayer hal;
     private final OperatingSystem operatingSystem;
     private final Utils utils;
-    private final TickManager tickManager;
+    private final Ticker ticker;
     private final DefaultCpuSensors cpuSensors;
     private long[][] coreTicks = new long[0][0];
     private CpuLoad cpuLoad;
 
-    protected DefaultCpuMetrics(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, DefaultCpuSensors cpuSensors, Utils utils, TickManager tickManager) {
+    protected DefaultCpuMetrics(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, DefaultCpuSensors cpuSensors, Utils utils, Ticker ticker) {
         this.hal = hal;
         this.operatingSystem = operatingSystem;
         this.cpuSensors = cpuSensors;
         this.utils = utils;
-        this.tickManager = tickManager;
+        this.ticker = ticker;
     }
 
     void register() {
-        tickManager.register(this);
+        ticker.register(this);
     }
 
     void unregister(){
-        tickManager.unregister(this);
+        ticker.unregister(this);
     }
 
     @Override

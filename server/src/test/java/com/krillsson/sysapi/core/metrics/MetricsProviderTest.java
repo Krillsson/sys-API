@@ -3,7 +3,7 @@ package com.krillsson.sysapi.core.metrics;
 import com.krillsson.sysapi.config.CacheConfiguration;
 import com.krillsson.sysapi.config.MetricsConfiguration;
 import com.krillsson.sysapi.config.SystemApiConfiguration;
-import com.krillsson.sysapi.core.TickManager;
+import com.krillsson.sysapi.util.Ticker;
 import com.krillsson.sysapi.core.metrics.cache.Cache;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory;
 import com.krillsson.sysapi.core.metrics.rasbian.RaspbianMetricsFactory;
@@ -28,7 +28,7 @@ public class MetricsProviderTest {
     private oshi.software.os.OperatingSystem os;
     private SystemApiConfiguration config;
     private SpeedMeasurementManager measurementManager;
-    private TickManager tickManager;
+    private Ticker ticker;
     private MetricsConfiguration metricsConfig;
     private CacheConfiguration cacheConfig;
     private CentralProcessor centralProcessor;
@@ -46,7 +46,7 @@ public class MetricsProviderTest {
 
         when(metricsConfig.getCache()).thenReturn(cacheConfig);
         when(config.metrics()).thenReturn(metricsConfig);
-        tickManager = mock(TickManager.class);
+        ticker = mock(Ticker.class);
 
         measurementManager = mock(SpeedMeasurementManager.class);
         when(hal.getNetworkIFs()).thenReturn(new NetworkIF[0]);
@@ -56,7 +56,7 @@ public class MetricsProviderTest {
 
     @Test
     public void providingDefaultIfPlatformIsUnknown() throws Exception {
-        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.UNKNOWN, config, measurementManager, tickManager);
+        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.UNKNOWN, config, measurementManager, ticker);
         factory.setCache(false);
 
         MetricsFactory provider = factory.create();
@@ -67,7 +67,7 @@ public class MetricsProviderTest {
     @Test
     public void providerDetectsRaspbian() throws Exception {
         when(os.getFamily()).thenReturn("Raspbian GNU/Linux");
-        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.LINUX, config, measurementManager, tickManager);
+        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.LINUX, config, measurementManager, ticker);
         factory.setCache(false);
 
         MetricsFactory provider = factory.create();
@@ -78,7 +78,7 @@ public class MetricsProviderTest {
     @Test
     public void providerDetectsLinux() throws Exception {
         when(os.getFamily()).thenReturn("Debian GNU/Linux");
-        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.LINUX, config, measurementManager, tickManager);
+        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.LINUX, config, measurementManager, ticker);
         factory.setCache(false);
 
         MetricsFactory provider = factory.create();
@@ -89,7 +89,7 @@ public class MetricsProviderTest {
 
     @Test
     public void cachesByDefault() throws Exception {
-        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.UNKNOWN, config, measurementManager, tickManager);
+        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.UNKNOWN, config, measurementManager, ticker);
 
         MetricsFactory provider = factory.create();
         assertNotNull(provider);

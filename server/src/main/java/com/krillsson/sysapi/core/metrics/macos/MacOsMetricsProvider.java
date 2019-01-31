@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.core.metrics.macos;
 
-import com.krillsson.sysapi.core.TickManager;
+import com.krillsson.sysapi.util.Ticker;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory;
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import com.krillsson.sysapi.util.Utils;
@@ -13,8 +13,8 @@ public class MacOsMetricsProvider extends DefaultMetricsFactory {
     private final OperatingSystem operatingSystem;
     private final SpeedMeasurementManager speedMeasurementManager;
 
-    public MacOsMetricsProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, SpeedMeasurementManager speedMeasurementManager, TickManager tickManager, Utils utils) {
-        super(hal, operatingSystem, speedMeasurementManager, tickManager, utils);
+    public MacOsMetricsProvider(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, SpeedMeasurementManager speedMeasurementManager, Ticker ticker, Utils utils) {
+        super(hal, operatingSystem, speedMeasurementManager, ticker, utils);
         this.hal = hal;
         this.operatingSystem = operatingSystem;
         this.speedMeasurementManager = speedMeasurementManager;
