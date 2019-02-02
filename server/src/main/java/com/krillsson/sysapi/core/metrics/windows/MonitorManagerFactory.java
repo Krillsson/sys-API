@@ -23,7 +23,7 @@ public class MonitorManagerFactory {
     public boolean prerequisitesFilled() {
         return OHM_JNI_WRAPPER_DLL.exists() &&
                 OPEN_HARDWARE_MONITOR_LIB_DLL.exists() &&
-                OHM_JNI_WRAPPER_DLL.exists();
+                OHM_JNI_WRAPPER_J4N_DLL.exists();
     }
 
     public DelegatingMonitorManager getMonitorManager() {

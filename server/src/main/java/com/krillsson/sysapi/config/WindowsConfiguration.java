@@ -20,13 +20,13 @@
  */
 package com.krillsson.sysapi.config;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
 
 public class WindowsConfiguration {
 
-    @NotNull
     @JsonProperty
     private boolean enableOhmJniWrapper;
 

@@ -45,7 +45,7 @@ public class BasicAuthenticator implements Authenticator<BasicCredentials, UserC
                 userConfiguration.getPassword().equals(credentials.getPassword())) {
             return Optional.of(userConfiguration);
         }
-        LOGGER.warn("Unauthorized access attempt: " + credentials.toString());
+        LOGGER.warn("Unauthorized access attempt: {}",  credentials.toString());
         return Optional.empty();
     }
 }

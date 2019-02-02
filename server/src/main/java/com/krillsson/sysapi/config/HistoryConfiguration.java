@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.config;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.Valid;
@@ -8,15 +9,14 @@ import java.util.concurrent.TimeUnit;
 
 public class HistoryConfiguration {
     @Valid
-    @NotNull
     @JsonProperty
     private HistoryPurgingConfiguration purging;
+
     @Valid
-    @NotNull
     @JsonProperty
     private long interval;
+
     @Valid
-    @NotNull
     @JsonProperty
     private TimeUnit unit;
 

@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.config;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.Valid;
@@ -8,11 +9,9 @@ import java.util.concurrent.TimeUnit;
 
 public class MonitorConfiguration {
     @Valid
-    @NotNull
     @JsonProperty
     private long interval;
     @Valid
-    @NotNull
     @JsonProperty
     private TimeUnit unit;
 

@@ -20,17 +20,16 @@
  */
 package com.krillsson.sysapi.config;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
 
 public class UserConfiguration implements Principal {
-    @NotNull
     @JsonProperty
     private String username;
 
-    @NotNull
     @JsonProperty
     private String password;
 
