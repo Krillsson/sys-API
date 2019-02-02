@@ -9,8 +9,6 @@ public class CentralProcessor {
 
     private long systemUptime;
 
-    private String systemSerialNumber;
-
     private String name;
 
     private double systemLoadAverage;
@@ -43,19 +41,17 @@ public class CentralProcessor {
      * @param vendor
      * @param physicalProcessorCount
      * @param logicalProcessorCount
-     * @param systemSerialNumber
      * @param cpu64bit
      * @param family
      * @param name
      * @param systemUptime
      * @param identifier
      */
-    public CentralProcessor(int logicalProcessorCount, int physicalProcessorCount, long systemUptime, String systemSerialNumber, String name, double systemLoadAverage, String identifier, String family, String vendor, long vendorFreq, String model, String stepping, boolean cpu64bit) {
+    public CentralProcessor(int logicalProcessorCount, int physicalProcessorCount, long systemUptime, String name, double systemLoadAverage, String identifier, String family, String vendor, long vendorFreq, String model, String stepping, boolean cpu64bit) {
         super();
         this.logicalProcessorCount = logicalProcessorCount;
         this.physicalProcessorCount = physicalProcessorCount;
         this.systemUptime = systemUptime;
-        this.systemSerialNumber = systemSerialNumber;
         this.name = name;
         this.systemLoadAverage = systemLoadAverage;
         this.identifier = identifier;
@@ -87,7 +83,6 @@ public class CentralProcessor {
         this.physicalProcessorCount = physicalProcessorCount;
     }
 
-
     public long getSystemUptime() {
         return systemUptime;
     }
@@ -95,16 +90,6 @@ public class CentralProcessor {
 
     public void setSystemUptime(long systemUptime) {
         this.systemUptime = systemUptime;
-    }
-
-
-    public String getSystemSerialNumber() {
-        return systemSerialNumber;
-    }
-
-
-    public void setSystemSerialNumber(String systemSerialNumber) {
-        this.systemSerialNumber = systemSerialNumber;
     }
 
 
