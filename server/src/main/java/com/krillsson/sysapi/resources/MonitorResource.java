@@ -2,9 +2,11 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
+import com.krillsson.sysapi.core.domain.network.NetworkInterfacesMapper;
 import com.krillsson.sysapi.core.monitoring.MonitorManager;
 import com.krillsson.sysapi.core.monitoring.MonitorMapper;
 import com.krillsson.sysapi.dto.monitor.Monitor;
+import com.krillsson.sysapi.dto.monitor.MonitorCreated;
 import io.dropwizard.auth.Auth;
 
 import javax.annotation.security.RolesAllowed;
@@ -32,9 +34,16 @@ public class MonitorResource {
         return MonitorMapper.INSTANCE.mapList(monitorManager.monitors());
     }
 
+    @GET
+    @Path("{id}")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public Monitor monitorById(@Auth UserConfiguration user, @PathParam("id") String id) {
+        return MonitorMapper.INSTANCE.map(monitorManager.monitorById(id).orElseThrow(() -> new WebApplicationException(NOT_FOUND)));
+    }
+
     @POST
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public Object createMonitor(@Auth UserConfiguration user, Monitor monitor) {
+    public MonitorCreated createMonitor(@Auth UserConfiguration user, Monitor monitor) {
 
         com.krillsson.sysapi.core.monitoring.Monitor monitorToBeCreated = Optional.ofNullable(MonitorMapper.INSTANCE.map(
                 monitor)).orElseThrow(() -> new WebApplicationException(BAD_REQUEST));
@@ -47,9 +56,7 @@ public class MonitorResource {
         }
         String createdId = monitorManager.addMonitor(monitorToBeCreated);
 
-        return new Object(){
-            public String id = createdId;
-        };
+        return new MonitorCreated(createdId);
     }
 
     @DELETE

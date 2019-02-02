@@ -111,4 +111,8 @@ public class MonitorManager implements Managed {
         }
         return status;
     }
+
+    public Optional<Monitor> monitorById(String id) {
+        return Optional.ofNullable(activeMonitors.get(id));
+    }
 }
