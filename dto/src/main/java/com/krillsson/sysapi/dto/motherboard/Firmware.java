@@ -1,7 +1,5 @@
 package com.krillsson.sysapi.dto.motherboard;
 
-import java.util.Date;
-
 public class Firmware {
 
 
@@ -13,7 +11,7 @@ public class Firmware {
 
     private String version;
 
-    private Date releaseDate = null;
+    private String releaseDate = null;
 
     /**
      * No args constructor for use in serialization
@@ -28,7 +26,7 @@ public class Firmware {
      * @param name
      * @param version
      */
-    public Firmware(String manufacturer, String name, String description, String version, Date releaseDate) {
+    public Firmware(String manufacturer, String name, String description, String version, String releaseDate) {
         super();
         this.manufacturer = manufacturer;
         this.name = name;
@@ -78,12 +76,12 @@ public class Firmware {
     }
 
 
-    public Date getReleaseDate() {
+    public String getReleaseDate() {
         return releaseDate;
     }
 
 
-    public void setReleaseDate(Date releaseDate) {
+    public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
 

@@ -1,18 +1,16 @@
 package com.krillsson.sysapi.dto.monitor;
 
-import java.util.Date;
-
 public class MonitorEvent {
 
     private final String id;
     private final String monitorId;
-    private final Date time;
+    private final String time;
     private final MonitorType type;
     private final MonitorStatus monitorStatus;
     private final double threshold;
     private final double value;
 
-    public MonitorEvent(String id, String monitorId, Date time, MonitorStatus monitorStatus, MonitorType type, Double threshold, Double value) {
+    public MonitorEvent(String id, String monitorId, String time, MonitorStatus monitorStatus, MonitorType type, Double threshold, Double value) {
         this.id = id;
         this.time = time;
         this.monitorId = monitorId;
@@ -30,7 +28,7 @@ public class MonitorEvent {
         return monitorId;
     }
 
-    public Date getTime() {
+    public String getTime() {
         return time;
     }
 

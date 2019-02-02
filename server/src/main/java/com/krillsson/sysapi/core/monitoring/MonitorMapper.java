@@ -13,6 +13,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -98,8 +99,8 @@ public interface MonitorMapper {
         return null;
     }
 
-    default java.util.Date map(ZonedDateTime value) {
-        return Date.from(value.toInstant());
+    default String map(ZonedDateTime value) {
+        return value.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     }
 
     List<MonitorEvent> map(List<com.krillsson.sysapi.core.monitoring.MonitorEvent> events);

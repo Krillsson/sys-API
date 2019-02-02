@@ -30,7 +30,7 @@ public class ZonedDateTimeConverter implements ParamConverterProvider {
 
             @Override
             public String toString(final T value) {
-                return ((ZonedDateTime) value).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                return ((ZonedDateTime) value).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
             }
         };
     }
