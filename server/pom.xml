@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.krillsson</groupId>
         <artifactId>sys-api</artifactId>
-        <version>0.11-SNAPSHOT</version>
+        <version>0.11</version>
     </parent>
 
     <properties>
@@ -64,7 +64,7 @@
         <dependency>
             <groupId>com.krillsson</groupId>
             <artifactId>sys-api-dto</artifactId>
-            <version>0.11-SNAPSHOT</version>
+            <version>0.11</version>
         </dependency>
         <dependency>
             <groupId>javax.xml.bind</groupId>
