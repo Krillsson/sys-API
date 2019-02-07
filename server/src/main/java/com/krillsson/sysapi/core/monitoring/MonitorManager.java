@@ -8,6 +8,7 @@ import io.dropwizard.lifecycle.Managed;
 import org.slf4j.Logger;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MonitorManager implements Managed {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(MonitorManager.class);
@@ -114,5 +115,13 @@ public class MonitorManager implements Managed {
 
     public Optional<Monitor> monitorById(String id) {
         return Optional.ofNullable(activeMonitors.get(id));
+    }
+
+    public Optional<List<MonitorEvent>> eventsForMonitorWithId(String id){
+        if(activeMonitors.get(id) != null){
+            return Optional.of(events.stream().filter(event -> event.getId().toString().equals(id)).collect(Collectors.toList()));
+        }else {
+            return Optional.empty();
+        }
     }
 }

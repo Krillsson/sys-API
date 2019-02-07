@@ -30,6 +30,7 @@ import com.krillsson.sysapi.auth.BasicAuthenticator;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.SystemApiConfiguration;
 import com.krillsson.sysapi.config.UserConfiguration;
+import com.krillsson.sysapi.dto.monitor.MonitorEvent;
 import com.krillsson.sysapi.util.Ticker;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceMixin;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
@@ -62,7 +63,9 @@ import oshi.software.os.OperatingSystem;
 
 import java.net.NetworkInterface;
 import java.time.Clock;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -185,7 +188,7 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
         MetricsHistoryManager historyManager = new MetricsHistoryManager(config.metrics().getHistory(), eventBus);
         environment.lifecycle().manage(historyManager);
 
-        JsonFile<HashMap<String, Monitor>> persistentMonitors =
+        JsonFile<HashMap<String, Monitor>> persistedMonitors =
                 new JsonFile<HashMap<String, Monitor>>(
                         "monitors.json",
                         JsonFile.<com.krillsson.sysapi.dto.monitor.Monitor>mapTypeReference(),
@@ -193,7 +196,15 @@ public class SystemApiApplication extends Application<SystemApiConfiguration> {
                         environment.getObjectMapper()
                 );
 
-        MonitorManager monitorManager = new MonitorManager(eventBus, persistentMonitors, provider);
+        JsonFile<List<MonitorEvent>> persistedEvents;
+        persistedEvents = new JsonFile<List<MonitorEvent>>(
+                "events.json",
+                JsonFile.<Monitor>mapTypeReference(),
+                new ArrayList<>(),
+                environment.getObjectMapper()
+        );
+
+        MonitorManager monitorManager = new MonitorManager(eventBus, persistedMonitors, provider);
         environment.lifecycle().manage(monitorManager);
 
         environment.jersey().register(new SystemResource(os,
