@@ -1,13 +1,12 @@
 package com.krillsson.sysapi.core.monitoring;
 
 
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public class MonitorEvent {
     private final UUID id;
-    private final ZonedDateTime time;
+    private final OffsetDateTime time;
     private final String monitorId;
     private final MonitorStatus monitorStatus;
     private final Monitor.MonitorType monitorType;
@@ -19,7 +18,7 @@ public class MonitorEvent {
         STOP,
     }
 
-    public MonitorEvent(UUID id, String monitorId, ZonedDateTime time, MonitorStatus monitorStatus, Monitor.MonitorType monitorType, Double threshold, Double value) {
+    public MonitorEvent(UUID id, String monitorId, OffsetDateTime time, MonitorStatus monitorStatus, Monitor.MonitorType monitorType, Double threshold, Double value) {
         this.id = id;
         this.time = time;
         this.monitorId = monitorId;
@@ -37,7 +36,7 @@ public class MonitorEvent {
         return monitorId;
     }
 
-    public ZonedDateTime getTime() {
+    public OffsetDateTime getTime() {
         return time;
     }
 

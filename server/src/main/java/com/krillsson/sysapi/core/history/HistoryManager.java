@@ -7,9 +7,7 @@ import com.krillsson.sysapi.core.domain.system.SystemLoad;
 import io.dropwizard.lifecycle.Managed;
 
 import javax.annotation.Nullable;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,12 +46,12 @@ public class HistoryManager implements Managed {
         return history.get();
     }
 
-    public List<HistoryEntry<SystemLoad>> getHistoryLimitedToDates(@Nullable ZonedDateTime fromDate, @Nullable ZonedDateTime toDate) {
+    public List<HistoryEntry<SystemLoad>> getHistoryLimitedToDates(@Nullable OffsetDateTime fromDate, @Nullable OffsetDateTime toDate) {
         if (fromDate == null && toDate == null) {
             return getHistory();
         }
-        ZonedDateTime from = fromDate != null ? fromDate : ZonedDateTime.of(LocalDateTime.MIN, ZoneId.systemDefault());
-        ZonedDateTime to = toDate != null ? toDate : ZonedDateTime.of(LocalDateTime.MAX, ZoneId.systemDefault());
+        OffsetDateTime from = fromDate != null ? fromDate : OffsetDateTime.MIN;
+        OffsetDateTime to = toDate != null ? toDate : OffsetDateTime.MAX;
 
         return history.get()
                 .stream()

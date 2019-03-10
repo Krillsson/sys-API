@@ -6,8 +6,7 @@ import com.krillsson.sysapi.util.Clock;
 import org.slf4j.Logger;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,7 +19,7 @@ public abstract class Monitor {
     //id to monitoring
     private final Duration inertia;
     private final Clock clock;
-    private ZonedDateTime stateChangedAt = null;
+    private OffsetDateTime stateChangedAt = null;
     private State state = State.INSIDE;
     private UUID eventId;
 
@@ -97,7 +96,7 @@ public abstract class Monitor {
      */
     Optional<MonitorEvent> check(SystemLoad systemLoad) {
 
-        ZonedDateTime now = clock.now();
+        OffsetDateTime now = clock.now();
 
         Double value = value(systemLoad);
         boolean outsideThreshold = isOutsideThreshold(value);

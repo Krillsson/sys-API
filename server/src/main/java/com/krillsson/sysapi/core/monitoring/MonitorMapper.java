@@ -10,11 +10,8 @@ import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 
 @Mapper(
@@ -99,7 +96,7 @@ public interface MonitorMapper {
         return null;
     }
 
-    default String map(ZonedDateTime value) {
+    default String map(OffsetDateTime value) {
         return value.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     }
 

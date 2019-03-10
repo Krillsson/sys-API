@@ -4,7 +4,7 @@ import com.krillsson.sysapi.core.domain.drives.Drive;
 import com.krillsson.sysapi.core.domain.drives.OsPartition;
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.DriveMetrics;
-import com.krillsson.sysapi.util.ZonedDateTimeConverter;
+import com.krillsson.sysapi.util.OffsetDateTimeConverter;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.*;
 
@@ -30,7 +30,7 @@ public class DrivesResourceTest {
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
             .addResource(new DrivesResource(provider, historyManager))
-            .addProvider(ZonedDateTimeConverter.class)
+            .addProvider(OffsetDateTimeConverter.class)
             .build();
     private Drive drive;
 

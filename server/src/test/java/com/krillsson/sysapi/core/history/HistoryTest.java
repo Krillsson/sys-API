@@ -4,8 +4,7 @@ import com.krillsson.sysapi.util.Clock;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 
 import static org.hamcrest.Matchers.is;
@@ -28,7 +27,7 @@ public class HistoryTest {
     @Test
     public void happyPath() {
 
-        ZonedDateTime twoMinutesAgo = ZonedDateTime.now().minusMinutes(2);
+        OffsetDateTime twoMinutesAgo = OffsetDateTime.now().minusMinutes(2);
         clock.useFixedClockAt(twoMinutesAgo);
         history.record(new Object());
         clock.useFixedClockAt(twoMinutesAgo.plusMinutes(4));
@@ -40,12 +39,12 @@ public class HistoryTest {
 
     @Test
     public void purgingRemovesStuff() {
-        ZonedDateTime twoMinutesAgo = ZonedDateTime.now().minusMinutes(2);
+        OffsetDateTime twoMinutesAgo = OffsetDateTime.now().minusMinutes(2);
 
-        System.out.println(LocalDateTime.now().minusDays(2).toString());
+        System.out.println(OffsetDateTime.now().minusDays(2).toString());
 
 
-        System.out.println(LocalDateTime.now().plusHours(2).toString());
+        System.out.println(OffsetDateTime.now().plusHours(2).toString());
         clock.useFixedClockAt(twoMinutesAgo);
         history.record(new Object());
         clock.useFixedClockAt(twoMinutesAgo.plusMinutes(4));

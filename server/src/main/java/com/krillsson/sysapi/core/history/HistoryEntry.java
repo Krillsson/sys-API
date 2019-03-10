@@ -1,13 +1,12 @@
 package com.krillsson.sysapi.core.history;
 
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 public class HistoryEntry<T> {
-    public final ZonedDateTime date;
+    public final OffsetDateTime date;
     public final T value;
 
-    public HistoryEntry(ZonedDateTime date, T value) {
+    public HistoryEntry(OffsetDateTime date, T value) {
         this.date = date;
         this.value = value;
     }

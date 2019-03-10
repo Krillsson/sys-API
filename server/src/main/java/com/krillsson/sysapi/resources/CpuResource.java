@@ -24,8 +24,6 @@ package com.krillsson.sysapi.resources;
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
 import com.krillsson.sysapi.core.domain.cpu.CpuInfoMapper;
-import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
-import com.krillsson.sysapi.core.history.HistoryManager;
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.CpuMetrics;
 import com.krillsson.sysapi.dto.history.HistoryEntry;
@@ -37,10 +35,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Path("cpu")
 @Produces(MediaType.APPLICATION_JSON)
@@ -71,7 +67,7 @@ public class CpuResource {
     @GET
     @Path("load/history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<HistoryEntry<com.krillsson.sysapi.dto.cpu.CpuLoad>> getLoadHistory(@Auth UserConfiguration user, @QueryParam("fromDate") ZonedDateTime fromDate, @QueryParam("toDate") ZonedDateTime toDate) {
+    public List<HistoryEntry<com.krillsson.sysapi.dto.cpu.CpuLoad>> getLoadHistory(@Auth UserConfiguration user, @QueryParam("fromDate") OffsetDateTime fromDate, @QueryParam("toDate") OffsetDateTime toDate) {
         return CpuInfoMapper.INSTANCE.mapHistory(historyManager.cpuLoadHistory(fromDate, toDate));
     }
 

@@ -5,7 +5,7 @@ import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad;
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.GpuMetrics;
-import com.krillsson.sysapi.util.ZonedDateTimeConverter;
+import com.krillsson.sysapi.util.OffsetDateTimeConverter;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.After;
 import org.junit.Before;
@@ -28,7 +28,7 @@ public class GpuResourceTest {
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
             .addResource(new GpuResource(provider, historyManager))
-            .addProvider(ZonedDateTimeConverter.class)
+            .addProvider(OffsetDateTimeConverter.class)
             .build();
     Gpu gpu;
     GpuHealth health;
