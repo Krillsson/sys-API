@@ -151,7 +151,7 @@ public class DefaultDriveProvider implements DriveMetrics {
         Map<String, HWPartition> hwPartitions = partitions.stream().filter(e -> !StringUtils.isEmpty(e.getUuid()))
                 .collect(Collectors.toMap(f -> f.getUuid().toUpperCase(), f -> f));
 
-        Map<String, OSFileStore> osStores = fileStores.stream()
+        Map<String, OSFileStore> osStores = fileStores.stream().filter(e -> !StringUtils.isEmpty(e.getUUID()))
                 .collect(Collectors.toMap(f -> f.getUUID().toUpperCase(), f -> f));
 
         Optional<String> matchingUuid = pickMostSuitableOsPartition(hwPartitions, osStores);
