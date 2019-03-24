@@ -6,16 +6,16 @@ import javax.ws.rs.ext.ParamConverterProvider;
 import javax.ws.rs.ext.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Provider
 @Singleton
-public class ZonedDateTimeConverter implements ParamConverterProvider {
+public class OffsetDateTimeConverter implements ParamConverterProvider {
 
     @Override public <T> ParamConverter<T> getConverter(Class<T> rawType, Type genericType, Annotation[] annotations) {
 
-        if (!rawType.isAssignableFrom(ZonedDateTime.class)) {
+        if (!rawType.isAssignableFrom(OffsetDateTime.class)) {
             return null;
         }
         return new ParamConverter<T>() {
@@ -25,12 +25,12 @@ public class ZonedDateTimeConverter implements ParamConverterProvider {
                 if (value == null) {
                     throw new IllegalArgumentException("value may not be null");
                 }
-                return (T) ZonedDateTime.parse(value);
+                return (T) OffsetDateTime.parse(value);
             }
 
             @Override
             public String toString(final T value) {
-                return ((ZonedDateTime) value).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                return ((OffsetDateTime) value).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
             }
         };
     }

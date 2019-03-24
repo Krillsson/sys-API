@@ -3,11 +3,13 @@ package com.krillsson.sysapi.persistence;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.krillsson.sysapi.dto.monitor.Monitor;
+import com.krillsson.sysapi.dto.monitor.MonitorEvent;
 import org.slf4j.Logger;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 public class JsonFile<T> {
 
@@ -21,6 +23,11 @@ public class JsonFile<T> {
 
     public static TypeReference<HashMap<String, Monitor>> mapTypeReference() {
         return new TypeReference<HashMap<String, Monitor>>() {
+        };
+    }
+
+    public static TypeReference<List<MonitorEvent>> listTypeReference() {
+        return new TypeReference<List<MonitorEvent>>() {
         };
     }
 

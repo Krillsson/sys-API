@@ -31,8 +31,7 @@ import io.dropwizard.auth.Auth;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
@@ -81,7 +80,7 @@ public class NetworkInterfacesResource {
     @GET
     @Path("loads/history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<HistoryEntry<List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad>>> getLoadHistory(@Auth UserConfiguration user, @QueryParam("fromDate") ZonedDateTime fromDate, @QueryParam("toDate") ZonedDateTime toDate) {
+    public List<HistoryEntry<List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad>>> getLoadHistory(@Auth UserConfiguration user, @QueryParam("fromDate") OffsetDateTime fromDate, @QueryParam("toDate") OffsetDateTime toDate) {
         return NetworkInterfacesMapper.INSTANCE.mapHistory(historyManager.networkInterfaceLoadHistory(fromDate, toDate));
     }
 

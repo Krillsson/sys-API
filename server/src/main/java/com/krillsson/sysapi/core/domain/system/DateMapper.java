@@ -4,7 +4,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.ERROR
@@ -12,8 +13,8 @@ import java.time.LocalDateTime;
 public interface DateMapper {
     DateMapper INSTANCE = Mappers.getMapper(DateMapper.class);
 
-    default String map(LocalDateTime localDateTime) {
-        return localDateTime.toString();
+    default String map(OffsetDateTime localDateTime) {
+        return localDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     }
 
 }

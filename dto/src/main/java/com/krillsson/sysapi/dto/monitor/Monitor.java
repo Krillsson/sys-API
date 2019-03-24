@@ -48,4 +48,14 @@ public class Monitor {
     public void setThreshold(Double threshold) {
         this.threshold = threshold;
     }
+
+    @Override
+    public String toString() {
+        return "Monitor{" +
+                "id='" + id + '\'' +
+                ", inertiaInSeconds=" + inertiaInSeconds +
+                ", type=" + type +
+                ", threshold=" + threshold +
+                '}';
+    }
 }

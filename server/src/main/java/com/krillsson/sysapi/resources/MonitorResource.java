@@ -2,11 +2,11 @@ package com.krillsson.sysapi.resources;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.domain.network.NetworkInterfacesMapper;
 import com.krillsson.sysapi.core.monitoring.MonitorManager;
 import com.krillsson.sysapi.core.monitoring.MonitorMapper;
 import com.krillsson.sysapi.dto.monitor.Monitor;
 import com.krillsson.sysapi.dto.monitor.MonitorCreated;
+import com.krillsson.sysapi.dto.monitor.MonitorEvent;
 import io.dropwizard.auth.Auth;
 
 import javax.annotation.security.RolesAllowed;
@@ -38,7 +38,16 @@ public class MonitorResource {
     @Path("{id}")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public Monitor monitorById(@Auth UserConfiguration user, @PathParam("id") String id) {
-        return MonitorMapper.INSTANCE.map(monitorManager.monitorById(id).orElseThrow(() -> new WebApplicationException(NOT_FOUND)));
+        return MonitorMapper.INSTANCE.map(monitorManager.monitorById(id)
+                                                  .orElseThrow(() -> new WebApplicationException(NOT_FOUND)));
+    }
+
+    @GET
+    @Path("{id}/events")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public List<MonitorEvent> getEventForMonitorId(@Auth UserConfiguration user, @PathParam("id") String monitorId) {
+        return MonitorMapper.INSTANCE.map(monitorManager.eventsForMonitorWithId(monitorId)
+                                                  .orElseThrow(() -> new WebApplicationException(NOT_FOUND)));
     }
 
     @POST
