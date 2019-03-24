@@ -209,4 +209,17 @@ public abstract class Monitor {
     State getState() {
         return state;
     }
+
+    @Override
+    public String toString() {
+        return "Monitor{" +
+                "id='" + id + '\'' +
+                ", threshold=" + threshold +
+                ", inertia=" + inertia +
+                ", clock=" + clock +
+                ", stateChangedAt=" + stateChangedAt +
+                ", state=" + state +
+                ", eventId=" + eventId +
+                '}';
+    }
 }

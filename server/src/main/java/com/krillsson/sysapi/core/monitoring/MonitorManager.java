@@ -119,7 +119,9 @@ public class MonitorManager implements Managed {
 
     public Optional<List<MonitorEvent>> eventsForMonitorWithId(String id){
         if(activeMonitors.get(id) != null){
-            return Optional.of(events.stream().filter(event -> event.getId().toString().equals(id)).collect(Collectors.toList()));
+            return Optional.of(events.stream()
+                                       .filter(event -> event.getMonitorId().equalsIgnoreCase(id))
+                                       .collect(Collectors.toList()));
         }else {
             return Optional.empty();
         }
