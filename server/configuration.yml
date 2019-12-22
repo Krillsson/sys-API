@@ -7,7 +7,7 @@ metricsConfig:
     unit: SECONDS
   history:
     interval: 30
-    unit: MINUTES
+    unit: SECONDS
     purging:
       olderThan: 3
       unit: DAYS

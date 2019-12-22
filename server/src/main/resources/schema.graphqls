@@ -1,0 +1,169 @@
+type Version { version: String codeName: String buildNumber: String }
+
+type OperatingSystem { manufacturer: String family: String version: Version }
+
+type CentralProcessor { logicalProcessorCount: Int
+    physicalProcessorCount: Int
+    systemUptime: Int
+    name: String
+    systemLoadAverage: Float
+    identifier: String
+    family: String
+    vendor: String
+    vendorFreq: Int
+    model: String
+    stepping: String
+    cpu64bit: Boolean }
+
+type CpuHealth { voltage: Int
+    fanRpm: Int
+    fanPercent: Int
+    temperatures: [Float ] }
+
+type CoreLoads { user: Float
+    nice: Int
+    sys: Int
+    idle: Float
+    ioWait: Int
+    irq: Int
+    softIrq: Int
+    steal: Int }
+
+type DiskOsPartition { identification: String
+    name: String
+    type: String
+    uuid: String
+    size: Int
+    major: Int
+    minor: Int
+    mountPoint: String
+    volume: String
+    logicalVolume: String
+    mount: String
+    description: String
+    usableSpace: Int
+    totalSpace: Int }
+
+type Partitions { identification: String
+    name: String
+    type: String
+    uuid: String
+    size: Int
+    major: Int
+    minor: Int
+    mountPoint: String }
+
+type Drive { model: String
+    name: String
+    serial: String
+    sizeBytes: Int
+    diskOsPartition: DiskOsPartition
+    partitions: [Partitions ] }
+
+type DriveLoad { name: String
+    serial: String
+    health: DriveHealth
+    speed: DriveSpeed
+    values: DriveMetrics }
+
+
+type DriveHealth { temperature: Int healthData: [String ] }
+
+type DriveSpeed { readBytesPerSecond: Int writeBytesPerSecond: Int }
+
+type DriveMetrics { usableSpace: Int
+    totalSpace: Int
+    openFileDescriptors: Int
+    maxFileDescriptors: Int
+    reads: Int
+    readBytes: Int
+    writes: Int
+    writeBytes: Int }
+
+type UsbDevices { name: String
+    vendor: String
+    vendorId: String
+    productId: String
+    serialNumber: String
+    connectedDevices: [String ] }
+
+type Baseboard { manufacturer: String
+    model: String
+    version: String
+    serialNumber: String }
+
+type Firmware { manufacturer: String
+    name: String
+    description: String
+    version: String
+    releaseDate: String }
+
+type ComputerSystem { manufacturer: String
+    model: String
+    serialNumber: String
+    baseboard: Baseboard
+    firmware: Firmware }
+
+type NetworkInterface { name: String
+    displayName: String
+    mac: String
+    speed: Int
+    mtu: Int
+    loopback: Boolean
+    ipv6: [String ]
+    ipv4: [String ] }
+
+type NetworkInterfaceSpeed { receiveBytesPerSecond: Int sendBytesPerSecond: Int }
+
+type NetworkInterfaceMetrics { speed: Int
+    bytesReceived: Int
+    bytesSent: Int
+    packetsReceived: Int
+    packetsSent: Int
+    inErrors: Int
+    outErrors: Int }
+
+type NetworkInterfaceLoad { name: String
+    up: Boolean
+    speed: NetworkInterfaceSpeed
+    values: NetworkInterfaceMetrics }
+
+
+type NetworkInterfaceMetrics { name: String
+    serial: String
+    health: Health
+    speed: Speed
+    values: Values }
+
+type Processes { name: String
+    path: String
+    commandLine: String
+    user: String
+    userID: String
+    group: String
+    groupID: String
+    state: String
+    processID: Int
+    parentProcessID: Int
+    threadCount: Int
+    priority: Int
+    virtualSize: Int
+    residentSetSize: Int
+    memoryPercent: Float
+    kernelTime: Int
+    userTime: Int
+    upTime: Int
+    cpuPercent: Float
+    startTime: Int
+    bytesRead: Int
+    bytesWritten: Int }
+
+type Memory { numberOfProcesses: Int
+    swapTotal: Int
+    swapUsed: Int
+    total: Int
+    available: Int }
+
+type HistoryEntry { date: String value: CoreLoads   }
+
+
