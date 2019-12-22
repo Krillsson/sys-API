@@ -10,7 +10,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>gui</module>
         <module>server</module>
         <module>dto</module>
     </modules>
@@ -37,6 +36,10 @@
             <id>net.sf.jni4net</id>
             <name>jni4net release repository</name>
             <url>http://jni4net.googlecode.com/svn/mvnrepo</url>
+        </repository>
+        <repository>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com/</url>
         </repository>
     </repositories>
     <build>
