@@ -21,12 +21,17 @@
 package com.krillsson.sysapi.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.smoketurner.dropwizard.graphql.GraphQLFactory;
 import io.dropwizard.Configuration;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 public class SystemApiConfiguration extends Configuration {
+
+    @Valid
+    @NotNull
+    public final GraphQLFactory graphql = new GraphQLFactory();
 
     @Valid
     @NotNull
@@ -60,5 +65,10 @@ public class SystemApiConfiguration extends Configuration {
 
     public boolean forwardHttps() {
         return forwardHttps;
+    }
+
+    @JsonProperty
+    public GraphQLFactory getGraphQLFactory() {
+        return graphql;
     }
 }

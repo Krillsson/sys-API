@@ -45,6 +45,8 @@ import com.krillsson.sysapi.util.EnvironmentUtils
 import com.krillsson.sysapi.util.OffsetDateTimeConverter
 import com.krillsson.sysapi.util.Ticker
 import com.krillsson.sysapi.util.Utils
+import com.smoketurner.dropwizard.graphql.GraphQLBundle
+import com.smoketurner.dropwizard.graphql.GraphQLFactory
 import io.dropwizard.Application
 import io.dropwizard.auth.AuthDynamicFeature
 import io.dropwizard.auth.AuthValueFactoryProvider
@@ -52,6 +54,7 @@ import io.dropwizard.auth.basic.BasicCredentialAuthFilter
 import io.dropwizard.setup.Bootstrap
 import io.dropwizard.setup.Environment
 import io.dropwizard.sslreload.SslReloadBundle
+import org.eclipse.jetty.servlets.CrossOriginFilter
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature
 import oshi.SystemInfo
 import java.net.NetworkInterface
@@ -59,6 +62,8 @@ import java.time.Clock
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.function.Supplier
+import javax.servlet.DispatcherType
+import javax.servlet.FilterRegistration
 
 
 class SystemApiApplication : Application<SystemApiConfiguration>() {
@@ -66,7 +71,7 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
         private set
 
     override fun getName(): String {
-        return "System-Api"
+        return "system-API"
     }
 
     override fun initialize(bootstrap: Bootstrap<SystemApiConfiguration>) {
@@ -86,6 +91,17 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
                 )
         mapper.setFilters(filterProvider)
         bootstrap.addBundle(SslReloadBundle())
+        val bundle: GraphQLBundle<SystemApiConfiguration> = object : GraphQLBundle<SystemApiConfiguration>() {
+            override fun getGraphQLFactory(configuration: SystemApiConfiguration): GraphQLFactory? {
+                val factory = configuration.graphQLFactory
+                // the RuntimeWiring must be configured prior to the run()
+                // methods being called so the schema is connected properly.
+                //factory.schemaFiles = listOf("schema.graphqls")
+                //factory.isEnableTracing = true
+                return factory
+            }
+        }
+        bootstrap.addBundle(bundle)
     }
 
     @Throws(Exception::class)
@@ -213,6 +229,9 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
                         EnvironmentUtils.getEndpoints(environment),
                         os.processId
                 ))
+
+        val cors: FilterRegistration.Dynamic = environment.servlets().addFilter("cors", CrossOriginFilter::class.java)
+        cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType::class.java), true, "/*");
     }
 
     companion object {
@@ -223,6 +242,8 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
         fun main(args: Array<String>) {
             SystemApiApplication().run(*args)
         }
+
     }
+
 
 }

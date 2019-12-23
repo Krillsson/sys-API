@@ -1,3 +1,47 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Query {
+    system: System!
+    history: [SystemMetricsHistoryEntry!]!
+    monitors: [Monitor!]!
+    events: [MonitorEvent!]!
+}
+
+type Mutation {
+    createMonitor(input: CreateMonitorInput) : CreateMonitorOutput
+    deleteMonitor(input: DeleteMonitorInput) : DeleteMonitorOutput
+    deleteEvent(input: DeleteEventInput) : DeleteEventOutput
+}
+
+input CreateMonitorInput {
+    inertiaInSeconds: Int
+    type: MonitorType
+    threshold: Float
+}
+
+type CreateMonitorOutput {
+    id: ID
+}
+
+input DeleteMonitorInput {
+    id: ID
+}
+
+type DeleteMonitorOutput {
+    id: ID
+}
+
+input DeleteEventInput {
+    id: ID
+}
+
+type DeleteEventOutput {
+    id: ID
+}
+
 # Root node
 type System {
     manufacturer: String

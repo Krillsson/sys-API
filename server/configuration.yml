@@ -26,11 +26,18 @@ windows:
 #########################################
 ### Dropwizard specific configuration ###
 #########################################
+graphql:
+  enableTracing: false
+  queryCache: maximumSize=10000
+  schemaFiles:
+    - schema.graphqls
+
 server:
   maxThreads: 100
   minThreads: 1
   maxQueuedRequests: 100
   idleThreadTimeout: 1 minute
+  adminContextPath: /admin
   applicationContextPath: /v2
   applicationConnectors:
     - type: http
