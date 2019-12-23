@@ -37,6 +37,7 @@ server:
   minThreads: 1
   maxQueuedRequests: 100
   idleThreadTimeout: 1 minute
+  rootPath: /api
   adminContextPath: /admin
   applicationContextPath: /v2
   applicationConnectors:

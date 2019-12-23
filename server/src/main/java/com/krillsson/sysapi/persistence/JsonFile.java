@@ -15,7 +15,7 @@ public class JsonFile<T> {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(JsonFile.class);
 
-    private final TypeReference typeToken;
+    private final TypeReference<T> typeToken;
     private final ObjectMapper objectMapper;
 
     private final String filePath;
@@ -31,7 +31,7 @@ public class JsonFile<T> {
         };
     }
 
-    public JsonFile(String filePath, TypeReference typeToken, T ifNull, ObjectMapper objectMapper) {
+    public JsonFile(String filePath, TypeReference<T> typeToken, T ifNull, ObjectMapper objectMapper) {
         this.filePath = filePath;
         this.typeToken = typeToken;
         this.ifNull = ifNull;

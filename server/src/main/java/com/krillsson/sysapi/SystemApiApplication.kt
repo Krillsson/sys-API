@@ -106,6 +106,9 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
 
     @Throws(Exception::class)
     override fun run(config: SystemApiConfiguration, environment: Environment) {
+        val cors: FilterRegistration.Dynamic = environment.servlets().addFilter("cors", CrossOriginFilter::class.java)
+        cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType::class.java), true, "/*")
+
         this.environment = environment
 
         if (config.forwardHttps()) {
@@ -194,10 +197,10 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
         )
 
         val persistedEvents: JsonFile<List<MonitorEvent>>
-        persistedEvents = JsonFile(
+        persistedEvents = JsonFile<List<MonitorEvent>>(
                 "events.json",
-                JsonFile.mapTypeReference(),
-                ArrayList(),
+                JsonFile.listTypeReference(),
+                ArrayList<MonitorEvent>() as List<MonitorEvent>,
                 environment.objectMapper
         )
 
@@ -229,9 +232,6 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
                         EnvironmentUtils.getEndpoints(environment),
                         os.processId
                 ))
-
-        val cors: FilterRegistration.Dynamic = environment.servlets().addFilter("cors", CrossOriginFilter::class.java)
-        cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType::class.java), true, "/*");
     }
 
     companion object {
