@@ -2,6 +2,7 @@ package com.krillsson.sysapi.core.monitoring.monitors;
 
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
 import com.krillsson.sysapi.core.monitoring.Monitor;
+import com.krillsson.sysapi.core.monitoring.MonitorType;
 
 import java.time.Duration;
 

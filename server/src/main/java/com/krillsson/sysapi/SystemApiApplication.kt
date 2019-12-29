@@ -20,6 +20,7 @@
  */
 package com.krillsson.sysapi
 
+import com.coxautodev.graphql.tools.SchemaParser
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider
 import com.google.common.eventbus.EventBus
@@ -32,13 +33,15 @@ import com.krillsson.sysapi.core.domain.network.NetworkInterfaceMixin
 import com.krillsson.sysapi.core.domain.system.SystemLoad
 import com.krillsson.sysapi.core.history.HistoryMetricQueryEvent
 import com.krillsson.sysapi.core.history.MetricsHistoryManager
-import com.krillsson.sysapi.core.metrics.MetricsProvider
+import com.krillsson.sysapi.core.metrics.Metrics
+import com.krillsson.sysapi.core.metrics.MetricsFactory
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
 import com.krillsson.sysapi.core.query.MetricQueryManager
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
 import com.krillsson.sysapi.dto.monitor.Monitor
 import com.krillsson.sysapi.dto.monitor.MonitorEvent
+import com.krillsson.sysapi.graphql.QueryResolver
 import com.krillsson.sysapi.persistence.JsonFile
 import com.krillsson.sysapi.resources.*
 import com.krillsson.sysapi.util.EnvironmentUtils
@@ -57,6 +60,7 @@ import io.dropwizard.sslreload.SslReloadBundle
 import org.eclipse.jetty.servlets.CrossOriginFilter
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature
 import oshi.SystemInfo
+import oshi.software.os.OperatingSystem
 import java.net.NetworkInterface
 import java.time.Clock
 import java.util.*
@@ -67,12 +71,12 @@ import javax.servlet.FilterRegistration
 
 
 class SystemApiApplication : Application<SystemApiConfiguration>() {
-    var environment: Environment? = null
-        private set
 
     override fun getName(): String {
         return "system-API"
     }
+
+    val queryResolver = QueryResolver()
 
     override fun initialize(bootstrap: Bootstrap<SystemApiConfiguration>) {
         val mapper = bootstrap.objectMapper
@@ -94,10 +98,12 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
         val bundle: GraphQLBundle<SystemApiConfiguration> = object : GraphQLBundle<SystemApiConfiguration>() {
             override fun getGraphQLFactory(configuration: SystemApiConfiguration): GraphQLFactory? {
                 val factory = configuration.graphQLFactory
-                // the RuntimeWiring must be configured prior to the run()
-                // methods being called so the schema is connected properly.
-                //factory.schemaFiles = listOf("schema.graphqls")
-                //factory.isEnableTracing = true
+                factory.setGraphQLSchema(
+                        SchemaParser.newParser()
+                                .file("schema.graphqls")
+                                .resolvers(queryResolver)
+                                .build().makeExecutableSchema()
+                )
                 return factory
             }
         }
@@ -109,27 +115,15 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
         val cors: FilterRegistration.Dynamic = environment.servlets().addFilter("cors", CrossOriginFilter::class.java)
         cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType::class.java), true, "/*")
 
-        this.environment = environment
+        val systemInfo = SystemInfo()
+        val hal = systemInfo.hardware
+        val os = systemInfo.operatingSystem
+        val eventBus = EventBus()
 
         if (config.forwardHttps()) {
             EnvironmentUtils.addHttpsForward(environment.applicationContext)
         }
-        environment.jersey().register(RolesAllowedDynamicFeature::class.java)
-        val eventBus = EventBus()
-        val userBasicCredentialAuthFilter = BasicCredentialAuthFilter.Builder<UserConfiguration>()
-                .setAuthenticator(BasicAuthenticator(config.user()))
-                .setRealm("System-Api")
-                .setAuthorizer(BasicAuthorizer(config.user()))
-                .buildAuthFilter()
 
-        val systemInfo = SystemInfo()
-
-        val hal = systemInfo.hardware
-        val os = systemInfo.operatingSystem
-
-        environment.jersey().register(OffsetDateTimeConverter::class.java)
-        environment.jersey().register(AuthDynamicFeature(userBasicCredentialAuthFilter))
-        environment.jersey().register(AuthValueFactoryProvider.Binder(UserConfiguration::class.java))
         val ticker = Ticker(Executors.newScheduledThreadPool(
                 1,
                 ThreadFactoryBuilder()
@@ -144,7 +138,7 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
                                 .build()
                 ), Clock.systemUTC(), 5)
 
-        val provider = MetricsProvider(
+        val provider = MetricsFactory(
                 hal,
                 os,
                 SystemInfo.getCurrentPlatformEnum(),
@@ -152,8 +146,7 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
                 speedMeasurementManager,
                 ticker
         ).create()
-        environment.lifecycle().manage(speedMeasurementManager)
-        environment.lifecycle().manage(ticker)
+
         val queryScheduledExecutor = Executors.newScheduledThreadPool(
                 2,
                 ThreadFactoryBuilder()
@@ -172,7 +165,6 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
                 return HistoryMetricQueryEvent(load)
             }
         }
-        environment.lifecycle().manage(historyMetricQueryManager)
         val monitorMetricQueryManager = object : MetricQueryManager<MonitorMetricQueryEvent>(
                 queryScheduledExecutor,
                 config.metrics().monitor.interval,
@@ -184,29 +176,57 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
                 return MonitorMetricQueryEvent(load)
             }
         }
-        environment.lifecycle().manage(monitorMetricQueryManager)
 
         val historyManager = MetricsHistoryManager(config.metrics().history, eventBus)
-        environment.lifecycle().manage(historyManager)
 
         val persistedMonitors = JsonFile(
-                "monitors.json",
+                monitorsFilename,
                 JsonFile.mapTypeReference(),
                 HashMap<String, Monitor>(),
                 environment.objectMapper
         )
 
-        val persistedEvents: JsonFile<List<MonitorEvent>>
-        persistedEvents = JsonFile<List<MonitorEvent>>(
-                "events.json",
+        val persistedEvents = JsonFile(
+                eventsFileName,
                 JsonFile.listTypeReference(),
                 ArrayList<MonitorEvent>() as List<MonitorEvent>,
                 environment.objectMapper
         )
 
         val monitorManager = MonitorManager(eventBus, persistedMonitors, provider)
-        environment.lifecycle().manage(monitorManager)
 
+        queryResolver.monitorManager = monitorManager
+        queryResolver.historyManager = historyManager
+        queryResolver.metrics = provider
+        queryResolver.os = os
+        setupManagedObjects(environment, monitorManager, speedMeasurementManager, ticker, monitorMetricQueryManager, historyManager, historyMetricQueryManager)
+        registerFeatures(environment, config.user())
+        registerResources(environment, os, provider, historyManager, monitorManager)
+
+    }
+
+    private fun setupManagedObjects(environment: Environment, monitorManager: MonitorManager, speedMeasurementManager: SpeedMeasurementManager, ticker: Ticker, monitorMetricQueryManager: MetricQueryManager<MonitorMetricQueryEvent>, historyManager: MetricsHistoryManager, historyMetricQueryManager: MetricQueryManager<HistoryMetricQueryEvent>) {
+        environment.lifecycle().manage(monitorManager)
+        environment.lifecycle().manage(speedMeasurementManager)
+        environment.lifecycle().manage(ticker)
+        environment.lifecycle().manage(monitorMetricQueryManager)
+        environment.lifecycle().manage(historyManager)
+        environment.lifecycle().manage(historyMetricQueryManager)
+    }
+
+    private fun registerFeatures(environment: Environment, userConfig: UserConfiguration) {
+        val userBasicCredentialAuthFilter = BasicCredentialAuthFilter.Builder<UserConfiguration>()
+                .setAuthenticator(BasicAuthenticator(userConfig))
+                .setRealm(name)
+                .setAuthorizer(BasicAuthorizer(userConfig))
+                .buildAuthFilter()
+        environment.jersey().register(RolesAllowedDynamicFeature::class.java)
+        environment.jersey().register(OffsetDateTimeConverter::class.java)
+        environment.jersey().register(AuthDynamicFeature(userBasicCredentialAuthFilter))
+        environment.jersey().register(AuthValueFactoryProvider.Binder(UserConfiguration::class.java))
+    }
+
+    private fun registerResources(environment: Environment, os: OperatingSystem, provider: Metrics, historyManager: MetricsHistoryManager, monitorManager: MonitorManager) {
         environment.jersey().register(SystemResource(os,
                 SystemInfo.getCurrentPlatformEnum(),
                 provider.cpuMetrics(),
@@ -215,7 +235,7 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
                 provider.memoryMetrics(),
                 provider.processesMetrics(), provider.gpuMetrics(),
                 provider.motherboardMetrics(),
-                historyManager, Supplier { hal.processor.systemUptime }
+                historyManager, Supplier { os.systemUptime }
         ))
         environment.jersey().register(DrivesResource(provider.driveMetrics(), historyManager))
         environment.jersey().register(GpuResource(provider.gpuMetrics(), historyManager))
@@ -236,6 +256,9 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
 
     companion object {
         private val LOGGER = org.slf4j.LoggerFactory.getLogger(SystemApiApplication::class.java)
+
+        private const val monitorsFilename = "monitors.json"
+        private const val eventsFileName = "events.json"
 
         @Throws(Exception::class)
         @JvmStatic

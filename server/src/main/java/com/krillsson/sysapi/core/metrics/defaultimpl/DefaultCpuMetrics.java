@@ -25,6 +25,7 @@ public class DefaultCpuMetrics implements CpuMetrics, Ticker.TickListener {
     private final Ticker ticker;
     private final DefaultCpuSensors cpuSensors;
     private long[][] coreTicks = new long[0][0];
+    private long[] ticks;
     private CpuLoad cpuLoad;
 
     protected DefaultCpuMetrics(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, DefaultCpuSensors cpuSensors, Utils utils, Ticker ticker) {
@@ -33,6 +34,8 @@ public class DefaultCpuMetrics implements CpuMetrics, Ticker.TickListener {
         this.cpuSensors = cpuSensors;
         this.utils = utils;
         this.ticker = ticker;
+        this.ticks = hal.getProcessor().getSystemCpuLoadTicks();
+        this.coreTicks = hal.getProcessor().getProcessorCpuLoadTicks();
     }
 
     void register() {
@@ -56,7 +59,7 @@ public class DefaultCpuMetrics implements CpuMetrics, Ticker.TickListener {
 
     @Override
     public long uptime() {
-        return hal.getProcessor().getSystemUptime();
+        return operatingSystem.getSystemUptime();
     }
 
     @Override
@@ -110,13 +113,14 @@ public class DefaultCpuMetrics implements CpuMetrics, Ticker.TickListener {
         coreTicks = currentProcessorTicks;
 
         this.cpuLoad = new CpuLoad(
-                Utils.round(processor.getSystemCpuLoadBetweenTicks() * 100d, 2),
-                Utils.round(processor.getSystemCpuLoad() * 100d, 2),
-                Utils.round(processor.getSystemLoadAverage() * 100d, 2),
+                Utils.round(processor.getSystemCpuLoadBetweenTicks(ticks) * 100d, 2),
+                Utils.round(0, 2),
+                Utils.round(processor.getSystemLoadAverage(1)[0] * 100d, 2),
                 Stream.of(coreLoads).collect(Collectors.toList()),
                 cpuSensors.cpuHealth(),
                 operatingSystem.getProcessCount(),
                 operatingSystem.getThreadCount()
         );
+        ticks = processor.getSystemCpuLoadTicks();
     }
 }

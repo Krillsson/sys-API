@@ -7,11 +7,7 @@ public class CentralProcessor {
 
     private int physicalProcessorCount;
 
-    private long systemUptime;
-
     private String name;
-
-    private double systemLoadAverage;
 
     private String identifier;
 
@@ -37,23 +33,19 @@ public class CentralProcessor {
      * @param model
      * @param vendorFreq
      * @param stepping
-     * @param systemLoadAverage
      * @param vendor
      * @param physicalProcessorCount
      * @param logicalProcessorCount
      * @param cpu64bit
      * @param family
      * @param name
-     * @param systemUptime
      * @param identifier
      */
-    public CentralProcessor(int logicalProcessorCount, int physicalProcessorCount, long systemUptime, String name, double systemLoadAverage, String identifier, String family, String vendor, long vendorFreq, String model, String stepping, boolean cpu64bit) {
+    public CentralProcessor(int logicalProcessorCount, int physicalProcessorCount, String name, String identifier, String family, String vendor, long vendorFreq, String model, String stepping, boolean cpu64bit) {
         super();
         this.logicalProcessorCount = logicalProcessorCount;
         this.physicalProcessorCount = physicalProcessorCount;
-        this.systemUptime = systemUptime;
         this.name = name;
-        this.systemLoadAverage = systemLoadAverage;
         this.identifier = identifier;
         this.family = family;
         this.vendor = vendor;
@@ -83,35 +75,13 @@ public class CentralProcessor {
         this.physicalProcessorCount = physicalProcessorCount;
     }
 
-    public long getSystemUptime() {
-        return systemUptime;
-    }
-
-
-    public void setSystemUptime(long systemUptime) {
-        this.systemUptime = systemUptime;
-    }
-
-
     public String getName() {
         return name;
     }
 
-
     public void setName(String name) {
         this.name = name;
     }
-
-
-    public double getSystemLoadAverage() {
-        return systemLoadAverage;
-    }
-
-
-    public void setSystemLoadAverage(double systemLoadAverage) {
-        this.systemLoadAverage = systemLoadAverage;
-    }
-
 
     public String getIdentifier() {
         return identifier;

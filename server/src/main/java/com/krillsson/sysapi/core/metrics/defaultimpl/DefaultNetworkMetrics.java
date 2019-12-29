@@ -61,14 +61,14 @@ public class DefaultNetworkMetrics implements NetworkMetrics {
 
                     @Override
                     public long getCurrentRead() {
-                        n.updateNetworkStats();
+                        n.updateAttributes();
                         return n.getBytesRecv();
                     }
 
                     @Override
                     public long getCurrentWrite() {
                         //TODO: maybe it's good enough to do this in getCurrentRead since getCurrentWrite is called immediately after
-                        n.updateNetworkStats();
+                        n.updateAttributes();
                         return n.getBytesSent();
                     }
                 })
@@ -117,7 +117,7 @@ public class DefaultNetworkMetrics implements NetworkMetrics {
         return nic -> {
             boolean loopback = false;
             try {
-                loopback = nic.getNetworkInterface().isLoopback();
+                loopback = nic.queryNetworkInterface().isLoopback();
             } catch (SocketException e) {
                 //ignore
                 LOGGER.warn("Socket exception while queering for loopback parameter", e);
@@ -138,7 +138,7 @@ public class DefaultNetworkMetrics implements NetworkMetrics {
         return n -> {
             boolean up = false;
             try {
-                up = n.getNetworkInterface().isUp();
+                up = n.queryNetworkInterface().isUp();
             } catch (SocketException e) {
                 LOGGER.error("Error occurred while getting status for NIC", e);
             }

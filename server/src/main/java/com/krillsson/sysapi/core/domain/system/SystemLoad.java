@@ -12,6 +12,7 @@ import java.util.List;
 
 public class SystemLoad {
     private final long uptime;
+    private final double systemLoadAverage;
     private final CpuLoad cpuLoad;
     private final List<NetworkInterfaceLoad> networkInterfaceLoads;
     private final List<DriveLoad> driveLoads;
@@ -20,8 +21,9 @@ public class SystemLoad {
     private final List<GpuLoad> gpuLoads;
     private final List<HealthData> motherboardHealth;
 
-    public SystemLoad(long uptime, CpuLoad cpuLoad, List<NetworkInterfaceLoad> networkInterfaceLoads, List<DriveLoad> driveLoads, MemoryLoad memory, List<Process> processes, List<GpuLoad> gpuLoads, List<HealthData> motherboardHealth) {
+    public SystemLoad(long uptime, double systemLoadAverage, CpuLoad cpuLoad, List<NetworkInterfaceLoad> networkInterfaceLoads, List<DriveLoad> driveLoads, MemoryLoad memory, List<Process> processes, List<GpuLoad> gpuLoads, List<HealthData> motherboardHealth) {
         this.uptime = uptime;
+        this.systemLoadAverage = systemLoadAverage;
         this.cpuLoad = cpuLoad;
         this.networkInterfaceLoads = networkInterfaceLoads;
         this.driveLoads = driveLoads;
@@ -33,6 +35,10 @@ public class SystemLoad {
 
     public long getUptime() {
         return uptime;
+    }
+
+    public double getSystemLoadAverage() {
+        return systemLoadAverage;
     }
 
     public CpuLoad getCpuLoad() {

@@ -3,6 +3,7 @@ package com.krillsson.sysapi.core.monitoring.monitors;
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
 import com.krillsson.sysapi.core.monitoring.Monitor;
+import com.krillsson.sysapi.core.monitoring.MonitorType;
 
 import java.time.Duration;
 
@@ -23,6 +24,6 @@ public class GpuMonitor extends Monitor {
 
     @Override
     protected MonitorType type() {
-        return MonitorType.GPU;
+        return MonitorType.GPU_LOAD;
     }
 }

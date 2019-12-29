@@ -42,7 +42,7 @@ public interface MonitorMapper {
 
     MonitorStatus map(com.krillsson.sysapi.core.monitoring.MonitorEvent.MonitorStatus value);
 
-    MonitorType map(com.krillsson.sysapi.core.monitoring.Monitor.MonitorType value);
+    MonitorType map(com.krillsson.sysapi.core.monitoring.MonitorType value);
 
     default MonitorEvent map(com.krillsson.sysapi.core.monitoring.MonitorEvent event) {
         return new MonitorEvent(

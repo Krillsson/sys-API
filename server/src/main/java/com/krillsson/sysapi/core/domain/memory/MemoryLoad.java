@@ -2,14 +2,10 @@ package com.krillsson.sysapi.core.domain.memory;
 
 public class MemoryLoad {
     private int numberOfProcesses;
-
-    private long swapTotal;
-
-    private long swapUsed;
-
     private long total;
-
+    private long swapTotal;
     private long available;
+    private long swapUsed;
 
     public MemoryLoad(int numberOfProcesses, long swapTotal, long swapUsed, long total, long available) {
         this.numberOfProcesses = numberOfProcesses;

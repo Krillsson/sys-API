@@ -31,15 +31,7 @@ public abstract class Monitor {
     }
 
 
-    protected enum MonitorType {
-        CPU,
-        CPU_TEMP,
-        DRIVE,
-        GPU,
-        MEMORY,
-        NETWORK_UP;
-    }
-    protected Monitor(String id, Duration inertia, double threshold) {
+    public Monitor(String id, Duration inertia, double threshold) {
         this(id, inertia, threshold, new Clock());
     }
 

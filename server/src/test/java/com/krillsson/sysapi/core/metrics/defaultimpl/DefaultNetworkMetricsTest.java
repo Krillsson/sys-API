@@ -52,7 +52,7 @@ public class DefaultNetworkMetricsTest {
         when(nic1.getPacketsSent()).thenReturn(20L);
         when(nic1.getInErrors()).thenReturn(30L);
         when(nic1.getOutErrors()).thenReturn(40L);
-        when(nic1.getNetworkInterface()).thenReturn(networkInterface1);
+        when(nic1.queryNetworkInterface()).thenReturn(networkInterface1);
         when(speedMeasurementManager.getCurrentSpeedForName("en1")).thenReturn(Optional.of(new SpeedMeasurementManager.CurrentSpeed(
                 125L,
                 322L
@@ -74,7 +74,7 @@ public class DefaultNetworkMetricsTest {
         when(nic2.getPacketsSent()).thenReturn(21L);
         when(nic2.getInErrors()).thenReturn(31L);
         when(nic2.getOutErrors()).thenReturn(41L);
-        when(nic2.getNetworkInterface()).thenReturn(networkInterface2);
+        when(nic2.queryNetworkInterface()).thenReturn(networkInterface2);
         when(speedMeasurementManager.getCurrentSpeedForName("en2")).thenReturn(Optional.of(new SpeedMeasurementManager.CurrentSpeed(
                 123L,
                 321L

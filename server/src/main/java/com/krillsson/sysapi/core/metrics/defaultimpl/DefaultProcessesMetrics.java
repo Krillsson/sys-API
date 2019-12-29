@@ -4,7 +4,9 @@ import com.krillsson.sysapi.core.domain.memory.MemoryLoad;
 import com.krillsson.sysapi.core.domain.processes.Process;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import com.krillsson.sysapi.core.metrics.ProcessesMetrics;
+import oshi.hardware.GlobalMemory;
 import oshi.hardware.HardwareAbstractionLayer;
+import oshi.hardware.VirtualMemory;
 import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
 
@@ -51,12 +53,15 @@ public class DefaultProcessesMetrics implements ProcessesMetrics {
     }
 
     public MemoryLoad memoryLoad() {
+        GlobalMemory memory = hal.getMemory();
+        VirtualMemory virtualMemory = memory.getVirtualMemory();
         return new MemoryLoad(
                 operatingSystem.getProcessCount(),
-                hal.getMemory().getSwapTotal(),
-                hal.getMemory().getSwapUsed(),
-                hal.getMemory().getTotal(),
-                hal.getMemory().getAvailable()
+                virtualMemory.getSwapTotal(),
+                virtualMemory.getSwapUsed(),
+                memory.getTotal(),
+                memory.getAvailable()
         );
     }
 }
+

@@ -7,7 +7,7 @@ import com.krillsson.sysapi.util.Utils;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.software.os.OperatingSystem;
 
-public class DefaultMetricsFactory implements MetricsFactory {
+public class DefaultMetrics implements Metrics {
 
     private final HardwareAbstractionLayer hal;
     private final OperatingSystem operatingSystem;
@@ -23,7 +23,7 @@ public class DefaultMetricsFactory implements MetricsFactory {
     private MotherboardMetrics motherboardMetrics;
     private MemoryMetrics memoryMetrics;
 
-    public DefaultMetricsFactory(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, SpeedMeasurementManager speedMeasurementManager, Ticker ticker, Utils utils) {
+    public DefaultMetrics(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, SpeedMeasurementManager speedMeasurementManager, Ticker ticker, Utils utils) {
         this.hal = hal;
         this.operatingSystem = operatingSystem;
         this.speedMeasurementManager = speedMeasurementManager;
@@ -32,12 +32,7 @@ public class DefaultMetricsFactory implements MetricsFactory {
     }
 
     @Override
-    public boolean prerequisitesFilled() {
-        return true;
-    }
-
-    @Override
-    public boolean initialize() {
+    public void initialize() {
         DefaultCpuMetrics cpuMetrics = new DefaultCpuMetrics(hal, operatingSystem, new DefaultCpuSensors(hal), utils, ticker);
         cpuMetrics.register();
         setCpuMetrics(cpuMetrics);
@@ -51,7 +46,6 @@ public class DefaultMetricsFactory implements MetricsFactory {
         setProcessesMetrics(new DefaultProcessesMetrics(operatingSystem, hal));
         setMotherboardMetrics(new DefaultMotherboardMetrics(hal));
         setMemoryMetrics(new DefaultMemoryMetrics(hal, operatingSystem));
-        return true;
     }
 
     @Override

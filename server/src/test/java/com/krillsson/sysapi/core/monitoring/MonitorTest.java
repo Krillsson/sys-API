@@ -8,7 +8,7 @@ import org.junit.Test;
 import java.time.Duration;
 import java.util.Optional;
 
-import static com.krillsson.sysapi.core.monitoring.Monitor.MonitorType.CPU;
+import static com.krillsson.sysapi.core.monitoring.MonitorType.CPU_LOAD;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
@@ -133,7 +133,7 @@ public class MonitorTest {
         assertEquals( "ID", monitorEvent.getMonitorId());
         assertEquals(clock.now(), monitorEvent.getTime());
         assertEquals(1, monitorEvent.getThreshold(), 0.0);
-        assertEquals(CPU, monitorEvent.getMonitorType());
+        assertEquals(CPU_LOAD, monitorEvent.getMonitorType());
     }
 
     @Test
@@ -198,7 +198,7 @@ public class MonitorTest {
 
         @Override
         protected MonitorType type() {
-            return CPU;
+            return CPU_LOAD;
         }
     }
 }

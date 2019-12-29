@@ -9,7 +9,7 @@ public class MonitorEvent {
     private final OffsetDateTime time;
     private final String monitorId;
     private final MonitorStatus monitorStatus;
-    private final Monitor.MonitorType monitorType;
+    private final MonitorType monitorType;
     private final double threshold;
     private final double value;
 
@@ -18,7 +18,7 @@ public class MonitorEvent {
         STOP,
     }
 
-    public MonitorEvent(UUID id, String monitorId, OffsetDateTime time, MonitorStatus monitorStatus, Monitor.MonitorType monitorType, Double threshold, Double value) {
+    public MonitorEvent(UUID id, String monitorId, OffsetDateTime time, MonitorStatus monitorStatus, MonitorType monitorType, Double threshold, Double value) {
         this.id = id;
         this.time = time;
         this.monitorId = monitorId;
@@ -44,7 +44,7 @@ public class MonitorEvent {
         return monitorStatus;
     }
 
-    public Monitor.MonitorType getMonitorType() {
+    public MonitorType getMonitorType() {
         return monitorType;
     }
 

@@ -21,10 +21,12 @@
 
 package com.krillsson.sysapi.core.domain.processes;
 
+import com.krillsson.sysapi.dto.processes.Memory;
 import com.krillsson.sysapi.dto.processes.ProcessInfo;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
+import oshi.hardware.VirtualMemory;
 
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.ERROR
@@ -34,7 +36,10 @@ public interface ProcessInfoMapper {
 
     ProcessInfo map(ProcessesInfo value);
 
-    com.krillsson.sysapi.dto.processes.Memory map(oshi.hardware.GlobalMemory value);
+    default com.krillsson.sysapi.dto.processes.Memory map(oshi.hardware.GlobalMemory value){
+        VirtualMemory virtualMemory = value.getVirtualMemory();
+        return new Memory(virtualMemory.getSwapTotal(), virtualMemory.getSwapUsed(), value.getTotal(), value.getAvailable());
+    }
 
     com.krillsson.sysapi.dto.processes.Process map(com.krillsson.sysapi.core.domain.processes.Process value);
 }

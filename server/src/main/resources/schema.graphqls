@@ -44,11 +44,9 @@ type DeleteEventOutput {
 
 # Root node
 type System {
-    manufacturer: String
-    model: String
-    serialNumber: String
+    operatingSystem: OperatingSystem
     baseboard: Board
-    usbDevices: [UsbDevices ]
+    usbDevices: [UsbDevices]
     processor: Processor
     drives: [Drive]
     networkInterfaces: [NetworkInterface]

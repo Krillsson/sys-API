@@ -131,7 +131,9 @@ public class SystemResource {
         }
 
         return SystemInfoMapper.INSTANCE.map(new com.krillsson.sysapi.core.domain.system.SystemLoad(
-                uptimeSupplier.get(), cpuMetrics.cpuLoad(),
+                uptimeSupplier.get(),
+                cpuMetrics.cpuLoad().getSystemLoadAverage(),
+                cpuMetrics.cpuLoad(),
                 networkMetrics.networkInterfaceLoads(),
                 driveMetrics.driveLoads(),
                 memoryMetrics.memoryLoad(),

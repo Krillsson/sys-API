@@ -2,11 +2,14 @@ package com.krillsson.sysapi.core.monitoring;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import com.krillsson.sysapi.core.metrics.MetricsFactory;
+import com.krillsson.sysapi.core.metrics.Metrics;
+import com.krillsson.sysapi.core.monitoring.monitors.*;
 import com.krillsson.sysapi.persistence.JsonFile;
 import io.dropwizard.lifecycle.Managed;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,16 +20,16 @@ public class MonitorManager implements Managed {
     private final List<MonitorEvent> events = new ArrayList<>();
     private final EventBus eventBus;
     private final JsonFile<HashMap<String, com.krillsson.sysapi.dto.monitor.Monitor>> persistentMonitors;
-    private final MetricsFactory provider;
+    private final Metrics provider;
 
-    public MonitorManager(EventBus eventBus, JsonFile<HashMap<String, com.krillsson.sysapi.dto.monitor.Monitor>> persistentMonitors, MetricsFactory provider) {
+    public MonitorManager(EventBus eventBus, JsonFile<HashMap<String, com.krillsson.sysapi.dto.monitor.Monitor>> persistentMonitors, Metrics provider) {
         this.eventBus = eventBus;
         this.persistentMonitors = persistentMonitors;
         this.provider = provider;
     }
 
     public String addMonitor(Monitor monitor) {
-        if(monitor.id() == null){
+        if (monitor.id() == null) {
             monitor.setId(UUID.randomUUID().toString());
         }
         if (activeMonitors.containsKey(monitor.id())) {
@@ -58,6 +61,16 @@ public class MonitorManager implements Managed {
 
     public boolean validate(Monitor monitor) {
         return monitor.value(provider.consolidatedMetrics()) != -1.0;
+    }
+
+    @Nullable
+    public String createAndAdd(int inertiaInSeconds, MonitorType type, double threshold) {
+        Monitor monitor = create(type, threshold, Duration.ofSeconds(inertiaInSeconds));
+        if(validate(monitor)){
+            addMonitor(monitor);
+            return monitor.id();
+        }
+        return null;
     }
 
     public List<Monitor> monitors() {
@@ -117,13 +130,57 @@ public class MonitorManager implements Managed {
         return Optional.ofNullable(activeMonitors.get(id));
     }
 
-    public Optional<List<MonitorEvent>> eventsForMonitorWithId(String id){
-        if(activeMonitors.get(id) != null){
+    public Optional<List<MonitorEvent>> eventsForMonitorWithId(String id) {
+        if (activeMonitors.get(id) != null) {
             return Optional.of(events.stream()
-                                       .filter(event -> event.getMonitorId().equalsIgnoreCase(id))
-                                       .collect(Collectors.toList()));
-        }else {
+                    .filter(event -> event.getMonitorId().equalsIgnoreCase(id))
+                    .collect(Collectors.toList()));
+        } else {
             return Optional.empty();
+        }
+    }
+
+    com.krillsson.sysapi.core.monitoring.Monitor create(MonitorType type, double threshold, Duration durationSeconds) {
+        String id = UUID.randomUUID().toString();
+        switch (type) {
+            case CPU_LOAD:
+                return new CpuMonitor(
+                        id,
+                        durationSeconds,
+                        threshold
+                );
+            case CPU_TEMP:
+                return new CpuTemperatureMonitor(
+                        id,
+                        durationSeconds,
+                        threshold
+                );
+            case DRIVE_SPACE:
+                return new DriveMonitor(
+                        id,
+                        durationSeconds,
+                        threshold
+                );
+            case GPU_LOAD:
+                return new GpuMonitor(
+                        id,
+                        durationSeconds,
+                        threshold
+                );
+            case MEMORY_SPACE:
+                return new MemoryMonitor(
+                        id,
+                        durationSeconds,
+                        threshold
+                );
+            case NETWORK_UP:
+                return new NetworkUpMonitor(
+                        id,
+                        durationSeconds,
+                        threshold
+                );
+            default:
+                throw new IllegalArgumentException("Not supported");
         }
     }
 }

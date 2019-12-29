@@ -237,7 +237,10 @@ public class DefaultDriveProvider implements DriveMetrics {
         public long getCurrentRead() {
             return Arrays.stream(hal.getDiskStores())
                     .filter(d -> d.getName().equals(name))
-                    .map(HWDiskStore::getReadBytes)
+                    .map(hwDiskStore -> {
+                        hwDiskStore.updateAtrributes();
+                        return hwDiskStore.getReadBytes();
+                    })
                     .findAny()
                     .orElse(0L);
         }
@@ -246,7 +249,10 @@ public class DefaultDriveProvider implements DriveMetrics {
         public long getCurrentWrite() {
             return Arrays.stream(hal.getDiskStores())
                     .filter(d -> d.getName().equals(name))
-                    .map(HWDiskStore::getWriteBytes)
+                    .map(hwDiskStore -> {
+                        hwDiskStore.updateAtrributes();
+                        return hwDiskStore.getWriteBytes();
+                    })
                     .findAny()
                     .orElse(0L);
         }
