@@ -73,7 +73,7 @@ public class MonitorResource {
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public void delete(@Auth UserConfiguration user, @PathParam("id") String id) {
 
-        boolean removed = monitorManager.remove(id);
+        boolean removed = monitorManager.remove(id) != null;
         if (!removed) {
             throw new WebApplicationException(NOT_FOUND);
         }

@@ -42,7 +42,27 @@ public interface MonitorMapper {
 
     MonitorStatus map(com.krillsson.sysapi.core.monitoring.MonitorEvent.MonitorStatus value);
 
-    MonitorType map(com.krillsson.sysapi.core.monitoring.MonitorType value);
+    default MonitorType map(com.krillsson.sysapi.core.monitoring.MonitorType value) {
+        switch (value) {
+            case CPU_LOAD:
+                return MonitorType.CPU;
+            case CPU_TEMP:
+                return MonitorType.CPU_TEMP;
+            case DRIVE_SPACE:
+                return MonitorType.DRIVE;
+            case DRIVE_TEMP:
+                return null;
+            case GPU_LOAD:
+                return MonitorType.GPU;
+            case GPU_TEMP:
+                return null;
+            case MEMORY_SPACE:
+                return MonitorType.MEMORY;
+            case NETWORK_UP:
+                return MonitorType.NETWORK_UP;
+        }
+        return null;
+    }
 
     default MonitorEvent map(com.krillsson.sysapi.core.monitoring.MonitorEvent event) {
         return new MonitorEvent(

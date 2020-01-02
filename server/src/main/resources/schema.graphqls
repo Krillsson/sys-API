@@ -1,3 +1,6 @@
+scalar UUID
+scalar ZonedDateTime
+
 schema {
     query: Query
     mutation: Mutation
@@ -23,34 +26,35 @@ input CreateMonitorInput {
 }
 
 type CreateMonitorOutput {
-    id: ID
+    id: UUID
 }
 
 input DeleteMonitorInput {
-    id: ID
+    id: UUID
 }
 
 type DeleteMonitorOutput {
-    id: ID
+    id: UUID
 }
 
 input DeleteEventInput {
-    id: ID
+    id: UUID
 }
 
 type DeleteEventOutput {
-    id: ID
+    id: UUID
 }
 
 # Root node
 type System {
     operatingSystem: OperatingSystem
+    uptime: Int
     baseboard: Board
     usbDevices: [UsbDevices]
     processor: Processor
     drives: [Drive]
     networkInterfaces: [NetworkInterface]
-    graphics: [Graphics]
+    #graphics: [Graphics]
     processes: [Process]
     memory: Memory
 }
@@ -62,13 +66,13 @@ type SystemMetricsHistoryEntry {
     processorMetrics: ProcessorMetrics
     driveMetrics: [DriveMetrics]
     networkInterfaceMetrics: [NetworkInterfaceMetrics]
-    graphicsMetrics: [GraphicsMetrics]
+    #graphicsMetrics: [GraphicsMetrics]
 }
 
 ## Monitoring
 
 type Monitor {
-    id: ID
+    id: UUID
     inertiaInSeconds: Int
     type: MonitorType
     threshold: Float
@@ -91,8 +95,8 @@ enum MonitorStatus {
 }
 
 type MonitorEvent {
-    id: ID
-    monitorId: ID
+    id: UUID
+    monitorId: UUID
     time: String
     type: MonitorType
     monitorStatus: MonitorStatus
@@ -128,7 +132,6 @@ type UsbDevices {
 type Board {
     manufacturer: String
     model: String
-    version: String
     serialNumber: String
     firmware: BoardFirmware
 }
@@ -146,7 +149,6 @@ type BoardFirmware {
 type Processor {
     logicalProcessorCount: Int
     physicalProcessorCount: Int
-    uptime: Int
     name: String
     identifier: String
     family: String
@@ -187,7 +189,7 @@ type ProcessorCoreMetrics {
 type Drive {
     model: String
     name: String
-    id: ID
+    id: UUID
     serial: String
     sizeBytes: Int
     diskOsPartition: DiskOsPartition
@@ -199,7 +201,7 @@ type DiskOsPartition {
     identification: String
     name: String
     type: String
-    uuid: String
+    uuid: UUID
     size: Int
     major: Int
     minor: Int
@@ -226,7 +228,7 @@ type Partition {
 type DriveMetrics {
     driveId: ID
     temperature: Int
-    healthData: [String ]
+    healthData: [DriveHealth]
     usableSpace: Int
     totalSpace: Int
     openFileDescriptors: Int
@@ -237,6 +239,21 @@ type DriveMetrics {
     writeBytes: Int
     currentReadWriteRate: DriveReadWriteRate
 }
+
+type DriveHealth{
+    value: Float
+    type: DriveHealthDataType
+}
+
+enum DriveHealthDataType {
+    CLOCK,
+    VOLTAGE,
+    PERCENT,
+    RPM,
+    CELCIUS,
+    GIGABYTE
+}
+
 
 type DriveReadWriteRate { readBytesPerSecond: Int writeBytesPerSecond: Int }
 
@@ -275,22 +292,21 @@ type NetworkInterfaceReadWriteRate {
 
 # GPU
 
-type Graphics {
-    vendor: String
-    model: String
-    coreMhz: Float
-    memoryMhz: Float
-    edid: String
-    metrics: GraphicsMetrics
-}
-
-type GraphicsMetrics {
-    fanRpm: Float
-    fanPercent: Float
-    temperature: Float
-    coreLoad: Float
-    memoryLoad: Float
-}
+#type Graphics {
+#    vendor: String
+#    model: String
+#    coreMhz: Float
+#    memoryMhz: Float
+#    metrics: GraphicsMetrics
+#}
+#
+#type GraphicsMetrics {
+#    fanRpm: Float
+#    fanPercent: Float
+#    temperature: Float
+#    coreLoad: Float
+#    memoryLoad: Float
+#}
 
 # Processes
 

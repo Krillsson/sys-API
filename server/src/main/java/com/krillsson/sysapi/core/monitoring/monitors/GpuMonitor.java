@@ -13,17 +13,17 @@ public class GpuMonitor extends Monitor {
     }
 
     @Override
-    protected double value(SystemLoad systemLoad) {
+    public double value(SystemLoad systemLoad) {
         return systemLoad.getGpuLoads().stream().filter(n -> n.getName().equalsIgnoreCase(id())).mapToDouble(GpuLoad::getCoreLoad).findFirst().orElse(-1.0);
     }
 
     @Override
-    protected boolean isOutsideThreshold(double value) {
+    public boolean isOutsideThreshold(double value) {
         return value > threshold();
     }
 
     @Override
-    protected MonitorType type() {
+    public MonitorType type() {
         return MonitorType.GPU_LOAD;
     }
 }

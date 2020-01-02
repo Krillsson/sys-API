@@ -187,17 +187,17 @@ public class MonitorTest {
         }
 
         @Override
-        protected double value(SystemLoad systemLoad) {
+        public double value(SystemLoad systemLoad) {
             return value;
         }
 
         @Override
-        protected boolean isOutsideThreshold(double value) {
+        public boolean isOutsideThreshold(double value) {
             return value == OUTSIDE;
         }
 
         @Override
-        protected MonitorType type() {
+        public MonitorType type() {
             return CPU_LOAD;
         }
     }

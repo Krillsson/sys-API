@@ -179,17 +179,17 @@ public abstract class Monitor {
         return id;
     }
 
-    protected abstract double value(SystemLoad systemLoad);
+    public abstract double value(SystemLoad systemLoad);
 
-    protected abstract boolean isOutsideThreshold(double value);
+    public abstract boolean isOutsideThreshold(double value);
 
-    protected abstract MonitorType type();
+    public abstract MonitorType type();
 
-    protected double threshold(){
+    public double threshold() {
         return threshold;
     }
 
-    Duration inertia() {
+    public Duration inertia() {
         return inertia;
     }
 

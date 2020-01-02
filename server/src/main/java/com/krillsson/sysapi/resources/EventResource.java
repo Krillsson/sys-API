@@ -33,7 +33,7 @@ public class EventResource {
     @Path("{id}")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public void delete(@Auth UserConfiguration user, @PathParam("id") String id) {
-        boolean removed = monitorManager.removeEvents(id);
+        boolean removed = monitorManager.removeEvents(id) != null;
         if (!removed) {
             throw new WebApplicationException(NOT_FOUND);
         }

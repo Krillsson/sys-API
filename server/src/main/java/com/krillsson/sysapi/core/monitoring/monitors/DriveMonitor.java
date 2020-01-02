@@ -15,7 +15,7 @@ public class DriveMonitor extends Monitor {
     }
 
     @Override
-    protected double value(SystemLoad systemLoad) {
+    public double value(SystemLoad systemLoad) {
         return (double) systemLoad.getDriveLoads()
                 .stream()
                 .filter(i -> i.getName().equalsIgnoreCase(id()))
@@ -25,12 +25,12 @@ public class DriveMonitor extends Monitor {
     }
 
     @Override
-    protected boolean isOutsideThreshold(double value) {
+    public boolean isOutsideThreshold(double value) {
         return value < threshold();
     }
 
     @Override
-    protected MonitorType type() {
+    public MonitorType type() {
         return MonitorType.DRIVE_SPACE;
     }
 

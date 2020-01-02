@@ -41,7 +41,9 @@ import com.krillsson.sysapi.core.query.MetricQueryManager
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
 import com.krillsson.sysapi.dto.monitor.Monitor
 import com.krillsson.sysapi.dto.monitor.MonitorEvent
+import com.krillsson.sysapi.graphql.MutationResolver
 import com.krillsson.sysapi.graphql.QueryResolver
+import com.krillsson.sysapi.graphql.scalars.ScalarTypes
 import com.krillsson.sysapi.persistence.JsonFile
 import com.krillsson.sysapi.resources.*
 import com.krillsson.sysapi.util.EnvironmentUtils
@@ -77,6 +79,7 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
     }
 
     val queryResolver = QueryResolver()
+    val mutationResolver = MutationResolver()
 
     override fun initialize(bootstrap: Bootstrap<SystemApiConfiguration>) {
         val mapper = bootstrap.objectMapper
@@ -101,7 +104,23 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
                 factory.setGraphQLSchema(
                         SchemaParser.newParser()
                                 .file("schema.graphqls")
-                                .resolvers(queryResolver)
+                                .resolvers(queryResolver,
+                                        mutationResolver,
+                                        queryResolver.systemInfoResolver,
+                                        queryResolver.historyResolver,
+                                        queryResolver.monitorResolver,
+                                        queryResolver.monitorEventResolver,
+                                        queryResolver.stringResolver,
+                                        queryResolver.motherboardResolver,
+                                        queryResolver.processorResolver,
+                                        queryResolver.driveResolver,
+                                        queryResolver.networkInterfaceResolver,
+                                        queryResolver.memoryLoadResolver,
+                                        queryResolver.processorMetricsResolver,
+                                        queryResolver.driveMetricResolver,
+                                        queryResolver.networkInterfaceMetricResolver
+                                )
+                                .scalars(ScalarTypes.scalars)
                                 .build().makeExecutableSchema()
                 )
                 return factory
@@ -199,6 +218,8 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
         queryResolver.historyManager = historyManager
         queryResolver.metrics = provider
         queryResolver.os = os
+        mutationResolver.historyManager = historyManager
+        mutationResolver.metrics = provider
         setupManagedObjects(environment, monitorManager, speedMeasurementManager, ticker, monitorMetricQueryManager, historyManager, historyMetricQueryManager)
         registerFeatures(environment, config.user())
         registerResources(environment, os, provider, historyManager, monitorManager)

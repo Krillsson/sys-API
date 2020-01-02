@@ -12,17 +12,17 @@ public class CpuTemperatureMonitor extends Monitor {
     }
 
     @Override
-    protected double value(SystemLoad systemLoad) {
+    public double value(SystemLoad systemLoad) {
         return systemLoad.getCpuLoad().getCpuHealth().getTemperatures().stream().findFirst().orElse(-1.0);
     }
 
     @Override
-    protected boolean isOutsideThreshold(double value) {
+    public boolean isOutsideThreshold(double value) {
         return value > threshold();
     }
 
     @Override
-    protected MonitorType type() {
+    public MonitorType type() {
         return MonitorType.CPU_TEMP;
     }
 }

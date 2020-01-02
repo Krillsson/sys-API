@@ -66,7 +66,7 @@ public class MonitorManager implements Managed {
     @Nullable
     public String createAndAdd(int inertiaInSeconds, MonitorType type, double threshold) {
         Monitor monitor = create(type, threshold, Duration.ofSeconds(inertiaInSeconds));
-        if(validate(monitor)){
+        if (validate(monitor)) {
             addMonitor(monitor);
             return monitor.id();
         }
@@ -107,7 +107,8 @@ public class MonitorManager implements Managed {
         });
     }
 
-    public boolean removeEvents(String id) {
+    @Nullable
+    public String removeEvents(String id) {
         List<MonitorEvent> toBeRemoved = new ArrayList<>();
         for (MonitorEvent event : events) {
             if (event.getId().toString().equalsIgnoreCase(id)) {
@@ -115,15 +116,23 @@ public class MonitorManager implements Managed {
             }
         }
         LOGGER.debug("Removed {} events with ID {}", toBeRemoved.size(), id);
-        return events.removeAll(toBeRemoved);
+        boolean status = events.removeAll(toBeRemoved);
+        if (status) {
+            return id;
+        } else {
+            return null;
+        }
     }
 
-    public boolean remove(String id) {
+    @Nullable
+    public String remove(String id) {
         boolean status = activeMonitors.remove(id) != null;
         if (status) {
             persist();
+            return id;
+        } else {
+            return null;
         }
-        return status;
     }
 
     public Optional<Monitor> monitorById(String id) {

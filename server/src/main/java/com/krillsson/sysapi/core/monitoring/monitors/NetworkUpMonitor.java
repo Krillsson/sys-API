@@ -12,7 +12,7 @@ public class NetworkUpMonitor extends Monitor {
     }
 
     @Override
-    protected double value(SystemLoad systemLoad) {
+    public double value(SystemLoad systemLoad) {
         return systemLoad.getNetworkInterfaceLoads()
                 .stream()
                 .filter(n -> n.getName().equalsIgnoreCase(id()))
@@ -22,12 +22,12 @@ public class NetworkUpMonitor extends Monitor {
     }
 
     @Override
-    protected boolean isOutsideThreshold(double value) {
+    public boolean isOutsideThreshold(double value) {
         return value != 0.0;
     }
 
     @Override
-    protected MonitorType type() {
+    public MonitorType type() {
         return MonitorType.NETWORK_UP;
     }
 }
