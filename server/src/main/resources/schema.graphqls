@@ -226,7 +226,7 @@ type Partition {
 }
 
 type DriveMetrics {
-    driveId: ID
+    driveId: UUID
     temperature: Int
     healthData: [DriveHealth]
     usableSpace: Int
@@ -261,7 +261,7 @@ type DriveReadWriteRate { readBytesPerSecond: Int writeBytesPerSecond: Int }
 
 type NetworkInterface {
     name: String
-    id: ID
+    id: UUID
     displayName: String
     mac: String
     speed: Int
@@ -273,7 +273,7 @@ type NetworkInterface {
 }
 
 type NetworkInterfaceMetrics {
-    networkInterfaceid: ID
+    networkInterfaceid: UUID
     speed: Int
     bytesReceived: Int
     bytesSent: Int

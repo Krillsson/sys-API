@@ -4,10 +4,9 @@ import com.coxautodev.graphql.tools.GraphQLMutationResolver
 import com.krillsson.sysapi.core.history.HistoryManager
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.MonitorManager
-import com.krillsson.sysapi.graphql.mutations.CreateMonitorInput
-import com.krillsson.sysapi.graphql.mutations.DeleteEventInput
-import com.krillsson.sysapi.graphql.mutations.DeleteMonitorInput
+import com.krillsson.sysapi.graphql.mutations.*
 import oshi.software.os.OperatingSystem
+import java.util.*
 
 class MutationResolver : GraphQLMutationResolver {
 
@@ -16,15 +15,15 @@ class MutationResolver : GraphQLMutationResolver {
     var historyManager: HistoryManager? = null
     var os: OperatingSystem? = null
 
-    fun createMonitor(input: CreateMonitorInput): String? {
-        return monitorManager?.createAndAdd(input.inertiaInSeconds, input.type, input.threshold.toDouble())
+    fun createMonitor(input: CreateMonitorInput): CreateMonitorOutput? {
+        return CreateMonitorOutput(UUID.fromString(monitorManager?.createAndAdd(input.inertiaInSeconds, input.type, input.threshold.toDouble())))
     }
 
-    fun deleteMonitor(input: DeleteMonitorInput): String? {
-        return monitorManager?.remove(input.id)
+    fun deleteMonitor(input: DeleteMonitorInput): DeleteMonitorOutput? {
+        return DeleteMonitorOutput(UUID.fromString(monitorManager?.remove(input.id)))
     }
 
-    fun deleteEvent(input: DeleteEventInput): String? {
-        return monitorManager?.removeEvents(input.id)
+    fun deleteEvent(input: DeleteEventInput): DeleteEventOutput? {
+        return DeleteEventOutput(UUID.fromString(monitorManager?.removeEvents(input.id)))
     }
 }

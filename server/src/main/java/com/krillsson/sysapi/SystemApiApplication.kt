@@ -110,7 +110,7 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
                                         queryResolver.historyResolver,
                                         queryResolver.monitorResolver,
                                         queryResolver.monitorEventResolver,
-                                        queryResolver.stringResolver,
+                                        //queryResolver.stringResolver,
                                         queryResolver.motherboardResolver,
                                         queryResolver.processorResolver,
                                         queryResolver.driveResolver,

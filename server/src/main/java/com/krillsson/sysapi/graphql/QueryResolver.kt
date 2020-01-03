@@ -95,7 +95,7 @@ class QueryResolver : GraphQLQueryResolver {
         }
 
         fun getProcesses(system: SystemInfo): List<Process?>? {
-            return metrics?.processesMetrics()?.processesInfo(OperatingSystem.ProcessSort.MEMORY, -1)?.processes
+            return metrics?.processesMetrics()?.processesInfo(OperatingSystem.ProcessSort.MEMORY, 0)?.processes
         }
     }
 
