@@ -56,7 +56,7 @@ type System {
     networkInterfaces: [NetworkInterface]
     #graphics: [Graphics]
     # 0 means no limitation
-    processes(limit: Int = 0): [Process]
+    processes(limit: Int = 0, sortBy: ProcessSortMethod = MEMORY): [Process]
     memory: Memory
 }
 
@@ -334,6 +334,16 @@ type Process {
     startTime: Int
     bytesRead: Int
     bytesWritten: Int
+}
+
+enum ProcessSortMethod{
+    CPU,
+    MEMORY,
+    OLDEST,
+    NEWEST,
+    PID,
+    PARENTPID,
+    NAME
 }
 
 # Memory

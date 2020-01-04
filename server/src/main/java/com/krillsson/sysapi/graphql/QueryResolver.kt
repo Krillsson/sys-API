@@ -20,6 +20,7 @@ import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorEvent
 import com.krillsson.sysapi.core.monitoring.MonitorManager
+import com.krillsson.sysapi.graphql.domain.ProcessSortMethod
 import com.krillsson.sysapi.util.EnvironmentUtils
 import oshi.hardware.CentralProcessor
 import oshi.hardware.UsbDevice
@@ -93,8 +94,18 @@ class QueryResolver : GraphQLQueryResolver {
             return metrics?.gpuMetrics()?.gpus()
         }
 
-        fun getProcesses(system: SystemInfo, limit: Int = 0): List<Process?>? {
-            return metrics?.processesMetrics()?.processesInfo(OperatingSystem.ProcessSort.MEMORY, limit)?.processes
+        fun getProcesses(system: SystemInfo, limit: Int = 0, processSortMethod: ProcessSortMethod = ProcessSortMethod.MEMORY): List<Process?>? {
+            return metrics?.processesMetrics()?.processesInfo(processSortMethod.toOperatingSystemProcessSort(), limit)?.processes
+        }
+
+        private fun ProcessSortMethod.toOperatingSystemProcessSort(): OperatingSystem.ProcessSort = when (this) {
+            ProcessSortMethod.CPU -> OperatingSystem.ProcessSort.CPU
+            ProcessSortMethod.MEMORY -> OperatingSystem.ProcessSort.MEMORY
+            ProcessSortMethod.OLDEST -> OperatingSystem.ProcessSort.OLDEST
+            ProcessSortMethod.NEWEST -> OperatingSystem.ProcessSort.NEWEST
+            ProcessSortMethod.PID -> OperatingSystem.ProcessSort.PID
+            ProcessSortMethod.PARENTPID -> OperatingSystem.ProcessSort.PARENTPID
+            ProcessSortMethod.NAME -> OperatingSystem.ProcessSort.NAME
         }
     }
 

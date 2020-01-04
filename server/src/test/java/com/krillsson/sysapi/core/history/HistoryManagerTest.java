@@ -15,9 +15,9 @@ import static org.mockito.Mockito.*;
 public class HistoryManagerTest {
 
     HistoryManager historyManager;
+    History history;
     private EventBus eventBus;
     private HistoryPurgingConfiguration purgingConfiguration;
-    History history;
 
     @Before
     public void setUp() throws Exception {

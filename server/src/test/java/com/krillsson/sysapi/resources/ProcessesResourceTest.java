@@ -8,7 +8,6 @@ import com.krillsson.sysapi.dto.processes.ProcessInfo;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.*;
 import org.mockito.ArgumentCaptor;
-import oshi.hardware.GlobalMemory;
 import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
 
@@ -98,7 +97,7 @@ public class ProcessesResourceTest {
         ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
         when(provider.processesInfo(any(OperatingSystem.ProcessSort.class), captor.capture()))
                 .thenReturn(new ProcessesInfo(mock(MemoryLoad.class), 0, 0, 0,
-                                              Arrays.asList(process)
+                        Arrays.asList(process)
                 ));
 
         ProcessInfo processInfo = RESOURCES.getJerseyTest().target("/processes")
@@ -116,7 +115,7 @@ public class ProcessesResourceTest {
         ArgumentCaptor<OperatingSystem.ProcessSort> captor = ArgumentCaptor.forClass(OperatingSystem.ProcessSort.class);
         when(provider.processesInfo(captor.capture(), anyInt()))
                 .thenReturn(new ProcessesInfo(mock(MemoryLoad.class), 0, 0, 0,
-                                              Arrays.asList(process)
+                        Arrays.asList(process)
                 ));
 
         ProcessInfo processInfo = RESOURCES.getJerseyTest().target("/processes")
@@ -133,7 +132,7 @@ public class ProcessesResourceTest {
     public void getProcessesHappyPath() throws Exception {
         when(provider.processesInfo(any(OperatingSystem.ProcessSort.class), anyInt()))
                 .thenReturn(new ProcessesInfo(mock(MemoryLoad.class), 0, 0, 0,
-                                              Arrays.asList(process)
+                        Arrays.asList(process)
                 ));
 
         final ProcessInfo response = RESOURCES.getJerseyTest().target("/processes")

@@ -1,9 +1,8 @@
 package com.krillsson.sysapi.core.metrics.windows;
 
-import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad;
+import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import ohmwrapper.Bandwidth;
-import ohmwrapper.MonitorManager;
 import ohmwrapper.NetworkMonitor;
 import ohmwrapper.NicInfo;
 import org.junit.Before;

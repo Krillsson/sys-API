@@ -23,11 +23,9 @@ package com.krillsson.sysapi.core.domain.memory;
 
 import com.krillsson.sysapi.core.domain.system.DateMapper;
 import com.krillsson.sysapi.dto.history.HistoryEntry;
-import com.krillsson.sysapi.dto.processes.Memory;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
-import oshi.hardware.VirtualMemory;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,9 +38,7 @@ import java.util.Map;
 public interface MemoryMapper {
     MemoryMapper INSTANCE = Mappers.getMapper(MemoryMapper.class);
 
-    default com.krillsson.sysapi.dto.memory.MemoryLoad map(MemoryLoad value){
-        return new com.krillsson.sysapi.dto.memory.MemoryLoad(value.getNumberOfProcesses(), value.getSwapTotal(), value.getSwapUsed(), value.getTotal(), value.getAvailable());
-    }
+    com.krillsson.sysapi.dto.memory.MemoryLoad map(MemoryLoad load);
 
     Map<String, com.krillsson.sysapi.dto.memory.MemoryLoad> mapHistory(Map<LocalDateTime, MemoryLoad> history);
 

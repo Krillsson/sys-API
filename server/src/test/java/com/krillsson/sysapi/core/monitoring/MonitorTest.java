@@ -17,11 +17,11 @@ public class MonitorTest {
     public static final int INERTIA = 20;
     public static final int PAST_INERTIA = INERTIA + 1;
     public static final int NOT_PAST_INERTIA = INERTIA - 1;
+    static final int OUTSIDE = 1;
+    static final int INSIDE = 0;
     TestableMonitor monitor;
     Clock clock;
     SystemLoad load;
-    static final int OUTSIDE = 1;
-    static final int INSIDE = 0;
 
     @Before
     public void setUp() throws Exception {
@@ -130,7 +130,7 @@ public class MonitorTest {
         //should have outside event
         MonitorEvent monitorEvent = event.get();
 
-        assertEquals( "ID", monitorEvent.getMonitorId());
+        assertEquals("ID", monitorEvent.getMonitorId());
         assertEquals(clock.now(), monitorEvent.getTime());
         assertEquals(1, monitorEvent.getThreshold(), 0.0);
         assertEquals(CPU_LOAD, monitorEvent.getMonitorType());

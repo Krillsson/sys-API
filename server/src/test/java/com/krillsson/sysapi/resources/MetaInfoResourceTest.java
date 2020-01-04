@@ -18,7 +18,7 @@ public class MetaInfoResourceTest {
 
     @Test
     public void getRootHappyPath() throws Exception {
-        final com.krillsson.sysapi.dto.metadata.Meta response = RESOURCES.getJerseyTest().target("/")
+        final com.krillsson.sysapi.dto.metadata.Meta response = RESOURCES.getJerseyTest().target("/meta")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(com.krillsson.sysapi.dto.metadata.Meta.class);
 
@@ -30,7 +30,7 @@ public class MetaInfoResourceTest {
 
     @Test
     public void getVersionHappyPath() throws Exception {
-        final String response = RESOURCES.getJerseyTest().target("/version")
+        final String response = RESOURCES.getJerseyTest().target("meta/version")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(String.class);
 

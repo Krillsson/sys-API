@@ -1,10 +1,10 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
-import com.krillsson.sysapi.util.Ticker;
 import com.krillsson.sysapi.core.domain.cpu.CoreLoad;
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
 import com.krillsson.sysapi.core.metrics.CpuMetrics;
+import com.krillsson.sysapi.util.Ticker;
 import com.krillsson.sysapi.util.Utils;
 import org.slf4j.Logger;
 import oshi.hardware.CentralProcessor;
@@ -34,8 +34,6 @@ public class DefaultCpuMetrics implements CpuMetrics, Ticker.TickListener {
         this.cpuSensors = cpuSensors;
         this.utils = utils;
         this.ticker = ticker;
-        this.ticks = hal.getProcessor().getSystemCpuLoadTicks();
-        this.coreTicks = hal.getProcessor().getProcessorCpuLoadTicks();
     }
 
     void register() {

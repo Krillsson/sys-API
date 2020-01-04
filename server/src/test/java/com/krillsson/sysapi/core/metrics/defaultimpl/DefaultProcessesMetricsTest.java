@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import oshi.hardware.GlobalMemory;
 import oshi.hardware.HardwareAbstractionLayer;
+import oshi.hardware.VirtualMemory;
 import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
 
@@ -18,6 +19,7 @@ import static org.mockito.Mockito.when;
 public class DefaultProcessesMetricsTest {
     HardwareAbstractionLayer hal;
     GlobalMemory memory;
+    VirtualMemory virtualMemory;
     OperatingSystem os;
     DefaultProcessesMetrics provider;
 
@@ -25,7 +27,10 @@ public class DefaultProcessesMetricsTest {
     public void setUp() throws Exception {
         hal = mock(HardwareAbstractionLayer.class);
         memory = mock(GlobalMemory.class);
+        virtualMemory = mock(VirtualMemory.class);
+
         when(hal.getMemory()).thenReturn(memory);
+        when(memory.getVirtualMemory()).thenReturn(virtualMemory);
         os = mock(OperatingSystem.class);
 
         provider = new DefaultProcessesMetrics(os, hal);
