@@ -35,7 +35,6 @@ class QueryResolver : GraphQLQueryResolver {
     val historyResolver = HistoryResolver()
     val monitorResolver = MonitorResolver()
     val monitorEventResolver = MonitorEventResolver()
-    val stringResolver = StringResolver()
     val motherboardResolver = MotherboardResolver()
     val processorResolver = ProcessorResolver()
     val processorMetricsResolver = ProcessorMetricsResolver()
@@ -94,8 +93,8 @@ class QueryResolver : GraphQLQueryResolver {
             return metrics?.gpuMetrics()?.gpus()
         }
 
-        fun getProcesses(system: SystemInfo): List<Process?>? {
-            return metrics?.processesMetrics()?.processesInfo(OperatingSystem.ProcessSort.MEMORY, 0)?.processes
+        fun getProcesses(system: SystemInfo, limit: Int = 0): List<Process?>? {
+            return metrics?.processesMetrics()?.processesInfo(OperatingSystem.ProcessSort.MEMORY, limit)?.processes
         }
     }
 
@@ -135,11 +134,6 @@ class QueryResolver : GraphQLQueryResolver {
 
     inner class MonitorEventResolver : GraphQLResolver<MonitorEvent> {
         fun getType(monitorEvent: MonitorEvent) = monitorEvent.monitorType
-    }
-
-    // this is supposed to be scalar
-    inner class StringResolver : GraphQLResolver<String> {
-        fun getId(string: String) = string
     }
 
     inner class MotherboardResolver : GraphQLResolver<Motherboard> {

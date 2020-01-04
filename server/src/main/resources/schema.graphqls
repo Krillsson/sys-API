@@ -55,7 +55,8 @@ type System {
     drives: [Drive]
     networkInterfaces: [NetworkInterface]
     #graphics: [Graphics]
-    processes: [Process]
+    # 0 means no limitation
+    processes(limit: Int = 0): [Process]
     memory: Memory
 }
 
