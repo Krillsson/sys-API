@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.monitoring;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.krillsson.sysapi.core.metrics.Metrics;
@@ -21,6 +22,16 @@ public class MonitorManager implements Managed {
     private final EventBus eventBus;
     private final JsonFile<HashMap<String, com.krillsson.sysapi.dto.monitor.Monitor>> persistentMonitors;
     private final Metrics provider;
+
+    public static TypeReference<HashMap<String, com.krillsson.sysapi.dto.monitor.Monitor>> monitorsTypeReference() {
+        return new TypeReference<HashMap<String, com.krillsson.sysapi.dto.monitor.Monitor>>() {
+        };
+    }
+
+    public static TypeReference<List<com.krillsson.sysapi.dto.monitor.MonitorEvent>> eventsTypeReference() {
+        return new TypeReference<List<com.krillsson.sysapi.dto.monitor.MonitorEvent>>() {
+        };
+    }
 
     public MonitorManager(EventBus eventBus, JsonFile<HashMap<String, com.krillsson.sysapi.dto.monitor.Monitor>> persistentMonitors, Metrics provider) {
         this.eventBus = eventBus;

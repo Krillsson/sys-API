@@ -200,14 +200,14 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
 
         val persistedMonitors = JsonFile(
                 monitorsFilename,
-                JsonFile.mapTypeReference(),
+                MonitorManager.monitorsTypeReference(),
                 HashMap<String, Monitor>(),
                 environment.objectMapper
         )
 
         val persistedEvents = JsonFile(
                 eventsFileName,
-                JsonFile.listTypeReference(),
+                MonitorManager.eventsTypeReference(),
                 ArrayList<MonitorEvent>() as List<MonitorEvent>,
                 environment.objectMapper
         )
