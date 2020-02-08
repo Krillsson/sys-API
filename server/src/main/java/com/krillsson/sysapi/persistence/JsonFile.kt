@@ -1,75 +1,83 @@
-package com.krillsson.sysapi.persistence;
+package com.krillsson.sysapi.persistence
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.krillsson.sysapi.dto.monitor.Monitor;
-import com.krillsson.sysapi.dto.monitor.MonitorEvent;
-import org.slf4j.Logger;
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.slf4j.LoggerFactory
+import java.io.File
+import java.io.FileReader
+import java.io.FileWriter
+import java.io.IOException
 
-import java.io.*;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-public class JsonFile<T> {
-
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(JsonFile.class);
-
-    private final TypeReference<T> typeToken;
-    private final ObjectMapper objectMapper;
-
-    private final String filePath;
-    private T ifNull;
-
-    public static TypeReference<HashMap<String, Monitor>> mapTypeReference() {
-        return new TypeReference<HashMap<String, Monitor>>() {
-        };
-    }
-
-    public static TypeReference<List<MonitorEvent>> listTypeReference() {
-        return new TypeReference<List<MonitorEvent>>() {
-        };
-    }
-
-    public JsonFile(String filePath, TypeReference<T> typeToken, T ifNull, ObjectMapper objectMapper) {
-        this.filePath = filePath;
-        this.typeToken = typeToken;
-        this.ifNull = ifNull;
-        this.objectMapper = objectMapper;
-    }
-
-    public <R> R getPersistedData(boolean persistChanges, Result<T, R> result) {
-        R value = null;
-        File file = new File(filePath);
+class JsonFile<T>(private val filePath: String, private val typeToken: TypeReference<T>, private val ifNull: T, private val objectMapper: ObjectMapper) {
+    fun read(): T? {
+        val file = getFile()
         try {
-            //does not create a file if it already exists
-            file.createNewFile();
-        } catch (IOException e) {
-            LOGGER.error("Unable to create file {}", filePath, e);
+            FileReader(file).use { reader ->
+                var jsonObject: T? = null
+                if (file.length() > 0) {
+                    jsonObject = objectMapper.readValue(reader, typeToken)
+                }
+                if (jsonObject == null) {
+                    jsonObject = ifNull
+                }
+                return jsonObject
+            }
+        } catch (e: IOException) {
+            LOGGER.error("Exception while deserializing", e)
         }
-        try (Reader reader = new FileReader(file)) {
-            T jsonObject = null;
-            if (file.length() > 0) {
-                jsonObject = objectMapper.readValue(reader, typeToken);
-            }
-            if (jsonObject == null) {
-                jsonObject = ifNull;
-            }
-            value = result.result(jsonObject);
-            if (persistChanges) {
-                try (Writer writer = new FileWriter(filePath)) {
-                    LOGGER.debug("Writing {}", filePath);
-                    objectMapper.writerWithDefaultPrettyPrinter().writeValue(writer, jsonObject);
+        return ifNull
+    }
+
+    fun write(content: T) {
+        val file = getFile()
+        FileWriter(file).use { writer ->
+            LOGGER.debug("Writing {}", filePath)
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(writer, content)
+        }
+    }
+
+    fun <R> getPersistedData(persistChanges: Boolean, result: Result<T?, R>): R? {
+        var value: R? = null
+        val file = getFile()
+        try {
+            FileReader(file).use { reader ->
+                var jsonObject: T? = null
+                if (file.length() > 0) {
+                    jsonObject = objectMapper.readValue(reader, typeToken)
+                }
+                if (jsonObject == null) {
+                    jsonObject = ifNull
+                }
+                value = result.result(jsonObject)
+                if (persistChanges) {
+                    FileWriter(filePath).use { writer ->
+                        LOGGER.debug("Writing {}", filePath)
+                        objectMapper.writerWithDefaultPrettyPrinter().writeValue(writer, jsonObject)
+                    }
                 }
             }
-        } catch (IOException e) {
-            LOGGER.error("Exception while serializing/deserializing", e);
+        } catch (e: IOException) {
+            LOGGER.error("Exception while serializing/deserializing", e)
         }
-        return value;
+        return value
     }
 
-
-    public interface Result<T, R> {
-        R result(T value);
+    private fun getFile(): File {
+        val file = File(filePath)
+        try { //does not create a file if it already exists
+            file.createNewFile()
+        } catch (e: IOException) {
+            LOGGER.error("Unable to create file {}", filePath, e)
+        }
+        return file
     }
+
+    interface Result<T, R> {
+        fun result(value: T): R
+    }
+
+    companion object {
+        private val LOGGER = LoggerFactory.getLogger(JsonFile::class.java)
+    }
+
 }
