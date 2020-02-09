@@ -1,28 +1,20 @@
-package com.krillsson.sysapi.core.monitoring.monitors;
+package com.krillsson.sysapi.core.monitoring.monitors
 
-import com.krillsson.sysapi.core.domain.system.SystemLoad;
-import com.krillsson.sysapi.core.monitoring.Monitor;
-import com.krillsson.sysapi.core.monitoring.MonitorType;
+import com.krillsson.sysapi.core.domain.system.SystemLoad
+import com.krillsson.sysapi.core.monitoring.MonitorInput
+import com.krillsson.sysapi.core.monitoring.MonitorType
+import java.time.Duration
+import java.util.*
 
-import java.time.Duration;
+class MemoryMonitor(override val id: UUID, override val inertia: Duration, override val threshold: Double) : MonitorInput {
+    override val type: MonitorType = MonitorType.MEMORY_SPACE
 
-public class MemoryMonitor extends Monitor {
-    public MemoryMonitor(String id, Duration inertia, double threshold) {
-        super(id, inertia, threshold);
+    override fun value(systemLoad: SystemLoad): Double {
+        return systemLoad.memory.available.toDouble()
+
     }
 
-    @Override
-    public double value(SystemLoad systemLoad) {
-        return systemLoad.getMemory().getAvailable();
-    }
-
-    @Override
-    public boolean isOutsideThreshold(double value) {
-        return value < threshold();
-    }
-
-    @Override
-    public MonitorType type() {
-        return MonitorType.MEMORY_SPACE;
+    override fun isPastThreshold(value: Double): Boolean {
+        return value < threshold
     }
 }

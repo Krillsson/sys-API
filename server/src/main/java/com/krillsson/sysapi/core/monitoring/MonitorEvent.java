@@ -7,7 +7,7 @@ import java.util.UUID;
 public class MonitorEvent {
     private final UUID id;
     private final OffsetDateTime time;
-    private final String monitorId;
+    private final UUID monitorId;
     private final MonitorStatus monitorStatus;
     private final MonitorType monitorType;
     private final double threshold;
@@ -18,7 +18,7 @@ public class MonitorEvent {
         STOP,
     }
 
-    public MonitorEvent(UUID id, String monitorId, OffsetDateTime time, MonitorStatus monitorStatus, MonitorType monitorType, Double threshold, Double value) {
+    public MonitorEvent(UUID id, UUID monitorId, OffsetDateTime time, MonitorStatus monitorStatus, MonitorType monitorType, Double threshold, Double value) {
         this.id = id;
         this.time = time;
         this.monitorId = monitorId;
@@ -32,7 +32,7 @@ public class MonitorEvent {
         return id;
     }
 
-    public String getMonitorId() {
+    public UUID getMonitorId() {
         return monitorId;
     }
 

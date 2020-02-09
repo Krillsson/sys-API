@@ -1,217 +1,151 @@
-package com.krillsson.sysapi.core.monitoring;
+package com.krillsson.sysapi.core.monitoring
 
-import com.google.common.annotations.VisibleForTesting;
-import com.krillsson.sysapi.core.domain.system.SystemLoad;
-import com.krillsson.sysapi.util.Clock;
-import org.slf4j.Logger;
+import com.google.common.annotations.VisibleForTesting
+import com.krillsson.sysapi.core.domain.system.SystemLoad
+import com.krillsson.sysapi.util.Clock
+import org.slf4j.LoggerFactory
+import java.time.Duration
+import java.time.OffsetDateTime
+import java.util.*
 
-import java.time.Duration;
-import java.time.OffsetDateTime;
-import java.util.Optional;
-import java.util.UUID;
+abstract class Monitor @VisibleForTesting protected constructor(private val clock: Clock) {
+    private var stateChangedAt: OffsetDateTime? = null
+    @get:VisibleForTesting
+    var state = State.INSIDE
+        private set
+    private var eventId: UUID? = null
 
-import static java.time.Duration.between;
-
-public abstract class Monitor {
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(Monitor.class);
-    private String id;
-    private final double threshold;
-    //id to monitoring
-    private final Duration inertia;
-    private final Clock clock;
-    private OffsetDateTime stateChangedAt = null;
-    private State state = State.INSIDE;
-    private UUID eventId;
-
-    enum State {
-        INSIDE,
-        OUTSIDE_BEFORE_INERTIA,
-        OUTSIDE,
-        INSIDE_BEFORE_INERTIA;
-    }
-
-
-    public Monitor(String id, Duration inertia, double threshold) {
-        this(id, inertia, threshold, new Clock());
-    }
-
-    @VisibleForTesting
-    protected Monitor(String id, Duration inertia, double threshold, Clock clock){
-        this.id = id;
-        this.inertia = inertia;
-        this.threshold = threshold;
-        this.clock = clock;
+    enum class State {
+        INSIDE, OUTSIDE_BEFORE_INERTIA, OUTSIDE, INSIDE_BEFORE_INERTIA
     }
 
     /**
      * Valid state changes
-     * <p>
+     *
+     *
      * Inside -> Inside
      * no action
-     * <p>
+     *
+     *
      * Inside -> Outside before inertia
      * (conditional: outside threshold)
      * save timestamp of state change
-     * <p>
+     *
+     *
      * Outside before inertia -> Outside before inertia
      * no action
-     * <p>
+     *
+     *
      * Outside before inertia -> inside
      * (conditional: inside threshold)
      * reset timestamp
-     * <p>
+     *
+     *
      * Outside before inertia -> outside
      * (conditional: now-timestamp older than inertia)
      * record event
      * reset timestamp (?)
-     * <p>
+     *
+     *
      * Outside -> outside
      * no action
-     * <p>
+     *
+     *
      * Outside -> inside before inertia
      * (conditional: inside threshold)
      * save timestamp of state change
-     * <p>
+     *
+     *
      * Inside before inertia -> inside
      * (conditional: now-timestamp older than inertia)
      * record event
      * reset timestamp (?)
-     * <p>
+     *
+     *
      * Inside before inertia -> Inside before inertia
      * no action
-     * <p>
+     *
+     *
      * Inside before inertia -> outside
      * reset timestamp
      *
      * @param systemLoad
      * @return
      */
-    Optional<MonitorEvent> check(SystemLoad systemLoad) {
-
-        OffsetDateTime now = clock.now();
-
-        Double value = value(systemLoad);
-        boolean outsideThreshold = isOutsideThreshold(value);
-        boolean pastInertia = stateChangedAt != null && between(stateChangedAt, /* and */ now).compareTo(inertia) > 0;
-        MonitorEvent event = null;
-
-        if(state == State.INSIDE){
-            if(outsideThreshold){
-                //Inside -> Outside before inertia
-                stateChangedAt = now;
-                state = State.OUTSIDE_BEFORE_INERTIA;
-                LOGGER.trace("{} went outside threshold of {} with {} at {}", id(), threshold(), value, now);
-            }
-            else{
-                LOGGER.trace("{} is still inside threshold: {} with {}", id(), threshold(), value);
-            }
-        }
-        else if(state == State.OUTSIDE_BEFORE_INERTIA){
-            if(outsideThreshold){
-                if(pastInertia){
-                    //Outside before inertia -> outside
-                    LOGGER.debug("{} have now been outside threshold of {} for more than {}, triggering event...", id(), threshold(), inertia());
-                    state = State.OUTSIDE;
-                    stateChangedAt = null;
-                    eventId = UUID.randomUUID();
-                    event = new MonitorEvent(
-                            eventId, id, now,
-                            MonitorEvent.MonitorStatus.START,
-                            type(), threshold(),
-                            value
-                    );
-                }
-                else{
-                    //Outside before inertia -> Outside before inertia
-                    LOGGER.trace("{} is still outside threshold of {} but inside grace period of {}", id(), threshold(), inertia());
+    fun check(systemLoad: SystemLoad, input: MonitorInput): Optional<MonitorEvent> {
+        val now = clock.now()
+        val value = input.value(systemLoad)
+        val outsideThreshold = input.isPastThreshold(value)
+        val pastInertia = stateChangedAt != null && Duration.between(stateChangedAt,  /* and */now).compareTo(input.inertia) > 0
+        var event: MonitorEvent? = null
+        when (state) {
+            State.INSIDE -> {
+                if (outsideThreshold) { //Inside -> Outside before inertia
+                    stateChangedAt = now
+                    state = State.OUTSIDE_BEFORE_INERTIA
+                    LOGGER.trace("{} went outside threshold of {} with {} at {}", input.id, input.threshold, value, now)
+                } else {
+                    LOGGER.trace("{} is still inside threshold: {} with {}", input.id, input.threshold, value)
                 }
             }
-            else{
-                //Outside before inertia -> inside
-                LOGGER.trace("{} went back inside threshold of {} inside grace period of {}", id(), threshold(), inertia());
-                stateChangedAt = null;
-                state = State.INSIDE;
-            }
-        }
-        else if (state == State.OUTSIDE){
-            if(outsideThreshold){
-                //Outside -> outside
-                LOGGER.trace("{} is still outside threshold of {} at {}", id(), threshold(), value);
-            }else{
-                //Outside -> Inside before inertia
-                stateChangedAt = now;
-                state = State.INSIDE_BEFORE_INERTIA;
-                LOGGER.trace("{} went inside threshold of {} at {}", id(), threshold(), now);
-            }
-        }
-        else if(state == State.INSIDE_BEFORE_INERTIA){
-            if(!outsideThreshold){
-                if(pastInertia){
-                    //Inside before inertia -> inside
-                    LOGGER.debug("{} have now been inside threshold of {} for more than {}, triggering event...", id(), threshold(), inertia());
-                    state = State.INSIDE;
-                    stateChangedAt = null;
-                    event = new MonitorEvent(
-                            eventId, id, now,
-                            MonitorEvent.MonitorStatus.STOP,
-                            type(), threshold(),
-                            value
-                    );
-                }
-                else{
-                    //Inside before inertia -> Inside before inertia
-                    LOGGER.trace("{} is still inside threshold of {} with {} but inside grace period of {}", id(), threshold(), value, inertia());
+            State.OUTSIDE_BEFORE_INERTIA -> {
+                if (outsideThreshold) {
+                    if (pastInertia) { //Outside before inertia -> outside
+                        LOGGER.debug("{} have now been outside threshold of {} for more than {}, triggering event...", input.id, input.threshold, input.inertia)
+                        state = State.OUTSIDE
+                        stateChangedAt = null
+                        eventId = UUID.randomUUID()
+                        event = MonitorEvent(
+                                eventId, input.id, now,
+                                MonitorEvent.MonitorStatus.START,
+                                input.type, input.threshold,
+                                value
+                        )
+                    } else { //Outside before inertia -> Outside before inertia
+                        LOGGER.trace("{} is still outside threshold of {} but inside grace period of {}", input.id, input.threshold, input.inertia)
+                    }
+                } else { //Outside before inertia -> inside
+                    LOGGER.trace("{} went back inside threshold of {} inside grace period of {}", input.id, input.threshold, input.inertia)
+                    stateChangedAt = null
+                    state = State.INSIDE
                 }
             }
-            else{
-                //Inside before inertia -> outside
-                LOGGER.trace("{} went back outside threshold of {} with {} inside grace period of {}", id(), threshold(), value, inertia());
-                stateChangedAt = null;
-                state = State.OUTSIDE;
+            State.OUTSIDE -> {
+                if (outsideThreshold) { //Outside -> outside
+                    LOGGER.trace("{} is still outside threshold of {} at {}", input.id, input.threshold, value)
+                } else { //Outside -> Inside before inertia
+                    stateChangedAt = now
+                    state = State.INSIDE_BEFORE_INERTIA
+                    LOGGER.trace("{} went inside threshold of {} at {}", input.id, input.threshold, now)
+                }
+            }
+            State.INSIDE_BEFORE_INERTIA -> {
+                if (!outsideThreshold) {
+                    if (pastInertia) { //Inside before inertia -> inside
+                        LOGGER.debug("{} have now been inside threshold of {} for more than {}, triggering event...", input.id, input.threshold, input.inertia)
+                        state = State.INSIDE
+                        stateChangedAt = null
+                        event = MonitorEvent(
+                                eventId, input.id, now,
+                                MonitorEvent.MonitorStatus.STOP,
+                                input.type, input.threshold,
+                                value
+                        )
+                    } else { //Inside before inertia -> Inside before inertia
+                        LOGGER.trace("{} is still inside threshold of {} with {} but inside grace period of {}", input.id, input.threshold, value, input.inertia)
+                    }
+                } else { //Inside before inertia -> outside
+                    LOGGER.trace("{} went back outside threshold of {} with {} inside grace period of {}", input.id, input.threshold, value, input.inertia)
+                    stateChangedAt = null
+                    state = State.OUTSIDE
+                }
             }
         }
-
-        return Optional.ofNullable(event);
-
+        return Optional.ofNullable(event)
     }
 
-    public String id() {
-        return id;
+    companion object {
+        private val LOGGER = LoggerFactory.getLogger(Monitor::class.java)
     }
 
-    public abstract double value(SystemLoad systemLoad);
-
-    public abstract boolean isOutsideThreshold(double value);
-
-    public abstract MonitorType type();
-
-    public double threshold() {
-        return threshold;
-    }
-
-    public Duration inertia() {
-        return inertia;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    @VisibleForTesting
-    State getState() {
-        return state;
-    }
-
-    @Override
-    public String toString() {
-        return "Monitor{" +
-                "id='" + id + '\'' +
-                ", threshold=" + threshold +
-                ", inertia=" + inertia +
-                ", clock=" + clock +
-                ", stateChangedAt=" + stateChangedAt +
-                ", state=" + state +
-                ", eventId=" + eventId +
-                '}';
-    }
 }
