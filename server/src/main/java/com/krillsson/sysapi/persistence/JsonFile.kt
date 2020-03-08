@@ -8,8 +8,8 @@ import java.io.FileReader
 import java.io.FileWriter
 import java.io.IOException
 
-class JsonFile<T>(private val filePath: String, private val typeToken: TypeReference<T>, private val ifNull: T, private val objectMapper: ObjectMapper) {
-    fun read(): T? {
+abstract class JsonFile<T>(private val filePath: String, private val typeToken: TypeReference<T>, private val ifNull: T, private val objectMapper: ObjectMapper) : Store<T> {
+    override fun read(): T? {
         val file = getFile()
         try {
             FileReader(file).use { reader ->
@@ -28,12 +28,17 @@ class JsonFile<T>(private val filePath: String, private val typeToken: TypeRefer
         return ifNull
     }
 
-    fun write(content: T) {
+    override fun write(content: T) {
         val file = getFile()
         FileWriter(file).use { writer ->
             LOGGER.debug("Writing {}", filePath)
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(writer, content)
         }
+    }
+
+    override fun clear() {
+        LOGGER.debug("Deleting {}", filePath)
+        getFile().delete()
     }
 
     fun <R> getPersistedData(persistChanges: Boolean, result: Result<T?, R>): R? {

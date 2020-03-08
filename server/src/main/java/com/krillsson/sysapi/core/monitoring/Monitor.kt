@@ -8,7 +8,7 @@ import java.time.Duration
 import java.time.OffsetDateTime
 import java.util.*
 
-abstract class Monitor @VisibleForTesting protected constructor(private val clock: Clock) {
+class Monitor @VisibleForTesting constructor(private val clock: Clock) {
     private var stateChangedAt: OffsetDateTime? = null
     @get:VisibleForTesting
     var state = State.INSIDE
