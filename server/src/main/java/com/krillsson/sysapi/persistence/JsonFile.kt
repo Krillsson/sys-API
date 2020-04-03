@@ -8,7 +8,7 @@ import java.io.FileReader
 import java.io.FileWriter
 import java.io.IOException
 
-abstract class JsonFile<T>(private val filePath: String, private val typeToken: TypeReference<T>, private val ifNull: T, private val objectMapper: ObjectMapper) : Store<T> {
+abstract class JsonFile<T>(private val filePath: String, private val typeToken: TypeReference<T>, private val objectMapper: ObjectMapper) : Store<T> {
     override fun read(): T? {
         val file = getFile()
         try {
@@ -17,54 +17,29 @@ abstract class JsonFile<T>(private val filePath: String, private val typeToken: 
                 if (file.length() > 0) {
                     jsonObject = objectMapper.readValue(reader, typeToken)
                 }
-                if (jsonObject == null) {
-                    jsonObject = ifNull
-                }
                 return jsonObject
             }
         } catch (e: IOException) {
-            LOGGER.error("Exception while deserializing", e)
+            LOGGER.error("Exception while reading", e)
         }
-        return ifNull
+        return null
     }
 
     override fun write(content: T) {
         val file = getFile()
-        FileWriter(file).use { writer ->
-            LOGGER.debug("Writing {}", filePath)
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(writer, content)
+        try {
+            FileWriter(file).use { writer ->
+                LOGGER.debug("Writing {}", filePath)
+                objectMapper.writerWithDefaultPrettyPrinter().writeValue(writer, content)
+            }
+        } catch (e: IOException) {
+            LOGGER.error("Exception while writing", e)
         }
     }
 
     override fun clear() {
         LOGGER.debug("Deleting {}", filePath)
         getFile().delete()
-    }
-
-    fun <R> getPersistedData(persistChanges: Boolean, result: Result<T?, R>): R? {
-        var value: R? = null
-        val file = getFile()
-        try {
-            FileReader(file).use { reader ->
-                var jsonObject: T? = null
-                if (file.length() > 0) {
-                    jsonObject = objectMapper.readValue(reader, typeToken)
-                }
-                if (jsonObject == null) {
-                    jsonObject = ifNull
-                }
-                value = result.result(jsonObject)
-                if (persistChanges) {
-                    FileWriter(filePath).use { writer ->
-                        LOGGER.debug("Writing {}", filePath)
-                        objectMapper.writerWithDefaultPrettyPrinter().writeValue(writer, jsonObject)
-                    }
-                }
-            }
-        } catch (e: IOException) {
-            LOGGER.error("Exception while serializing/deserializing", e)
-        }
-        return value
     }
 
     private fun getFile(): File {
@@ -75,10 +50,6 @@ abstract class JsonFile<T>(private val filePath: String, private val typeToken: 
             LOGGER.error("Unable to create file {}", filePath, e)
         }
         return file
-    }
-
-    interface Result<T, R> {
-        fun result(value: T): R
     }
 
     companion object {
