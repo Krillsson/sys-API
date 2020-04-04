@@ -35,16 +35,12 @@ import com.krillsson.sysapi.core.history.HistoryMetricQueryEvent
 import com.krillsson.sysapi.core.history.MetricsHistoryManager
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.metrics.MetricsFactory
-import com.krillsson.sysapi.core.monitoring.MonitorManager
-import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
+import com.krillsson.sysapi.core.monitoring.*
 import com.krillsson.sysapi.core.query.MetricQueryManager
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
-import com.krillsson.sysapi.dto.monitor.Monitor
-import com.krillsson.sysapi.dto.monitor.MonitorEvent
 import com.krillsson.sysapi.graphql.MutationResolver
 import com.krillsson.sysapi.graphql.QueryResolver
 import com.krillsson.sysapi.graphql.scalars.ScalarTypes
-import com.krillsson.sysapi.persistence.JsonFile
 import com.krillsson.sysapi.resources.*
 import com.krillsson.sysapi.util.EnvironmentUtils
 import com.krillsson.sysapi.util.OffsetDateTimeConverter
@@ -198,21 +194,10 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
 
         val historyManager = MetricsHistoryManager(config.metrics().history, eventBus)
 
-        val persistedMonitors = JsonFile(
-                monitorsFilename,
-                MonitorManager.monitorsTypeReference(),
-                HashMap<String, Monitor>(),
-                environment.objectMapper
-        )
-
-        val persistedEvents = JsonFile(
-                eventsFileName,
-                MonitorManager.eventsTypeReference(),
-                ArrayList<MonitorEvent>() as List<MonitorEvent>,
-                environment.objectMapper
-        )
-
-        val monitorManager = MonitorManager(eventBus, persistedMonitors, provider)
+        val eventStore = EventStore(environment.objectMapper)
+        val monitorStore = MonitorStore(environment.objectMapper)
+        val eventManager = EventManager(eventStore)
+        val monitorManager = MonitorManager(eventManager, eventBus, monitorStore, provider, com.krillsson.sysapi.util.Clock())
 
         queryResolver.monitorManager = monitorManager
         queryResolver.historyManager = historyManager
@@ -220,14 +205,15 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
         queryResolver.os = os
         mutationResolver.historyManager = historyManager
         mutationResolver.metrics = provider
-        setupManagedObjects(environment, monitorManager, speedMeasurementManager, ticker, monitorMetricQueryManager, historyManager, historyMetricQueryManager)
+        setupManagedObjects(environment, monitorManager, eventManager, speedMeasurementManager, ticker, monitorMetricQueryManager, historyManager, historyMetricQueryManager)
         registerFeatures(environment, config.user())
         registerResources(environment, os, provider, historyManager, monitorManager)
 
     }
 
-    private fun setupManagedObjects(environment: Environment, monitorManager: MonitorManager, speedMeasurementManager: SpeedMeasurementManager, ticker: Ticker, monitorMetricQueryManager: MetricQueryManager<MonitorMetricQueryEvent>, historyManager: MetricsHistoryManager, historyMetricQueryManager: MetricQueryManager<HistoryMetricQueryEvent>) {
+    private fun setupManagedObjects(environment: Environment, monitorManager: MonitorManager, eventManager: EventManager, speedMeasurementManager: SpeedMeasurementManager, ticker: Ticker, monitorMetricQueryManager: MetricQueryManager<MonitorMetricQueryEvent>, historyManager: MetricsHistoryManager, historyMetricQueryManager: MetricQueryManager<HistoryMetricQueryEvent>) {
         environment.lifecycle().manage(monitorManager)
+        environment.lifecycle().manage(eventManager)
         environment.lifecycle().manage(speedMeasurementManager)
         environment.lifecycle().manage(ticker)
         environment.lifecycle().manage(monitorMetricQueryManager)

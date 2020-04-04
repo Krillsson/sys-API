@@ -54,7 +54,7 @@ public class MonitorResource {
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     public MonitorCreated createMonitor(@Auth UserConfiguration user, Monitor monitor) {
 
-        com.krillsson.sysapi.core.monitoring.Monitor monitorToBeCreated = Optional.ofNullable(MonitorMapper.INSTANCE.map(
+        com.krillsson.sysapi.core.monitoring.MonitorMechanism monitorToBeCreated = Optional.ofNullable(MonitorMapper.INSTANCE.map(
                 monitor)).orElseThrow(() -> new WebApplicationException(BAD_REQUEST));
         if (!monitorManager.validate(monitorToBeCreated)) {
             throw new WebApplicationException(String.format(

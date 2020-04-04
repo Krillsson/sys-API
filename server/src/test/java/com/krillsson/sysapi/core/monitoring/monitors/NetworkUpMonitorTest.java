@@ -30,7 +30,7 @@ public class NetworkUpMonitorTest {
     public void monitorValuesCorrectly() {
         when(networkInterfaceLoad.isUp()).thenReturn(true);
 
-        NetworkUpMonitor networkUpMonitor = new NetworkUpMonitor("en0", Duration.ofSeconds(0), 1);
+        NetworkUpMonitor networkUpMonitor = new NetworkUpMonitor("en0", 1);
         assertTrue(networkUpMonitor.isOutsideThreshold(networkUpMonitor.value(systemLoad)));
 
         when(networkInterfaceLoad.isUp()).thenReturn(false);
@@ -41,7 +41,7 @@ public class NetworkUpMonitorTest {
     public void tryingToMonitorNonExistentNicDoesNotBreak() {
         when(networkInterfaceLoad.getName()).thenReturn("en1");
 
-        NetworkUpMonitor networkUpMonitor = new NetworkUpMonitor("en0", Duration.ofSeconds(0), 1);
+        NetworkUpMonitor networkUpMonitor = new NetworkUpMonitor("en0", 1);
 
         assertFalse(networkUpMonitor.isOutsideThreshold(networkUpMonitor.value(systemLoad)));
     }

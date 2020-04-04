@@ -17,9 +17,7 @@ import com.krillsson.sysapi.core.domain.system.SystemInfo
 import com.krillsson.sysapi.core.history.HistoryManager
 import com.krillsson.sysapi.core.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.metrics.Metrics
-import com.krillsson.sysapi.core.monitoring.Monitor
-import com.krillsson.sysapi.core.monitoring.MonitorEvent
-import com.krillsson.sysapi.core.monitoring.MonitorManager
+import com.krillsson.sysapi.core.monitoring.*
 import com.krillsson.sysapi.graphql.domain.ProcessSortMethod
 import com.krillsson.sysapi.util.EnvironmentUtils
 import oshi.hardware.CentralProcessor
@@ -30,6 +28,7 @@ class QueryResolver : GraphQLQueryResolver {
 
     var metrics: Metrics? = null
     var monitorManager: MonitorManager? = null
+    var eventManager: EventManager? = null
     var historyManager: HistoryManager? = null
     var os: OperatingSystem? = null
     val systemInfoResolver = SystemInfoResolver()
@@ -69,7 +68,7 @@ class QueryResolver : GraphQLQueryResolver {
         return monitorManager?.monitors()?.toList().orEmpty()
     }
 
-    fun events() = monitorManager?.events()?.toList().orEmpty()
+    fun events() = eventManager?.events()?.toList().orEmpty()
 
     inner class SystemInfoResolver : GraphQLResolver<SystemInfo> {
         fun processorMetrics(system: SystemInfo) = metrics?.cpuMetrics()?.cpuLoad()
@@ -139,8 +138,8 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     inner class MonitorResolver : GraphQLResolver<Monitor> {
-        fun getInertiaInSeconds(monitor: Monitor) = monitor.inertia().seconds
-        fun getType(monitor: Monitor) = monitor.type()
+        fun getInertiaInSeconds(monitor: Monitor) = monitor.config.inertia.seconds
+        fun getType(monitor: Monitor) = monitor.type
     }
 
     inner class MonitorEventResolver : GraphQLResolver<MonitorEvent> {

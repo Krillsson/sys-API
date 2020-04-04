@@ -20,7 +20,7 @@ import java.util.List;
 public interface MonitorMapper {
     MonitorMapper INSTANCE = Mappers.getMapper(MonitorMapper.class);
 
-    default Monitor map(com.krillsson.sysapi.core.monitoring.Monitor monitor) {
+    default Monitor map(com.krillsson.sysapi.core.monitoring.MonitorMechanism monitor) {
         MonitorType type = null;
         if (monitor instanceof CpuMonitor) {
             type = MonitorType.CPU;
@@ -38,7 +38,7 @@ public interface MonitorMapper {
         return new Monitor(monitor.id(), monitor.inertia().getSeconds(), type, monitor.threshold());
     }
 
-    List<Monitor> mapList(List<com.krillsson.sysapi.core.monitoring.Monitor> values);
+    List<Monitor> mapList(List<com.krillsson.sysapi.core.monitoring.MonitorMechanism> values);
 
     MonitorStatus map(com.krillsson.sysapi.core.monitoring.MonitorEvent.MonitorStatus value);
 
@@ -74,7 +74,7 @@ public interface MonitorMapper {
         );
     }
 
-    default com.krillsson.sysapi.core.monitoring.Monitor map(Monitor monitor) {
+    default com.krillsson.sysapi.core.monitoring.MonitorMechanism map(Monitor monitor) {
         switch (monitor.getType()) {
             case CPU:
                 return new CpuMonitor(
@@ -91,7 +91,6 @@ public interface MonitorMapper {
             case DRIVE:
                 return new DriveMonitor(
                         monitor.getId(),
-                        Duration.ofSeconds(monitor.getInertiaInSeconds()),
                         monitor.getThreshold().longValue()
                 );
             case GPU:
@@ -109,7 +108,6 @@ public interface MonitorMapper {
             case NETWORK_UP:
                 return new NetworkUpMonitor(
                         monitor.getId(),
-                        Duration.ofSeconds(monitor.getInertiaInSeconds()),
                         monitor.getThreshold().longValue()
                 );
         }

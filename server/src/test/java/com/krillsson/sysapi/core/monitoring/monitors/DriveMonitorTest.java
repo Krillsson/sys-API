@@ -31,7 +31,7 @@ public class DriveMonitorTest {
     @Test
     public void monitorValuesCorrectly() {
         when(systemLoad.getDriveLoads()).thenReturn(Arrays.asList(driveLoad));
-        DriveMonitor driveMonitor = new DriveMonitor("sd0", Duration.ofSeconds(0), 1024);
+        DriveMonitor driveMonitor = new DriveMonitor("sd0", 1024);
 
         when(driveValues.getUsableSpace()).thenReturn(512L);
         assertTrue(driveMonitor.isOutsideThreshold(driveMonitor.value(systemLoad)));
@@ -44,7 +44,7 @@ public class DriveMonitorTest {
     public void tryingToMonitorNonExistentDriveDoesNotBreak() {
         when(driveLoad.getName()).thenReturn("sd1");
 
-        DriveMonitor driveMonitor = new DriveMonitor("sd0", Duration.ofSeconds(0), 1024);
+        DriveMonitor driveMonitor = new DriveMonitor("sd0", 1024);
 
         assertTrue(driveMonitor.isOutsideThreshold(driveMonitor.value(systemLoad)));
     }

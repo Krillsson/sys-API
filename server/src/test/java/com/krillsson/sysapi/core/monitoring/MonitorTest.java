@@ -35,7 +35,7 @@ public class MonitorTest {
     @Test
     public void nothingIsWrong() {
         assertFalse(monitor.check(load).isPresent());
-        assertSame(monitor.getState(), Monitor.State.INSIDE);
+        assertSame(monitor.getState(), MonitorMechanism.State.INSIDE);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class MonitorTest {
 
         Optional<MonitorEvent> event = monitor.check(load);
         assertFalse(event.isPresent());
-        assertSame(monitor.getState(), Monitor.State.OUTSIDE_BEFORE_INERTIA);
+        assertSame(monitor.getState(), MonitorMechanism.State.OUTSIDE_BEFORE_INERTIA);
     }
 
     @Test
@@ -125,7 +125,7 @@ public class MonitorTest {
         //going to outside
         Optional<MonitorEvent> event = monitor.check(load);
         assertTrue(event.isPresent());
-        assertSame(monitor.getState(), Monitor.State.OUTSIDE);
+        assertSame(monitor.getState(), MonitorMechanism.State.OUTSIDE);
 
         //should have outside event
         MonitorEvent monitorEvent = event.get();
@@ -177,7 +177,7 @@ public class MonitorTest {
         assertFalse(monitorEvent.isPresent());
     }
 
-    private static class TestableMonitor extends Monitor {
+    private static class TestableMonitor extends MonitorMechanism {
 
         double value = INSIDE;
 
