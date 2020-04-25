@@ -1,6 +1,9 @@
 package com.krillsson.sysapi.graphql.mutations
 
+import com.krillsson.sysapi.core.monitoring.MonitorType
 
 data class CreateMonitorInput(val inertiaInSeconds: Int,
-                              val type: com.krillsson.sysapi.core.monitoring.MonitorType,
-                              val threshold: Float)
+                              val type: MonitorType,
+                              val threshold: Float,
+                              val id: String?
+)

@@ -21,18 +21,18 @@ class EventManager(private val store: Store<List<MonitorEvent>>) : Managed {
         persist()
     }
 
-    fun add(e: MonitorEvent) {
-        if (e.monitorStatus == MonitorEvent.MonitorStatus.STOP && events().stream()
-                        .noneMatch { me: MonitorEvent -> me.id == e.id }) {
+    fun add(event: MonitorEvent) {
+        if (event.status == MonitorEvent.MonitorStatus.STOP && getAll().stream()
+                        .noneMatch { me: MonitorEvent -> me.id == event.id }) {
             LOGGER.warn("Received STOP event for explicitly removed event, ignoring...")
         } else {
-            events.add(e)
+            events.add(event)
         }
     }
 
-    fun events(): List<MonitorEvent> = events
+    fun getAll(): List<MonitorEvent> = events
 
-    fun removeEvents(id: UUID): Boolean = events
+    fun remove(id: UUID): Boolean = events
             .removeAll { it.id == id }
             .also { persist() }
 

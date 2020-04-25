@@ -1,5 +1,7 @@
 package com.krillsson.sysapi.graphql.mutations
 
+import java.util.*
+
 data class DeleteMonitorInput(
-        val id: String
+        val id: UUID
 )

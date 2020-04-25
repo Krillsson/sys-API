@@ -1,81 +1,66 @@
-package com.krillsson.sysapi.resources;
+package com.krillsson.sysapi.resources
 
-import com.krillsson.sysapi.auth.BasicAuthorizer;
-import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.monitoring.MonitorManager;
-import com.krillsson.sysapi.core.monitoring.MonitorMapper;
-import com.krillsson.sysapi.dto.monitor.Monitor;
-import com.krillsson.sysapi.dto.monitor.MonitorCreated;
-import com.krillsson.sysapi.dto.monitor.MonitorEvent;
-import io.dropwizard.auth.Auth;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.List;
-import java.util.Optional;
-
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import com.krillsson.sysapi.auth.BasicAuthorizer
+import com.krillsson.sysapi.config.UserConfiguration
+import com.krillsson.sysapi.core.monitoring.EventManager
+import com.krillsson.sysapi.core.monitoring.MonitorManager
+import com.krillsson.sysapi.core.monitoring.MonitorMapper
+import com.krillsson.sysapi.dto.monitor.Monitor
+import com.krillsson.sysapi.dto.monitor.MonitorCreated
+import com.krillsson.sysapi.dto.monitor.MonitorEvent
+import io.dropwizard.auth.Auth
+import java.time.Duration
+import java.util.*
+import javax.annotation.security.RolesAllowed
+import javax.ws.rs.*
+import javax.ws.rs.core.MediaType
+import javax.ws.rs.core.Response
 
 @Path("monitors")
 @Produces(MediaType.APPLICATION_JSON)
-public class MonitorResource {
-    private final MonitorManager monitorManager;
-
-    public MonitorResource(MonitorManager monitorManager) {
-        this.monitorManager = monitorManager;
-    }
-
+class MonitorResource(private val monitorManager: MonitorManager, private val eventManager: EventManager) {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<Monitor> getRoot(@Auth UserConfiguration user) {
-        return MonitorMapper.INSTANCE.mapList(monitorManager.monitors());
+    fun getRoot(@Auth user: UserConfiguration?): List<Monitor> {
+        return MonitorMapper.INSTANCE.mapList(monitorManager.getAll())
     }
 
     @GET
     @Path("{id}")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public Monitor monitorById(@Auth UserConfiguration user, @PathParam("id") String id) {
-        return MonitorMapper.INSTANCE.map(monitorManager.monitorById(id)
-                                                  .orElseThrow(() -> new WebApplicationException(NOT_FOUND)));
+    fun monitorById(@Auth user: UserConfiguration?, @PathParam("id") id: String): Monitor {
+        val monitor = monitorManager.getById(UUID.fromString(id))
+                ?: throw WebApplicationException("No monitor with id $id was found", Response.Status.NOT_FOUND)
+        return MonitorMapper.INSTANCE.map(monitor)
     }
 
     @GET
     @Path("{id}/events")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<MonitorEvent> getEventForMonitorId(@Auth UserConfiguration user, @PathParam("id") String monitorId) {
-        return MonitorMapper.INSTANCE.map(monitorManager.eventsForMonitorWithId(monitorId)
-                                                  .orElseThrow(() -> new WebApplicationException(NOT_FOUND)));
+    fun getEventForMonitorId(@Auth user: UserConfiguration?, @PathParam("id") monitorId: String?): List<MonitorEvent> {
+        val events = eventManager.eventsForMonitorId(UUID.fromString(monitorId))
+        return MonitorMapper.INSTANCE.map(events)
     }
 
     @POST
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public MonitorCreated createMonitor(@Auth UserConfiguration user, Monitor monitor) {
-
-        com.krillsson.sysapi.core.monitoring.MonitorMechanism monitorToBeCreated = Optional.ofNullable(MonitorMapper.INSTANCE.map(
-                monitor)).orElseThrow(() -> new WebApplicationException(BAD_REQUEST));
-        if (!monitorManager.validate(monitorToBeCreated)) {
-            throw new WebApplicationException(String.format(
-                    "Not mappable to device %s : %s",
-                    monitor.getType().name(),
-                    monitor.getId()
-            ), Response.Status.NOT_FOUND);
+    fun createMonitor(@Auth user: UserConfiguration?, monitor: Monitor): MonitorCreated {
+        return try {
+            val added = monitorManager.add(Duration.ofSeconds(monitor.inertiaInSeconds), MonitorMapper.INSTANCE.map(monitor.type), monitor.threshold, monitor.id)
+            MonitorCreated(added.toString())
+        } catch (e: IllegalArgumentException) {
+            throw WebApplicationException(e.message, Response.Status.NOT_FOUND)
         }
-        String createdId = monitorManager.addMonitor(monitorToBeCreated);
-
-        return new MonitorCreated(createdId);
     }
 
     @DELETE
     @Path("{id}")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public void delete(@Auth UserConfiguration user, @PathParam("id") String id) {
-
-        boolean removed = monitorManager.remove(id) != null;
+    fun delete(@Auth user: UserConfiguration?, @PathParam("id") id: String?) {
+        val removed = monitorManager.remove(UUID.fromString(id))
         if (!removed) {
-            throw new WebApplicationException(NOT_FOUND);
+            throw WebApplicationException(Response.Status.NOT_FOUND)
         }
     }
+
 }

@@ -9,8 +9,8 @@ import java.util.*
 class NetworkUpMonitor(override val id: UUID, override val config: Monitor.Config) : Monitor {
     override val type: MonitorType = MonitorType.NETWORK_UP
 
-    override fun value(systemLoad: SystemLoad): Double {
-        return systemLoad.networkInterfaceLoads
+    override fun selectValue(load: SystemLoad): Double {
+        return load.networkInterfaceLoads
                 .stream()
                 .filter { n: NetworkInterfaceLoad -> n.name.equals(config.id, ignoreCase = true) }
                 .map { n: NetworkInterfaceLoad -> if (n.isUp) 1.0 else 0.0 }

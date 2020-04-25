@@ -106,7 +106,6 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
                                         queryResolver.historyResolver,
                                         queryResolver.monitorResolver,
                                         queryResolver.monitorEventResolver,
-                                        //queryResolver.stringResolver,
                                         queryResolver.motherboardResolver,
                                         queryResolver.processorResolver,
                                         queryResolver.driveResolver,
@@ -207,8 +206,7 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
         mutationResolver.metrics = provider
         setupManagedObjects(environment, monitorManager, eventManager, speedMeasurementManager, ticker, monitorMetricQueryManager, historyManager, historyMetricQueryManager)
         registerFeatures(environment, config.user())
-        registerResources(environment, os, provider, historyManager, monitorManager)
-
+        registerResources(environment, os, provider, historyManager, monitorManager, eventManager)
     }
 
     private fun setupManagedObjects(environment: Environment, monitorManager: MonitorManager, eventManager: EventManager, speedMeasurementManager: SpeedMeasurementManager, ticker: Ticker, monitorMetricQueryManager: MetricQueryManager<MonitorMetricQueryEvent>, historyManager: MetricsHistoryManager, historyMetricQueryManager: MetricQueryManager<HistoryMetricQueryEvent>) {
@@ -233,7 +231,7 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
         environment.jersey().register(AuthValueFactoryProvider.Binder(UserConfiguration::class.java))
     }
 
-    private fun registerResources(environment: Environment, os: OperatingSystem, provider: Metrics, historyManager: MetricsHistoryManager, monitorManager: MonitorManager) {
+    private fun registerResources(environment: Environment, os: OperatingSystem, provider: Metrics, historyManager: MetricsHistoryManager, monitorManager: MonitorManager, eventManager: EventManager) {
         environment.jersey().register(SystemResource(os,
                 SystemInfo.getCurrentPlatformEnum(),
                 provider.cpuMetrics(),
@@ -251,8 +249,8 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
         environment.jersey().register(ProcessesResource(provider.processesMetrics()))
         environment.jersey().register(CpuResource(provider.cpuMetrics(), historyManager))
         environment.jersey().register(MotherboardResource(provider.motherboardMetrics()))
-        environment.jersey().register(EventResource(monitorManager))
-        environment.jersey().register(MonitorResource(monitorManager))
+        environment.jersey().register(EventResource(eventManager))
+        environment.jersey().register(MonitorResource(monitorManager, eventManager))
         environment.jersey().register(
                 MetaInfoResource(
                         Utils.getVersionFromManifest(),
@@ -263,9 +261,6 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
 
     companion object {
         private val LOGGER = org.slf4j.LoggerFactory.getLogger(SystemApiApplication::class.java)
-
-        private const val monitorsFilename = "monitors.json"
-        private const val eventsFileName = "events.json"
 
         @Throws(Exception::class)
         @JvmStatic

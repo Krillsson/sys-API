@@ -40,14 +40,10 @@ class MonitorManager(private val eventManager: EventManager, private val eventBu
         persist()
     }
 
-    fun remove(id: UUID): Boolean {
-        val removed = activeMonitors.remove(id)
+    fun getAll() = activeMonitors.map { it.value.second }
 
-        removed?.let {
-            persist()
-            eventManager.eventsForMonitorId(id)
-        }
-        return removed != null
+    fun getById(id: UUID): Monitor? {
+        return activeMonitors[id]?.second
     }
 
     fun add(inertia: Duration, type: MonitorType, threshold: Double, itemId: String?): UUID? {
@@ -58,15 +54,19 @@ class MonitorManager(private val eventManager: EventManager, private val eventBu
             persist()
             monitor.id
         } else {
-            null
+            throw IllegalArgumentException("Not mappable to device: $type with $itemId")
         }
     }
 
-    fun getById(id: UUID): Monitor? {
-        return activeMonitors[id]?.second
-    }
+    fun remove(id: UUID): Boolean {
+        val removed = activeMonitors.remove(id)
 
-    fun monitors() = activeMonitors.map { it.value.second }
+        removed?.let {
+            persist()
+            eventManager.removeEventsForMonitorId(id)
+        }
+        return removed != null
+    }
 
     private fun persist() {
         val monitors = activeMonitors.map { it.value.second }.toList()

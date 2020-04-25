@@ -20,9 +20,10 @@ type Mutation {
 }
 
 input CreateMonitorInput {
-    inertiaInSeconds: Int
-    type: MonitorType
-    threshold: Float
+    inertiaInSeconds: Int!
+    type: MonitorType!
+    threshold: Float!
+    id: String
 }
 
 type CreateMonitorOutput {
@@ -34,7 +35,7 @@ input DeleteMonitorInput {
 }
 
 type DeleteMonitorOutput {
-    id: UUID
+    removed: Boolean
 }
 
 input DeleteEventInput {
@@ -42,7 +43,7 @@ input DeleteEventInput {
 }
 
 type DeleteEventOutput {
-    id: UUID
+    removed: Boolean
 }
 
 # Root node

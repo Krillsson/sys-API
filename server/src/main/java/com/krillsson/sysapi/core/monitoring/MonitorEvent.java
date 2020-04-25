@@ -40,7 +40,7 @@ public class MonitorEvent {
         return time;
     }
 
-    public MonitorStatus getMonitorStatus() {
+    public MonitorStatus getStatus() {
         return monitorStatus;
     }
 

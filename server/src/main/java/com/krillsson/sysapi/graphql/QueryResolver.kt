@@ -17,7 +17,10 @@ import com.krillsson.sysapi.core.domain.system.SystemInfo
 import com.krillsson.sysapi.core.history.HistoryManager
 import com.krillsson.sysapi.core.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.metrics.Metrics
-import com.krillsson.sysapi.core.monitoring.*
+import com.krillsson.sysapi.core.monitoring.EventManager
+import com.krillsson.sysapi.core.monitoring.Monitor
+import com.krillsson.sysapi.core.monitoring.MonitorEvent
+import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.graphql.domain.ProcessSortMethod
 import com.krillsson.sysapi.util.EnvironmentUtils
 import oshi.hardware.CentralProcessor
@@ -65,10 +68,10 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     fun monitors(): List<Monitor> {
-        return monitorManager?.monitors()?.toList().orEmpty()
+        return monitorManager?.getAll()?.toList().orEmpty()
     }
 
-    fun events() = eventManager?.events()?.toList().orEmpty()
+    fun events() = eventManager?.getAll()?.toList().orEmpty()
 
     inner class SystemInfoResolver : GraphQLResolver<SystemInfo> {
         fun processorMetrics(system: SystemInfo) = metrics?.cpuMetrics()?.cpuLoad()
