@@ -3,11 +3,13 @@ package com.krillsson.sysapi.core.monitoring.monitors;
 import com.krillsson.sysapi.core.domain.drives.DriveLoad;
 import com.krillsson.sysapi.core.domain.drives.DriveValues;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
+import com.krillsson.sysapi.core.monitoring.Monitor;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.UUID;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -31,21 +33,21 @@ public class DriveMonitorTest {
     @Test
     public void monitorValuesCorrectly() {
         when(systemLoad.getDriveLoads()).thenReturn(Arrays.asList(driveLoad));
-        DriveMonitor driveMonitor = new DriveMonitor("sd0", 1024);
+        DriveMonitor driveMonitor = new DriveMonitor(UUID.randomUUID(), new Monitor.Config("sd0", 1024, Duration.ZERO));
 
         when(driveValues.getUsableSpace()).thenReturn(512L);
-        assertTrue(driveMonitor.isOutsideThreshold(driveMonitor.value(systemLoad)));
+        assertTrue(driveMonitor.failure(systemLoad));
 
         when(driveValues.getUsableSpace()).thenReturn(2048L);
-        assertFalse(driveMonitor.isOutsideThreshold(driveMonitor.value(systemLoad)));
+        assertFalse(driveMonitor.failure(systemLoad));
     }
 
     @Test
     public void tryingToMonitorNonExistentDriveDoesNotBreak() {
         when(driveLoad.getName()).thenReturn("sd1");
 
-        DriveMonitor driveMonitor = new DriveMonitor("sd0", 1024);
+        DriveMonitor driveMonitor = new DriveMonitor(UUID.randomUUID(), new Monitor.Config("sd0", 1024, Duration.ZERO));
 
-        assertTrue(driveMonitor.isOutsideThreshold(driveMonitor.value(systemLoad)));
+        assertTrue(driveMonitor.failure(systemLoad));
     }
 }

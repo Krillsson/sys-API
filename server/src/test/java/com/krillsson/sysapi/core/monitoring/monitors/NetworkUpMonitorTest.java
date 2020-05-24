@@ -2,11 +2,13 @@ package com.krillsson.sysapi.core.monitoring.monitors;
 
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
+import com.krillsson.sysapi.core.monitoring.Monitor;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.UUID;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -29,20 +31,20 @@ public class NetworkUpMonitorTest {
     @Test
     public void monitorValuesCorrectly() {
         when(networkInterfaceLoad.isUp()).thenReturn(true);
+        NetworkUpMonitor networkUpMonitor = new NetworkUpMonitor(UUID.randomUUID(), new Monitor.Config("en0", 1, Duration.ZERO));
 
-        NetworkUpMonitor networkUpMonitor = new NetworkUpMonitor("en0", 1);
-        assertTrue(networkUpMonitor.isOutsideThreshold(networkUpMonitor.value(systemLoad)));
+        assertTrue(networkUpMonitor.failure(systemLoad));
 
         when(networkInterfaceLoad.isUp()).thenReturn(false);
-        assertFalse(networkUpMonitor.isOutsideThreshold(networkUpMonitor.value(systemLoad)));
+        assertFalse(networkUpMonitor.failure(systemLoad));
     }
 
     @Test
     public void tryingToMonitorNonExistentNicDoesNotBreak() {
         when(networkInterfaceLoad.getName()).thenReturn("en1");
 
-        NetworkUpMonitor networkUpMonitor = new NetworkUpMonitor("en0", 1);
+        NetworkUpMonitor networkUpMonitor = new NetworkUpMonitor(UUID.randomUUID(), new Monitor.Config("en0", 1, Duration.ZERO));
 
-        assertFalse(networkUpMonitor.isOutsideThreshold(networkUpMonitor.value(systemLoad)));
+        assertFalse(networkUpMonitor.failure(systemLoad));
     }
 }
