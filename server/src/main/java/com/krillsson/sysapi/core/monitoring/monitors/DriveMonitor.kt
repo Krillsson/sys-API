@@ -7,7 +7,7 @@ import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorType
 import java.util.*
 
-class DriveMonitor(override val id: UUID, override val config: Monitor.Config) : Monitor {
+class DriveMonitor(override val id: UUID, override val config: Config) : Monitor() {
     override val type: MonitorType = MonitorType.DRIVE_SPACE
 
     override fun selectValue(load: SystemLoad): Double = load.driveLoads

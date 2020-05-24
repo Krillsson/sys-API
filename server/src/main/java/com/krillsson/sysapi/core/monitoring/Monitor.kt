@@ -4,13 +4,15 @@ import com.krillsson.sysapi.core.domain.system.SystemLoad
 import java.time.Duration
 import java.util.*
 
-interface Monitor {
-    val id: UUID
-    val type: MonitorType
-    val config: Config
+abstract class Monitor {
+    abstract val id: UUID
+    abstract val type: MonitorType
+    abstract val config: Config
 
-    fun selectValue(load: SystemLoad): Double
-    fun isPastThreshold(value: Double): Boolean
+    abstract fun selectValue(load: SystemLoad): Double
+    abstract fun isPastThreshold(value: Double): Boolean
+
+    fun failure(load: SystemLoad): Boolean = isPastThreshold(selectValue(load))
 
     data class Config(
             val id: String? = null,

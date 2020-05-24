@@ -5,7 +5,7 @@ import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorType
 import java.util.*
 
-class CpuMonitor(override val id: UUID, override val config: Monitor.Config) : Monitor {
+class CpuMonitor(override val id: UUID, override val config: Config) : Monitor() {
 
     override val type: MonitorType = MonitorType.CPU_LOAD
 
