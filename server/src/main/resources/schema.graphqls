@@ -191,7 +191,7 @@ type ProcessorCoreMetrics {
 type Drive {
     model: String
     name: String
-    id: UUID
+    id: String
     serial: String
     sizeBytes: Int
     diskOsPartition: DiskOsPartition
@@ -263,7 +263,7 @@ type DriveReadWriteRate { readBytesPerSecond: Int writeBytesPerSecond: Int }
 
 type NetworkInterface {
     name: String
-    id: UUID
+    id: String
     displayName: String
     mac: String
     speed: Int

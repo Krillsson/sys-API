@@ -143,6 +143,7 @@ class QueryResolver : GraphQLQueryResolver {
     inner class MonitorResolver : GraphQLResolver<Monitor> {
         fun getInertiaInSeconds(monitor: Monitor) = monitor.config.inertia.seconds
         fun getType(monitor: Monitor) = monitor.type
+        fun getThreshold(monitor: Monitor) = monitor.config.threshold
     }
 
     inner class MonitorEventResolver : GraphQLResolver<MonitorEvent> {
