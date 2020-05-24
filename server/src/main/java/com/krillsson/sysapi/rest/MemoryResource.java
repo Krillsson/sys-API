@@ -18,52 +18,49 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.resources;
+package com.krillsson.sysapi.rest;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.domain.metadata.MetaMapper;
-import com.krillsson.sysapi.dto.metadata.Meta;
+import com.krillsson.sysapi.core.domain.memory.MemoryMapper;
+import com.krillsson.sysapi.core.history.MetricsHistoryManager;
+import com.krillsson.sysapi.core.metrics.MemoryMetrics;
+import com.krillsson.sysapi.dto.history.HistoryEntry;
+import com.krillsson.sysapi.dto.memory.MemoryLoad;
 import io.dropwizard.auth.Auth;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import java.time.OffsetDateTime;
+import java.util.List;
 
-@Path("/meta")
+@Path("memory")
 @Produces(MediaType.APPLICATION_JSON)
-public class MetaInfoResource {
+public class MemoryResource {
 
-    private final String version;
-    private final String[] endpoints;
-    private final int thisPid;
+    private final MemoryMetrics provider;
+    private final MetricsHistoryManager historyManager;
 
-    public MetaInfoResource(String version, String[] endpoints, int thisPid) {
-        this.version = version;
-        this.endpoints = endpoints;
-        this.thisPid = thisPid;
+    public MemoryResource(MemoryMetrics provider, MetricsHistoryManager historyManager) {
+        this.provider = provider;
+        this.historyManager = historyManager;
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public Meta getRoot(@Auth UserConfiguration user) {
-        return MetaMapper.INSTANCE.map(new com.krillsson.sysapi.core.domain.metadata.Meta(endpoints, version));
+    public MemoryLoad getRoot(@Auth UserConfiguration user) {
+        return MemoryMapper.INSTANCE.map(provider.memoryLoad());
     }
 
     @GET
-    @Path("version")
+    @Path("history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public String getVersion(@Auth UserConfiguration user) {
-        return version;
+    public List<HistoryEntry<MemoryLoad>> getLoadHistory(@Auth UserConfiguration user, @QueryParam("fromDate") OffsetDateTime fromDate, @QueryParam("toDate") OffsetDateTime toDate) {
+        return MemoryMapper.INSTANCE.mapHistory(historyManager.memoryHistory(fromDate, toDate));
     }
 
-
-    @GET
-    @Path("pid")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public int getThisPid() {
-        return thisPid;
-    }
 }

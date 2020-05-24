@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.resources;
+package com.krillsson.sysapi.rest;
 
 import com.krillsson.sysapi.core.domain.drives.Drive;
 import com.krillsson.sysapi.core.domain.drives.OsPartition;

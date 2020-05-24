@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.resources
+package com.krillsson.sysapi.rest
 
 import com.krillsson.sysapi.auth.BasicAuthorizer
 import com.krillsson.sysapi.config.UserConfiguration

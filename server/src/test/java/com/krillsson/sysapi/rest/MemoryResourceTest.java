@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.resources;
+package com.krillsson.sysapi.rest;
 
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.MemoryMetrics;

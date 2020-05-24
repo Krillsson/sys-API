@@ -18,49 +18,45 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.resources;
+package com.krillsson.sysapi.rest;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.domain.memory.MemoryMapper;
-import com.krillsson.sysapi.core.history.MetricsHistoryManager;
-import com.krillsson.sysapi.core.metrics.MemoryMetrics;
-import com.krillsson.sysapi.dto.history.HistoryEntry;
-import com.krillsson.sysapi.dto.memory.MemoryLoad;
+import com.krillsson.sysapi.core.domain.motherboard.MotherboardMapper;
+import com.krillsson.sysapi.core.domain.sensors.SensorsInfoMapper;
+import com.krillsson.sysapi.core.metrics.MotherboardMetrics;
+import com.krillsson.sysapi.dto.sensors.HealthData;
 import io.dropwizard.auth.Auth;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import java.time.OffsetDateTime;
 import java.util.List;
 
-@Path("memory")
+@Path("motherboard")
 @Produces(MediaType.APPLICATION_JSON)
-public class MemoryResource {
+public class MotherboardResource {
 
-    private final MemoryMetrics provider;
-    private final MetricsHistoryManager historyManager;
+    MotherboardMetrics provider;
 
-    public MemoryResource(MemoryMetrics provider, MetricsHistoryManager historyManager) {
+    public MotherboardResource(MotherboardMetrics provider) {
         this.provider = provider;
-        this.historyManager = historyManager;
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public MemoryLoad getRoot(@Auth UserConfiguration user) {
-        return MemoryMapper.INSTANCE.map(provider.memoryLoad());
+    public com.krillsson.sysapi.dto.motherboard.Motherboard getRoot(@Auth UserConfiguration user) {
+        return MotherboardMapper.INSTANCE.map(provider.motherboard());
     }
 
+
     @GET
-    @Path("history")
+    @Path("health")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<HistoryEntry<MemoryLoad>> getLoadHistory(@Auth UserConfiguration user, @QueryParam("fromDate") OffsetDateTime fromDate, @QueryParam("toDate") OffsetDateTime toDate) {
-        return MemoryMapper.INSTANCE.mapHistory(historyManager.memoryHistory(fromDate, toDate));
+    public List<HealthData> getHealths(@Auth UserConfiguration user) {
+        return SensorsInfoMapper.INSTANCE.mapDatas(provider.motherboardHealth());
     }
 
 }

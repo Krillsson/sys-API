@@ -41,7 +41,7 @@ import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
 import com.krillsson.sysapi.graphql.MutationResolver
 import com.krillsson.sysapi.graphql.QueryResolver
 import com.krillsson.sysapi.graphql.scalars.ScalarTypes
-import com.krillsson.sysapi.resources.*
+import com.krillsson.sysapi.rest.*
 import com.krillsson.sysapi.util.EnvironmentUtils
 import com.krillsson.sysapi.util.OffsetDateTimeConverter
 import com.krillsson.sysapi.util.Ticker

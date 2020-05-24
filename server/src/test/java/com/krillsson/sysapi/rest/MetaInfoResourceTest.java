@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.resources;
+package com.krillsson.sysapi.rest;
 
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.ClassRule;

@@ -18,13 +18,14 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.resources;
+
+package com.krillsson.sysapi.rest;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.domain.gpu.GpuInfoMapper;
+import com.krillsson.sysapi.core.domain.cpu.CpuInfoMapper;
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
-import com.krillsson.sysapi.core.metrics.GpuMetrics;
+import com.krillsson.sysapi.core.metrics.CpuMetrics;
 import com.krillsson.sysapi.dto.history.HistoryEntry;
 import io.dropwizard.auth.Auth;
 
@@ -37,36 +38,37 @@ import javax.ws.rs.core.MediaType;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-@Path("gpus")
+@Path("cpu")
 @Produces(MediaType.APPLICATION_JSON)
-public class GpuResource {
+public class CpuResource {
 
-    private final GpuMetrics provider;
+    private final CpuMetrics provider;
     private final MetricsHistoryManager historyManager;
 
-    public GpuResource(GpuMetrics provider, MetricsHistoryManager historyManager) {
+    public CpuResource(CpuMetrics provider, MetricsHistoryManager historyManager) {
         this.provider = provider;
         this.historyManager = historyManager;
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<com.krillsson.sysapi.dto.gpu.Gpu> getRoot(@Auth UserConfiguration user) {
-        return GpuInfoMapper.INSTANCE.mapGpus(provider.gpus());
+    public com.krillsson.sysapi.dto.cpu.CpuInfo getRoot(@Auth UserConfiguration user) {
+        return CpuInfoMapper.INSTANCE.map(provider.cpuInfo());
+    }
+
+
+    @GET
+    @Path("load")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public com.krillsson.sysapi.dto.cpu.CpuLoad getLoad(@Auth UserConfiguration user) {
+        return CpuInfoMapper.INSTANCE.map(provider.cpuLoad());
     }
 
     @GET
-    @Path("loads")
+    @Path("load/history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<com.krillsson.sysapi.dto.gpu.GpuLoad> getLoad(@Auth UserConfiguration user) {
-        return GpuInfoMapper.INSTANCE.map(provider.gpuLoads());
-    }
-
-    @GET
-    @Path("loads/history")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<HistoryEntry<List<com.krillsson.sysapi.dto.gpu.GpuLoad>>> getLoadHistory(@Auth UserConfiguration user, @QueryParam("fromDate") OffsetDateTime fromDate, @QueryParam("toDate") OffsetDateTime toDate) {
-        return GpuInfoMapper.INSTANCE.mapHistory(historyManager.gpuLoadHistory(fromDate, toDate));
+    public List<HistoryEntry<com.krillsson.sysapi.dto.cpu.CpuLoad>> getLoadHistory(@Auth UserConfiguration user, @QueryParam("fromDate") OffsetDateTime fromDate, @QueryParam("toDate") OffsetDateTime toDate) {
+        return CpuInfoMapper.INSTANCE.mapHistory(historyManager.cpuLoadHistory(fromDate, toDate));
     }
 
 }

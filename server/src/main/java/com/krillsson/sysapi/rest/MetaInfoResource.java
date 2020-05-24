@@ -18,14 +18,12 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.resources;
+package com.krillsson.sysapi.rest;
 
 import com.krillsson.sysapi.auth.BasicAuthorizer;
 import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.domain.motherboard.MotherboardMapper;
-import com.krillsson.sysapi.core.domain.sensors.SensorsInfoMapper;
-import com.krillsson.sysapi.core.metrics.MotherboardMetrics;
-import com.krillsson.sysapi.dto.sensors.HealthData;
+import com.krillsson.sysapi.core.domain.metadata.MetaMapper;
+import com.krillsson.sysapi.dto.metadata.Meta;
 import io.dropwizard.auth.Auth;
 
 import javax.annotation.security.RolesAllowed;
@@ -33,30 +31,39 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 
-@Path("motherboard")
+@Path("/meta")
 @Produces(MediaType.APPLICATION_JSON)
-public class MotherboardResource {
+public class MetaInfoResource {
 
-    MotherboardMetrics provider;
+    private final String version;
+    private final String[] endpoints;
+    private final int thisPid;
 
-    public MotherboardResource(MotherboardMetrics provider) {
-        this.provider = provider;
+    public MetaInfoResource(String version, String[] endpoints, int thisPid) {
+        this.version = version;
+        this.endpoints = endpoints;
+        this.thisPid = thisPid;
     }
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public com.krillsson.sysapi.dto.motherboard.Motherboard getRoot(@Auth UserConfiguration user) {
-        return MotherboardMapper.INSTANCE.map(provider.motherboard());
+    public Meta getRoot(@Auth UserConfiguration user) {
+        return MetaMapper.INSTANCE.map(new com.krillsson.sysapi.core.domain.metadata.Meta(endpoints, version));
+    }
+
+    @GET
+    @Path("version")
+    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
+    public String getVersion(@Auth UserConfiguration user) {
+        return version;
     }
 
 
     @GET
-    @Path("health")
+    @Path("pid")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<HealthData> getHealths(@Auth UserConfiguration user) {
-        return SensorsInfoMapper.INSTANCE.mapDatas(provider.motherboardHealth());
+    public int getThisPid() {
+        return thisPid;
     }
-
 }

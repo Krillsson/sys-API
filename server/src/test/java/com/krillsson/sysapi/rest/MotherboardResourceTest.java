@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.resources;
+package com.krillsson.sysapi.rest;
 
 import com.krillsson.sysapi.core.domain.motherboard.Motherboard;
 import com.krillsson.sysapi.core.metrics.MotherboardMetrics;
