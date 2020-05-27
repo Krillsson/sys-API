@@ -23,11 +23,13 @@ package com.krillsson.sysapi.core.domain.motherboard;
 import oshi.hardware.ComputerSystem;
 import oshi.hardware.UsbDevice;
 
+import java.util.List;
+
 public class Motherboard {
     private final ComputerSystem computerSystem;
-    private final UsbDevice[] usbDevices;
+    private final List<UsbDevice> usbDevices;
 
-    public Motherboard(ComputerSystem computerSystem, UsbDevice[] usbDevices) {
+    public Motherboard(ComputerSystem computerSystem, List<UsbDevice> usbDevices) {
         this.computerSystem = computerSystem;
         this.usbDevices = usbDevices;
     }
@@ -36,7 +38,7 @@ public class Motherboard {
         return computerSystem;
     }
 
-    public UsbDevice[] getUsbDevices() {
+    public List<UsbDevice> getUsbDevices() {
         return usbDevices;
     }
 }

@@ -21,6 +21,7 @@
 
 package com.krillsson.sysapi.core.domain.power;
 
+import com.krillsson.sysapi.dto.power.PowerSource;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
@@ -31,7 +32,9 @@ import org.mapstruct.factory.Mappers;
 public interface PowerSourceMapper {
     PowerSourceMapper INSTANCE = Mappers.getMapper(PowerSourceMapper.class);
 
-    com.krillsson.sysapi.dto.power.PowerSource map(oshi.hardware.PowerSource value);
+    default com.krillsson.sysapi.dto.power.PowerSource map(oshi.hardware.PowerSource value) {
+        return new PowerSource(value.getName(), value.getCurrentCapacity(), value.getTimeRemainingEstimated());
+    }
 
     com.krillsson.sysapi.dto.power.PowerSource[] map(oshi.hardware.PowerSource[] value);
 }

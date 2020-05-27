@@ -12,6 +12,7 @@ import oshi.software.os.FileSystem;
 import oshi.software.os.OSFileStore;
 import oshi.software.os.OperatingSystem;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -59,7 +60,7 @@ public class DefaultDriveProviderTest {
         when(disk1Partition2.getUuid()).thenReturn(osPartitionDisk1Uuid);
         disk1OsPartition = mock(OSFileStore.class);
         when(disk1OsPartition.getUUID()).thenReturn(osPartitionDisk1Uuid);
-        when(disk1.getPartitions()).thenReturn(new HWPartition[]{disk1Partition1, disk1Partition2});
+        when(disk1.getPartitions()).thenReturn(Arrays.asList(disk1Partition1, disk1Partition2));
         when(measurementManager.getCurrentSpeedForName(DEV_SDA1)).thenReturn(Optional.of(new SpeedMeasurementManager.CurrentSpeed(
                 1000,
                 1000
@@ -73,16 +74,16 @@ public class DefaultDriveProviderTest {
         when(disk2Partition2.getUuid()).thenReturn(osPartitionDisk2Uuid);
         disk2OsPartition = mock(OSFileStore.class);
         when(disk2OsPartition.getUUID()).thenReturn(osPartitionDisk2Uuid);
-        when(disk2.getPartitions()).thenReturn(new HWPartition[]{disk2Partition1, disk2Partition2});
+        when(disk2.getPartitions()).thenReturn(Arrays.asList(disk2Partition1, disk2Partition2));
         when(measurementManager.getCurrentSpeedForName(DEV_SDA2)).thenReturn(Optional.of(new SpeedMeasurementManager.CurrentSpeed(
                 1234,
                 1234
         )));
 
         when(os.getFileSystem()).thenReturn(fs);
-        when(hal.getDiskStores()).thenReturn(new HWDiskStore[]{disk1, disk2});
+        when(hal.getDiskStores()).thenReturn(Arrays.asList(disk1, disk2));
 
-        when(os.getFileSystem().getFileStores()).thenReturn(new OSFileStore[]{disk1OsPartition, disk2OsPartition});
+        when(os.getFileSystem().getFileStores()).thenReturn(Arrays.asList(disk1OsPartition, disk2OsPartition));
         provider.register();
     }
 

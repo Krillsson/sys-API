@@ -22,6 +22,7 @@
 package com.krillsson.sysapi.core.domain.cpu;
 
 import com.krillsson.sysapi.core.domain.system.DateMapper;
+import com.krillsson.sysapi.dto.cpu.CentralProcessor;
 import com.krillsson.sysapi.dto.history.HistoryEntry;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -40,7 +41,19 @@ public interface CpuInfoMapper {
 
     com.krillsson.sysapi.dto.cpu.CpuInfo map(CpuInfo value);
 
-    com.krillsson.sysapi.dto.cpu.CentralProcessor map(oshi.hardware.CentralProcessor value);
+    default com.krillsson.sysapi.dto.cpu.CentralProcessor map(oshi.hardware.CentralProcessor value) {
+        return new CentralProcessor(value.getLogicalProcessorCount(),
+                value.getPhysicalProcessorCount(),
+                value.getProcessorIdentifier().getName(),
+                value.getProcessorIdentifier().getIdentifier(),
+                value.getProcessorIdentifier().getFamily(),
+                value.getProcessorIdentifier().getVendor(),
+                value.getProcessorIdentifier().getVendorFreq(),
+                value.getProcessorIdentifier().getModel(),
+                value.getProcessorIdentifier().getStepping(),
+                value.getProcessorIdentifier().isCpu64bit()
+                );
+    }
 
     com.krillsson.sysapi.dto.cpu.CpuHealth map(com.krillsson.sysapi.core.domain.cpu.CpuHealth value);
 

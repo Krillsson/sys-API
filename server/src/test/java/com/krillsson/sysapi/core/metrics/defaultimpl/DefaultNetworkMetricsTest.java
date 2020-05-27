@@ -9,6 +9,7 @@ import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
 
 import java.net.SocketException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,7 +79,7 @@ public class DefaultNetworkMetricsTest {
                 321L
         )));
 
-        when(hal.getNetworkIFs()).thenReturn(new NetworkIF[]{nic1, nic2});
+        when(hal.getNetworkIFs()).thenReturn(Arrays.asList(nic1, nic2));
     }
 
     @Test

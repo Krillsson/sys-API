@@ -131,6 +131,14 @@ class QueryResolver : GraphQLQueryResolver {
 
     inner class ProcessorResolver : GraphQLResolver<CentralProcessor> {
         fun getMetrics(processor: CentralProcessor) = metrics?.cpuMetrics()?.cpuLoad()
+        fun getName(processor: CentralProcessor) = processor.processorIdentifier.name
+        fun getIdentifier(processor: CentralProcessor) = processor.processorIdentifier.identifier
+        fun getVendor(processor: CentralProcessor) = processor.processorIdentifier.vendor
+        fun getVendorFreq(processor: CentralProcessor) = processor.processorIdentifier.vendorFreq
+        fun getFamily(processor: CentralProcessor) = processor.processorIdentifier.family
+        fun getModel(processor: CentralProcessor) = processor.processorIdentifier.model
+        fun isCpu64bit(processor: CentralProcessor) = processor.processorIdentifier.isCpu64bit
+        fun getStepping(processor: CentralProcessor) = processor.processorIdentifier.stepping
     }
 
     inner class ProcessorMetricsResolver : GraphQLResolver<CpuLoad> {

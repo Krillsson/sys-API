@@ -11,6 +11,8 @@ import org.junit.Test;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -52,7 +54,7 @@ public class WindowsNetworkProviderTest {
 
     @Test
     public void happyPath() throws Exception {
-        when(hal.getNetworkIFs()).thenReturn(new NetworkIF[]{networkIF});
+        when(hal.getNetworkIFs()).thenReturn(Collections.singletonList(networkIF));
         when(networkIF.getName()).thenReturn("en0");
         when(networkIF.getMacaddr()).thenReturn("01:23:45:67:89:ab");
         when(networkMonitor.getNics()).thenReturn(new NicInfo[]{nicInfo});
@@ -67,7 +69,7 @@ public class WindowsNetworkProviderTest {
 
     @Test(expected = NoSuchElementException.class)
     public void noAvailableSpeedRecordsReturnsDefaultValues() throws Exception {
-        when(hal.getNetworkIFs()).thenReturn(new NetworkIF[0]);
+        when(hal.getNetworkIFs()).thenReturn(Collections.singletonList(networkIF));
         assertFalse(nicProvider.networkInterfaceLoadById("en0").isPresent());
     }
 }

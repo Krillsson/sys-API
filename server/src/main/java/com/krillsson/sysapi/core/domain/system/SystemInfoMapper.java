@@ -28,10 +28,12 @@ import com.krillsson.sysapi.core.domain.memory.MemoryMapper;
 import com.krillsson.sysapi.core.domain.motherboard.MotherboardMapper;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfacesMapper;
 import com.krillsson.sysapi.dto.history.HistoryEntry;
+import com.krillsson.sysapi.dto.system.Version;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import oshi.PlatformEnum;
+import oshi.software.os.OperatingSystem;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,15 +51,19 @@ public interface SystemInfoMapper {
     com.krillsson.sysapi.dto.system.PlatformEnum map(PlatformEnum value);
 
     com.krillsson.sysapi.dto.system.SystemInfo map(com.krillsson.sysapi.core.domain.system.SystemInfo value);
+
     com.krillsson.sysapi.dto.system.SystemLoad map(com.krillsson.sysapi.core.domain.system.SystemLoad value);
 
-    com.krillsson.sysapi.dto.system.OperatingSystem map(oshi.software.os.OperatingSystem value);
+    default com.krillsson.sysapi.dto.system.OperatingSystem map(oshi.software.os.OperatingSystem value) {
+        return new com.krillsson.sysapi.dto.system.OperatingSystem(value.getManufacturer(), value.getFamily(), new Version(value.getVersionInfo().getVersion(), value.getVersionInfo().getCodeName(), value.getVersionInfo().getBuildNumber()));
+    }
 
-    com.krillsson.sysapi.dto.system.Version map(oshi.software.os.OperatingSystemVersion value);
+    com.krillsson.sysapi.dto.system.Version map(OperatingSystem.OSVersionInfo value);
 
     com.krillsson.sysapi.dto.system.JvmProperties map(JvmProperties jvmProperties);
 
     Map<String, com.krillsson.sysapi.dto.system.SystemLoad> mapLoadHistory(Map<LocalDateTime, SystemLoad> history);
+
     List<HistoryEntry<com.krillsson.sysapi.dto.system.SystemLoad>> mapHistory(List<com.krillsson.sysapi.core.history.HistoryEntry<SystemLoad>> history);
 
 }

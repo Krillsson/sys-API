@@ -111,7 +111,7 @@ type MonitorEvent {
 type OperatingSystem {
     manufacturer: String
     family: String
-    version: OperatingSystemVersion
+    versionInfo: OperatingSystemVersion
 }
 
 type OperatingSystemVersion {

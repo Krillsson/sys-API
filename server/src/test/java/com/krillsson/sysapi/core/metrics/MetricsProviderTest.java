@@ -17,6 +17,7 @@ import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
 import oshi.software.os.OperatingSystem;
 
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
@@ -49,8 +50,8 @@ public class MetricsProviderTest {
         ticker = mock(Ticker.class);
 
         measurementManager = mock(SpeedMeasurementManager.class);
-        when(hal.getNetworkIFs()).thenReturn(new NetworkIF[0]);
-        when(hal.getDiskStores()).thenReturn(new HWDiskStore[0]);
+        when(hal.getNetworkIFs()).thenReturn(Collections.emptyList());
+        when(hal.getDiskStores()).thenReturn(Collections.emptyList());
         //when(hal.getProcessor()).thenReturn(centralProcessor);
     }
 

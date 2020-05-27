@@ -74,6 +74,7 @@ class MonitorManager(private val eventManager: EventManager, private val eventBu
     }
 
     private fun restore() {
+        activeMonitors = mutableMapOf()
         store.read().orEmpty().forEach { monitor ->
             register(monitor)
         }

@@ -24,7 +24,7 @@ public class DefaultCpuMetrics implements CpuMetrics, Ticker.TickListener {
     private final Utils utils;
     private final Ticker ticker;
     private final DefaultCpuSensors cpuSensors;
-    private long[][] coreTicks = new long[0][0];
+    private long[][] coreTicks;
     private long[] ticks;
     private CpuLoad cpuLoad;
 
@@ -63,8 +63,9 @@ public class DefaultCpuMetrics implements CpuMetrics, Ticker.TickListener {
     @Override
     public void onTick() {
         CentralProcessor processor = hal.getProcessor();
-        if (Arrays.equals(coreTicks, new long[0][0])) {
+        if (coreTicks == null) {
             coreTicks = processor.getProcessorCpuLoadTicks();
+            ticks = processor.getSystemCpuLoadTicks();
             utils.sleep(SLEEP_SAMPLE_PERIOD);
         }
         CoreLoad[] coreLoads = new CoreLoad[processor.getLogicalProcessorCount()];

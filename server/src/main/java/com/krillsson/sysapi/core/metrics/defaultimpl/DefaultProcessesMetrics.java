@@ -30,8 +30,8 @@ public class DefaultProcessesMetrics implements ProcessesMetrics {
         MemoryLoad memory = memoryLoad();
         List<Process> processes = Collections.emptyList();
         if (limit > -1) {
-            processes = Arrays
-                    .stream(operatingSystem.getProcesses(limit, sortBy))
+            processes = operatingSystem.getProcesses(limit, sortBy)
+                    .stream()
                     .map(p -> Process.create(p, memory))
                     .collect(Collectors.toList());
         }

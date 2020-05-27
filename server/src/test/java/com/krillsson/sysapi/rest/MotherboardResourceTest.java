@@ -12,6 +12,8 @@ import oshi.hardware.UsbDevice;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import java.util.Collections;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
@@ -32,7 +34,7 @@ public class MotherboardResourceTest {
         when(computerSystem.getSerialNumber()).thenReturn("ASDF1234");
         Motherboard motherboard = mock(Motherboard.class);
         when(motherboard.getComputerSystem()).thenReturn(computerSystem);
-        when(motherboard.getUsbDevices()).thenReturn(new UsbDevice[0]);
+        when(motherboard.getUsbDevices()).thenReturn(Collections.emptyList());
 
         when(provider.motherboard()).thenReturn(motherboard);
 
