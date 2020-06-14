@@ -1,5 +1,6 @@
 scalar UUID
 scalar ZonedDateTime
+scalar Long
 
 schema {
     query: Query
@@ -198,7 +199,7 @@ type Drive {
     name: String
     id: String
     serial: String
-    sizeBytes: Int
+    sizeBytes: Long
     diskOsPartition: DiskOsPartition
     partitions: [Partition ]
     metrics: DriveMetrics
@@ -241,9 +242,9 @@ type DriveMetrics {
     openFileDescriptors: Int
     maxFileDescriptors: Int
     reads: Int
-    readBytes: Int
+    readBytes: Long
     writes: Int
-    writeBytes: Int
+    writeBytes: Long
     currentReadWriteRate: DriveReadWriteRate
 }
 
@@ -262,7 +263,7 @@ enum DriveHealthDataType {
 }
 
 
-type DriveReadWriteRate { readBytesPerSecond: Int writeBytesPerSecond: Int }
+type DriveReadWriteRate { readBytesPerSecond: Long writeBytesPerSecond: Long }
 
 ## Network interface
 
@@ -282,8 +283,8 @@ type NetworkInterface {
 type NetworkInterfaceMetrics {
     networkInterfaceid: UUID
     speed: Int
-    bytesReceived: Int
-    bytesSent: Int
+    bytesReceived: Long
+    bytesSent: Long
     packetsReceived: Int
     packetsSent: Int
     inErrors: Int
@@ -293,8 +294,8 @@ type NetworkInterfaceMetrics {
 }
 
 type NetworkInterfaceReadWriteRate {
-    receiveBytesPerSecond: Int
-    sendBytesPerSecond: Int
+    receiveBytesPerSecond: Long
+    sendBytesPerSecond: Long
 }
 
 # GPU
@@ -338,8 +339,8 @@ type Process {
     upTime: Int
     cpuPercent: Float
     startTime: Int
-    bytesRead: Int
-    bytesWritten: Int
+    bytesRead: Long
+    bytesWritten: Long
 }
 
 enum ProcessSortMethod{
@@ -355,14 +356,14 @@ enum ProcessSortMethod{
 # Memory
 
 type Memory {
-    swapTotalBytes: Int
-    totalBytes: Int
+    swapTotalBytes: Long
+    totalBytes: Long
     metrics: MemoryMetrics
 }
 
 type MemoryMetrics {
     numberOfProcesses: Int
-    swapUsedBytes: Int
-    availableBytes: Int
+    swapUsedBytes: Long
+    availableBytes: Long
 }
 

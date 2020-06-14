@@ -167,7 +167,7 @@ class QueryResolver : GraphQLQueryResolver {
 
     inner class DriveResolver : GraphQLResolver<Drive> {
         fun getId(drive: Drive) = drive.serial
-        fun getMetrics(drive: Drive) = metrics?.driveMetrics()?.driveLoadByName(drive.serial)
+        fun getMetrics(drive: Drive) = metrics?.driveMetrics()?.driveLoadByName(drive.name)
     }
 
     inner class DriveMetricResolver : GraphQLResolver<DriveLoad> {

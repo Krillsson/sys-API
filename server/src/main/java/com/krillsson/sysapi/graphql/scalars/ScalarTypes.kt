@@ -29,7 +29,13 @@ interface ScalarTypes {
                 .coercing(PeriodCoercing())
                 .build()
 
-        val scalars = listOf(uuid, zonedDateTime, duration, period)
+        val long = GraphQLScalarType.newScalar()
+            .name("Long")
+            .description("Long GraphQL ScalarType")
+            .coercing(LongCoercing())
+            .build()
+
+        val scalars = listOf(uuid, zonedDateTime, duration, period, long)
     }
 
 
