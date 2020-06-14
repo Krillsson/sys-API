@@ -5,6 +5,7 @@ import com.krillsson.sysapi.config.UserConfiguration
 import com.krillsson.sysapi.core.monitoring.EventManager
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.MonitorMapper
+import com.krillsson.sysapi.dto.monitor.CreateMonitor
 import com.krillsson.sysapi.dto.monitor.Monitor
 import com.krillsson.sysapi.dto.monitor.MonitorCreated
 import com.krillsson.sysapi.dto.monitor.MonitorEvent
@@ -44,9 +45,9 @@ class MonitorResource(private val monitorManager: MonitorManager, private val ev
 
     @POST
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun createMonitor(@Auth user: UserConfiguration?, monitor: Monitor): MonitorCreated {
+    fun createMonitor(@Auth user: UserConfiguration?, monitor: CreateMonitor): MonitorCreated {
         return try {
-            val added = monitorManager.add(Duration.ofSeconds(monitor.inertiaInSeconds), MonitorMapper.INSTANCE.map(monitor.type), monitor.threshold, monitor.id)
+            val added = monitorManager.add(Duration.ofSeconds(monitor.inertiaInSeconds), MonitorMapper.INSTANCE.map(monitor.type), monitor.threshold, monitor.idToMonitor)
             MonitorCreated(added.toString())
         } catch (e: IllegalArgumentException) {
             throw WebApplicationException(e.message, Response.Status.NOT_FOUND)
