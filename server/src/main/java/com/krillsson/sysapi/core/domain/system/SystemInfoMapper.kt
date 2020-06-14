@@ -18,52 +18,51 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
+package com.krillsson.sysapi.core.domain.system
 
-package com.krillsson.sysapi.core.domain.system;
-
-import com.krillsson.sysapi.core.domain.cpu.CpuInfoMapper;
-import com.krillsson.sysapi.core.domain.drives.DriveMetricsMapper;
-import com.krillsson.sysapi.core.domain.gpu.GpuInfoMapper;
-import com.krillsson.sysapi.core.domain.memory.MemoryMapper;
-import com.krillsson.sysapi.core.domain.motherboard.MotherboardMapper;
-import com.krillsson.sysapi.core.domain.network.NetworkInterfacesMapper;
-import com.krillsson.sysapi.dto.history.HistoryEntry;
-import com.krillsson.sysapi.dto.system.Version;
-import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
-import oshi.PlatformEnum;
-import oshi.software.os.OperatingSystem;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
+import com.krillsson.sysapi.core.domain.cpu.CpuInfoMapper
+import com.krillsson.sysapi.core.domain.drives.DriveMetricsMapper
+import com.krillsson.sysapi.core.domain.gpu.GpuInfoMapper
+import com.krillsson.sysapi.core.domain.memory.MemoryMapper
+import com.krillsson.sysapi.core.domain.motherboard.MotherboardMapper
+import com.krillsson.sysapi.core.domain.network.NetworkInterfacesMapper
+import com.krillsson.sysapi.core.history.HistoryEntry
+import com.krillsson.sysapi.dto.system.Version
+import org.mapstruct.Mapper
+import org.mapstruct.ReportingPolicy
+import org.mapstruct.factory.Mappers
+import oshi.PlatformEnum
+import oshi.software.os.OperatingSystem
+import oshi.software.os.OperatingSystem.OSVersionInfo
+import java.time.LocalDateTime
 
 @Mapper(
-        unmappedTargetPolicy = ReportingPolicy.ERROR,
-        uses = {CpuInfoMapper.class, MemoryMapper.class, DateMapper.class,
-                NetworkInterfacesMapper.class, DriveMetricsMapper.class,
-                GpuInfoMapper.class, MotherboardMapper.class}
+    unmappedTargetPolicy = ReportingPolicy.ERROR,
+    uses = [CpuInfoMapper::class, MemoryMapper::class, DateMapper::class, NetworkInterfacesMapper::class, DriveMetricsMapper::class, GpuInfoMapper::class, MotherboardMapper::class]
 )
-public interface SystemInfoMapper {
-    SystemInfoMapper INSTANCE = Mappers.getMapper(SystemInfoMapper.class);
-
-    com.krillsson.sysapi.dto.system.PlatformEnum map(PlatformEnum value);
-
-    com.krillsson.sysapi.dto.system.SystemInfo map(com.krillsson.sysapi.core.domain.system.SystemInfo value);
-
-    com.krillsson.sysapi.dto.system.SystemLoad map(com.krillsson.sysapi.core.domain.system.SystemLoad value);
-
-    default com.krillsson.sysapi.dto.system.OperatingSystem map(oshi.software.os.OperatingSystem value) {
-        return new com.krillsson.sysapi.dto.system.OperatingSystem(value.getManufacturer(), value.getFamily(), new Version(value.getVersionInfo().getVersion(), value.getVersionInfo().getCodeName(), value.getVersionInfo().getBuildNumber()));
+interface SystemInfoMapper {
+    fun map(value: PlatformEnum?): com.krillsson.sysapi.dto.system.PlatformEnum?
+    fun map(value: SystemInfo?): com.krillsson.sysapi.dto.system.SystemInfo?
+    fun map(value: SystemLoad?): com.krillsson.sysapi.dto.system.SystemLoad?
+    fun map(value: OperatingSystem): com.krillsson.sysapi.dto.system.OperatingSystem? {
+        return com.krillsson.sysapi.dto.system.OperatingSystem(
+            value.manufacturer,
+            value.family,
+            Version(
+                value.versionInfo.version,
+                value.versionInfo.codeName,
+                value.versionInfo.buildNumber
+            )
+        )
     }
 
-    com.krillsson.sysapi.dto.system.Version map(OperatingSystem.OSVersionInfo value);
+    fun map(value: OSVersionInfo?): Version?
+    fun map(jvmProperties: JvmProperties?): com.krillsson.sysapi.dto.system.JvmProperties?
+    fun mapLoadHistory(history: Map<LocalDateTime?, SystemLoad?>?): Map<String?, com.krillsson.sysapi.dto.system.SystemLoad?>?
+    fun mapHistory(history: List<HistoryEntry<SystemLoad?>?>?): List<com.krillsson.sysapi.dto.history.HistoryEntry<com.krillsson.sysapi.dto.system.SystemLoad?>?>?
 
-    com.krillsson.sysapi.dto.system.JvmProperties map(JvmProperties jvmProperties);
-
-    Map<String, com.krillsson.sysapi.dto.system.SystemLoad> mapLoadHistory(Map<LocalDateTime, SystemLoad> history);
-
-    List<HistoryEntry<com.krillsson.sysapi.dto.system.SystemLoad>> mapHistory(List<com.krillsson.sysapi.core.history.HistoryEntry<SystemLoad>> history);
-
+    companion object {
+        @kotlin.jvm.JvmField
+        val INSTANCE = Mappers.getMapper(SystemInfoMapper::class.java)
+    }
 }

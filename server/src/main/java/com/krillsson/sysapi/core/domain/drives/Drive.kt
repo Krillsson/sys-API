@@ -18,48 +18,13 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.drives;
+package com.krillsson.sysapi.core.domain.drives
 
-import java.util.List;
-
-public class Drive {
-    private final String model;
-    private final String name;
-    private final String serial;
-    private final long sizeBytes;
-    private final List<Partition> partitions;
-    private final OsPartition diskOsPartition;
-
-    public Drive(String model, String name, String serial, long sizeBytes, OsPartition diskOsPartition, List<Partition> partitions) {
-        this.model = model;
-        this.name = name;
-        this.serial = serial;
-        this.sizeBytes = sizeBytes;
-        this.diskOsPartition = diskOsPartition;
-        this.partitions = partitions;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getSerial() {
-        return serial;
-    }
-
-    public long getSizeBytes() {
-        return sizeBytes;
-    }
-
-    public List<Partition> getPartitions() {
-        return partitions;
-    }
-
-    public OsPartition getDiskOsPartition() {
-        return diskOsPartition;
-    }
-}
+class Drive(
+    val model: String,
+    val name: String,
+    val serial: String,
+    val sizeBytes: Long,
+    val diskOsPartition: OsPartition,
+    val partitions: List<Partition>
+) 

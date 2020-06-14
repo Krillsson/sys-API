@@ -1,14 +1,15 @@
-package com.krillsson.sysapi.core.domain.metadata;
+package com.krillsson.sysapi.core.domain.metadata
 
-import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.Mapper
+import org.mapstruct.ReportingPolicy
+import org.mapstruct.factory.Mappers
 
-@Mapper(
-        unmappedTargetPolicy = ReportingPolicy.ERROR
-)
-public interface MetaMapper {
-    MetaMapper INSTANCE = Mappers.getMapper(MetaMapper.class);
+@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
+interface MetaMapper {
+    fun map(value: Meta?): com.krillsson.sysapi.dto.metadata.Meta?
 
-    com.krillsson.sysapi.dto.metadata.Meta map(com.krillsson.sysapi.core.domain.metadata.Meta value);
+    companion object {
+        @kotlin.jvm.JvmField
+        val INSTANCE = Mappers.getMapper(MetaMapper::class.java)
+    }
 }

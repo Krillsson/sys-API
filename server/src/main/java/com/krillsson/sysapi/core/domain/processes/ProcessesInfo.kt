@@ -18,46 +18,14 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
+package com.krillsson.sysapi.core.domain.processes
 
-package com.krillsson.sysapi.core.domain.processes;
+import com.krillsson.sysapi.core.domain.memory.MemoryLoad
 
-import com.krillsson.sysapi.core.domain.memory.MemoryLoad;
-import oshi.hardware.GlobalMemory;
-
-import java.util.List;
-
-public class ProcessesInfo {
-    private final MemoryLoad memory;
-    private final long processId;
-    private final long threadCount;
-    private final long processCount;
-    private final List<Process> processes;
-
-    public ProcessesInfo(MemoryLoad memory, long processId, long threadCount, long processCount, List<Process> processes) {
-        this.memory = memory;
-        this.processId = processId;
-        this.threadCount = threadCount;
-        this.processCount = processCount;
-        this.processes = processes;
-    }
-
-    public MemoryLoad getMemory() {
-        return memory;
-    }
-
-    public long getProcessId() {
-        return processId;
-    }
-
-    public long getProcessCount() {
-        return processCount;
-    }
-
-    public long getThreadCount() {
-        return threadCount;
-    }
-
-    public List<Process> getProcesses() {
-        return processes;
-    }
-}
+class ProcessesInfo(
+    val memory: MemoryLoad,
+    val processId: Long,
+    val threadCount: Long,
+    val processCount: Long,
+    val processes: List<Process>
+) 

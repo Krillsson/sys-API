@@ -18,13 +18,8 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.sensors;
+package com.krillsson.sysapi.core.domain.sensors
 
-public enum DataType {
-    CLOCK,
-    VOLTAGE,
-    PERCENT,
-    RPM,
-    CELCIUS,
-    GIGABYTE
+enum class DataType {
+    CLOCK, VOLTAGE, PERCENT, RPM, CELCIUS, GIGABYTE
 }

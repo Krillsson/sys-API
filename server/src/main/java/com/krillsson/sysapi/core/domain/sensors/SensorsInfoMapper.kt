@@ -18,30 +18,27 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
+package com.krillsson.sysapi.core.domain.sensors
 
-package com.krillsson.sysapi.core.domain.sensors;
-
-import com.krillsson.sysapi.core.domain.cpu.CpuInfoMapper;
-import com.krillsson.sysapi.core.domain.gpu.GpuInfoMapper;
-import com.krillsson.sysapi.core.domain.motherboard.MotherboardMapper;
-import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
-
-import java.util.List;
+import com.krillsson.sysapi.core.domain.cpu.CpuInfoMapper
+import com.krillsson.sysapi.core.domain.gpu.GpuInfoMapper
+import com.krillsson.sysapi.core.domain.motherboard.MotherboardMapper
+import org.mapstruct.Mapper
+import org.mapstruct.ReportingPolicy
+import org.mapstruct.factory.Mappers
 
 @Mapper(
-        unmappedTargetPolicy = ReportingPolicy.ERROR,
-        uses = {MotherboardMapper.class, CpuInfoMapper.class, GpuInfoMapper.class}
+    unmappedTargetPolicy = ReportingPolicy.ERROR,
+    uses = [MotherboardMapper::class, CpuInfoMapper::class, GpuInfoMapper::class]
 )
-public interface SensorsInfoMapper {
-    SensorsInfoMapper INSTANCE = Mappers.getMapper(SensorsInfoMapper.class);
+interface SensorsInfoMapper {
+    fun map(value: SensorsInfo?): com.krillsson.sysapi.dto.sensors.SensorsInfo?
+    fun map(value: HealthData?): com.krillsson.sysapi.dto.sensors.HealthData?
+    fun mapDatas(value: List<HealthData?>?): List<com.krillsson.sysapi.dto.sensors.HealthData?>?
+    fun map(value: DataType?): com.krillsson.sysapi.dto.sensors.DataType?
 
-    com.krillsson.sysapi.dto.sensors.SensorsInfo map(SensorsInfo value);
-
-    com.krillsson.sysapi.dto.sensors.HealthData map(com.krillsson.sysapi.core.domain.sensors.HealthData value);
-
-    List<com.krillsson.sysapi.dto.sensors.HealthData> mapDatas(List<com.krillsson.sysapi.core.domain.sensors.HealthData> value);
-
-    com.krillsson.sysapi.dto.sensors.DataType map(com.krillsson.sysapi.core.domain.sensors.DataType value);
+    companion object {
+        @kotlin.jvm.JvmField
+        val INSTANCE = Mappers.getMapper(SensorsInfoMapper::class.java)
+    }
 }

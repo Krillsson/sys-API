@@ -18,33 +18,13 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.sensors;
+package com.krillsson.sysapi.core.domain.sensors
 
-import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
-import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
+import com.krillsson.sysapi.core.domain.cpu.CpuHealth
+import com.krillsson.sysapi.core.domain.gpu.GpuHealth
 
-import java.util.Map;
-
-public class SensorsInfo {
-    private final CpuHealth cpuHealth;
-    private final Map<String, GpuHealth> gpuHealths;
-    private final HealthData[] healthData;
-
-    public SensorsInfo(CpuHealth cpuHealth, Map<String, GpuHealth> gpuHealths, HealthData[] healthData) {
-        this.cpuHealth = cpuHealth;
-        this.gpuHealths = gpuHealths;
-        this.healthData = healthData;
-    }
-
-    public Map<String, GpuHealth> getGpuHealths() {
-        return gpuHealths;
-    }
-
-    public CpuHealth getCpuHealth() {
-        return cpuHealth;
-    }
-
-    public HealthData[] getHealthData() {
-        return healthData;
-    }
-}
+class SensorsInfo(
+    val cpuHealth: CpuHealth,
+    val gpuHealths: Map<String, GpuHealth>,
+    val healthData: Array<HealthData>
+) 

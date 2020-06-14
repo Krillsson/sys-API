@@ -18,30 +18,23 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
+package com.krillsson.sysapi.core.domain.memory
 
-package com.krillsson.sysapi.core.domain.memory;
+import com.krillsson.sysapi.core.domain.system.DateMapper
+import com.krillsson.sysapi.core.history.HistoryEntry
+import org.mapstruct.Mapper
+import org.mapstruct.ReportingPolicy
+import org.mapstruct.factory.Mappers
+import java.time.LocalDateTime
 
-import com.krillsson.sysapi.core.domain.system.DateMapper;
-import com.krillsson.sysapi.dto.history.HistoryEntry;
-import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
+@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR, uses = [DateMapper::class])
+interface MemoryMapper {
+    fun map(load: MemoryLoad?): com.krillsson.sysapi.dto.memory.MemoryLoad?
+    fun mapHistory(history: Map<LocalDateTime?, MemoryLoad?>?): Map<String?, com.krillsson.sysapi.dto.memory.MemoryLoad?>?
+    fun mapHistory(history: List<HistoryEntry<MemoryLoad?>?>?): List<com.krillsson.sysapi.dto.history.HistoryEntry<com.krillsson.sysapi.dto.memory.MemoryLoad?>?>?
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-
-@Mapper(
-        unmappedTargetPolicy = ReportingPolicy.ERROR,
-        uses = {DateMapper.class}
-)
-public interface MemoryMapper {
-    MemoryMapper INSTANCE = Mappers.getMapper(MemoryMapper.class);
-
-    com.krillsson.sysapi.dto.memory.MemoryLoad map(MemoryLoad load);
-
-    Map<String, com.krillsson.sysapi.dto.memory.MemoryLoad> mapHistory(Map<LocalDateTime, MemoryLoad> history);
-
-    List<HistoryEntry<com.krillsson.sysapi.dto.memory.MemoryLoad>> mapHistory(List<com.krillsson.sysapi.core.history.HistoryEntry<MemoryLoad>> history);
-
+    companion object {
+        @kotlin.jvm.JvmField
+        val INSTANCE = Mappers.getMapper(MemoryMapper::class.java)
+    }
 }

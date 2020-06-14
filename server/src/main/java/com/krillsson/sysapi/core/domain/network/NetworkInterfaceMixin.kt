@@ -18,15 +18,13 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
+package com.krillsson.sysapi.core.domain.network
 
-package com.krillsson.sysapi.core.domain.network;
-
-import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonFilter
 
 /**
  * Fixes: com.fasterxml.jackson.databind.JsonMappingException:
  * No serializer found for class java.net.NetworkInterfaceData$1checkedAddresses
  */
 @JsonFilter("networkInterface filter")
-public class NetworkInterfaceMixin {
-}
+class NetworkInterfaceMixin 

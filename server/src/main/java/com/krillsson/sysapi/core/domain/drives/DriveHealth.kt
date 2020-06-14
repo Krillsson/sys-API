@@ -18,27 +18,11 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.drives;
+package com.krillsson.sysapi.core.domain.drives
 
-import com.krillsson.sysapi.core.domain.sensors.HealthData;
+import com.krillsson.sysapi.core.domain.sensors.HealthData
 
-import java.util.List;
-
-public class DriveHealth {
-    private final double temperature;
-    private final List<HealthData> healthData;
-
-    public DriveHealth(double temperature, List<HealthData> healthData) {
-        this.temperature = temperature;
-        this.healthData = healthData;
-    }
-
-    public double getTemperature() {
-        return temperature;
-    }
-
-    public List<HealthData> getHealthData() {
-        return healthData;
-    }
-
-}
+class DriveHealth(
+    val temperature: Double,
+    val healthData: List<HealthData>
+) 

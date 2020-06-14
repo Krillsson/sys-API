@@ -18,75 +18,25 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.system;
+package com.krillsson.sysapi.core.domain.system
 
-import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
-import com.krillsson.sysapi.core.domain.drives.Drive;
-import com.krillsson.sysapi.core.domain.gpu.Gpu;
-import com.krillsson.sysapi.core.domain.memory.MemoryLoad;
-import com.krillsson.sysapi.core.domain.motherboard.Motherboard;
-import com.krillsson.sysapi.core.domain.network.NetworkInterface;
-import oshi.PlatformEnum;
-import oshi.software.os.OperatingSystem;
+import com.krillsson.sysapi.core.domain.cpu.CpuInfo
+import com.krillsson.sysapi.core.domain.drives.Drive
+import com.krillsson.sysapi.core.domain.gpu.Gpu
+import com.krillsson.sysapi.core.domain.memory.MemoryLoad
+import com.krillsson.sysapi.core.domain.motherboard.Motherboard
+import com.krillsson.sysapi.core.domain.network.NetworkInterface
+import oshi.PlatformEnum
+import oshi.software.os.OperatingSystem
 
-import java.util.List;
-
-public class SystemInfo {
-    private final String hostName;
-    private final OperatingSystem operatingSystem;
-    private final PlatformEnum platform;
-    private final CpuInfo cpuInfo;
-    private final Motherboard motherboard;
-    private final MemoryLoad memory;
-    private final List<Drive> drives;
-    private final List<NetworkInterface> networkInterfaces;
-    private final List<Gpu> gpus;
-
-    public SystemInfo(String hostName, OperatingSystem operatingSystem, PlatformEnum platform, CpuInfo cpuInfo, Motherboard motherboard, MemoryLoad memory, List<Drive> drives, List<NetworkInterface> networkInterfaces, List<Gpu> gpus) {
-        this.hostName = hostName;
-        this.operatingSystem = operatingSystem;
-        this.platform = platform;
-        this.cpuInfo = cpuInfo;
-        this.motherboard = motherboard;
-        this.memory = memory;
-        this.drives = drives;
-        this.networkInterfaces = networkInterfaces;
-        this.gpus = gpus;
-    }
-
-    public String getHostName() {
-        return hostName;
-    }
-
-    public OperatingSystem getOperatingSystem() {
-        return operatingSystem;
-    }
-
-    public PlatformEnum getPlatform() {
-        return platform;
-    }
-
-    public CpuInfo getCpuInfo() {
-        return cpuInfo;
-    }
-
-    public Motherboard getMotherboard() {
-        return motherboard;
-    }
-
-    public MemoryLoad getMemory() {
-        return memory;
-    }
-
-    public List<Drive> getDrives() {
-        return drives;
-    }
-
-    public List<NetworkInterface> getNetworkInterfaces() {
-        return networkInterfaces;
-    }
-
-    public List<Gpu> getGpus() {
-        return gpus;
-    }
-}
+class SystemInfo(
+    val hostName: String,
+    val operatingSystem: OperatingSystem,
+    val platform: PlatformEnum,
+    val cpuInfo: CpuInfo,
+    val motherboard: Motherboard,
+    val memory: MemoryLoad,
+    val drives: List<Drive>,
+    val networkInterfaces: List<NetworkInterface>,
+    val gpus: List<Gpu>
+) 

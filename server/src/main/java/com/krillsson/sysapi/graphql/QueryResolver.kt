@@ -49,19 +49,22 @@ class QueryResolver : GraphQLQueryResolver {
     val networkInterfaceMetricResolver = NetworkInterfaceMetricResolver()
 
     fun system(): SystemInfo {
+        val metric =
+            checkNotNull(metrics) { "System API did not initialize properly. Metrics is null in QueryResolver" }
+        val operatingSystem =
+            checkNotNull(os) { "System API did not initialize properly. OperatingSystem is null in QueryResolver" }
         return SystemInfo(
-                EnvironmentUtils.getHostName(),
-                os,
-                oshi.SystemInfo.getCurrentPlatformEnum(),
-                metrics?.cpuMetrics()?.cpuInfo(),
-                metrics?.motherboardMetrics()?.motherboard(),
-                metrics?.memoryMetrics()?.memoryLoad(),
-                metrics?.driveMetrics()?.drives(),
-                metrics?.networkMetrics()?.networkInterfaces(),
-                metrics?.gpuMetrics()?.gpus()
+            EnvironmentUtils.getHostName(),
+            operatingSystem,
+            oshi.SystemInfo.getCurrentPlatformEnum(),
+            metric.cpuMetrics().cpuInfo(),
+            metric.motherboardMetrics().motherboard(),
+            metric.memoryMetrics().memoryLoad(),
+            metric.driveMetrics().drives(),
+            metric.networkMetrics().networkInterfaces(),
+            metric.gpuMetrics().gpus()
         )
     }
-
 
     fun history(): List<SystemHistoryEntry> {
         return historyManager?.history?.map { SystemHistoryEntry(it.date, it.value) }?.toList().orEmpty()
@@ -96,8 +99,13 @@ class QueryResolver : GraphQLQueryResolver {
             return metrics?.gpuMetrics()?.gpus()
         }
 
-        fun getProcesses(system: SystemInfo, limit: Int = 0, processSortMethod: ProcessSortMethod = ProcessSortMethod.MEMORY): List<Process?>? {
-            return metrics?.processesMetrics()?.processesInfo(processSortMethod.toOperatingSystemProcessSort(), limit)?.processes
+        fun getProcesses(
+            system: SystemInfo,
+            limit: Int = 0,
+            processSortMethod: ProcessSortMethod = ProcessSortMethod.MEMORY
+        ): List<Process?>? {
+            return metrics?.processesMetrics()
+                ?.processesInfo(processSortMethod.toOperatingSystemProcessSort(), limit)?.processes
         }
 
         private fun ProcessSortMethod.toOperatingSystemProcessSort(): OperatingSystem.ProcessSort = when (this) {
@@ -174,19 +182,21 @@ class QueryResolver : GraphQLQueryResolver {
         fun getWrites(driveLoad: DriveLoad) = driveLoad.values.writes
         fun getReadBytes(driveLoad: DriveLoad) = driveLoad.values.readBytes
         fun getWriteBytes(driveLoad: DriveLoad) = driveLoad.values.writeBytes
-        fun getCurrentReadWriteRate(driveLoad: DriveLoad) = driveLoad.speed.let { DriveReadWriteRate(it.readBytesPerSecond, it.writeBytesPerSecond) }
+        fun getCurrentReadWriteRate(driveLoad: DriveLoad) =
+            driveLoad.speed.let { DriveReadWriteRate(it.readBytesPerSecond, it.writeBytesPerSecond) }
     }
 
     data class DriveHealth(
-            val value: Double,
-            val type: DataType
+        val value: Double,
+        val type: DataType
     )
 
     data class DriveReadWriteRate(val readBytesPerSecond: Long, val writeBytesPerSecond: Long)
 
     inner class NetworkInterfaceResolver : GraphQLResolver<NetworkInterface> {
         fun getId(networkInterface: NetworkInterface) = networkInterface.name
-        fun getMetrics(networkInterface: NetworkInterface) = metrics?.networkMetrics()?.networkInterfaceLoadById(networkInterface.name)
+        fun getMetrics(networkInterface: NetworkInterface) =
+            metrics?.networkMetrics()?.networkInterfaceLoadById(networkInterface.name)
     }
 
     inner class NetworkInterfaceMetricResolver : GraphQLResolver<NetworkInterfaceLoad> {
@@ -197,19 +207,26 @@ class QueryResolver : GraphQLQueryResolver {
         fun getPacketsSent(networkInterfaceLoad: NetworkInterfaceLoad) = networkInterfaceLoad.values.packetsSent
         fun getInErrors(networkInterfaceLoad: NetworkInterfaceLoad) = networkInterfaceLoad.values.inErrors
         fun getOutErrors(networkInterfaceLoad: NetworkInterfaceLoad) = networkInterfaceLoad.values.outErrors
-        fun getReadWriteRate(networkInterfaceLoad: NetworkInterfaceLoad) = networkInterfaceLoad.speed.let { NetworkInterfaceReadWriteRate(it.receiveBytesPerSecond, it.sendBytesPerSecond) }
+        fun getReadWriteRate(networkInterfaceLoad: NetworkInterfaceLoad) = networkInterfaceLoad.speed.let {
+            NetworkInterfaceReadWriteRate(
+                it.receiveBytesPerSecond,
+                it.sendBytesPerSecond
+            )
+        }
     }
 
     data class NetworkInterfaceReadWriteRate(val receiveBytesPerSecond: Long, val sendBytesPerSecond: Long)
 
-
     inner class MemoryLoadResolver : GraphQLResolver<MemoryLoad> {
         fun getSwapTotalBytes(memoryLoad: MemoryLoad) = memoryLoad.swapTotal
         fun getTotalBytes(memoryLoad: MemoryLoad) = memoryLoad.total
-        fun getMetrics(memoryLoad: MemoryLoad) = MemoryMetrics(memoryLoad.numberOfProcesses, memoryLoad.swapUsed, memoryLoad.available)
+        fun getMetrics(memoryLoad: MemoryLoad) =
+            MemoryMetrics(memoryLoad.numberOfProcesses, memoryLoad.swapUsed, memoryLoad.available)
     }
 
-    data class MemoryMetrics(val numberOfProcesses: Int,
-                             val swapUsedBytes: Long,
-                             val availableBytes: Long)
+    data class MemoryMetrics(
+        val numberOfProcesses: Int,
+        val swapUsedBytes: Long,
+        val availableBytes: Long
+    )
 }

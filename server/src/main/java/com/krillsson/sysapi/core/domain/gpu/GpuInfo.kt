@@ -18,26 +18,11 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.gpu;
+package com.krillsson.sysapi.core.domain.gpu
 
-import oshi.hardware.Display;
+import oshi.hardware.Display
 
-import java.util.List;
-
-public class GpuInfo {
-    private final List<Display> displays;
-    private final List<Gpu> gpus;
-
-    public GpuInfo(List<Display> displays, List<Gpu> gpus) {
-        this.displays = displays;
-        this.gpus = gpus;
-    }
-
-    public List<Display> getDisplays() {
-        return displays;
-    }
-
-    public List<Gpu> getGpus() {
-        return gpus;
-    }
-}
+class GpuInfo(
+    val displays: List<Display>,
+    val gpus: List<Gpu>
+) 

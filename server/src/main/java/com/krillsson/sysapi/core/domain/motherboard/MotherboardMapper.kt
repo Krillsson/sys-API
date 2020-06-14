@@ -18,43 +18,41 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
+package com.krillsson.sysapi.core.domain.motherboard
 
-package com.krillsson.sysapi.core.domain.motherboard;
+import com.krillsson.sysapi.core.domain.system.DateMapper
+import org.mapstruct.Mapper
+import org.mapstruct.ReportingPolicy
+import org.mapstruct.factory.Mappers
+import oshi.hardware.Baseboard
+import oshi.hardware.ComputerSystem
+import oshi.hardware.Firmware
+import oshi.hardware.UsbDevice
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Date
 
-import com.krillsson.sysapi.core.domain.system.DateMapper;
-import com.krillsson.sysapi.core.domain.system.SystemInfoMapper;
-import org.joda.time.DateTimeUtils;
-import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.ZoneId;
-
-@Mapper(
-        unmappedTargetPolicy = ReportingPolicy.ERROR,
-        uses = {DateMapper.class}
-)
-public interface MotherboardMapper {
-
-    MotherboardMapper INSTANCE = Mappers.getMapper(MotherboardMapper.class);
-
-    com.krillsson.sysapi.dto.motherboard.Motherboard map(com.krillsson.sysapi.core.domain.motherboard.Motherboard value);
-
-    com.krillsson.sysapi.dto.motherboard.ComputerSystem map(oshi.hardware.ComputerSystem value);
-
-    com.krillsson.sysapi.dto.motherboard.UsbDevice map(oshi.hardware.UsbDevice value);
-
-    com.krillsson.sysapi.dto.motherboard.Firmware map(oshi.hardware.Firmware value);
-
-    com.krillsson.sysapi.dto.motherboard.Baseboard map(oshi.hardware.Baseboard value);
-
-    default java.util.Date map(String value) {
-        try {
-            return value != null && !value.equalsIgnoreCase("unknown") ? new SimpleDateFormat().parse(value ) : null;
-        } catch (ParseException e) {
-            return null;
+@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR, uses = [DateMapper::class])
+interface MotherboardMapper {
+    fun map(value: Motherboard?): com.krillsson.sysapi.dto.motherboard.Motherboard?
+    fun map(value: ComputerSystem?): com.krillsson.sysapi.dto.motherboard.ComputerSystem?
+    fun map(value: UsbDevice?): com.krillsson.sysapi.dto.motherboard.UsbDevice?
+    fun map(value: Firmware?): com.krillsson.sysapi.dto.motherboard.Firmware?
+    fun map(value: Baseboard?): com.krillsson.sysapi.dto.motherboard.Baseboard?
+    fun map(value: String?): Date? {
+        return try {
+            if (value != null && !value.equals(
+                    "unknown",
+                    ignoreCase = true
+                )
+            ) SimpleDateFormat().parse(value) else null
+        } catch (e: ParseException) {
+            null
         }
+    }
+
+    companion object {
+        @kotlin.jvm.JvmField
+        val INSTANCE = Mappers.getMapper(MotherboardMapper::class.java)
     }
 }

@@ -18,27 +18,12 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.motherboard;
+package com.krillsson.sysapi.core.domain.motherboard
 
-import oshi.hardware.ComputerSystem;
-import oshi.hardware.UsbDevice;
+import oshi.hardware.ComputerSystem
+import oshi.hardware.UsbDevice
 
-import java.util.List;
-
-public class Motherboard {
-    private final ComputerSystem computerSystem;
-    private final List<UsbDevice> usbDevices;
-
-    public Motherboard(ComputerSystem computerSystem, List<UsbDevice> usbDevices) {
-        this.computerSystem = computerSystem;
-        this.usbDevices = usbDevices;
-    }
-
-    public ComputerSystem getComputerSystem() {
-        return computerSystem;
-    }
-
-    public List<UsbDevice> getUsbDevices() {
-        return usbDevices;
-    }
-}
+class Motherboard(
+    val computerSystem: ComputerSystem,
+    val usbDevices: List<UsbDevice>
+) 

@@ -18,35 +18,6 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.gpu;
+package com.krillsson.sysapi.core.domain.gpu
 
-public class Gpu {
-    private String vendor;
-    private String model;
-    private double coreMhz;
-    private double memoryMhz;
-
-    public Gpu(String vendor, String model, double coreMhz, double memoryMhz) {
-        this.vendor = vendor;
-        this.model = model;
-        this.coreMhz = coreMhz;
-        this.memoryMhz = memoryMhz;
-    }
-
-    public String getVendor() {
-        return vendor;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public double getCoreMhz() {
-        return coreMhz;
-    }
-
-    public double getMemoryMhz() {
-        return memoryMhz;
-    }
-
-}
+class Gpu(val vendor: String, val model: String, val coreMhz: Double, val memoryMhz: Double) 

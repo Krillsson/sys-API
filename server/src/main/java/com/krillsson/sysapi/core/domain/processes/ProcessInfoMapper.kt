@@ -18,28 +18,32 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
+package com.krillsson.sysapi.core.domain.processes
 
-package com.krillsson.sysapi.core.domain.processes;
+import com.krillsson.sysapi.dto.processes.Memory
+import com.krillsson.sysapi.dto.processes.ProcessInfo
+import org.mapstruct.Mapper
+import org.mapstruct.ReportingPolicy
+import org.mapstruct.factory.Mappers
+import oshi.hardware.GlobalMemory
 
-import com.krillsson.sysapi.dto.processes.Memory;
-import com.krillsson.sysapi.dto.processes.ProcessInfo;
-import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
-import oshi.hardware.VirtualMemory;
-
-@Mapper(
-        unmappedTargetPolicy = ReportingPolicy.ERROR
-)
-public interface ProcessInfoMapper {
-    ProcessInfoMapper INSTANCE = Mappers.getMapper(ProcessInfoMapper.class);
-
-    ProcessInfo map(ProcessesInfo value);
-
-    default com.krillsson.sysapi.dto.processes.Memory map(oshi.hardware.GlobalMemory value){
-        VirtualMemory virtualMemory = value.getVirtualMemory();
-        return new Memory(virtualMemory.getSwapTotal(), virtualMemory.getSwapUsed(), value.getTotal(), value.getAvailable());
+@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
+interface ProcessInfoMapper {
+    fun map(value: ProcessesInfo?): ProcessInfo?
+    fun map(value: GlobalMemory): Memory? {
+        val virtualMemory = value.virtualMemory
+        return Memory(
+            virtualMemory.swapTotal,
+            virtualMemory.swapUsed,
+            value.total,
+            value.available
+        )
     }
 
-    com.krillsson.sysapi.dto.processes.Process map(com.krillsson.sysapi.core.domain.processes.Process value);
+    fun map(value: Process?): com.krillsson.sysapi.dto.processes.Process?
+
+    companion object {
+        @kotlin.jvm.JvmField
+        val INSTANCE = Mappers.getMapper(ProcessInfoMapper::class.java)
+    }
 }

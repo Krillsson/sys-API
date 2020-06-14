@@ -18,36 +18,11 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.cpu;
+package com.krillsson.sysapi.core.domain.cpu
 
-import java.util.List;
-
-public class CpuHealth {
-    private final List<Double> temperatures;
-    private final double voltage;
-    private final double fanRpm;
-    private final double fanPercent;
-
-    public CpuHealth(List<Double> temperatures, double voltage, double fanRpm, double fanPercent) {
-        this.temperatures = temperatures;
-        this.voltage = voltage;
-        this.fanRpm = fanRpm;
-        this.fanPercent = fanPercent;
-    }
-
-    public List<Double> getTemperatures() {
-        return temperatures;
-    }
-
-    public double getVoltage() {
-        return voltage;
-    }
-
-    public double getFanRpm() {
-        return fanRpm;
-    }
-
-    public double getFanPercent() {
-        return fanPercent;
-    }
-}
+class CpuHealth(
+    val temperatures: List<Double>,
+    val voltage: Double,
+    val fanRpm: Double,
+    val fanPercent: Double
+) 

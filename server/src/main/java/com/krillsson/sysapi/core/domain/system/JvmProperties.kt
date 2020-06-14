@@ -18,19 +18,6 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.system;
+package com.krillsson.sysapi.core.domain.system
 
-import java.util.Map;
-
-public class JvmProperties {
-    private Map<String, String> properties;
-
-    public JvmProperties(Map<String, String> properties) {
-
-        this.properties = properties;
-    }
-
-    public Map<String, String> getProperties() {
-        return properties;
-    }
-}
+class JvmProperties(val properties: Map<String, String>) 

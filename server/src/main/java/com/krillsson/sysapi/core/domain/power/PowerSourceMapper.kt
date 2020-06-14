@@ -18,23 +18,26 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
+package com.krillsson.sysapi.core.domain.power
 
-package com.krillsson.sysapi.core.domain.power;
+import org.mapstruct.Mapper
+import org.mapstruct.ReportingPolicy
+import org.mapstruct.factory.Mappers
+import oshi.hardware.PowerSource
 
-import com.krillsson.sysapi.dto.power.PowerSource;
-import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
-
-@Mapper(
-        unmappedTargetPolicy = ReportingPolicy.ERROR
-)
-public interface PowerSourceMapper {
-    PowerSourceMapper INSTANCE = Mappers.getMapper(PowerSourceMapper.class);
-
-    default com.krillsson.sysapi.dto.power.PowerSource map(oshi.hardware.PowerSource value) {
-        return new PowerSource(value.getName(), value.getCurrentCapacity(), value.getTimeRemainingEstimated());
+@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
+interface PowerSourceMapper {
+    fun map(value: PowerSource): com.krillsson.sysapi.dto.power.PowerSource? {
+        return com.krillsson.sysapi.dto.power.PowerSource(
+            value.name,
+            value.currentCapacity.toDouble(),
+            value.timeRemainingEstimated
+        )
     }
 
-    com.krillsson.sysapi.dto.power.PowerSource[] map(oshi.hardware.PowerSource[] value);
+    fun map(value: Array<PowerSource?>?): Array<com.krillsson.sysapi.dto.power.PowerSource?>?
+
+    companion object {
+        val INSTANCE = Mappers.getMapper(PowerSourceMapper::class.java)
+    }
 }

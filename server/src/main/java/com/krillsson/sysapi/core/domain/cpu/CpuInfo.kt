@@ -18,16 +18,6 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.cpu;
+package com.krillsson.sysapi.core.domain.cpu
 
-public class CpuInfo {
-    private final CentralProcessor centralProcessor;
-
-    public CpuInfo(CentralProcessor centralProcessor) {
-        this.centralProcessor = centralProcessor;
-    }
-
-    public CentralProcessor getCentralProcessor() {
-        return centralProcessor;
-    }
-}
+class CpuInfo(val centralProcessor: CentralProcessor) 

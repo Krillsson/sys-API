@@ -18,31 +18,6 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.gpu;
+package com.krillsson.sysapi.core.domain.gpu
 
-public class GpuHealth {
-
-    private double fanRpm;
-    private double fanPercent;
-    private double temperature;
-
-    public GpuHealth(double fanRpm, double fanPercent, double temperature) {
-        this.fanRpm = fanRpm;
-        this.fanPercent = fanPercent;
-        this.temperature = temperature;
-
-    }
-
-    public double getFanRpm() {
-        return fanRpm;
-    }
-
-    public double getFanPercent() {
-        return fanPercent;
-    }
-
-    public double getTemperature() {
-        return temperature;
-    }
-
-}
+class GpuHealth(val fanRpm: Double, val fanPercent: Double, val temperature: Double) 
