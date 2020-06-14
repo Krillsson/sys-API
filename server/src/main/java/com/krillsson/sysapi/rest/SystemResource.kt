@@ -18,79 +18,64 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.rest;
+package com.krillsson.sysapi.rest
 
-import com.krillsson.sysapi.auth.BasicAuthorizer;
-import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.domain.system.JvmProperties;
-import com.krillsson.sysapi.core.domain.system.SystemInfo;
-import com.krillsson.sysapi.core.domain.system.SystemInfoMapper;
-import com.krillsson.sysapi.core.history.MetricsHistoryManager;
-import com.krillsson.sysapi.core.metrics.*;
-import com.krillsson.sysapi.dto.history.HistoryEntry;
-import com.krillsson.sysapi.dto.system.SystemLoad;
-import com.krillsson.sysapi.util.EnvironmentUtils;
-import io.dropwizard.auth.Auth;
-import org.slf4j.Logger;
-import oshi.PlatformEnum;
-import oshi.software.os.OperatingSystem;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.time.OffsetDateTime;
-import java.util.*;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import com.krillsson.sysapi.auth.BasicAuthorizer
+import com.krillsson.sysapi.config.UserConfiguration
+import com.krillsson.sysapi.core.domain.system.SystemInfoMapper
+import com.krillsson.sysapi.core.history.MetricsHistoryManager
+import com.krillsson.sysapi.core.metrics.CpuMetrics
+import com.krillsson.sysapi.core.metrics.DriveMetrics
+import com.krillsson.sysapi.core.metrics.GpuMetrics
+import com.krillsson.sysapi.core.metrics.MemoryMetrics
+import com.krillsson.sysapi.core.metrics.MotherboardMetrics
+import com.krillsson.sysapi.core.metrics.NetworkMetrics
+import com.krillsson.sysapi.core.metrics.ProcessesMetrics
+import com.krillsson.sysapi.dto.history.HistoryEntry
+import com.krillsson.sysapi.dto.system.JvmProperties
+import com.krillsson.sysapi.dto.system.SystemInfo
+import com.krillsson.sysapi.dto.system.SystemLoad
+import com.krillsson.sysapi.util.EnvironmentUtils
+import io.dropwizard.auth.Auth
+import org.slf4j.LoggerFactory
+import oshi.PlatformEnum
+import oshi.software.os.OperatingSystem
+import oshi.software.os.OperatingSystem.ProcessSort
+import java.time.OffsetDateTime
+import java.util.Arrays
+import java.util.HashMap
+import java.util.Optional
+import java.util.function.Supplier
+import java.util.stream.Collectors
+import javax.annotation.security.RolesAllowed
+import javax.ws.rs.GET
+import javax.ws.rs.Path
+import javax.ws.rs.Produces
+import javax.ws.rs.QueryParam
+import javax.ws.rs.WebApplicationException
+import javax.ws.rs.core.MediaType
+import javax.ws.rs.core.Response
 
 @Path("system")
 @Produces(MediaType.APPLICATION_JSON)
-public class SystemResource {
-
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SystemResource.class);
-
-    private static final int DEFAULT_PROCESS_LIMIT = 10;
-    private static final OperatingSystem.ProcessSort DEFAULT_PROCESS_ORDER = OperatingSystem.ProcessSort.MEMORY;
-
-    private final OperatingSystem operatingSystem;
-    private final PlatformEnum platformEnum;
-    private final CpuMetrics cpuMetrics;
-    private final NetworkMetrics networkMetrics;
-    private final DriveMetrics driveMetrics;
-    private final MemoryMetrics memoryMetrics;
-    private final ProcessesMetrics processesMetrics;
-    private final GpuMetrics gpuMetrics;
-    private final MotherboardMetrics motherboardMetrics;
-    private final MetricsHistoryManager historyManager;
-    private final Supplier<Long> uptimeSupplier;
-
-
-    public SystemResource(OperatingSystem operatingSystem, PlatformEnum platformEnum, CpuMetrics cpuMetrics,
-                          NetworkMetrics networkMetrics,
-                          DriveMetrics driveMetrics,
-                          MemoryMetrics memoryMetrics,
-                          ProcessesMetrics processesMetrics, GpuMetrics gpuMetrics,
-                          MotherboardMetrics motherboardMetrics,
-                          MetricsHistoryManager historyManager,
-                          Supplier<Long> uptimeSupplier) {
-        this.operatingSystem = operatingSystem;
-        this.platformEnum = platformEnum;
-        this.cpuMetrics = cpuMetrics;
-        this.networkMetrics = networkMetrics;
-        this.driveMetrics = driveMetrics;
-        this.memoryMetrics = memoryMetrics;
-        this.processesMetrics = processesMetrics;
-        this.gpuMetrics = gpuMetrics;
-        this.motherboardMetrics = motherboardMetrics;
-        this.historyManager = historyManager;
-        this.uptimeSupplier = uptimeSupplier;
-    }
-
+class SystemResource(
+    private val operatingSystem: OperatingSystem,
+    private val platformEnum: PlatformEnum,
+    private val cpuMetrics: CpuMetrics,
+    private val networkMetrics: NetworkMetrics,
+    private val driveMetrics: DriveMetrics,
+    private val memoryMetrics: MemoryMetrics,
+    private val processesMetrics: ProcessesMetrics,
+    private val gpuMetrics: GpuMetrics,
+    private val motherboardMetrics: MotherboardMetrics,
+    private val historyManager: MetricsHistoryManager,
+    private val uptimeSupplier: Supplier<Long>
+) {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public com.krillsson.sysapi.dto.system.SystemInfo getRoot(@Auth UserConfiguration user) {
-        return SystemInfoMapper.INSTANCE.map(new SystemInfo(
+    fun getRoot(@Auth user: UserConfiguration?): SystemInfo? {
+        return SystemInfoMapper.INSTANCE.map(
+            com.krillsson.sysapi.core.domain.system.SystemInfo(
                 EnvironmentUtils.getHostName(),
                 operatingSystem,
                 platformEnum,
@@ -100,75 +85,94 @@ public class SystemResource {
                 driveMetrics.drives(),
                 networkMetrics.networkInterfaces(),
                 gpuMetrics.gpus()
-        ));
+            )
+        )
     }
 
     @GET
     @Path("load")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public SystemLoad getLoad(@Auth UserConfiguration user, @QueryParam("sortBy") Optional<String> processSort, @QueryParam("limit") Optional<Integer> limit) {
-        OperatingSystem.ProcessSort sortBy = DEFAULT_PROCESS_ORDER;
-        if (processSort.isPresent()) {
-            String method = processSort.get().toUpperCase();
-            try {
-                sortBy = OperatingSystem.ProcessSort.valueOf(method);
-            } catch (IllegalArgumentException e) {
-                String validOptions = Arrays.stream(OperatingSystem.ProcessSort.values())
-                        .map(Enum::name)
-                        .collect(Collectors.joining(", ", "Valid options are: ", "."));
-                LOGGER.error("No process sort method of type {} was found. {}", method, validOptions);
-                throw new WebApplicationException(
-                        String.format("No process sort method of type %s was found. %s", method, validOptions),
-                        Response.Status.BAD_REQUEST
-                );
+    fun getLoad(
+        @Auth user: UserConfiguration?,
+        @QueryParam("sortBy") processSort: Optional<String>,
+        @QueryParam("limit") limit: Optional<Int>
+    ): SystemLoad? {
+        var sortBy = DEFAULT_PROCESS_ORDER
+        if (processSort.isPresent) {
+            val method = processSort.get().toUpperCase()
+            sortBy = try {
+                ProcessSort.valueOf(method)
+            } catch (e: IllegalArgumentException) {
+                val validOptions =
+                    Arrays.stream(ProcessSort.values())
+                        .map { obj: ProcessSort -> obj.name }
+                        .collect(Collectors.joining(", ", "Valid options are: ", "."))
+                LOGGER.error(
+                    "No process sort method of type {} was found. {}",
+                    method,
+                    validOptions
+                )
+                throw WebApplicationException(
+                    String.format("No process sort method of type %s was found. %s", method, validOptions),
+                    Response.Status.BAD_REQUEST
+                )
             }
         }
-        Integer theLimit = limit.orElse(DEFAULT_PROCESS_LIMIT);
+        val theLimit = limit.orElse(DEFAULT_PROCESS_LIMIT)
         if (theLimit < -1) {
-            String message = String.format("limit cannot be negative (%d)", theLimit);
-            LOGGER.error(message);
-            throw new WebApplicationException(message, Response.Status.BAD_REQUEST);
+            val message = String.format("limit cannot be negative (%d)", theLimit)
+            LOGGER.error(message)
+            throw WebApplicationException(message, Response.Status.BAD_REQUEST)
         }
-
-        return SystemInfoMapper.INSTANCE.map(new com.krillsson.sysapi.core.domain.system.SystemLoad(
+        return SystemInfoMapper.INSTANCE.map(
+            com.krillsson.sysapi.core.domain.system.SystemLoad(
                 uptimeSupplier.get(),
-                cpuMetrics.cpuLoad().getSystemLoadAverage(),
+                cpuMetrics.cpuLoad().systemLoadAverage,
                 cpuMetrics.cpuLoad(),
                 networkMetrics.networkInterfaceLoads(),
                 driveMetrics.driveLoads(),
                 memoryMetrics.memoryLoad(),
-                processesMetrics.processesInfo(sortBy, theLimit).getProcesses(), gpuMetrics.gpuLoads(),
+                processesMetrics.processesInfo(sortBy, theLimit).processes, gpuMetrics.gpuLoads(),
                 motherboardMetrics.motherboardHealth()
-        ));
+            )
+        )
     }
-
 
     @GET
     @Path("load/history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<HistoryEntry<SystemLoad>> getLoadHistory(@Auth UserConfiguration user, @QueryParam("fromDate") OffsetDateTime fromDate, @QueryParam("toDate") OffsetDateTime toDate) {
-        return SystemInfoMapper.INSTANCE.mapHistory(historyManager.systemLoadHistory(fromDate, toDate));
+    fun getLoadHistory(
+        @Auth user: UserConfiguration?,
+        @QueryParam("fromDate") fromDate: OffsetDateTime?,
+        @QueryParam("toDate") toDate: OffsetDateTime?
+    ): List<HistoryEntry<SystemLoad?>?>? {
+        return SystemInfoMapper.INSTANCE.mapHistory(historyManager.systemLoadHistory(fromDate, toDate))
     }
 
     @GET
     @Path("uptime")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public long getUptime(@Auth UserConfiguration user) {
-        return uptimeSupplier.get();
+    fun getUptime(@Auth user: UserConfiguration?): Long {
+        return uptimeSupplier.get()
     }
-
 
     @GET
     @Path("jvm")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public com.krillsson.sysapi.dto.system.JvmProperties getProperties(@Auth UserConfiguration user) {
-        Map<String, String> propertiesMap = new HashMap<>();
-        Properties systemProperties = java.lang.System.getProperties();
-        for (Map.Entry<Object, Object> x : systemProperties.entrySet()) {
-            propertiesMap.put((String) x.getKey(), (String) x.getValue());
+    fun getProperties(@Auth user: UserConfiguration?): JvmProperties? {
+        val propertiesMap: MutableMap<String, String> =
+            HashMap()
+        val systemProperties = System.getProperties()
+        for ((key, value) in systemProperties) {
+            propertiesMap[key as String] = value as String
         }
-        return SystemInfoMapper.INSTANCE.map(new JvmProperties(propertiesMap));
+        return SystemInfoMapper.INSTANCE.map(com.krillsson.sysapi.core.domain.system.JvmProperties(propertiesMap))
     }
 
-
+    companion object {
+        private val LOGGER =
+            LoggerFactory.getLogger(SystemResource::class.java)
+        private const val DEFAULT_PROCESS_LIMIT = 10
+        private val DEFAULT_PROCESS_ORDER = ProcessSort.MEMORY
+    }
 }

@@ -18,57 +18,49 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
+package com.krillsson.sysapi.rest
 
-package com.krillsson.sysapi.rest;
-
-import com.krillsson.sysapi.auth.BasicAuthorizer;
-import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.domain.cpu.CpuInfoMapper;
-import com.krillsson.sysapi.core.history.MetricsHistoryManager;
-import com.krillsson.sysapi.core.metrics.CpuMetrics;
-import com.krillsson.sysapi.dto.history.HistoryEntry;
-import io.dropwizard.auth.Auth;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import java.time.OffsetDateTime;
-import java.util.List;
+import com.krillsson.sysapi.auth.BasicAuthorizer
+import com.krillsson.sysapi.config.UserConfiguration
+import com.krillsson.sysapi.core.domain.cpu.CpuInfoMapper
+import com.krillsson.sysapi.core.history.MetricsHistoryManager
+import com.krillsson.sysapi.core.metrics.CpuMetrics
+import com.krillsson.sysapi.dto.cpu.CpuInfo
+import com.krillsson.sysapi.dto.cpu.CpuLoad
+import com.krillsson.sysapi.dto.history.HistoryEntry
+import io.dropwizard.auth.Auth
+import java.time.OffsetDateTime
+import javax.annotation.security.RolesAllowed
+import javax.ws.rs.GET
+import javax.ws.rs.Path
+import javax.ws.rs.Produces
+import javax.ws.rs.QueryParam
+import javax.ws.rs.core.MediaType
 
 @Path("cpu")
 @Produces(MediaType.APPLICATION_JSON)
-public class CpuResource {
-
-    private final CpuMetrics provider;
-    private final MetricsHistoryManager historyManager;
-
-    public CpuResource(CpuMetrics provider, MetricsHistoryManager historyManager) {
-        this.provider = provider;
-        this.historyManager = historyManager;
-    }
-
+class CpuResource(private val provider: CpuMetrics, private val historyManager: MetricsHistoryManager) {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public com.krillsson.sysapi.dto.cpu.CpuInfo getRoot(@Auth UserConfiguration user) {
-        return CpuInfoMapper.INSTANCE.map(provider.cpuInfo());
+    fun getRoot(@Auth user: UserConfiguration?): CpuInfo? {
+        return CpuInfoMapper.INSTANCE.map(provider.cpuInfo())
     }
-
 
     @GET
     @Path("load")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public com.krillsson.sysapi.dto.cpu.CpuLoad getLoad(@Auth UserConfiguration user) {
-        return CpuInfoMapper.INSTANCE.map(provider.cpuLoad());
+    fun getLoad(@Auth user: UserConfiguration?): CpuLoad? {
+        return CpuInfoMapper.INSTANCE.map(provider.cpuLoad())
     }
 
     @GET
     @Path("load/history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<HistoryEntry<com.krillsson.sysapi.dto.cpu.CpuLoad>> getLoadHistory(@Auth UserConfiguration user, @QueryParam("fromDate") OffsetDateTime fromDate, @QueryParam("toDate") OffsetDateTime toDate) {
-        return CpuInfoMapper.INSTANCE.mapHistory(historyManager.cpuLoadHistory(fromDate, toDate));
+    fun getLoadHistory(
+        @Auth user: UserConfiguration?,
+        @QueryParam("fromDate") fromDate: OffsetDateTime?,
+        @QueryParam("toDate") toDate: OffsetDateTime?
+    ): List<HistoryEntry<CpuLoad?>?>? {
+        return CpuInfoMapper.INSTANCE.mapHistory(historyManager.cpuLoadHistory(fromDate, toDate))
     }
-
 }

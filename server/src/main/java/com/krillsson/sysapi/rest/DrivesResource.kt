@@ -18,77 +18,86 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.rest;
+package com.krillsson.sysapi.rest
 
-import com.krillsson.sysapi.auth.BasicAuthorizer;
-import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.domain.drives.DriveMetricsMapper;
-import com.krillsson.sysapi.core.history.MetricsHistoryManager;
-import com.krillsson.sysapi.core.metrics.DriveMetrics;
-import com.krillsson.sysapi.dto.drives.DriveLoad;
-import com.krillsson.sysapi.dto.history.HistoryEntry;
-import io.dropwizard.auth.Auth;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.time.OffsetDateTime;
-import java.util.List;
-
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import com.krillsson.sysapi.auth.BasicAuthorizer
+import com.krillsson.sysapi.config.UserConfiguration
+import com.krillsson.sysapi.core.domain.drives.DriveMetricsMapper
+import com.krillsson.sysapi.core.history.MetricsHistoryManager
+import com.krillsson.sysapi.core.metrics.DriveMetrics
+import com.krillsson.sysapi.dto.drives.Drive
+import com.krillsson.sysapi.dto.drives.DriveLoad
+import com.krillsson.sysapi.dto.history.HistoryEntry
+import io.dropwizard.auth.Auth
+import java.time.OffsetDateTime
+import javax.annotation.security.RolesAllowed
+import javax.ws.rs.GET
+import javax.ws.rs.Path
+import javax.ws.rs.PathParam
+import javax.ws.rs.Produces
+import javax.ws.rs.QueryParam
+import javax.ws.rs.WebApplicationException
+import javax.ws.rs.core.MediaType
+import javax.ws.rs.core.Response
 
 @Path("drives")
 @Produces(MediaType.APPLICATION_JSON)
-public class DrivesResource {
-
-    private final DriveMetrics provider;
-    private final MetricsHistoryManager historyManager;
-
-    public DrivesResource(DriveMetrics provider, MetricsHistoryManager historyManager) {
-        this.provider = provider;
-        this.historyManager = historyManager;
-    }
-
+class DrivesResource(private val provider: DriveMetrics, private val historyManager: MetricsHistoryManager) {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<com.krillsson.sysapi.dto.drives.Drive> getRoot(@Auth UserConfiguration user) {
-        return DriveMetricsMapper.INSTANCE.map(provider.drives());
+    fun getRoot(@Auth user: UserConfiguration?): List<Drive?>? {
+        return DriveMetricsMapper.INSTANCE.map(provider.drives())
     }
 
     @GET
     @Path("{name}")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public com.krillsson.sysapi.dto.drives.Drive getDiskByName(@PathParam("name") String name) {
-        return DriveMetricsMapper.INSTANCE.map(provider.driveByName(name)
-                                                       .orElseThrow(() -> new WebApplicationException(String.format(
-                                                               "No disk with name %s was found.",
-                                                               name
-                                                       ), NOT_FOUND)));
+    fun getDiskByName(@PathParam("name") name: String?): Drive? {
+        return DriveMetricsMapper.INSTANCE.map(
+            provider.driveByName(name)
+                .orElseThrow {
+                    WebApplicationException(
+                        String.format(
+                            "No disk with name %s was found.",
+                            name
+                        ), Response.Status.NOT_FOUND
+                    )
+                }
+        )
     }
 
     @GET
     @Path("loads/{name}")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public com.krillsson.sysapi.dto.drives.DriveLoad getDiskLoadByName(@PathParam("name") String name) {
-        return DriveMetricsMapper.INSTANCE.map(provider.driveLoadByName(name)
-                                                       .orElseThrow(() -> new WebApplicationException(String.format(
-                                                               "No disk with name %s was found.",
-                                                               name
-                                                       ), NOT_FOUND)));
+    fun getDiskLoadByName(@PathParam("name") name: String?): DriveLoad? {
+        return DriveMetricsMapper.INSTANCE.map(
+            provider.driveLoadByName(name)
+                .orElseThrow {
+                    WebApplicationException(
+                        String.format(
+                            "No disk with name %s was found.",
+                            name
+                        ), Response.Status.NOT_FOUND
+                    )
+                }
+        )
     }
 
     @GET
     @Path("loads")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<com.krillsson.sysapi.dto.drives.DriveLoad> getLoads(@Auth UserConfiguration user) {
-        return DriveMetricsMapper.INSTANCE.mapLoads(provider.driveLoads());
+    fun getLoads(@Auth user: UserConfiguration?): List<DriveLoad?>? {
+        return DriveMetricsMapper.INSTANCE.mapLoads(provider.driveLoads())
     }
 
     @GET
     @Path("loads/history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<HistoryEntry<List<DriveLoad>>> getLoadHistory(@Auth UserConfiguration user, @QueryParam("fromDate") OffsetDateTime fromDate, @QueryParam("toDate") OffsetDateTime toDate) {
-        return DriveMetricsMapper.INSTANCE.mapHistory(historyManager.driveLoadHistory(fromDate, toDate));
+    fun getLoadHistory(
+        @Auth user: UserConfiguration?,
+        @QueryParam("fromDate") fromDate: OffsetDateTime?,
+        @QueryParam("toDate") toDate: OffsetDateTime?
+    ): List<HistoryEntry<List<DriveLoad?>?>?>? {
+        return DriveMetricsMapper.INSTANCE.mapHistory(historyManager.driveLoadHistory(fromDate, toDate))
     }
-
 }

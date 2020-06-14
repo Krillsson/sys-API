@@ -18,52 +18,37 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.rest;
+package com.krillsson.sysapi.rest
 
-import com.krillsson.sysapi.auth.BasicAuthorizer;
-import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.domain.metadata.MetaMapper;
-import com.krillsson.sysapi.dto.metadata.Meta;
-import io.dropwizard.auth.Auth;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import com.krillsson.sysapi.auth.BasicAuthorizer
+import com.krillsson.sysapi.config.UserConfiguration
+import com.krillsson.sysapi.core.domain.metadata.MetaMapper
+import com.krillsson.sysapi.dto.metadata.Meta
+import io.dropwizard.auth.Auth
+import javax.annotation.security.RolesAllowed
+import javax.ws.rs.GET
+import javax.ws.rs.Path
+import javax.ws.rs.Produces
+import javax.ws.rs.core.MediaType
 
 @Path("/meta")
 @Produces(MediaType.APPLICATION_JSON)
-public class MetaInfoResource {
-
-    private final String version;
-    private final String[] endpoints;
-    private final int thisPid;
-
-    public MetaInfoResource(String version, String[] endpoints, int thisPid) {
-        this.version = version;
-        this.endpoints = endpoints;
-        this.thisPid = thisPid;
-    }
+class MetaInfoResource(
+    private val version: String, private val endpoints: Array<String>, @get:GET
+    @get:Path("pid")
+    @get:RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE) val thisPid: Int
+) {
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public Meta getRoot(@Auth UserConfiguration user) {
-        return MetaMapper.INSTANCE.map(new com.krillsson.sysapi.core.domain.metadata.Meta(endpoints, version));
+    fun getRoot(@Auth user: UserConfiguration?): Meta? {
+        return MetaMapper.INSTANCE.map(com.krillsson.sysapi.core.domain.metadata.Meta(endpoints, version))
     }
 
     @GET
     @Path("version")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public String getVersion(@Auth UserConfiguration user) {
-        return version;
-    }
-
-
-    @GET
-    @Path("pid")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public int getThisPid() {
-        return thisPid;
+    fun getVersion(@Auth user: UserConfiguration?): String {
+        return version
     }
 }

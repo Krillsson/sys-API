@@ -18,70 +18,81 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.rest;
+package com.krillsson.sysapi.rest
 
-import com.krillsson.sysapi.auth.BasicAuthorizer;
-import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.domain.network.NetworkInterfacesMapper;
-import com.krillsson.sysapi.core.history.MetricsHistoryManager;
-import com.krillsson.sysapi.core.metrics.NetworkMetrics;
-import com.krillsson.sysapi.dto.history.HistoryEntry;
-import io.dropwizard.auth.Auth;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.time.OffsetDateTime;
-import java.util.List;
-
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import com.krillsson.sysapi.auth.BasicAuthorizer
+import com.krillsson.sysapi.config.UserConfiguration
+import com.krillsson.sysapi.core.domain.network.NetworkInterfacesMapper
+import com.krillsson.sysapi.core.history.MetricsHistoryManager
+import com.krillsson.sysapi.core.metrics.NetworkMetrics
+import com.krillsson.sysapi.dto.history.HistoryEntry
+import com.krillsson.sysapi.dto.network.NetworkInterface
+import com.krillsson.sysapi.dto.network.NetworkInterfaceLoad
+import io.dropwizard.auth.Auth
+import java.time.OffsetDateTime
+import javax.annotation.security.RolesAllowed
+import javax.ws.rs.GET
+import javax.ws.rs.Path
+import javax.ws.rs.PathParam
+import javax.ws.rs.Produces
+import javax.ws.rs.QueryParam
+import javax.ws.rs.WebApplicationException
+import javax.ws.rs.core.MediaType
+import javax.ws.rs.core.Response
 
 @Path("nics")
 @Produces(MediaType.APPLICATION_JSON)
-public class NetworkInterfacesResource {
-
-    private final NetworkMetrics infoProvider;
-    private final MetricsHistoryManager historyManager;
-
-    public NetworkInterfacesResource(NetworkMetrics infoProvider, MetricsHistoryManager historyManager) {
-        this.infoProvider = infoProvider;
-        this.historyManager = historyManager;
-    }
-
+class NetworkInterfacesResource(
+    private val infoProvider: NetworkMetrics,
+    private val historyManager: MetricsHistoryManager
+) {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<com.krillsson.sysapi.dto.network.NetworkInterface> networkInterfaces(@Auth UserConfiguration user) {
-        return NetworkInterfacesMapper.INSTANCE.map(infoProvider.networkInterfaces());
+    fun networkInterfaces(@Auth user: UserConfiguration?): List<NetworkInterface?>? {
+        return NetworkInterfacesMapper.INSTANCE.map(infoProvider.networkInterfaces())
     }
 
     @GET
     @Path("loads")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad> networkInterfaceLoads(@Auth UserConfiguration user) {
-        return NetworkInterfacesMapper.INSTANCE.mapLoads(infoProvider.networkInterfaceLoads());
+    fun networkInterfaceLoads(@Auth user: UserConfiguration?): List<NetworkInterfaceLoad?>? {
+        return NetworkInterfacesMapper.INSTANCE.mapLoads(infoProvider.networkInterfaceLoads())
     }
 
     @GET
     @Path("{id}")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public com.krillsson.sysapi.dto.network.NetworkInterface networkInterfaceById(@Auth UserConfiguration user, @PathParam("id") String id) {
-        return NetworkInterfacesMapper.INSTANCE.map(infoProvider.networkInterfaceById(id)
-                                                            .orElseThrow(() -> new WebApplicationException(NOT_FOUND)));
+    fun networkInterfaceById(
+        @Auth user: UserConfiguration?,
+        @PathParam("id") id: String?
+    ): NetworkInterface? {
+        return NetworkInterfacesMapper.INSTANCE.map(
+            infoProvider.networkInterfaceById(id!!)
+                .orElseThrow { WebApplicationException(Response.Status.NOT_FOUND) }
+        )
     }
 
     @GET
     @Path("loads/{id}")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public com.krillsson.sysapi.dto.network.NetworkInterfaceLoad networkInterfaceLoadById(@Auth UserConfiguration user, @PathParam("id") String id) {
-        return NetworkInterfacesMapper.INSTANCE.map(infoProvider.networkInterfaceLoadById(id)
-                                                            .orElseThrow(() -> new WebApplicationException(NOT_FOUND)));
+    fun networkInterfaceLoadById(
+        @Auth user: UserConfiguration?,
+        @PathParam("id") id: String?
+    ): NetworkInterfaceLoad? {
+        return NetworkInterfacesMapper.INSTANCE.map(
+            infoProvider.networkInterfaceLoadById(id!!)
+                .orElseThrow { WebApplicationException(Response.Status.NOT_FOUND) }
+        )
     }
 
     @GET
     @Path("loads/history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<HistoryEntry<List<com.krillsson.sysapi.dto.network.NetworkInterfaceLoad>>> getLoadHistory(@Auth UserConfiguration user, @QueryParam("fromDate") OffsetDateTime fromDate, @QueryParam("toDate") OffsetDateTime toDate) {
-        return NetworkInterfacesMapper.INSTANCE.mapHistory(historyManager.networkInterfaceLoadHistory(fromDate, toDate));
+    fun getLoadHistory(
+        @Auth user: UserConfiguration?,
+        @QueryParam("fromDate") fromDate: OffsetDateTime?,
+        @QueryParam("toDate") toDate: OffsetDateTime?
+    ): List<HistoryEntry<List<NetworkInterfaceLoad?>?>?>? {
+        return NetworkInterfacesMapper.INSTANCE.mapHistory(historyManager.networkInterfaceLoadHistory(fromDate, toDate))
     }
-
 }

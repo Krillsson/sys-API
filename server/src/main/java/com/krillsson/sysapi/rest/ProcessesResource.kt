@@ -18,84 +18,89 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.rest;
+package com.krillsson.sysapi.rest
 
-
-import com.krillsson.sysapi.auth.BasicAuthorizer;
-import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.domain.processes.ProcessInfoMapper;
-import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
-import com.krillsson.sysapi.core.metrics.ProcessesMetrics;
-import com.krillsson.sysapi.dto.processes.Process;
-import com.krillsson.sysapi.dto.processes.ProcessInfo;
-import io.dropwizard.auth.Auth;
-import org.slf4j.Logger;
-import oshi.software.os.OperatingSystem;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import com.krillsson.sysapi.auth.BasicAuthorizer
+import com.krillsson.sysapi.config.UserConfiguration
+import com.krillsson.sysapi.core.domain.processes.ProcessInfoMapper
+import com.krillsson.sysapi.core.metrics.ProcessesMetrics
+import com.krillsson.sysapi.dto.processes.Process
+import com.krillsson.sysapi.dto.processes.ProcessInfo
+import io.dropwizard.auth.Auth
+import org.slf4j.LoggerFactory
+import oshi.software.os.OperatingSystem.ProcessSort
+import java.util.Arrays
+import java.util.Optional
+import java.util.stream.Collectors
+import javax.annotation.security.RolesAllowed
+import javax.ws.rs.GET
+import javax.ws.rs.Path
+import javax.ws.rs.PathParam
+import javax.ws.rs.Produces
+import javax.ws.rs.QueryParam
+import javax.ws.rs.WebApplicationException
+import javax.ws.rs.core.MediaType
+import javax.ws.rs.core.Response
 
 @Path("processes")
 @Produces(MediaType.APPLICATION_JSON)
-public class ProcessesResource {
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ProcessesResource.class);
-
-    private static final int DEFAULT_PROCESS_LIMIT = 10;
-    private static final OperatingSystem.ProcessSort DEFAULT_PROCESS_ORDER = OperatingSystem.ProcessSort.MEMORY;
-
-    private final ProcessesMetrics provider;
-
-    public ProcessesResource(ProcessesMetrics provider) {
-        this.provider = provider;
-    }
-
+class ProcessesResource(private val provider: ProcessesMetrics) {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public ProcessInfo getRoot(@Auth UserConfiguration user, @QueryParam("sortBy") Optional<String> processSort, @QueryParam("limit") Optional<Integer> limit) {
-        OperatingSystem.ProcessSort sortBy = DEFAULT_PROCESS_ORDER;
-        if (processSort.isPresent()) {
-            String method = processSort.get().toUpperCase();
-            try {
-                sortBy = OperatingSystem.ProcessSort.valueOf(method);
-            } catch (IllegalArgumentException e) {
-                String validOptions = Arrays.stream(OperatingSystem.ProcessSort.values())
-                        .map(Enum::name)
-                        .collect(Collectors.joining(", ", "Valid options are: ", "."));
-                LOGGER.error("No process sort method of type {} was found. {}", method, validOptions);
-                throw new WebApplicationException(
-                        String.format("No process sort method of type %s was found. %s", method, validOptions),
-                        Response.Status.BAD_REQUEST
-                );
+    fun getRoot(
+        @Auth user: UserConfiguration?,
+        @QueryParam("sortBy") processSort: Optional<String>,
+        @QueryParam("limit") limit: Optional<Int>
+    ): ProcessInfo? {
+        var sortBy = DEFAULT_PROCESS_ORDER
+        if (processSort.isPresent) {
+            val method = processSort.get().toUpperCase()
+            sortBy = try {
+                ProcessSort.valueOf(method)
+            } catch (e: IllegalArgumentException) {
+                val validOptions =
+                    Arrays.stream(ProcessSort.values())
+                        .map { obj: ProcessSort -> obj.name }
+                        .collect(Collectors.joining(", ", "Valid options are: ", "."))
+                LOGGER.error(
+                    "No process sort method of type {} was found. {}",
+                    method,
+                    validOptions
+                )
+                throw WebApplicationException(
+                    String.format("No process sort method of type %s was found. %s", method, validOptions),
+                    Response.Status.BAD_REQUEST
+                )
             }
         }
-        Integer theLimit = limit.orElse(DEFAULT_PROCESS_LIMIT);
+        val theLimit = limit.orElse(DEFAULT_PROCESS_LIMIT)
         if (theLimit < -1) {
-            String message = String.format("limit cannot be negative (%d)", theLimit);
-            LOGGER.error(message);
-            throw new WebApplicationException(message, Response.Status.BAD_REQUEST);
+            val message = String.format("limit cannot be negative (%d)", theLimit)
+            LOGGER.error(message)
+            throw WebApplicationException(message, Response.Status.BAD_REQUEST)
         }
-
-        ProcessesInfo value = provider.processesInfo(sortBy, theLimit);
-        return ProcessInfoMapper.INSTANCE.map(value);
+        val value = provider.processesInfo(sortBy, theLimit)
+        return ProcessInfoMapper.INSTANCE.map(value)
     }
 
     @GET
     @Path("{pid}")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public Process getProcessByPid(@PathParam("pid") int pid) {
-        Optional<com.krillsson.sysapi.core.domain.processes.Process> process = provider.getProcessByPid(pid);
-        if (!process.isPresent()) {
-            throw new WebApplicationException(String.format("No process with PID %d was found.", pid), NOT_FOUND);
+    fun getProcessByPid(@PathParam("pid") pid: Int): Process? {
+        val process =
+            provider.getProcessByPid(pid)
+        if (!process.isPresent) {
+            throw WebApplicationException(
+                String.format("No process with PID %d was found.", pid),
+                Response.Status.NOT_FOUND
+            )
         }
-        return ProcessInfoMapper.INSTANCE.map(process.get());
+        return ProcessInfoMapper.INSTANCE.map(process.get())
     }
 
-
+    companion object {
+        private val LOGGER = LoggerFactory.getLogger(ProcessesResource::class.java)
+        private const val DEFAULT_PROCESS_LIMIT = 10
+        private val DEFAULT_PROCESS_ORDER = ProcessSort.MEMORY
+    }
 }

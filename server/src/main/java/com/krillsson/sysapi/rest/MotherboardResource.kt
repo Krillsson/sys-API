@@ -18,45 +18,35 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.rest;
+package com.krillsson.sysapi.rest
 
-import com.krillsson.sysapi.auth.BasicAuthorizer;
-import com.krillsson.sysapi.config.UserConfiguration;
-import com.krillsson.sysapi.core.domain.motherboard.MotherboardMapper;
-import com.krillsson.sysapi.core.domain.sensors.SensorsInfoMapper;
-import com.krillsson.sysapi.core.metrics.MotherboardMetrics;
-import com.krillsson.sysapi.dto.sensors.HealthData;
-import io.dropwizard.auth.Auth;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import java.util.List;
+import com.krillsson.sysapi.auth.BasicAuthorizer
+import com.krillsson.sysapi.config.UserConfiguration
+import com.krillsson.sysapi.core.domain.motherboard.MotherboardMapper
+import com.krillsson.sysapi.core.domain.sensors.SensorsInfoMapper
+import com.krillsson.sysapi.core.metrics.MotherboardMetrics
+import com.krillsson.sysapi.dto.motherboard.Motherboard
+import com.krillsson.sysapi.dto.sensors.HealthData
+import io.dropwizard.auth.Auth
+import javax.annotation.security.RolesAllowed
+import javax.ws.rs.GET
+import javax.ws.rs.Path
+import javax.ws.rs.Produces
+import javax.ws.rs.core.MediaType
 
 @Path("motherboard")
 @Produces(MediaType.APPLICATION_JSON)
-public class MotherboardResource {
-
-    MotherboardMetrics provider;
-
-    public MotherboardResource(MotherboardMetrics provider) {
-        this.provider = provider;
-    }
-
+class MotherboardResource(var provider: MotherboardMetrics) {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public com.krillsson.sysapi.dto.motherboard.Motherboard getRoot(@Auth UserConfiguration user) {
-        return MotherboardMapper.INSTANCE.map(provider.motherboard());
+    fun getRoot(@Auth user: UserConfiguration?): Motherboard? {
+        return MotherboardMapper.INSTANCE.map(provider.motherboard())
     }
-
 
     @GET
     @Path("health")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    public List<HealthData> getHealths(@Auth UserConfiguration user) {
-        return SensorsInfoMapper.INSTANCE.mapDatas(provider.motherboardHealth());
+    fun getHealths(@Auth user: UserConfiguration?): List<HealthData?>? {
+        return SensorsInfoMapper.INSTANCE.mapDatas(provider.motherboardHealth())
     }
-
 }
