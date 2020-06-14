@@ -1,17 +1,12 @@
-package com.krillsson.sysapi.core.metrics;
+package com.krillsson.sysapi.core.metrics
 
-import com.krillsson.sysapi.core.domain.network.NetworkInterface;
-import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad;
+import com.krillsson.sysapi.core.domain.network.NetworkInterface
+import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad
+import java.util.Optional
 
-import java.util.List;
-import java.util.Optional;
-
-public interface NetworkMetrics {
-    List<NetworkInterface> networkInterfaces();
-
-    Optional<NetworkInterface> networkInterfaceById(String id);
-
-    List<NetworkInterfaceLoad> networkInterfaceLoads();
-
-    Optional<NetworkInterfaceLoad> networkInterfaceLoadById(String id);
+interface NetworkMetrics {
+    fun networkInterfaces(): List<NetworkInterface>
+    fun networkInterfaceById(id: String): Optional<NetworkInterface>
+    fun networkInterfaceLoads(): List<NetworkInterfaceLoad>
+    fun networkInterfaceLoadById(id: String): Optional<NetworkInterfaceLoad>
 }

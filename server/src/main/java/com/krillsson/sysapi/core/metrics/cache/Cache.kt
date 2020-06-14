@@ -1,68 +1,67 @@
-package com.krillsson.sysapi.core.metrics.cache;
+package com.krillsson.sysapi.core.metrics.cache
 
-import com.krillsson.sysapi.config.CacheConfiguration;
-import com.krillsson.sysapi.core.metrics.*;
+import com.krillsson.sysapi.config.CacheConfiguration
+import com.krillsson.sysapi.core.metrics.CpuMetrics
+import com.krillsson.sysapi.core.metrics.DriveMetrics
+import com.krillsson.sysapi.core.metrics.GpuMetrics
+import com.krillsson.sysapi.core.metrics.MemoryMetrics
+import com.krillsson.sysapi.core.metrics.Metrics
+import com.krillsson.sysapi.core.metrics.MotherboardMetrics
+import com.krillsson.sysapi.core.metrics.NetworkMetrics
+import com.krillsson.sysapi.core.metrics.ProcessesMetrics
 
-public class Cache implements Metrics {
-    private final CpuMetrics cpuMetrics;
-    private final NetworkMetrics networkMetrics;
-    private final GpuMetrics gpuMetrics;
-    private final DriveMetrics driveMetrics;
-    private final ProcessesMetrics processesMetrics;
-    private final MotherboardMetrics motherboardMetrics;
-    private final MemoryMetrics memoryMetrics;
+class Cache private constructor(provider: Metrics, cacheConfiguration: CacheConfiguration) : Metrics {
+    private val cpuMetrics: CpuMetrics
+    private val networkMetrics: NetworkMetrics
+    private val gpuMetrics: GpuMetrics
+    private val driveMetrics: DriveMetrics
+    private val processesMetrics: ProcessesMetrics
+    private val motherboardMetrics: MotherboardMetrics
+    private val memoryMetrics: MemoryMetrics
 
-    private Cache(Metrics provider, CacheConfiguration cacheConfiguration) {
-        this.cpuMetrics = new CachingCpuMetrics(provider.cpuMetrics(), cacheConfiguration);
-        this.networkMetrics = new CachingNetworkMetrics(provider.networkMetrics(), cacheConfiguration);
-        this.gpuMetrics = new CachingGpuMetrics(provider.gpuMetrics(), cacheConfiguration);
-        this.driveMetrics = new CachingDriveMetrics(provider.driveMetrics(), cacheConfiguration);
-        this.processesMetrics = new CachingProcessesMetrics(provider.processesMetrics(), cacheConfiguration);
-        this.motherboardMetrics = new CachingMotherboardMetrics(provider.motherboardMetrics(), cacheConfiguration);
-        this.memoryMetrics = new CachingMemoryMetrics(provider.memoryMetrics(), cacheConfiguration);
+    override fun initialize() {}
+
+    override fun cpuMetrics(): CpuMetrics {
+        return cpuMetrics
     }
 
-    public static Metrics wrap(Metrics factory, CacheConfiguration cacheConfiguration) {
-        return new Cache(factory, cacheConfiguration);
+    override fun networkMetrics(): NetworkMetrics {
+        return networkMetrics
     }
 
-    @Override
-    public void initialize() {
-
+    override fun driveMetrics(): DriveMetrics {
+        return driveMetrics
     }
 
-    @Override
-    public CpuMetrics cpuMetrics() {
-        return cpuMetrics;
+    override fun memoryMetrics(): MemoryMetrics {
+        return memoryMetrics
     }
 
-    @Override
-    public NetworkMetrics networkMetrics() {
-        return networkMetrics;
+    override fun processesMetrics(): ProcessesMetrics {
+        return processesMetrics
     }
 
-    @Override
-    public DriveMetrics driveMetrics() {
-        return driveMetrics;
+    override fun gpuMetrics(): GpuMetrics {
+        return gpuMetrics
     }
 
-    @Override
-    public MemoryMetrics memoryMetrics() {
-        return memoryMetrics;
+    override fun motherboardMetrics(): MotherboardMetrics {
+        return motherboardMetrics
     }
 
-    @Override
-    public ProcessesMetrics processesMetrics() {
-        return processesMetrics;
+    companion object {
+        fun wrap(factory: Metrics, cacheConfiguration: CacheConfiguration): Metrics {
+            return Cache(factory, cacheConfiguration)
+        }
     }
 
-    @Override
-    public GpuMetrics gpuMetrics() {
-        return gpuMetrics;
-    }
-
-    @Override
-    public MotherboardMetrics motherboardMetrics() {
-        return motherboardMetrics;
+    init {
+        cpuMetrics = CachingCpuMetrics(provider.cpuMetrics(), cacheConfiguration)
+        networkMetrics = CachingNetworkMetrics(provider.networkMetrics(), cacheConfiguration)
+        gpuMetrics = CachingGpuMetrics(provider.gpuMetrics(), cacheConfiguration)
+        driveMetrics = CachingDriveMetrics(provider.driveMetrics(), cacheConfiguration)
+        processesMetrics = CachingProcessesMetrics(provider.processesMetrics(), cacheConfiguration)
+        motherboardMetrics = CachingMotherboardMetrics(provider.motherboardMetrics(), cacheConfiguration)
+        memoryMetrics = CachingMemoryMetrics(provider.memoryMetrics(), cacheConfiguration)
     }
 }

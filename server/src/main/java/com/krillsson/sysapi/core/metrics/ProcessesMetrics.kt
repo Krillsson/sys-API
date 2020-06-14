@@ -1,13 +1,11 @@
-package com.krillsson.sysapi.core.metrics;
+package com.krillsson.sysapi.core.metrics
 
-import com.krillsson.sysapi.core.domain.processes.Process;
-import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
-import oshi.software.os.OperatingSystem;
+import com.krillsson.sysapi.core.domain.processes.Process
+import com.krillsson.sysapi.core.domain.processes.ProcessesInfo
+import oshi.software.os.OperatingSystem.ProcessSort
+import java.util.Optional
 
-import java.util.Optional;
-
-public interface ProcessesMetrics {
-    ProcessesInfo processesInfo(OperatingSystem.ProcessSort sortBy, int limit);
-
-    Optional<Process> getProcessByPid(int pid);
+interface ProcessesMetrics {
+    fun processesInfo(sortBy: ProcessSort, limit: Int): ProcessesInfo
+    fun getProcessByPid(pid: Int): Optional<Process>
 }

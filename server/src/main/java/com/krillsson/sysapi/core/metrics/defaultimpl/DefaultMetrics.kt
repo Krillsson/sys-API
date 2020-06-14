@@ -1,113 +1,104 @@
-package com.krillsson.sysapi.core.metrics.defaultimpl;
+package com.krillsson.sysapi.core.metrics.defaultimpl
 
-import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
-import com.krillsson.sysapi.util.Ticker;
-import com.krillsson.sysapi.core.metrics.*;
-import com.krillsson.sysapi.util.Utils;
-import oshi.hardware.HardwareAbstractionLayer;
-import oshi.software.os.OperatingSystem;
+import com.krillsson.sysapi.core.metrics.CpuMetrics
+import com.krillsson.sysapi.core.metrics.DriveMetrics
+import com.krillsson.sysapi.core.metrics.GpuMetrics
+import com.krillsson.sysapi.core.metrics.MemoryMetrics
+import com.krillsson.sysapi.core.metrics.Metrics
+import com.krillsson.sysapi.core.metrics.MotherboardMetrics
+import com.krillsson.sysapi.core.metrics.NetworkMetrics
+import com.krillsson.sysapi.core.metrics.ProcessesMetrics
+import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
+import com.krillsson.sysapi.util.Ticker
+import com.krillsson.sysapi.util.Utils
+import oshi.hardware.HardwareAbstractionLayer
+import oshi.software.os.OperatingSystem
 
-public class DefaultMetrics implements Metrics {
+open class DefaultMetrics(
+    private val hal: HardwareAbstractionLayer,
+    private val operatingSystem: OperatingSystem,
+    private val speedMeasurementManager: SpeedMeasurementManager,
+    private val ticker: Ticker,
+    private val utils: Utils
+) : Metrics {
+    private var cpuMetrics: CpuMetrics? = null
+    private var networkMetrics: NetworkMetrics? = null
+    private var gpuMetrics: GpuMetrics? = null
+    private var driveMetrics: DriveMetrics? = null
+    private var processesMetrics: ProcessesMetrics? = null
+    private var motherboardMetrics: MotherboardMetrics? = null
+    private var memoryMetrics: MemoryMetrics? = null
 
-    private final HardwareAbstractionLayer hal;
-    private final OperatingSystem operatingSystem;
-    private final SpeedMeasurementManager speedMeasurementManager;
-    private final Ticker ticker;
-    private final Utils utils;
-
-    private CpuMetrics cpuMetrics;
-    private NetworkMetrics networkMetrics;
-    private GpuMetrics gpuMetrics;
-    private DriveMetrics driveMetrics;
-    private ProcessesMetrics processesMetrics;
-    private MotherboardMetrics motherboardMetrics;
-    private MemoryMetrics memoryMetrics;
-
-    public DefaultMetrics(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, SpeedMeasurementManager speedMeasurementManager, Ticker ticker, Utils utils) {
-        this.hal = hal;
-        this.operatingSystem = operatingSystem;
-        this.speedMeasurementManager = speedMeasurementManager;
-        this.ticker = ticker;
-        this.utils = utils;
+    override fun initialize() {
+        val cpuMetrics =
+            DefaultCpuMetrics(hal, operatingSystem, DefaultCpuSensors(hal), utils, ticker)
+        cpuMetrics.register()
+        setCpuMetrics(cpuMetrics)
+        val networkInfoProvider = DefaultNetworkMetrics(hal, speedMeasurementManager)
+        networkInfoProvider.register()
+        setNetworkMetrics(networkInfoProvider)
+        setGpuMetrics(DefaultGpuMetrics(hal))
+        val diskInfoProvider = DefaultDriveProvider(operatingSystem, hal, speedMeasurementManager)
+        diskInfoProvider.register()
+        setDriveMetrics(diskInfoProvider)
+        setProcessesMetrics(DefaultProcessesMetrics(operatingSystem, hal))
+        setMotherboardMetrics(DefaultMotherboardMetrics(hal))
+        setMemoryMetrics(DefaultMemoryMetrics(hal, operatingSystem))
     }
 
-    @Override
-    public void initialize() {
-        DefaultCpuMetrics cpuMetrics = new DefaultCpuMetrics(hal, operatingSystem, new DefaultCpuSensors(hal), utils, ticker);
-        cpuMetrics.register();
-        setCpuMetrics(cpuMetrics);
-        DefaultNetworkMetrics networkInfoProvider = new DefaultNetworkMetrics(hal, speedMeasurementManager);
-        networkInfoProvider.register();
-        setNetworkMetrics(networkInfoProvider);
-        setGpuMetrics(new DefaultGpuMetrics(hal));
-        DefaultDriveProvider diskInfoProvider = new DefaultDriveProvider(operatingSystem, hal, speedMeasurementManager);
-        diskInfoProvider.register();
-        setDriveMetrics(diskInfoProvider);
-        setProcessesMetrics(new DefaultProcessesMetrics(operatingSystem, hal));
-        setMotherboardMetrics(new DefaultMotherboardMetrics(hal));
-        setMemoryMetrics(new DefaultMemoryMetrics(hal, operatingSystem));
+    override fun cpuMetrics(): CpuMetrics {
+        return cpuMetrics!!
     }
 
-    @Override
-    public CpuMetrics cpuMetrics() {
-        return cpuMetrics;
+    override fun networkMetrics(): NetworkMetrics {
+        return networkMetrics!!
     }
 
-    @Override
-    public NetworkMetrics networkMetrics() {
-        return networkMetrics;
+    override fun driveMetrics(): DriveMetrics {
+        return driveMetrics!!
     }
 
-    @Override
-    public DriveMetrics driveMetrics() {
-        return driveMetrics;
+    override fun memoryMetrics(): MemoryMetrics {
+        return memoryMetrics!!
     }
 
-    @Override
-    public MemoryMetrics memoryMetrics() {
-        return memoryMetrics;
+    override fun processesMetrics(): ProcessesMetrics {
+        return processesMetrics!!
     }
 
-    @Override
-    public ProcessesMetrics processesMetrics() {
-        return processesMetrics;
+    override fun gpuMetrics(): GpuMetrics {
+        return gpuMetrics!!
     }
 
-    @Override
-    public GpuMetrics gpuMetrics() {
-        return gpuMetrics;
+    override fun motherboardMetrics(): MotherboardMetrics {
+        return motherboardMetrics!!
     }
 
-    @Override
-    public MotherboardMetrics motherboardMetrics() {
-        return motherboardMetrics;
+    protected fun setCpuMetrics(cpuMetrics: CpuMetrics?) {
+        this.cpuMetrics = cpuMetrics
     }
 
-    protected void setCpuMetrics(CpuMetrics cpuMetrics) {
-        this.cpuMetrics = cpuMetrics;
+    protected fun setNetworkMetrics(networkMetrics: NetworkMetrics?) {
+        this.networkMetrics = networkMetrics
     }
 
-    protected void setNetworkMetrics(NetworkMetrics networkMetrics) {
-        this.networkMetrics = networkMetrics;
+    protected fun setGpuMetrics(gpuMetrics: GpuMetrics?) {
+        this.gpuMetrics = gpuMetrics
     }
 
-    protected void setGpuMetrics(GpuMetrics gpuMetrics) {
-        this.gpuMetrics = gpuMetrics;
+    protected fun setDriveMetrics(driveMetrics: DriveMetrics?) {
+        this.driveMetrics = driveMetrics
     }
 
-    protected void setDriveMetrics(DriveMetrics driveMetrics) {
-        this.driveMetrics = driveMetrics;
+    protected fun setProcessesMetrics(processesMetrics: ProcessesMetrics?) {
+        this.processesMetrics = processesMetrics
     }
 
-    protected void setProcessesMetrics(ProcessesMetrics processesMetrics) {
-        this.processesMetrics = processesMetrics;
+    protected fun setMotherboardMetrics(motherboardMetrics: MotherboardMetrics?) {
+        this.motherboardMetrics = motherboardMetrics
     }
 
-    protected void setMotherboardMetrics(MotherboardMetrics motherboardMetrics) {
-        this.motherboardMetrics = motherboardMetrics;
-    }
-
-    protected void setMemoryMetrics(MemoryMetrics memoryMetrics) {
-        this.memoryMetrics = memoryMetrics;
+    protected fun setMemoryMetrics(memoryMetrics: MemoryMetrics?) {
+        this.memoryMetrics = memoryMetrics
     }
 }

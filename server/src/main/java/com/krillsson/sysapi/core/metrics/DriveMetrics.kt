@@ -1,17 +1,12 @@
-package com.krillsson.sysapi.core.metrics;
+package com.krillsson.sysapi.core.metrics
 
-import com.krillsson.sysapi.core.domain.drives.Drive;
-import com.krillsson.sysapi.core.domain.drives.DriveLoad;
+import com.krillsson.sysapi.core.domain.drives.Drive
+import com.krillsson.sysapi.core.domain.drives.DriveLoad
+import java.util.Optional
 
-import java.util.List;
-import java.util.Optional;
-
-public interface DriveMetrics {
-    List<Drive> drives();
-
-    List<DriveLoad> driveLoads();
-
-    Optional<Drive> driveByName(String name);
-
-    Optional<DriveLoad> driveLoadByName(String name);
+interface DriveMetrics {
+    fun drives(): List<Drive>
+    fun driveLoads(): List<DriveLoad>
+    fun driveByName(name: String?): Optional<Drive>
+    fun driveLoadByName(name: String?): Optional<DriveLoad>
 }

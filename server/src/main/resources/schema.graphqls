@@ -182,13 +182,13 @@ type ProcessorMetrics {
 
 type ProcessorCoreMetrics {
     user: Float
-    nice: Int
-    sys: Int
+    nice: Float
+    sys: Float
     idle: Float
-    ioWait: Int
-    irq: Int
-    softIrq: Int
-    steal: Int
+    ioWait: Float
+    irq: Float
+    softIrq: Float
+    steal: Float
 }
 
 ## Drives

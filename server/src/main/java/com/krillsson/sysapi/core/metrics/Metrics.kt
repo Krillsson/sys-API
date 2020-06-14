@@ -1,40 +1,31 @@
-package com.krillsson.sysapi.core.metrics;
+package com.krillsson.sysapi.core.metrics
 
-import com.krillsson.sysapi.core.domain.system.SystemLoad;
-import oshi.software.os.OperatingSystem;
+import com.krillsson.sysapi.core.domain.system.SystemLoad
+import oshi.software.os.OperatingSystem.ProcessSort
 
-public interface Metrics {
+interface Metrics {
+    fun initialize()
+    fun cpuMetrics(): CpuMetrics
+    fun networkMetrics(): NetworkMetrics
+    fun driveMetrics(): DriveMetrics
+    fun memoryMetrics(): MemoryMetrics
+    fun processesMetrics(): ProcessesMetrics
+    fun gpuMetrics(): GpuMetrics
+    fun motherboardMetrics(): MotherboardMetrics
 
-    void initialize();
-
-    CpuMetrics cpuMetrics();
-
-    NetworkMetrics networkMetrics();
-
-    DriveMetrics driveMetrics();
-
-    MemoryMetrics memoryMetrics();
-
-    ProcessesMetrics processesMetrics();
-
-    GpuMetrics gpuMetrics();
-
-    MotherboardMetrics motherboardMetrics();
-
-    default SystemLoad consolidatedMetrics() {
-        return consolidatedMetrics(OperatingSystem.ProcessSort.MEMORY, -1);
-    }
-
-    default SystemLoad consolidatedMetrics(OperatingSystem.ProcessSort sort, int limit) {
-
-        return new SystemLoad(
-                cpuMetrics().uptime(),
-                cpuMetrics().cpuLoad().getSystemLoadAverage(),
-                cpuMetrics().cpuLoad(),
-                networkMetrics().networkInterfaceLoads(),
-                driveMetrics().driveLoads(),
-                memoryMetrics().memoryLoad(),
-                processesMetrics().processesInfo(sort, limit).getProcesses(), gpuMetrics().gpuLoads(),
-                motherboardMetrics().motherboardHealth());
+    fun consolidatedMetrics(
+        sort: ProcessSort = ProcessSort.MEMORY,
+        limit: Int = -1
+    ): SystemLoad {
+        return SystemLoad(
+            cpuMetrics().uptime(),
+            cpuMetrics().cpuLoad().systemLoadAverage,
+            cpuMetrics().cpuLoad(),
+            networkMetrics().networkInterfaceLoads(),
+            driveMetrics().driveLoads(),
+            memoryMetrics().memoryLoad(),
+            processesMetrics().processesInfo(sort, limit).processes, gpuMetrics().gpuLoads(),
+            motherboardMetrics().motherboardHealth()
+        )
     }
 }
