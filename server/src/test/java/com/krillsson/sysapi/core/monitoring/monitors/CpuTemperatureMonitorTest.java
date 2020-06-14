@@ -2,6 +2,7 @@ package com.krillsson.sysapi.core.monitoring.monitors;
 
 import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
+import com.krillsson.sysapi.core.domain.monitor.MonitorConfig;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
 import com.krillsson.sysapi.core.monitoring.Monitor;
 import org.junit.Before;
@@ -34,9 +35,9 @@ public class CpuTemperatureMonitorTest {
     @Test
     public void monitorValuesCorrectly() {
         when(cpuHealth.getTemperatures()).thenReturn(Arrays.asList(100d));
-        CpuTemperatureMonitor cpuMonitor = new CpuTemperatureMonitor(UUID.randomUUID(), new Monitor.Config(null, 90, Duration.ZERO));
-        assertTrue(cpuMonitor.failure(systemLoad));
+        CpuTemperatureMonitor cpuMonitor = new CpuTemperatureMonitor(UUID.randomUUID(), new MonitorConfig(null, 90, Duration.ZERO));
+        assertTrue(cpuMonitor.check(systemLoad));
         when(cpuHealth.getTemperatures()).thenReturn(Collections.emptyList());
-        assertFalse(cpuMonitor.failure(systemLoad));
+        assertFalse(cpuMonitor.check(systemLoad));
     }
 }

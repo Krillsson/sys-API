@@ -1,5 +1,7 @@
 package com.krillsson.sysapi.core.monitoring
 
+import com.krillsson.sysapi.core.domain.event.EventType
+import com.krillsson.sysapi.core.domain.event.MonitorEvent
 import com.krillsson.sysapi.persistence.Store
 import io.dropwizard.lifecycle.Managed
 import org.slf4j.LoggerFactory
@@ -22,7 +24,7 @@ class EventManager(private val store: Store<List<MonitorEvent>>) : Managed {
     }
 
     fun add(event: MonitorEvent) {
-        if (event.status == MonitorEvent.MonitorStatus.STOP && getAll().stream()
+        if (event.eventType == EventType.STOP && getAll().stream()
                         .noneMatch { me: MonitorEvent -> me.id == event.id }) {
             LOGGER.warn("Received STOP event for explicitly removed event, ignoring...")
         } else {

@@ -20,7 +20,7 @@ import com.krillsson.sysapi.core.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.EventManager
 import com.krillsson.sysapi.core.monitoring.Monitor
-import com.krillsson.sysapi.core.monitoring.MonitorEvent
+import com.krillsson.sysapi.core.domain.event.MonitorEvent
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.graphql.domain.ProcessSortMethod
 import com.krillsson.sysapi.util.EnvironmentUtils

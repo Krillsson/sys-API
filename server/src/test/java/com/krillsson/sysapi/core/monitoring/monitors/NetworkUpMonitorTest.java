@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.monitoring.monitors;
 
+import com.krillsson.sysapi.core.domain.monitor.MonitorConfig;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
 import com.krillsson.sysapi.core.monitoring.Monitor;
@@ -31,20 +32,20 @@ public class NetworkUpMonitorTest {
     @Test
     public void monitorValuesCorrectly() {
         when(networkInterfaceLoad.isUp()).thenReturn(true);
-        NetworkUpMonitor networkUpMonitor = new NetworkUpMonitor(UUID.randomUUID(), new Monitor.Config("en0", 1, Duration.ZERO));
+        NetworkUpMonitor networkUpMonitor = new NetworkUpMonitor(UUID.randomUUID(), new MonitorConfig("en0", 1, Duration.ZERO));
 
-        assertTrue(networkUpMonitor.failure(systemLoad));
+        assertTrue(networkUpMonitor.check(systemLoad));
 
         when(networkInterfaceLoad.isUp()).thenReturn(false);
-        assertFalse(networkUpMonitor.failure(systemLoad));
+        assertFalse(networkUpMonitor.check(systemLoad));
     }
 
     @Test
     public void tryingToMonitorNonExistentNicDoesNotBreak() {
         when(networkInterfaceLoad.getName()).thenReturn("en1");
 
-        NetworkUpMonitor networkUpMonitor = new NetworkUpMonitor(UUID.randomUUID(), new Monitor.Config("en0", 1, Duration.ZERO));
+        NetworkUpMonitor networkUpMonitor = new NetworkUpMonitor(UUID.randomUUID(), new MonitorConfig("en0", 1, Duration.ZERO));
 
-        assertFalse(networkUpMonitor.failure(systemLoad));
+        assertFalse(networkUpMonitor.check(systemLoad));
     }
 }

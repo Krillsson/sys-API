@@ -1,5 +1,8 @@
 package com.krillsson.sysapi.core.monitoring;
 
+import com.krillsson.sysapi.core.domain.event.EventType;
+import com.krillsson.sysapi.core.domain.event.MonitorEvent;
+import com.krillsson.sysapi.core.domain.monitor.MonitorConfig;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
 import com.krillsson.sysapi.util.Clock;
 import org.jetbrains.annotations.NotNull;
@@ -7,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Duration;
-import java.util.Optional;
 import java.util.UUID;
 
 import static com.krillsson.sysapi.core.monitoring.MonitorType.CPU_LOAD;
@@ -69,7 +71,7 @@ public class MonitorTest {
         assertEquals(event.getValue(), OUTSIDE, 0.0);
         assertEquals(event.getThreshold(), OUTSIDE, 0.0);
         assertEquals(event.getTime(), clock.now());
-        assertEquals(event.getStatus(), MonitorEvent.MonitorStatus.START);
+        assertEquals(event.getEventType(), EventType.START);
     }
 
     @Test
@@ -111,7 +113,7 @@ public class MonitorTest {
         assertEquals(monitorEvent.getValue(), INSIDE, 0.0);
         assertEquals(monitorEvent.getThreshold(), OUTSIDE, 0.0);
         assertEquals(monitorEvent.getTime(), clock.now());
-        assertEquals(monitorEvent.getStatus(), MonitorEvent.MonitorStatus.STOP);
+        assertEquals(monitorEvent.getEventType(), EventType.STOP);
     }
 
     @Test
@@ -181,7 +183,7 @@ public class MonitorTest {
 
         double value = INSIDE;
         UUID id = UUID.randomUUID();
-        Config config = new Config("CPU", OUTSIDE, Duration.ofSeconds(INERTIA));
+        MonitorConfig config = new MonitorConfig("CPU", OUTSIDE, Duration.ofSeconds(INERTIA));
 
         public TestableMonitor() {
         }
@@ -200,7 +202,7 @@ public class MonitorTest {
 
         @NotNull
         @Override
-        public Config getConfig() {
+        public MonitorConfig getConfig() {
             return config;
         }
 

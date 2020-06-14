@@ -1,5 +1,9 @@
 package com.krillsson.sysapi.core.monitoring;
 
+import com.krillsson.sysapi.core.domain.event.EventType;
+import com.krillsson.sysapi.core.monitoring.monitors.CpuMonitor;
+import com.krillsson.sysapi.core.monitoring.monitors.CpuTemperatureMonitor;
+import com.krillsson.sysapi.core.monitoring.monitors.DriveMonitor;
 import com.krillsson.sysapi.core.monitoring.monitors.*;
 import com.krillsson.sysapi.dto.monitor.Monitor;
 import com.krillsson.sysapi.dto.monitor.MonitorEvent;
@@ -37,7 +41,7 @@ public interface MonitorMapper {
 
     List<Monitor> mapList(List<com.krillsson.sysapi.core.monitoring.Monitor> values);
 
-    MonitorStatus map(com.krillsson.sysapi.core.monitoring.MonitorEvent.MonitorStatus value);
+    MonitorStatus map(EventType value);
 
     default MonitorType map(com.krillsson.sysapi.core.monitoring.MonitorType value) {
         switch (value) {
@@ -79,10 +83,10 @@ public interface MonitorMapper {
         return null;
     }
 
-    default MonitorEvent map(com.krillsson.sysapi.core.monitoring.MonitorEvent event) {
+    default MonitorEvent map(com.krillsson.sysapi.core.domain.event.MonitorEvent event) {
         return new MonitorEvent(
                 event.getId().toString(), event.getMonitorId().toString(), map(event.getTime()),
-                INSTANCE.map(event.getStatus()),
+                INSTANCE.map(event.getEventType()),
                 INSTANCE.map(event.getMonitorType()),
                 event.getThreshold(),
                 event.getValue()
@@ -93,5 +97,5 @@ public interface MonitorMapper {
         return value.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     }
 
-    List<MonitorEvent> map(List<com.krillsson.sysapi.core.monitoring.MonitorEvent> events);
+    List<MonitorEvent> map(List<com.krillsson.sysapi.core.domain.event.MonitorEvent> events);
 }

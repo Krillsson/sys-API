@@ -2,8 +2,9 @@ package com.krillsson.sysapi.core.monitoring
 
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
+import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.metrics.Metrics
-import com.krillsson.sysapi.core.monitoring.monitors.MonitorFactory.createMonitor
+import com.krillsson.sysapi.core.monitoring.MonitorFactory.createMonitor
 import com.krillsson.sysapi.persistence.Store
 import com.krillsson.sysapi.util.Clock
 import io.dropwizard.lifecycle.Managed
@@ -47,7 +48,7 @@ class MonitorManager(private val eventManager: EventManager, private val eventBu
     }
 
     fun add(inertia: Duration, type: MonitorType, threshold: Double, itemId: String?): UUID? {
-        val config = Monitor.Config(itemId, threshold, inertia)
+        val config = MonitorConfig(itemId, threshold, inertia)
         val monitor = createMonitor(type, UUID.randomUUID(), config)
         return if (validate(monitor)) {
             register(monitor)

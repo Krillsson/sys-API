@@ -1,12 +1,13 @@
 package com.krillsson.sysapi.core.monitoring.monitors
 
+import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad
 import com.krillsson.sysapi.core.domain.system.SystemLoad
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorType
 import java.util.*
 
-class NetworkUpMonitor(override val id: UUID, override val config: Config) : Monitor() {
+class NetworkUpMonitor(override val id: UUID, override val config: MonitorConfig) : Monitor() {
     override val type: MonitorType = MonitorType.NETWORK_UP
 
     companion object {

@@ -96,7 +96,7 @@ enum MonitorType {
     NETWORK_UP
 }
 
-enum MonitorStatus {
+enum EventType {
     START,
     STOP
 }
@@ -106,7 +106,7 @@ type MonitorEvent {
     monitorId: UUID
     time: String
     type: MonitorType
-    monitorStatus: MonitorStatus
+    eventType: EventType
     threshold: Float
     value: Float
 }

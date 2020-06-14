@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.core.monitoring.monitors;
 
 import com.krillsson.sysapi.core.domain.memory.MemoryLoad;
+import com.krillsson.sysapi.core.domain.monitor.MonitorConfig;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
 import com.krillsson.sysapi.core.monitoring.Monitor;
 import org.junit.Before;
@@ -27,12 +28,12 @@ public class MemoryMonitorTest {
 
     @Test
     public void monitorValuesCorrectly() {
-        MemoryMonitor memoryMonitor = new MemoryMonitor(UUID.randomUUID(), new Monitor.Config("mem", 1024, Duration.ZERO));
+        MemoryMonitor memoryMonitor = new MemoryMonitor(UUID.randomUUID(), new MonitorConfig("mem", 1024, Duration.ZERO));
 
         when(memoryLoad.getAvailable()).thenReturn(512L);
-        assertTrue(memoryMonitor.failure(systemLoad));
+        assertTrue(memoryMonitor.check(systemLoad));
 
         when(memoryLoad.getAvailable()).thenReturn(2048L);
-        assertFalse(memoryMonitor.failure(systemLoad));
+        assertFalse(memoryMonitor.check(systemLoad));
     }
 }

@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.core.monitoring.monitors;
 
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
+import com.krillsson.sysapi.core.domain.monitor.MonitorConfig;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
 import com.krillsson.sysapi.core.monitoring.Monitor;
 import org.junit.Before;
@@ -29,9 +30,9 @@ public class CpuMonitorTest {
     @Test
     public void monitorValuesCorrectly() {
         when(cpuLoad.getCpuLoadOsMxBean()).thenReturn(0.30);
-        CpuMonitor cpuMonitor = new CpuMonitor(UUID.randomUUID(), new Monitor.Config(null, 0.20, Duration.ZERO));
-        assertTrue(cpuMonitor.failure(systemLoad));
+        CpuMonitor cpuMonitor = new CpuMonitor(UUID.randomUUID(), new MonitorConfig(null, 0.20, Duration.ZERO));
+        assertTrue(cpuMonitor.check(systemLoad));
         when(cpuLoad.getCpuLoadOsMxBean()).thenReturn(0.10);
-        assertFalse(cpuMonitor.failure(systemLoad));
+        assertFalse(cpuMonitor.check(systemLoad));
     }
 }

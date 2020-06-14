@@ -1,6 +1,8 @@
 package com.krillsson.sysapi.core.monitoring
 
 import com.google.common.annotations.VisibleForTesting
+import com.krillsson.sysapi.core.domain.event.EventType
+import com.krillsson.sysapi.core.domain.event.MonitorEvent
 import com.krillsson.sysapi.core.domain.system.SystemLoad
 import com.krillsson.sysapi.util.Clock
 import org.slf4j.LoggerFactory
@@ -75,7 +77,7 @@ class MonitorMechanism @VisibleForTesting constructor(private val clock: Clock) 
         val now = clock.now()
         val config = monitor.config
         val value = monitor.selectValue(systemLoad)
-        val outsideThreshold = monitor.failure(systemLoad)
+        val outsideThreshold = monitor.check(systemLoad)
         val pastInertia = stateChangedAt != null && Duration.between(stateChangedAt,  /* and */now).compareTo(config.inertia) > 0
         var event: MonitorEvent? = null
         when (state) {
@@ -96,10 +98,10 @@ class MonitorMechanism @VisibleForTesting constructor(private val clock: Clock) 
                         stateChangedAt = null
                         eventId = UUID.randomUUID()
                         event = MonitorEvent(
-                                eventId, monitor.id, now,
-                                MonitorEvent.MonitorStatus.START,
-                                monitor.type, config.threshold,
-                                value
+                            eventId!!, monitor.id, now,
+                            EventType.START,
+                            monitor.type, config.threshold,
+                            value
                         )
                     } else { //Outside before inertia -> Outside before inertia
                         LOGGER.trace("{} is still outside threshold of {} but inside grace period of {}", config.id, config.threshold, config.inertia)
@@ -126,10 +128,10 @@ class MonitorMechanism @VisibleForTesting constructor(private val clock: Clock) 
                         state = State.INSIDE
                         stateChangedAt = null
                         event = MonitorEvent(
-                                eventId, monitor.id, now,
-                                MonitorEvent.MonitorStatus.STOP,
-                                monitor.type, config.threshold,
-                                value
+                            eventId!!, monitor.id, now,
+                            EventType.STOP,
+                            monitor.type, config.threshold,
+                            value
                         )
                     } else { //Inside before inertia -> Inside before inertia
                         LOGGER.trace("{} is still inside threshold of {} with {} but inside grace period of {}", config.id, config.threshold, value, config.inertia)

@@ -1,22 +1,16 @@
 package com.krillsson.sysapi.core.monitoring
 
+import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.system.SystemLoad
-import java.time.Duration
-import java.util.*
+import java.util.UUID
 
 abstract class Monitor {
     abstract val id: UUID
     abstract val type: MonitorType
-    abstract val config: Config
+    abstract val config: MonitorConfig
 
     abstract fun selectValue(load: SystemLoad): Double
     abstract fun isPastThreshold(value: Double): Boolean
 
-    fun failure(load: SystemLoad): Boolean = isPastThreshold(selectValue(load))
-
-    data class Config(
-            val id: String? = null,
-            val threshold: Double,
-            val inertia: Duration
-    )
+    fun check(load: SystemLoad): Boolean = isPastThreshold(selectValue(load))
 }
