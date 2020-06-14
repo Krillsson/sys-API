@@ -20,8 +20,6 @@
  */
 package com.krillsson.sysapi.core.domain.cpu;
 
-import oshi.hardware.CentralProcessor;
-
 public class CpuInfo {
     private final CentralProcessor centralProcessor;
 

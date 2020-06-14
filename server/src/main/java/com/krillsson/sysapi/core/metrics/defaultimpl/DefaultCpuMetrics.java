@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
+import com.krillsson.sysapi.core.domain.cpu.CentralProcessor;
 import com.krillsson.sysapi.core.domain.cpu.CoreLoad;
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
@@ -7,11 +8,9 @@ import com.krillsson.sysapi.core.metrics.CpuMetrics;
 import com.krillsson.sysapi.util.Ticker;
 import com.krillsson.sysapi.util.Utils;
 import org.slf4j.Logger;
-import oshi.hardware.CentralProcessor;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.software.os.OperatingSystem;
 
-import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,14 +39,25 @@ public class DefaultCpuMetrics implements CpuMetrics, Ticker.TickListener {
         ticker.register(this);
     }
 
-    void unregister(){
+    void unregister() {
         ticker.unregister(this);
     }
 
     @Override
     public CpuInfo cpuInfo() {
-        return new CpuInfo(
-                hal.getProcessor());
+        oshi.hardware.CentralProcessor processor = hal.getProcessor();
+        oshi.hardware.CentralProcessor.ProcessorIdentifier identifier = processor.getProcessorIdentifier();
+        CentralProcessor centralProcessor = new CentralProcessor(processor.getLogicalProcessorCount(),
+                processor.getPhysicalProcessorCount(),
+                identifier.getName(),
+                identifier.getIdentifier(),
+                identifier.getFamily(),
+                identifier.getVendor(),
+                identifier.getVendorFreq(),
+                identifier.getModel(),
+                identifier.getStepping(),
+                identifier.isCpu64bit());
+        return new CpuInfo(centralProcessor);
     }
 
     @Override
@@ -62,7 +72,7 @@ public class DefaultCpuMetrics implements CpuMetrics, Ticker.TickListener {
 
     @Override
     public void onTick() {
-        CentralProcessor processor = hal.getProcessor();
+        oshi.hardware.CentralProcessor processor = hal.getProcessor();
         if (coreTicks == null) {
             coreTicks = processor.getProcessorCpuLoadTicks();
             ticks = processor.getSystemCpuLoadTicks();
@@ -72,21 +82,21 @@ public class DefaultCpuMetrics implements CpuMetrics, Ticker.TickListener {
         long[][] currentProcessorTicks = processor.getProcessorCpuLoadTicks();
         for (int i = 0; i < coreLoads.length; i++) {
             long[] currentTicks = currentProcessorTicks[i];
-            long user = currentTicks[CentralProcessor.TickType.USER.getIndex()] - coreTicks[i][CentralProcessor.TickType.USER
+            long user = currentTicks[oshi.hardware.CentralProcessor.TickType.USER.getIndex()] - coreTicks[i][oshi.hardware.CentralProcessor.TickType.USER
                     .getIndex()];
-            long nice = currentTicks[CentralProcessor.TickType.NICE.getIndex()] - coreTicks[i][CentralProcessor.TickType.NICE
+            long nice = currentTicks[oshi.hardware.CentralProcessor.TickType.NICE.getIndex()] - coreTicks[i][oshi.hardware.CentralProcessor.TickType.NICE
                     .getIndex()];
-            long sys = currentTicks[CentralProcessor.TickType.SYSTEM.getIndex()] - coreTicks[i][CentralProcessor.TickType.SYSTEM
+            long sys = currentTicks[oshi.hardware.CentralProcessor.TickType.SYSTEM.getIndex()] - coreTicks[i][oshi.hardware.CentralProcessor.TickType.SYSTEM
                     .getIndex()];
-            long idle = currentTicks[CentralProcessor.TickType.IDLE.getIndex()] - coreTicks[i][CentralProcessor.TickType.IDLE
+            long idle = currentTicks[oshi.hardware.CentralProcessor.TickType.IDLE.getIndex()] - coreTicks[i][oshi.hardware.CentralProcessor.TickType.IDLE
                     .getIndex()];
-            long iowait = currentTicks[CentralProcessor.TickType.IOWAIT.getIndex()] - coreTicks[i][CentralProcessor.TickType.IOWAIT
+            long iowait = currentTicks[oshi.hardware.CentralProcessor.TickType.IOWAIT.getIndex()] - coreTicks[i][oshi.hardware.CentralProcessor.TickType.IOWAIT
                     .getIndex()];
-            long irq = currentTicks[CentralProcessor.TickType.IRQ.getIndex()] - coreTicks[i][CentralProcessor.TickType.IRQ
+            long irq = currentTicks[oshi.hardware.CentralProcessor.TickType.IRQ.getIndex()] - coreTicks[i][oshi.hardware.CentralProcessor.TickType.IRQ
                     .getIndex()];
-            long softirq = currentTicks[CentralProcessor.TickType.SOFTIRQ.getIndex()] - coreTicks[i][CentralProcessor.TickType.SOFTIRQ
+            long softirq = currentTicks[oshi.hardware.CentralProcessor.TickType.SOFTIRQ.getIndex()] - coreTicks[i][oshi.hardware.CentralProcessor.TickType.SOFTIRQ
                     .getIndex()];
-            long steal = currentTicks[CentralProcessor.TickType.STEAL.getIndex()] - coreTicks[i][CentralProcessor.TickType.STEAL
+            long steal = currentTicks[oshi.hardware.CentralProcessor.TickType.STEAL.getIndex()] - coreTicks[i][oshi.hardware.CentralProcessor.TickType.STEAL
                     .getIndex()];
 
             long totalCpu = user + nice + sys + idle + iowait + irq + softirq + steal;

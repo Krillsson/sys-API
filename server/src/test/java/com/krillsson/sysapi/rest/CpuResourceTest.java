@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.rest;
 
+import com.krillsson.sysapi.core.domain.cpu.CentralProcessor;
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo;
 import com.krillsson.sysapi.core.history.MetricsHistoryManager;
 import com.krillsson.sysapi.core.metrics.CpuMetrics;
@@ -28,7 +29,7 @@ public class CpuResourceTest {
 
     @Test
     public void getCpuHappyPath() throws Exception {
-        oshi.hardware.CentralProcessor centralProcessor = mock(oshi.hardware.CentralProcessor.class);
+        CentralProcessor centralProcessor = mock(CentralProcessor.class);
         when(provider.cpuInfo()).thenReturn(new CpuInfo(centralProcessor));
 
         final com.krillsson.sysapi.dto.cpu.CpuInfo response = RESOURCES.getJerseyTest().target("/cpu")
