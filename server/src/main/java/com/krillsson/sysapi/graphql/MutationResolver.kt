@@ -34,4 +34,9 @@ class MutationResolver : GraphQLMutationResolver {
         val removed = eventManager?.remove(input.id) ?: false
         return DeleteEventOutput(removed)
     }
+
+    fun deleteEventsForMonitor(input: DeleteMonitorInput): DeleteMonitorOutput? {
+        val removed = eventManager?.removeEventsForMonitorId(input.id) ?: false
+        return DeleteMonitorOutput(removed)
+    }
 }

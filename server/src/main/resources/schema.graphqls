@@ -17,6 +17,7 @@ type Mutation {
     createMonitor(input: CreateMonitorInput) : CreateMonitorOutput
     deleteMonitor(input: DeleteMonitorInput) : DeleteMonitorOutput
     deleteEvent(input: DeleteEventInput) : DeleteEventOutput
+    deleteEventsForMonitor(input: DeleteEventsForMonitorInput) : DeleteEventOutput
 }
 
 input CreateMonitorInput {
@@ -39,6 +40,10 @@ type DeleteMonitorOutput {
 }
 
 input DeleteEventInput {
+    id: UUID
+}
+
+input DeleteEventsForMonitorInput {
     id: UUID
 }
 
