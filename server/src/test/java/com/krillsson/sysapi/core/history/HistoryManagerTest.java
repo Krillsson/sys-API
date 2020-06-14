@@ -26,7 +26,7 @@ public class HistoryManagerTest {
         when(historyConfiguration.getPurging()).thenReturn(purgingConfiguration);
         history = mock(History.class);
         eventBus = mock(EventBus.class);
-        historyManager = new HistoryManager(historyConfiguration, eventBus, history);
+        historyManager = new HistoryManager(historyConfiguration, eventBus);
     }
 
     @Test

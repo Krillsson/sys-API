@@ -48,14 +48,14 @@ class NetworkInterfacesResource(
 ) {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun networkInterfaces(@Auth user: UserConfiguration?): List<NetworkInterface?>? {
+    fun networkInterfaces(@Auth user: UserConfiguration?): List<NetworkInterface> {
         return NetworkInterfacesMapper.INSTANCE.map(infoProvider.networkInterfaces())
     }
 
     @GET
     @Path("loads")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun networkInterfaceLoads(@Auth user: UserConfiguration?): List<NetworkInterfaceLoad?>? {
+    fun networkInterfaceLoads(@Auth user: UserConfiguration?): List<NetworkInterfaceLoad> {
         return NetworkInterfacesMapper.INSTANCE.mapLoads(infoProvider.networkInterfaceLoads())
     }
 
@@ -65,7 +65,7 @@ class NetworkInterfacesResource(
     fun networkInterfaceById(
         @Auth user: UserConfiguration?,
         @PathParam("id") id: String?
-    ): NetworkInterface? {
+    ): NetworkInterface {
         return NetworkInterfacesMapper.INSTANCE.map(
             infoProvider.networkInterfaceById(id!!)
                 .orElseThrow { WebApplicationException(Response.Status.NOT_FOUND) }
@@ -78,7 +78,7 @@ class NetworkInterfacesResource(
     fun networkInterfaceLoadById(
         @Auth user: UserConfiguration?,
         @PathParam("id") id: String?
-    ): NetworkInterfaceLoad? {
+    ): NetworkInterfaceLoad {
         return NetworkInterfacesMapper.INSTANCE.map(
             infoProvider.networkInterfaceLoadById(id!!)
                 .orElseThrow { WebApplicationException(Response.Status.NOT_FOUND) }
@@ -92,7 +92,7 @@ class NetworkInterfacesResource(
         @Auth user: UserConfiguration?,
         @QueryParam("fromDate") fromDate: OffsetDateTime?,
         @QueryParam("toDate") toDate: OffsetDateTime?
-    ): List<HistoryEntry<List<NetworkInterfaceLoad?>?>?>? {
+    ): List<HistoryEntry<List<NetworkInterfaceLoad>>> {
         return NetworkInterfacesMapper.INSTANCE.mapHistory(historyManager.networkInterfaceLoadHistory(fromDate, toDate))
     }
 }

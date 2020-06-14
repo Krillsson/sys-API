@@ -21,7 +21,7 @@
 package com.krillsson.sysapi.core.domain.memory
 
 import com.krillsson.sysapi.core.domain.system.DateMapper
-import com.krillsson.sysapi.core.history.HistoryEntry
+import com.krillsson.sysapi.core.domain.history.HistoryEntry
 import org.mapstruct.Mapper
 import org.mapstruct.ReportingPolicy
 import org.mapstruct.factory.Mappers
@@ -29,9 +29,9 @@ import java.time.LocalDateTime
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR, uses = [DateMapper::class])
 interface MemoryMapper {
-    fun map(load: MemoryLoad?): com.krillsson.sysapi.dto.memory.MemoryLoad?
-    fun mapHistory(history: Map<LocalDateTime?, MemoryLoad?>?): Map<String?, com.krillsson.sysapi.dto.memory.MemoryLoad?>?
-    fun mapHistory(history: List<HistoryEntry<MemoryLoad?>?>?): List<com.krillsson.sysapi.dto.history.HistoryEntry<com.krillsson.sysapi.dto.memory.MemoryLoad?>?>?
+    fun map(load: MemoryLoad): com.krillsson.sysapi.dto.memory.MemoryLoad
+    fun mapHistory(history: Map<LocalDateTime, MemoryLoad>): Map<String, com.krillsson.sysapi.dto.memory.MemoryLoad>
+    fun mapHistory(history: List<HistoryEntry<MemoryLoad>>): List<com.krillsson.sysapi.dto.history.HistoryEntry<com.krillsson.sysapi.dto.memory.MemoryLoad>>
 
     companion object {
         @kotlin.jvm.JvmField

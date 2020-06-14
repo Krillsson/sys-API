@@ -29,8 +29,8 @@ import oshi.hardware.GlobalMemory
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
 interface ProcessInfoMapper {
-    fun map(value: ProcessesInfo?): ProcessInfo?
-    fun map(value: GlobalMemory): Memory? {
+    fun map(value: ProcessesInfo): ProcessInfo
+    fun map(value: GlobalMemory): Memory {
         val virtualMemory = value.virtualMemory
         return Memory(
             virtualMemory.swapTotal,
@@ -40,7 +40,7 @@ interface ProcessInfoMapper {
         )
     }
 
-    fun map(value: Process?): com.krillsson.sysapi.dto.processes.Process?
+    fun map(value: Process): com.krillsson.sysapi.dto.processes.Process
 
     companion object {
         @kotlin.jvm.JvmField

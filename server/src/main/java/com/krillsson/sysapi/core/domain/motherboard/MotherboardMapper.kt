@@ -34,14 +34,14 @@ import java.util.Date
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR, uses = [DateMapper::class])
 interface MotherboardMapper {
-    fun map(value: Motherboard?): com.krillsson.sysapi.dto.motherboard.Motherboard?
-    fun map(value: ComputerSystem?): com.krillsson.sysapi.dto.motherboard.ComputerSystem?
-    fun map(value: UsbDevice?): com.krillsson.sysapi.dto.motherboard.UsbDevice?
-    fun map(value: Firmware?): com.krillsson.sysapi.dto.motherboard.Firmware?
-    fun map(value: Baseboard?): com.krillsson.sysapi.dto.motherboard.Baseboard?
-    fun map(value: String?): Date? {
+    fun map(value: Motherboard): com.krillsson.sysapi.dto.motherboard.Motherboard
+    fun map(value: ComputerSystem): com.krillsson.sysapi.dto.motherboard.ComputerSystem
+    fun map(value: UsbDevice): com.krillsson.sysapi.dto.motherboard.UsbDevice
+    fun map(value: Firmware): com.krillsson.sysapi.dto.motherboard.Firmware
+    fun map(value: Baseboard): com.krillsson.sysapi.dto.motherboard.Baseboard
+    fun map(value: String): Date? {
         return try {
-            if (value != null && !value.equals(
+            if (!value.equals(
                     "unknown",
                     ignoreCase = true
                 )

@@ -73,7 +73,7 @@ class SystemResource(
 ) {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getRoot(@Auth user: UserConfiguration?): SystemInfo? {
+    fun getRoot(@Auth user: UserConfiguration?): SystemInfo {
         return SystemInfoMapper.INSTANCE.map(
             com.krillsson.sysapi.core.domain.system.SystemInfo(
                 EnvironmentUtils.getHostName(),
@@ -96,7 +96,7 @@ class SystemResource(
         @Auth user: UserConfiguration?,
         @QueryParam("sortBy") processSort: Optional<String>,
         @QueryParam("limit") limit: Optional<Int>
-    ): SystemLoad? {
+    ): SystemLoad {
         var sortBy = DEFAULT_PROCESS_ORDER
         if (processSort.isPresent) {
             val method = processSort.get().toUpperCase()
@@ -145,7 +145,7 @@ class SystemResource(
         @Auth user: UserConfiguration?,
         @QueryParam("fromDate") fromDate: OffsetDateTime?,
         @QueryParam("toDate") toDate: OffsetDateTime?
-    ): List<HistoryEntry<SystemLoad?>?>? {
+    ): List<HistoryEntry<SystemLoad>> {
         return SystemInfoMapper.INSTANCE.mapHistory(historyManager.systemLoadHistory(fromDate, toDate))
     }
 
@@ -159,7 +159,7 @@ class SystemResource(
     @GET
     @Path("jvm")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getProperties(@Auth user: UserConfiguration?): JvmProperties? {
+    fun getProperties(@Auth user: UserConfiguration?): JvmProperties {
         val propertiesMap: MutableMap<String, String> =
             HashMap()
         val systemProperties = System.getProperties()

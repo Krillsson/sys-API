@@ -39,14 +39,14 @@ import javax.ws.rs.core.MediaType
 class MotherboardResource(var provider: MotherboardMetrics) {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getRoot(@Auth user: UserConfiguration?): Motherboard? {
+    fun getRoot(@Auth user: UserConfiguration?): Motherboard {
         return MotherboardMapper.INSTANCE.map(provider.motherboard())
     }
 
     @GET
     @Path("health")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getHealths(@Auth user: UserConfiguration?): List<HealthData?>? {
+    fun getHealths(@Auth user: UserConfiguration?): List<HealthData> {
         return SensorsInfoMapper.INSTANCE.mapDatas(provider.motherboardHealth())
     }
 }

@@ -21,7 +21,7 @@
 package com.krillsson.sysapi.core.domain.gpu
 
 import com.krillsson.sysapi.core.domain.system.DateMapper
-import com.krillsson.sysapi.core.history.HistoryEntry
+import com.krillsson.sysapi.core.domain.history.HistoryEntry
 import org.mapstruct.Mapper
 import org.mapstruct.ReportingPolicy
 import org.mapstruct.factory.Mappers
@@ -31,18 +31,18 @@ import java.time.LocalDateTime
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR, uses = [DateMapper::class])
 interface GpuInfoMapper {
-    fun map(value: GpuLoad?): com.krillsson.sysapi.dto.gpu.GpuLoad?
-    fun map(value: List<GpuLoad?>?): List<com.krillsson.sysapi.dto.gpu.GpuLoad?>?
-    fun map(value: Display?): com.krillsson.sysapi.dto.gpu.Display?
-    fun map(value: Gpu?): com.krillsson.sysapi.dto.gpu.Gpu?
-    fun mapGpus(value: List<Gpu?>?): List<com.krillsson.sysapi.dto.gpu.Gpu?>?
-    fun map(value: GpuHealth?): com.krillsson.sysapi.dto.gpu.GpuHealth?
-    fun map(value: ByteArray?): String? {
+    fun map(value: GpuLoad): com.krillsson.sysapi.dto.gpu.GpuLoad
+    fun map(value: List<GpuLoad>): List<com.krillsson.sysapi.dto.gpu.GpuLoad>
+    fun map(value: Display): com.krillsson.sysapi.dto.gpu.Display
+    fun map(value: Gpu): com.krillsson.sysapi.dto.gpu.Gpu
+    fun mapGpus(value: List<Gpu>): List<com.krillsson.sysapi.dto.gpu.Gpu>
+    fun map(value: GpuHealth): com.krillsson.sysapi.dto.gpu.GpuHealth
+    fun map(value: ByteArray): String {
         return EdidUtil.toString(value)
     }
 
-    fun mapLoadHistory(history: Map<LocalDateTime?, List<GpuLoad?>?>?): Map<String?, List<com.krillsson.sysapi.dto.gpu.GpuLoad?>?>?
-    fun mapHistory(history: List<HistoryEntry<List<GpuLoad?>?>?>?): List<com.krillsson.sysapi.dto.history.HistoryEntry<List<com.krillsson.sysapi.dto.gpu.GpuLoad?>?>?>?
+    fun mapLoadHistory(history: Map<LocalDateTime, List<GpuLoad>>): Map<String, List<com.krillsson.sysapi.dto.gpu.GpuLoad>>
+    fun mapHistory(history: List<HistoryEntry<List<GpuLoad>>>): List<com.krillsson.sysapi.dto.history.HistoryEntry<List<com.krillsson.sysapi.dto.gpu.GpuLoad>>>
 
     companion object {
         @kotlin.jvm.JvmField

@@ -26,7 +26,7 @@ import com.krillsson.sysapi.core.domain.gpu.GpuInfoMapper
 import com.krillsson.sysapi.core.domain.memory.MemoryMapper
 import com.krillsson.sysapi.core.domain.motherboard.MotherboardMapper
 import com.krillsson.sysapi.core.domain.network.NetworkInterfacesMapper
-import com.krillsson.sysapi.core.history.HistoryEntry
+import com.krillsson.sysapi.core.domain.history.HistoryEntry
 import com.krillsson.sysapi.dto.system.Version
 import org.mapstruct.Mapper
 import org.mapstruct.ReportingPolicy
@@ -41,10 +41,10 @@ import java.time.LocalDateTime
     uses = [CpuInfoMapper::class, MemoryMapper::class, DateMapper::class, NetworkInterfacesMapper::class, DriveMetricsMapper::class, GpuInfoMapper::class, MotherboardMapper::class]
 )
 interface SystemInfoMapper {
-    fun map(value: PlatformEnum?): com.krillsson.sysapi.dto.system.PlatformEnum?
-    fun map(value: SystemInfo?): com.krillsson.sysapi.dto.system.SystemInfo?
-    fun map(value: SystemLoad?): com.krillsson.sysapi.dto.system.SystemLoad?
-    fun map(value: OperatingSystem): com.krillsson.sysapi.dto.system.OperatingSystem? {
+    fun map(value: PlatformEnum): com.krillsson.sysapi.dto.system.PlatformEnum
+    fun map(value: SystemInfo): com.krillsson.sysapi.dto.system.SystemInfo
+    fun map(value: SystemLoad): com.krillsson.sysapi.dto.system.SystemLoad
+    fun map(value: OperatingSystem): com.krillsson.sysapi.dto.system.OperatingSystem {
         return com.krillsson.sysapi.dto.system.OperatingSystem(
             value.manufacturer,
             value.family,
@@ -56,10 +56,10 @@ interface SystemInfoMapper {
         )
     }
 
-    fun map(value: OSVersionInfo?): Version?
-    fun map(jvmProperties: JvmProperties?): com.krillsson.sysapi.dto.system.JvmProperties?
-    fun mapLoadHistory(history: Map<LocalDateTime?, SystemLoad?>?): Map<String?, com.krillsson.sysapi.dto.system.SystemLoad?>?
-    fun mapHistory(history: List<HistoryEntry<SystemLoad?>?>?): List<com.krillsson.sysapi.dto.history.HistoryEntry<com.krillsson.sysapi.dto.system.SystemLoad?>?>?
+    fun map(value: OSVersionInfo): Version
+    fun map(jvmProperties: JvmProperties): com.krillsson.sysapi.dto.system.JvmProperties
+    fun mapLoadHistory(history: Map<LocalDateTime, SystemLoad>): Map<String, com.krillsson.sysapi.dto.system.SystemLoad>
+    fun mapHistory(history: List<HistoryEntry<SystemLoad>>): List<com.krillsson.sysapi.dto.history.HistoryEntry<com.krillsson.sysapi.dto.system.SystemLoad>>
 
     companion object {
         @kotlin.jvm.JvmField

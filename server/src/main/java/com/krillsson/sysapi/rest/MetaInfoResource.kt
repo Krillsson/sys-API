@@ -41,7 +41,7 @@ class MetaInfoResource(
 
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getRoot(@Auth user: UserConfiguration?): Meta? {
+    fun getRoot(@Auth user: UserConfiguration?): Meta {
         return MetaMapper.INSTANCE.map(com.krillsson.sysapi.core.domain.metadata.Meta(endpoints, version))
     }
 

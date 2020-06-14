@@ -21,7 +21,7 @@
 package com.krillsson.sysapi.core.domain.cpu
 
 import com.krillsson.sysapi.core.domain.system.DateMapper
-import com.krillsson.sysapi.core.history.HistoryEntry
+import com.krillsson.sysapi.core.domain.history.HistoryEntry
 import org.mapstruct.Mapper
 import org.mapstruct.ReportingPolicy
 import org.mapstruct.factory.Mappers
@@ -30,8 +30,8 @@ import java.time.LocalDateTime
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR, uses = [DateMapper::class])
 interface CpuInfoMapper {
-    fun map(value: CpuInfo?): com.krillsson.sysapi.dto.cpu.CpuInfo?
-    fun map(value: CentralProcessor): com.krillsson.sysapi.dto.cpu.CentralProcessor? {
+    fun map(value: CpuInfo): com.krillsson.sysapi.dto.cpu.CpuInfo
+    fun map(value: CentralProcessor): com.krillsson.sysapi.dto.cpu.CentralProcessor {
         return com.krillsson.sysapi.dto.cpu.CentralProcessor(
             value.logicalProcessorCount,
             value.physicalProcessorCount,
@@ -46,11 +46,11 @@ interface CpuInfoMapper {
         )
     }
 
-    fun map(value: CpuHealth?): com.krillsson.sysapi.dto.cpu.CpuHealth?
-    fun map(value: CpuLoad?): com.krillsson.sysapi.dto.cpu.CpuLoad?
-    fun map(value: CoreLoad?): com.krillsson.sysapi.dto.cpu.CoreLoad?
-    fun mapLoadHistory(history: Map<LocalDateTime?, CpuLoad?>?): Map<String?, com.krillsson.sysapi.dto.cpu.CpuLoad?>?
-    fun mapHistory(history: List<HistoryEntry<CpuLoad?>?>?): List<com.krillsson.sysapi.dto.history.HistoryEntry<com.krillsson.sysapi.dto.cpu.CpuLoad?>?>?
+    fun map(value: CpuHealth): com.krillsson.sysapi.dto.cpu.CpuHealth
+    fun map(value: CpuLoad): com.krillsson.sysapi.dto.cpu.CpuLoad
+    fun map(value: CoreLoad): com.krillsson.sysapi.dto.cpu.CoreLoad
+    fun mapLoadHistory(history: Map<LocalDateTime, CpuLoad>): Map<String, com.krillsson.sysapi.dto.cpu.CpuLoad>
+    fun mapHistory(history: List<HistoryEntry<CpuLoad>>): List<com.krillsson.sysapi.dto.history.HistoryEntry<com.krillsson.sysapi.dto.cpu.CpuLoad>>
 
     companion object {
         @kotlin.jvm.JvmField

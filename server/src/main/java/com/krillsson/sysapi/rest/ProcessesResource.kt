@@ -51,7 +51,7 @@ class ProcessesResource(private val provider: ProcessesMetrics) {
         @Auth user: UserConfiguration?,
         @QueryParam("sortBy") processSort: Optional<String>,
         @QueryParam("limit") limit: Optional<Int>
-    ): ProcessInfo? {
+    ): ProcessInfo {
         var sortBy = DEFAULT_PROCESS_ORDER
         if (processSort.isPresent) {
             val method = processSort.get().toUpperCase()

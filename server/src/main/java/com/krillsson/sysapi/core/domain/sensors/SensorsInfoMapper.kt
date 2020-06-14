@@ -32,10 +32,10 @@ import org.mapstruct.factory.Mappers
     uses = [MotherboardMapper::class, CpuInfoMapper::class, GpuInfoMapper::class]
 )
 interface SensorsInfoMapper {
-    fun map(value: SensorsInfo?): com.krillsson.sysapi.dto.sensors.SensorsInfo?
-    fun map(value: HealthData?): com.krillsson.sysapi.dto.sensors.HealthData?
-    fun mapDatas(value: List<HealthData?>?): List<com.krillsson.sysapi.dto.sensors.HealthData?>?
-    fun map(value: DataType?): com.krillsson.sysapi.dto.sensors.DataType?
+    fun map(value: SensorsInfo): com.krillsson.sysapi.dto.sensors.SensorsInfo
+    fun map(value: HealthData): com.krillsson.sysapi.dto.sensors.HealthData
+    fun mapDatas(value: List<HealthData>): List<com.krillsson.sysapi.dto.sensors.HealthData>
+    fun map(value: DataType): com.krillsson.sysapi.dto.sensors.DataType
 
     companion object {
         @kotlin.jvm.JvmField

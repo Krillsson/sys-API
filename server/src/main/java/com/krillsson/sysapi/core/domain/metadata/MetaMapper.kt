@@ -6,7 +6,7 @@ import org.mapstruct.factory.Mappers
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
 interface MetaMapper {
-    fun map(value: Meta?): com.krillsson.sysapi.dto.metadata.Meta?
+    fun map(value: Meta): com.krillsson.sysapi.dto.metadata.Meta
 
     companion object {
         @kotlin.jvm.JvmField

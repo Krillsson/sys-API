@@ -16,7 +16,7 @@ import com.krillsson.sysapi.core.domain.processes.Process
 import com.krillsson.sysapi.core.domain.sensors.DataType
 import com.krillsson.sysapi.core.domain.system.SystemInfo
 import com.krillsson.sysapi.core.history.HistoryManager
-import com.krillsson.sysapi.core.history.SystemHistoryEntry
+import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.EventManager
 import com.krillsson.sysapi.core.monitoring.Monitor
@@ -67,7 +67,12 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     fun history(): List<SystemHistoryEntry> {
-        return historyManager?.history?.map { SystemHistoryEntry(it.date, it.value) }?.toList().orEmpty()
+        return historyManager?.getHistory()?.map {
+            SystemHistoryEntry(
+                it.date,
+                it.value
+            )
+        }?.toList().orEmpty()
     }
 
     fun monitors(): List<Monitor> {

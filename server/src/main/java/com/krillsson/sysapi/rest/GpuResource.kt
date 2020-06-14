@@ -42,14 +42,14 @@ import javax.ws.rs.core.MediaType
 class GpuResource(private val provider: GpuMetrics, private val historyManager: MetricsHistoryManager) {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getRoot(@Auth user: UserConfiguration?): List<Gpu?>? {
+    fun getRoot(@Auth user: UserConfiguration?): List<Gpu> {
         return GpuInfoMapper.INSTANCE.mapGpus(provider.gpus())
     }
 
     @GET
     @Path("loads")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getLoad(@Auth user: UserConfiguration?): List<GpuLoad?>? {
+    fun getLoad(@Auth user: UserConfiguration?): List<GpuLoad> {
         return GpuInfoMapper.INSTANCE.map(provider.gpuLoads())
     }
 
@@ -60,7 +60,7 @@ class GpuResource(private val provider: GpuMetrics, private val historyManager: 
         @Auth user: UserConfiguration?,
         @QueryParam("fromDate") fromDate: OffsetDateTime?,
         @QueryParam("toDate") toDate: OffsetDateTime?
-    ): List<HistoryEntry<List<GpuLoad?>?>?>? {
+    ): List<HistoryEntry<List<GpuLoad>>> {
         return GpuInfoMapper.INSTANCE.mapHistory(historyManager.gpuLoadHistory(fromDate, toDate))
     }
 }

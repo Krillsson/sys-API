@@ -55,7 +55,7 @@ class MemoryResource(
         @Auth user: UserConfiguration?,
         @QueryParam("fromDate") fromDate: OffsetDateTime?,
         @QueryParam("toDate") toDate: OffsetDateTime?
-    ): List<HistoryEntry<MemoryLoad?>?>? {
+    ): List<HistoryEntry<MemoryLoad>> {
         return MemoryMapper.INSTANCE.mapHistory(historyManager.memoryHistory(fromDate, toDate))
     }
 }

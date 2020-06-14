@@ -42,14 +42,14 @@ import javax.ws.rs.core.MediaType
 class CpuResource(private val provider: CpuMetrics, private val historyManager: MetricsHistoryManager) {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getRoot(@Auth user: UserConfiguration?): CpuInfo? {
+    fun getRoot(@Auth user: UserConfiguration?): CpuInfo {
         return CpuInfoMapper.INSTANCE.map(provider.cpuInfo())
     }
 
     @GET
     @Path("load")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getLoad(@Auth user: UserConfiguration?): CpuLoad? {
+    fun getLoad(@Auth user: UserConfiguration?): CpuLoad {
         return CpuInfoMapper.INSTANCE.map(provider.cpuLoad())
     }
 
@@ -60,7 +60,7 @@ class CpuResource(private val provider: CpuMetrics, private val historyManager: 
         @Auth user: UserConfiguration?,
         @QueryParam("fromDate") fromDate: OffsetDateTime?,
         @QueryParam("toDate") toDate: OffsetDateTime?
-    ): List<HistoryEntry<CpuLoad?>?>? {
+    ): List<HistoryEntry<CpuLoad>> {
         return CpuInfoMapper.INSTANCE.mapHistory(historyManager.cpuLoadHistory(fromDate, toDate))
     }
 }

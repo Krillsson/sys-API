@@ -45,14 +45,14 @@ import javax.ws.rs.core.Response
 class DrivesResource(private val provider: DriveMetrics, private val historyManager: MetricsHistoryManager) {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getRoot(@Auth user: UserConfiguration?): List<Drive?>? {
+    fun getRoot(@Auth user: UserConfiguration?): List<Drive> {
         return DriveMetricsMapper.INSTANCE.map(provider.drives())
     }
 
     @GET
     @Path("{name}")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getDiskByName(@PathParam("name") name: String?): Drive? {
+    fun getDiskByName(@PathParam("name") name: String?): Drive {
         return DriveMetricsMapper.INSTANCE.map(
             provider.driveByName(name)
                 .orElseThrow {
@@ -69,7 +69,7 @@ class DrivesResource(private val provider: DriveMetrics, private val historyMana
     @GET
     @Path("loads/{name}")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getDiskLoadByName(@PathParam("name") name: String?): DriveLoad? {
+    fun getDiskLoadByName(@PathParam("name") name: String?): DriveLoad {
         return DriveMetricsMapper.INSTANCE.map(
             provider.driveLoadByName(name)
                 .orElseThrow {
@@ -86,7 +86,7 @@ class DrivesResource(private val provider: DriveMetrics, private val historyMana
     @GET
     @Path("loads")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getLoads(@Auth user: UserConfiguration?): List<DriveLoad?>? {
+    fun getLoads(@Auth user: UserConfiguration?): List<DriveLoad> {
         return DriveMetricsMapper.INSTANCE.mapLoads(provider.driveLoads())
     }
 
@@ -97,7 +97,7 @@ class DrivesResource(private val provider: DriveMetrics, private val historyMana
         @Auth user: UserConfiguration?,
         @QueryParam("fromDate") fromDate: OffsetDateTime?,
         @QueryParam("toDate") toDate: OffsetDateTime?
-    ): List<HistoryEntry<List<DriveLoad?>?>?>? {
+    ): List<HistoryEntry<List<DriveLoad>>> {
         return DriveMetricsMapper.INSTANCE.mapHistory(historyManager.driveLoadHistory(fromDate, toDate))
     }
 }

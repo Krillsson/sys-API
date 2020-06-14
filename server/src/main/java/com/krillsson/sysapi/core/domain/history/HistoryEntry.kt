@@ -1,13 +1,5 @@
-package com.krillsson.sysapi.core.history;
+package com.krillsson.sysapi.core.domain.history
 
-import java.time.OffsetDateTime;
+import java.time.OffsetDateTime
 
-public class HistoryEntry<T> {
-    public final OffsetDateTime date;
-    public final T value;
-
-    public HistoryEntry(OffsetDateTime date, T value) {
-        this.date = date;
-        this.value = value;
-    }
-}
+open class HistoryEntry<T>(val date: OffsetDateTime, val value: T)
