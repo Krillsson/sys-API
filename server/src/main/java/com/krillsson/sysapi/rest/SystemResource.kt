@@ -22,31 +22,20 @@ package com.krillsson.sysapi.rest
 
 import com.krillsson.sysapi.auth.BasicAuthorizer
 import com.krillsson.sysapi.config.UserConfiguration
+import com.krillsson.sysapi.core.domain.processes.ProcessSort
 import com.krillsson.sysapi.core.domain.system.SystemInfoMapper
 import com.krillsson.sysapi.core.history.MetricsHistoryManager
-import com.krillsson.sysapi.core.metrics.CpuMetrics
-import com.krillsson.sysapi.core.metrics.DriveMetrics
-import com.krillsson.sysapi.core.metrics.GpuMetrics
-import com.krillsson.sysapi.core.metrics.MemoryMetrics
-import com.krillsson.sysapi.core.metrics.MotherboardMetrics
-import com.krillsson.sysapi.core.metrics.NetworkMetrics
-import com.krillsson.sysapi.core.metrics.ProcessesMetrics
+import com.krillsson.sysapi.core.metrics.SystemMetrics
 import com.krillsson.sysapi.dto.history.HistoryEntry
 import com.krillsson.sysapi.dto.system.JvmProperties
 import com.krillsson.sysapi.dto.system.SystemInfo
 import com.krillsson.sysapi.dto.system.SystemLoad
-import com.krillsson.sysapi.util.EnvironmentUtils
 import io.dropwizard.auth.Auth
 import org.slf4j.LoggerFactory
-import oshi.PlatformEnum
-import oshi.software.os.OperatingSystem
-import oshi.software.os.OperatingSystem.ProcessSort
 import java.time.OffsetDateTime
-import java.util.Arrays
 import java.util.HashMap
 import java.util.Optional
 import java.util.function.Supplier
-import java.util.stream.Collectors
 import javax.annotation.security.RolesAllowed
 import javax.ws.rs.GET
 import javax.ws.rs.Path
@@ -59,15 +48,7 @@ import javax.ws.rs.core.Response
 @Path("system")
 @Produces(MediaType.APPLICATION_JSON)
 class SystemResource(
-    private val operatingSystem: OperatingSystem,
-    private val platformEnum: PlatformEnum,
-    private val cpuMetrics: CpuMetrics,
-    private val networkMetrics: NetworkMetrics,
-    private val driveMetrics: DriveMetrics,
-    private val memoryMetrics: MemoryMetrics,
-    private val processesMetrics: ProcessesMetrics,
-    private val gpuMetrics: GpuMetrics,
-    private val motherboardMetrics: MotherboardMetrics,
+    private val systemMetrics: SystemMetrics,
     private val historyManager: MetricsHistoryManager,
     private val uptimeSupplier: Supplier<Long>
 ) {
@@ -75,17 +56,7 @@ class SystemResource(
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     fun getRoot(@Auth user: UserConfiguration?): SystemInfo {
         return SystemInfoMapper.INSTANCE.map(
-            com.krillsson.sysapi.core.domain.system.SystemInfo(
-                EnvironmentUtils.getHostName(),
-                operatingSystem,
-                platformEnum,
-                cpuMetrics.cpuInfo(),
-                motherboardMetrics.motherboard(),
-                memoryMetrics.memoryLoad(),
-                driveMetrics.drives(),
-                networkMetrics.networkInterfaces(),
-                gpuMetrics.gpus()
-            )
+            systemMetrics.systemInfo()
         )
     }
 
@@ -104,9 +75,7 @@ class SystemResource(
                 ProcessSort.valueOf(method)
             } catch (e: IllegalArgumentException) {
                 val validOptions =
-                    Arrays.stream(ProcessSort.values())
-                        .map { obj: ProcessSort -> obj.name }
-                        .collect(Collectors.joining(", ", "Valid options are: ", "."))
+                    ProcessSort.values().joinToString(separator = ",", prefix = "Valid options are: ") { it.name }
                 LOGGER.error(
                     "No process sort method of type {} was found. {}",
                     method,
@@ -125,16 +94,7 @@ class SystemResource(
             throw WebApplicationException(message, Response.Status.BAD_REQUEST)
         }
         return SystemInfoMapper.INSTANCE.map(
-            com.krillsson.sysapi.core.domain.system.SystemLoad(
-                uptimeSupplier.get(),
-                cpuMetrics.cpuLoad().systemLoadAverage,
-                cpuMetrics.cpuLoad(),
-                networkMetrics.networkInterfaceLoads(),
-                driveMetrics.driveLoads(),
-                memoryMetrics.memoryLoad(),
-                processesMetrics.processesInfo(sortBy, theLimit).processes, gpuMetrics.gpuLoads(),
-                motherboardMetrics.motherboardHealth()
-            )
+            systemMetrics.systemLoad(sortBy, theLimit)
         )
     }
 

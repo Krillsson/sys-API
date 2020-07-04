@@ -95,48 +95,50 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
         val mapper = bootstrap.objectMapper
         mapper.addMixInAnnotations(NetworkInterface::class.java, NetworkInterfaceMixin::class.java)
         val filterProvider = SimpleFilterProvider()
-                .addFilter(
-                        "networkInterface filter",
-                        SimpleBeanPropertyFilter.serializeAllExcept(
-                                "name",
-                                "displayName",
-                                "inetAddresses",
-                                "interfaceAddresses",
-                                "mtu",
-                                "subInterfaces"
-                        )
+            .addFilter(
+                "networkInterface filter",
+                SimpleBeanPropertyFilter.serializeAllExcept(
+                    "name",
+                    "displayName",
+                    "inetAddresses",
+                    "interfaceAddresses",
+                    "mtu",
+                    "subInterfaces"
                 )
+            )
         mapper.setFilters(filterProvider)
         bootstrap.addBundle(SslReloadBundle())
         val bundle: GraphQLBundle<SystemApiConfiguration> = object : GraphQLBundle<SystemApiConfiguration>() {
             override fun getGraphQLFactory(configuration: SystemApiConfiguration): GraphQLFactory? {
                 val factory = configuration.graphQLFactory
                 factory.setGraphQLSchema(
-                        SchemaParser.newParser()
-                                .file(factory.schemaFiles.first())
-                                .resolvers(queryResolver,
-                                        mutationResolver,
-                                        queryResolver.systemInfoResolver,
-                                        queryResolver.historyResolver,
-                                        queryResolver.monitorResolver,
-                                        queryResolver.monitorEventResolver,
-                                        queryResolver.motherboardResolver,
-                                        queryResolver.processorResolver,
-                                        queryResolver.driveResolver,
-                                        queryResolver.networkInterfaceResolver,
-                                        queryResolver.memoryLoadResolver,
-                                        queryResolver.processorMetricsResolver,
-                                        queryResolver.driveMetricResolver,
-                                        queryResolver.networkInterfaceMetricResolver
-                                )
-                                .scalars(ScalarTypes.scalars)
-                                .build().makeExecutableSchema()
+                    SchemaParser.newParser()
+                        .file(factory.schemaFiles.first())
+                        .resolvers(
+                            queryResolver,
+                            mutationResolver,
+                            queryResolver.systemInfoResolver,
+                            queryResolver.historyResolver,
+                            queryResolver.monitorResolver,
+                            queryResolver.monitorEventResolver,
+                            queryResolver.motherboardResolver,
+                            queryResolver.processorResolver,
+                            queryResolver.driveResolver,
+                            queryResolver.networkInterfaceResolver,
+                            queryResolver.memoryLoadResolver,
+                            queryResolver.processorMetricsResolver,
+                            queryResolver.driveMetricResolver,
+                            queryResolver.networkInterfaceMetricResolver
+                        )
+                        .scalars(ScalarTypes.scalars)
+                        .build().makeExecutableSchema()
                 )
                 return factory
             }
 
             override fun initialize(bootstrap: Bootstrap<*>) {
-                bootstrap.addBundle(AssetsBundle("/assets", "/playground", "index.htm", "graphql-playground")) }
+                bootstrap.addBundle(AssetsBundle("/assets", "/playground", "index.htm", "graphql-playground"))
+            }
         }
         bootstrap.addBundle(bundle)
     }
@@ -155,53 +157,56 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
             EnvironmentUtils.addHttpsForward(environment.applicationContext)
         }
 
-        val ticker = Ticker(Executors.newScheduledThreadPool(
+        val ticker = Ticker(
+            Executors.newScheduledThreadPool(
                 1,
                 ThreadFactoryBuilder()
-                        .setNameFormat("tick-mgr-%d")
-                        .build()
-        ), 5)
+                    .setNameFormat("tick-mgr-%d")
+                    .build()
+            ), 5
+        )
         val speedMeasurementManager = SpeedMeasurementManager(
-                Executors.newScheduledThreadPool(
-                        1,
-                        ThreadFactoryBuilder()
-                                .setNameFormat("speed-mgr-%d")
-                                .build()
-                ), Clock.systemUTC(), 5)
+            Executors.newScheduledThreadPool(
+                1,
+                ThreadFactoryBuilder()
+                    .setNameFormat("speed-mgr-%d")
+                    .build()
+            ), Clock.systemUTC(), 5
+        )
 
         val provider = MetricsFactory(
-                hal,
-                os,
-                SystemInfo.getCurrentPlatformEnum(),
-                config,
-                speedMeasurementManager,
-                ticker
+            hal,
+            os,
+            SystemInfo.getCurrentPlatformEnum(),
+            config,
+            speedMeasurementManager,
+            ticker
         ).create()
 
         val queryScheduledExecutor = Executors.newScheduledThreadPool(
-                2,
-                ThreadFactoryBuilder()
-                        .setNameFormat("query-mgr-%d")
-                        .build()
+            2,
+            ThreadFactoryBuilder()
+                .setNameFormat("query-mgr-%d")
+                .build()
         )
 
         val historyMetricQueryManager = object : MetricQueryManager<HistoryMetricQueryEvent>(
-                queryScheduledExecutor,
-                config.metrics().history.interval,
-                config.metrics().history.unit,
-                provider,
-                eventBus
+            queryScheduledExecutor,
+            config.metrics().history.interval,
+            config.metrics().history.unit,
+            provider,
+            eventBus
         ) {
             override fun event(load: SystemLoad): HistoryMetricQueryEvent {
                 return HistoryMetricQueryEvent(load)
             }
         }
         val monitorMetricQueryManager = object : MetricQueryManager<MonitorMetricQueryEvent>(
-                queryScheduledExecutor,
-                config.metrics().monitor.interval,
-                config.metrics().monitor.unit,
-                provider,
-                eventBus
+            queryScheduledExecutor,
+            config.metrics().monitor.interval,
+            config.metrics().monitor.unit,
+            provider,
+            eventBus
         ) {
             override fun event(load: SystemLoad): MonitorMetricQueryEvent {
                 return MonitorMetricQueryEvent(load)
@@ -213,7 +218,8 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
         val eventStore = EventStore(environment.objectMapper)
         val monitorStore = MonitorStore(environment.objectMapper)
         val eventManager = EventManager(eventStore)
-        val monitorManager = MonitorManager(eventManager, eventBus, monitorStore, provider, com.krillsson.sysapi.util.Clock())
+        val monitorManager =
+            MonitorManager(eventManager, eventBus, monitorStore, provider, com.krillsson.sysapi.util.Clock())
 
         queryResolver.monitorManager = monitorManager
         queryResolver.historyManager = historyManager
@@ -221,12 +227,30 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
         queryResolver.os = os
         mutationResolver.historyManager = historyManager
         mutationResolver.metrics = provider
-        setupManagedObjects(environment, monitorManager, eventManager, speedMeasurementManager, ticker, monitorMetricQueryManager, historyManager, historyMetricQueryManager)
+        setupManagedObjects(
+            environment,
+            monitorManager,
+            eventManager,
+            speedMeasurementManager,
+            ticker,
+            monitorMetricQueryManager,
+            historyManager,
+            historyMetricQueryManager
+        )
         registerFeatures(environment, config.user())
         registerResources(environment, os, provider, historyManager, monitorManager, eventManager)
     }
 
-    private fun setupManagedObjects(environment: Environment, monitorManager: MonitorManager, eventManager: EventManager, speedMeasurementManager: SpeedMeasurementManager, ticker: Ticker, monitorMetricQueryManager: MetricQueryManager<MonitorMetricQueryEvent>, historyManager: MetricsHistoryManager, historyMetricQueryManager: MetricQueryManager<HistoryMetricQueryEvent>) {
+    private fun setupManagedObjects(
+        environment: Environment,
+        monitorManager: MonitorManager,
+        eventManager: EventManager,
+        speedMeasurementManager: SpeedMeasurementManager,
+        ticker: Ticker,
+        monitorMetricQueryManager: MetricQueryManager<MonitorMetricQueryEvent>,
+        historyManager: MetricsHistoryManager,
+        historyMetricQueryManager: MetricQueryManager<HistoryMetricQueryEvent>
+    ) {
         environment.lifecycle().manage(monitorManager)
         environment.lifecycle().manage(eventManager)
         environment.lifecycle().manage(speedMeasurementManager)
@@ -238,26 +262,27 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
 
     private fun registerFeatures(environment: Environment, userConfig: UserConfiguration) {
         val userBasicCredentialAuthFilter = BasicCredentialAuthFilter.Builder<UserConfiguration>()
-                .setAuthenticator(BasicAuthenticator(userConfig))
-                .setRealm(name)
-                .setAuthorizer(BasicAuthorizer(userConfig))
-                .buildAuthFilter()
+            .setAuthenticator(BasicAuthenticator(userConfig))
+            .setRealm(name)
+            .setAuthorizer(BasicAuthorizer(userConfig))
+            .buildAuthFilter()
         environment.jersey().register(RolesAllowedDynamicFeature::class.java)
         environment.jersey().register(OffsetDateTimeConverter::class.java)
         environment.jersey().register(AuthDynamicFeature(userBasicCredentialAuthFilter))
         environment.jersey().register(AuthValueFactoryProvider.Binder(UserConfiguration::class.java))
     }
 
-    private fun registerResources(environment: Environment, os: OperatingSystem, provider: Metrics, historyManager: MetricsHistoryManager, monitorManager: MonitorManager, eventManager: EventManager) {
-        environment.jersey().register(SystemResource(os,
-                SystemInfo.getCurrentPlatformEnum(),
-                provider.cpuMetrics(),
-                provider.networkMetrics(),
-                provider.driveMetrics(),
-                provider.memoryMetrics(),
-                provider.processesMetrics(), provider.gpuMetrics(),
-                provider.motherboardMetrics(),
-                historyManager, Supplier { os.systemUptime }
+    private fun registerResources(
+        environment: Environment,
+        os: OperatingSystem,
+        provider: Metrics,
+        historyManager: MetricsHistoryManager,
+        monitorManager: MonitorManager,
+        eventManager: EventManager
+    ) {
+        environment.jersey().register(SystemResource(
+            provider.systemMetrics(),
+            historyManager, Supplier { os.systemUptime }
         ))
         environment.jersey().register(DrivesResource(provider.driveMetrics(), historyManager))
         environment.jersey().register(GpuResource(provider.gpuMetrics(), historyManager))
@@ -269,11 +294,12 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
         environment.jersey().register(EventResource(eventManager))
         environment.jersey().register(MonitorResource(monitorManager, eventManager))
         environment.jersey().register(
-                MetaInfoResource(
-                        Utils.getVersionFromManifest(),
-                        EnvironmentUtils.getEndpoints(environment),
-                        os.processId
-                ))
+            MetaInfoResource(
+                Utils.getVersionFromManifest(),
+                EnvironmentUtils.getEndpoints(environment),
+                os.processId
+            )
+        )
     }
 
     companion object {
@@ -284,8 +310,5 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
         fun main(args: Array<String>) {
             SystemApiApplication().run(*args)
         }
-
     }
-
-
 }

@@ -1,6 +1,8 @@
 package com.krillsson.sysapi.core.metrics.cache
 
 import com.krillsson.sysapi.config.CacheConfiguration
+import com.krillsson.sysapi.core.domain.system.OperatingSystem
+import com.krillsson.sysapi.core.domain.system.Platform
 import com.krillsson.sysapi.core.metrics.CpuMetrics
 import com.krillsson.sysapi.core.metrics.DriveMetrics
 import com.krillsson.sysapi.core.metrics.GpuMetrics
@@ -9,8 +11,14 @@ import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.metrics.MotherboardMetrics
 import com.krillsson.sysapi.core.metrics.NetworkMetrics
 import com.krillsson.sysapi.core.metrics.ProcessesMetrics
+import com.krillsson.sysapi.core.metrics.SystemMetrics
 
-class Cache private constructor(provider: Metrics, cacheConfiguration: CacheConfiguration) : Metrics {
+class Cache private constructor(
+    provider: Metrics,
+    cacheConfiguration: CacheConfiguration,
+    platform: Platform,
+    operatingSystem: OperatingSystem
+) : Metrics {
     private val cpuMetrics: CpuMetrics
     private val networkMetrics: NetworkMetrics
     private val gpuMetrics: GpuMetrics
@@ -18,6 +26,7 @@ class Cache private constructor(provider: Metrics, cacheConfiguration: CacheConf
     private val processesMetrics: ProcessesMetrics
     private val motherboardMetrics: MotherboardMetrics
     private val memoryMetrics: MemoryMetrics
+    private val systemMetrics: SystemMetrics
 
     override fun initialize() {}
 
@@ -49,9 +58,18 @@ class Cache private constructor(provider: Metrics, cacheConfiguration: CacheConf
         return motherboardMetrics
     }
 
+    override fun systemMetrics(): SystemMetrics {
+        return systemMetrics
+    }
+
     companion object {
-        fun wrap(factory: Metrics, cacheConfiguration: CacheConfiguration): Metrics {
-            return Cache(factory, cacheConfiguration)
+        fun wrap(
+            factory: Metrics,
+            cacheConfiguration: CacheConfiguration,
+            platform: Platform,
+            operatingSystem: OperatingSystem
+        ): Metrics {
+            return Cache(factory, cacheConfiguration, platform, operatingSystem)
         }
     }
 
@@ -63,5 +81,16 @@ class Cache private constructor(provider: Metrics, cacheConfiguration: CacheConf
         processesMetrics = CachingProcessesMetrics(provider.processesMetrics(), cacheConfiguration)
         motherboardMetrics = CachingMotherboardMetrics(provider.motherboardMetrics(), cacheConfiguration)
         memoryMetrics = CachingMemoryMetrics(provider.memoryMetrics(), cacheConfiguration)
+        systemMetrics = CachingSystemMetrics(
+            cpuMetrics,
+            networkMetrics,
+            driveMetrics,
+            memoryMetrics,
+            processesMetrics,
+            motherboardMetrics,
+            gpuMetrics,
+            platform,
+            operatingSystem
+        )
     }
 }

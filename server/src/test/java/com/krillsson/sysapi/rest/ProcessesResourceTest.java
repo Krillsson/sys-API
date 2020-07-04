@@ -2,6 +2,7 @@ package com.krillsson.sysapi.rest;
 
 import com.krillsson.sysapi.core.domain.memory.MemoryLoad;
 import com.krillsson.sysapi.core.domain.processes.Process;
+import com.krillsson.sysapi.core.domain.processes.ProcessSort;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import com.krillsson.sysapi.core.metrics.ProcessesMetrics;
 import com.krillsson.sysapi.dto.processes.ProcessInfo;
@@ -95,7 +96,7 @@ public class ProcessesResourceTest {
     @Test
     public void getProcessesCorrectLimit() throws Exception {
         ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
-        when(provider.processesInfo(any(OperatingSystem.ProcessSort.class), captor.capture()))
+        when(provider.processesInfo(any(ProcessSort.class), captor.capture()))
                 .thenReturn(new ProcessesInfo(mock(MemoryLoad.class), 0, 0, 0,
                         Arrays.asList(process)
                 ));
@@ -112,7 +113,7 @@ public class ProcessesResourceTest {
 
     @Test
     public void getProcessesCorrectSortingMethod() throws Exception {
-        ArgumentCaptor<OperatingSystem.ProcessSort> captor = ArgumentCaptor.forClass(OperatingSystem.ProcessSort.class);
+        ArgumentCaptor<ProcessSort> captor = ArgumentCaptor.forClass(ProcessSort.class);
         when(provider.processesInfo(captor.capture(), anyInt()))
                 .thenReturn(new ProcessesInfo(mock(MemoryLoad.class), 0, 0, 0,
                         Arrays.asList(process)
@@ -130,7 +131,7 @@ public class ProcessesResourceTest {
 
     @Test
     public void getProcessesHappyPath() throws Exception {
-        when(provider.processesInfo(any(OperatingSystem.ProcessSort.class), anyInt()))
+        when(provider.processesInfo(any(ProcessSort.class), anyInt()))
                 .thenReturn(new ProcessesInfo(mock(MemoryLoad.class), 0, 0, 0,
                         Arrays.asList(process)
                 ));
@@ -147,7 +148,7 @@ public class ProcessesResourceTest {
 
     @Test
     public void getProcessesSadPath() throws Exception {
-        when(provider.processesInfo(any(OperatingSystem.ProcessSort.class), anyInt())).thenThrow(new RuntimeException(
+        when(provider.processesInfo(any(ProcessSort.class), anyInt())).thenThrow(new RuntimeException(
                 "What"));
         final Response response = RESOURCES.getJerseyTest().target("/processes")
                 .request(MediaType.APPLICATION_JSON_TYPE)

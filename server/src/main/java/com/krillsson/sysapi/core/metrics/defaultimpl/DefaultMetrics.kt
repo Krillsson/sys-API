@@ -8,6 +8,7 @@ import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.metrics.MotherboardMetrics
 import com.krillsson.sysapi.core.metrics.NetworkMetrics
 import com.krillsson.sysapi.core.metrics.ProcessesMetrics
+import com.krillsson.sysapi.core.metrics.SystemMetrics
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
 import com.krillsson.sysapi.util.Ticker
 import com.krillsson.sysapi.util.Utils
@@ -28,6 +29,7 @@ open class DefaultMetrics(
     private var processesMetrics: ProcessesMetrics? = null
     private var motherboardMetrics: MotherboardMetrics? = null
     private var memoryMetrics: MemoryMetrics? = null
+    private var systemMetrics: SystemMetrics? = null
 
     override fun initialize() {
         val cpuMetrics =
@@ -74,6 +76,10 @@ open class DefaultMetrics(
         return motherboardMetrics!!
     }
 
+    override fun systemMetrics(): SystemMetrics {
+        return systemMetrics!!
+    }
+
     protected fun setCpuMetrics(cpuMetrics: CpuMetrics?) {
         this.cpuMetrics = cpuMetrics
     }
@@ -100,5 +106,9 @@ open class DefaultMetrics(
 
     protected fun setMemoryMetrics(memoryMetrics: MemoryMetrics?) {
         this.memoryMetrics = memoryMetrics
+    }
+
+    protected fun setSystemMetrics(systemMetrics: SystemMetrics?) {
+        this.systemMetrics = systemMetrics
     }
 }

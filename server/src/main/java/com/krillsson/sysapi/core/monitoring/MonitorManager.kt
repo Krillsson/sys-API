@@ -87,7 +87,7 @@ class MonitorManager(private val eventManager: EventManager, private val eventBu
     }
 
     private fun validate(monitor: Monitor): Boolean {
-        return monitor.selectValue(provider.consolidatedMetrics()) != -1.0
+        return monitor.selectValue(provider.systemMetrics().systemLoad()) != -1.0
     }
 }
 

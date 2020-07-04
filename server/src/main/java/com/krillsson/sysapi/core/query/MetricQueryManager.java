@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.core.query;
 
 import com.google.common.eventbus.EventBus;
+import com.krillsson.sysapi.core.domain.processes.ProcessSort;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
 import com.krillsson.sysapi.core.metrics.Metrics;
 import io.dropwizard.lifecycle.Managed;
@@ -26,7 +27,7 @@ public abstract class MetricQueryManager<T extends MetricQueryEvent> implements 
     }
 
     private void query() {
-        eventBus.post(event(provider.consolidatedMetrics(OperatingSystem.ProcessSort.MEMORY, -1)));
+        eventBus.post(event(provider.systemMetrics().systemLoad(ProcessSort.MEMORY, -1)));
     }
 
     protected abstract T event(SystemLoad load);

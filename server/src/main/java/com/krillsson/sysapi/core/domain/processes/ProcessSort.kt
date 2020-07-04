@@ -1,6 +1,6 @@
-package com.krillsson.sysapi.graphql.domain
+package com.krillsson.sysapi.core.domain.processes
 
-enum class ProcessSortMethod {
+enum class ProcessSort {
     CPU,
     MEMORY,
     OLDEST,

@@ -6,24 +6,23 @@ import com.krillsson.sysapi.core.domain.cpu.CentralProcessor
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad
 import com.krillsson.sysapi.core.domain.drives.Drive
 import com.krillsson.sysapi.core.domain.drives.DriveLoad
+import com.krillsson.sysapi.core.domain.event.MonitorEvent
 import com.krillsson.sysapi.core.domain.gpu.Gpu
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad
+import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.domain.memory.MemoryLoad
 import com.krillsson.sysapi.core.domain.motherboard.Motherboard
 import com.krillsson.sysapi.core.domain.network.NetworkInterface
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad
 import com.krillsson.sysapi.core.domain.processes.Process
+import com.krillsson.sysapi.core.domain.processes.ProcessSort
 import com.krillsson.sysapi.core.domain.sensors.DataType
 import com.krillsson.sysapi.core.domain.system.SystemInfo
 import com.krillsson.sysapi.core.history.HistoryManager
-import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.EventManager
 import com.krillsson.sysapi.core.monitoring.Monitor
-import com.krillsson.sysapi.core.domain.event.MonitorEvent
 import com.krillsson.sysapi.core.monitoring.MonitorManager
-import com.krillsson.sysapi.graphql.domain.ProcessSortMethod
-import com.krillsson.sysapi.util.EnvironmentUtils
 import oshi.hardware.UsbDevice
 import oshi.software.os.OperatingSystem
 
@@ -51,19 +50,8 @@ class QueryResolver : GraphQLQueryResolver {
     fun system(): SystemInfo {
         val metric =
             checkNotNull(metrics) { "System API did not initialize properly. Metrics is null in QueryResolver" }
-        val operatingSystem =
-            checkNotNull(os) { "System API did not initialize properly. OperatingSystem is null in QueryResolver" }
-        return SystemInfo(
-            EnvironmentUtils.getHostName(),
-            operatingSystem,
-            oshi.SystemInfo.getCurrentPlatformEnum(),
-            metric.cpuMetrics().cpuInfo(),
-            metric.motherboardMetrics().motherboard(),
-            metric.memoryMetrics().memoryLoad(),
-            metric.driveMetrics().drives(),
-            metric.networkMetrics().networkInterfaces(),
-            metric.gpuMetrics().gpus()
-        )
+
+        return metric.systemMetrics().systemInfo()
     }
 
     fun history(): List<SystemHistoryEntry> {
@@ -107,20 +95,10 @@ class QueryResolver : GraphQLQueryResolver {
         fun getProcesses(
             system: SystemInfo,
             limit: Int = 0,
-            processSortMethod: ProcessSortMethod = ProcessSortMethod.MEMORY
+            processSortMethod: ProcessSort = ProcessSort.MEMORY
         ): List<Process?>? {
             return metrics?.processesMetrics()
-                ?.processesInfo(processSortMethod.toOperatingSystemProcessSort(), limit)?.processes
-        }
-
-        private fun ProcessSortMethod.toOperatingSystemProcessSort(): OperatingSystem.ProcessSort = when (this) {
-            ProcessSortMethod.CPU -> OperatingSystem.ProcessSort.CPU
-            ProcessSortMethod.MEMORY -> OperatingSystem.ProcessSort.MEMORY
-            ProcessSortMethod.OLDEST -> OperatingSystem.ProcessSort.OLDEST
-            ProcessSortMethod.NEWEST -> OperatingSystem.ProcessSort.NEWEST
-            ProcessSortMethod.PID -> OperatingSystem.ProcessSort.PID
-            ProcessSortMethod.PARENTPID -> OperatingSystem.ProcessSort.PARENTPID
-            ProcessSortMethod.NAME -> OperatingSystem.ProcessSort.NAME
+                ?.processesInfo(processSortMethod, limit)?.processes
         }
     }
 

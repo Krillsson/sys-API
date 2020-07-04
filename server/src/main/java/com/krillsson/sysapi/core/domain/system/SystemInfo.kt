@@ -26,13 +26,11 @@ import com.krillsson.sysapi.core.domain.gpu.Gpu
 import com.krillsson.sysapi.core.domain.memory.MemoryLoad
 import com.krillsson.sysapi.core.domain.motherboard.Motherboard
 import com.krillsson.sysapi.core.domain.network.NetworkInterface
-import oshi.PlatformEnum
-import oshi.software.os.OperatingSystem
 
 class SystemInfo(
     val hostName: String,
     val operatingSystem: OperatingSystem,
-    val platform: PlatformEnum,
+    val platform: Platform,
     val cpuInfo: CpuInfo,
     val motherboard: Motherboard,
     val memory: MemoryLoad,

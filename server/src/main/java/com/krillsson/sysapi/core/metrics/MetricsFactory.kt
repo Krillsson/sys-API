@@ -32,24 +32,33 @@ import com.krillsson.sysapi.core.metrics.windows.WindowsMetrics
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
 import com.krillsson.sysapi.util.Ticker
 import com.krillsson.sysapi.util.Utils
+import com.krillsson.sysapi.util.asOperatingSystem
+import com.krillsson.sysapi.util.asPlatform
 import org.slf4j.LoggerFactory
 import oshi.PlatformEnum
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.software.os.OperatingSystem
 
-class MetricsFactory(private val hal: HardwareAbstractionLayer, private val operatingSystem: OperatingSystem, private val os: PlatformEnum, private val configuration: SystemApiConfiguration, private val speedMeasurementManager: SpeedMeasurementManager, private val ticker: Ticker) {
+class MetricsFactory(
+    private val hal: HardwareAbstractionLayer,
+    private val operatingSystem: OperatingSystem,
+    private val platform: PlatformEnum,
+    private val configuration: SystemApiConfiguration,
+    private val speedMeasurementManager: SpeedMeasurementManager,
+    private val ticker: Ticker
+) {
     private val utils: Utils = Utils()
     private var cache = true
     fun create(): Metrics {
         val metrics: Metrics = createPlatformSpecific()
         metrics.initialize()
 
-        return if (cache) Cache.wrap(metrics, configuration.metrics().cache) else metrics
+        return if (cache) Cache.wrap(metrics, configuration.metrics().cache, platform.asPlatform(), operatingSystem.asOperatingSystem()) else metrics
     }
 
     private fun createPlatformSpecific(): Metrics {
         return when {
-            os == PlatformEnum.WINDOWS && (configuration.windows() == null || configuration.windows().enableOhmJniWrapper()) -> {
+            platform == PlatformEnum.WINDOWS && (configuration.windows() == null || configuration.windows().enableOhmJniWrapper()) -> {
                 LOGGER.info("Windows detected")
                 val windowsMetricsFactory = WindowsMetrics(
                         MonitorManagerFactory(),
@@ -66,7 +75,7 @@ class MetricsFactory(private val hal: HardwareAbstractionLayer, private val oper
                     null
                 }
             }
-            os == PlatformEnum.LINUX && (operatingSystem.family.toLowerCase().contains(RaspbianCpuMetrics.RASPBIAN_QUALIFIER)) -> {
+            platform == PlatformEnum.LINUX && (operatingSystem.family.toLowerCase().contains(RaspbianCpuMetrics.RASPBIAN_QUALIFIER)) -> {
                 LOGGER.info("Raspberry Pi detected")
                 RaspbianMetrics(
                         hal,
@@ -76,7 +85,7 @@ class MetricsFactory(private val hal: HardwareAbstractionLayer, private val oper
                         utils
                 )
             }
-            os == PlatformEnum.MACOSX -> {
+            platform == PlatformEnum.MACOSX -> {
                 //https://github.com/Chris911/iStats
                 MacOsMetricsProvider(
                         hal,

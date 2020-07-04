@@ -23,15 +23,13 @@ package com.krillsson.sysapi.rest
 import com.krillsson.sysapi.auth.BasicAuthorizer
 import com.krillsson.sysapi.config.UserConfiguration
 import com.krillsson.sysapi.core.domain.processes.ProcessInfoMapper
+import com.krillsson.sysapi.core.domain.processes.ProcessSort
 import com.krillsson.sysapi.core.metrics.ProcessesMetrics
 import com.krillsson.sysapi.dto.processes.Process
 import com.krillsson.sysapi.dto.processes.ProcessInfo
 import io.dropwizard.auth.Auth
 import org.slf4j.LoggerFactory
-import oshi.software.os.OperatingSystem.ProcessSort
-import java.util.Arrays
 import java.util.Optional
-import java.util.stream.Collectors
 import javax.annotation.security.RolesAllowed
 import javax.ws.rs.GET
 import javax.ws.rs.Path
@@ -59,9 +57,8 @@ class ProcessesResource(private val provider: ProcessesMetrics) {
                 ProcessSort.valueOf(method)
             } catch (e: IllegalArgumentException) {
                 val validOptions =
-                    Arrays.stream(ProcessSort.values())
-                        .map { obj: ProcessSort -> obj.name }
-                        .collect(Collectors.joining(", ", "Valid options are: ", "."))
+                    ProcessSort.values()
+                        .joinToString(separator = ",", prefix = "Valid options are: ") { it.name }
                 LOGGER.error(
                     "No process sort method of type {} was found. {}",
                     method,

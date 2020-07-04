@@ -1,8 +1,8 @@
 package com.krillsson.sysapi.core.metrics
 
 import com.krillsson.sysapi.core.domain.processes.Process
+import com.krillsson.sysapi.core.domain.processes.ProcessSort
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo
-import oshi.software.os.OperatingSystem.ProcessSort
 import java.util.Optional
 
 interface ProcessesMetrics {
