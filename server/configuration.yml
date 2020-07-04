@@ -27,7 +27,7 @@ windows:
 ### Dropwizard specific configuration ###
 #########################################
 graphql:
-  enableTracing: true
+  enableTracing: false
   queryCache: maximumSize=10000
   schemaFiles:
     - schema.graphqls

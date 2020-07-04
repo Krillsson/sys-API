@@ -35,13 +35,27 @@ import com.krillsson.sysapi.core.history.HistoryMetricQueryEvent
 import com.krillsson.sysapi.core.history.MetricsHistoryManager
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.metrics.MetricsFactory
-import com.krillsson.sysapi.core.monitoring.*
+import com.krillsson.sysapi.core.monitoring.EventManager
+import com.krillsson.sysapi.core.monitoring.EventStore
+import com.krillsson.sysapi.core.monitoring.MonitorManager
+import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
+import com.krillsson.sysapi.core.monitoring.MonitorStore
 import com.krillsson.sysapi.core.query.MetricQueryManager
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
 import com.krillsson.sysapi.graphql.MutationResolver
 import com.krillsson.sysapi.graphql.QueryResolver
 import com.krillsson.sysapi.graphql.scalars.ScalarTypes
-import com.krillsson.sysapi.rest.*
+import com.krillsson.sysapi.rest.CpuResource
+import com.krillsson.sysapi.rest.DrivesResource
+import com.krillsson.sysapi.rest.EventResource
+import com.krillsson.sysapi.rest.GpuResource
+import com.krillsson.sysapi.rest.MemoryResource
+import com.krillsson.sysapi.rest.MetaInfoResource
+import com.krillsson.sysapi.rest.MonitorResource
+import com.krillsson.sysapi.rest.MotherboardResource
+import com.krillsson.sysapi.rest.NetworkInterfacesResource
+import com.krillsson.sysapi.rest.ProcessesResource
+import com.krillsson.sysapi.rest.SystemResource
 import com.krillsson.sysapi.util.EnvironmentUtils
 import com.krillsson.sysapi.util.OffsetDateTimeConverter
 import com.krillsson.sysapi.util.Ticker
@@ -49,6 +63,7 @@ import com.krillsson.sysapi.util.Utils
 import com.smoketurner.dropwizard.graphql.GraphQLBundle
 import com.smoketurner.dropwizard.graphql.GraphQLFactory
 import io.dropwizard.Application
+import io.dropwizard.assets.AssetsBundle
 import io.dropwizard.auth.AuthDynamicFeature
 import io.dropwizard.auth.AuthValueFactoryProvider
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter
@@ -61,12 +76,11 @@ import oshi.SystemInfo
 import oshi.software.os.OperatingSystem
 import java.net.NetworkInterface
 import java.time.Clock
-import java.util.*
+import java.util.EnumSet
 import java.util.concurrent.Executors
 import java.util.function.Supplier
 import javax.servlet.DispatcherType
 import javax.servlet.FilterRegistration
-
 
 class SystemApiApplication : Application<SystemApiConfiguration>() {
 
@@ -99,7 +113,7 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
                 val factory = configuration.graphQLFactory
                 factory.setGraphQLSchema(
                         SchemaParser.newParser()
-                                .file("schema.graphqls")
+                                .file(factory.schemaFiles.first())
                                 .resolvers(queryResolver,
                                         mutationResolver,
                                         queryResolver.systemInfoResolver,
@@ -120,6 +134,9 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
                 )
                 return factory
             }
+
+            override fun initialize(bootstrap: Bootstrap<*>) {
+                bootstrap.addBundle(AssetsBundle("/assets", "/playground", "index.htm", "graphql-playground")) }
         }
         bootstrap.addBundle(bundle)
     }
