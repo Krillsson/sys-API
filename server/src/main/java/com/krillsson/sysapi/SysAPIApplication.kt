@@ -137,7 +137,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
                     "subInterfaces"
                 )
             )
-        mapper.setFilters(filterProvider)
+        //mapper.setFilters(filterProvider)
 
         eventStore = EventStore(mapper)
         monitorStore = MonitorStore(mapper)
@@ -149,10 +149,6 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
                 val factory = configuration.graphQLFactory
                 factory.setGraphQLSchema(graphQLConfiguration.createExecutableSchema(factory.schemaFiles.first()))
                 return factory
-            }
-
-            override fun initialize(bootstrap: Bootstrap<*>) {
-                bootstrap.addBundle(AssetsBundle("/assets", "/playground", "index.htm", "graphql-playground"))
             }
         }
         bootstrap.addBundle(bundle)
