@@ -11,11 +11,17 @@ import java.time.Duration
 
 class MutationResolver : GraphQLMutationResolver {
 
-    var metrics: Metrics? = null
-    var monitorManager: MonitorManager? = null
-    var eventManager: EventManager? = null
-    var historyManager: HistoryManager? = null
-    var os: OperatingSystem? = null
+    lateinit var metrics: Metrics
+    lateinit var monitorManager: MonitorManager
+    lateinit var eventManager: EventManager
+    lateinit var historyManager: HistoryManager
+
+    fun initialize(metrics: Metrics, monitorManager: MonitorManager, eventManager: EventManager, historyManager: HistoryManager) {
+        this.metrics = metrics
+        this.monitorManager = monitorManager
+        this.eventManager = eventManager
+        this.historyManager = historyManager
+    }
 
     fun createMonitor(input: CreateMonitorInput): CreateMonitorOutput? {
         val createdId = monitorManager?.add(Duration.ofSeconds(input.inertiaInSeconds.toLong()), input.type, input.threshold.toDouble(), input.id)

@@ -2,8 +2,11 @@ package com.krillsson.sysapi.core.metrics.defaultimpl;
 
 import com.krillsson.sysapi.core.domain.memory.MemoryLoad;
 import com.krillsson.sysapi.core.domain.processes.Process;
+import com.krillsson.sysapi.core.domain.processes.ProcessSort;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import com.krillsson.sysapi.core.metrics.ProcessesMetrics;
+import com.krillsson.sysapi.util.ExtensionsKt;
+import org.jetbrains.annotations.NotNull;
 import oshi.hardware.GlobalMemory;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.VirtualMemory;
@@ -26,25 +29,6 @@ public class DefaultProcessesMetrics implements ProcessesMetrics {
     }
 
     @Override
-    public ProcessesInfo processesInfo(OperatingSystem.ProcessSort sortBy, int limit) {
-        MemoryLoad memory = memoryLoad();
-        List<Process> processes = Collections.emptyList();
-        if (limit > -1) {
-            processes = operatingSystem.getProcesses(limit, sortBy)
-                    .stream()
-                    .map(p -> Process.create(p, memory))
-                    .collect(Collectors.toList());
-        }
-        return new ProcessesInfo(
-                memory,
-                operatingSystem.getProcessId(),
-                operatingSystem.getThreadCount(),
-                operatingSystem.getProcessCount(),
-                processes
-        );
-    }
-
-    @Override
     public Optional<Process> getProcessByPid(int pid) {
         MemoryLoad memory = memoryLoad();
         return Optional
@@ -61,6 +45,26 @@ public class DefaultProcessesMetrics implements ProcessesMetrics {
                 virtualMemory.getSwapUsed(),
                 memory.getTotal(),
                 memory.getAvailable()
+        );
+    }
+
+    @NotNull
+    @Override
+    public ProcessesInfo processesInfo(@NotNull ProcessSort sortBy, int limit) {
+        MemoryLoad memory = memoryLoad();
+        List<Process> processes = Collections.emptyList();
+        if (limit > -1) {
+            processes = operatingSystem.getProcesses(limit, ExtensionsKt.asOshiProcessSort(sortBy))
+                    .stream()
+                    .map(p -> Process.create(p, memory))
+                    .collect(Collectors.toList());
+        }
+        return new ProcessesInfo(
+                memory,
+                operatingSystem.getProcessId(),
+                operatingSystem.getThreadCount(),
+                operatingSystem.getProcessCount(),
+                processes
         );
     }
 }

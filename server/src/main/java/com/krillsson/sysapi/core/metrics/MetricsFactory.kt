@@ -21,7 +21,7 @@
 package com.krillsson.sysapi.core.metrics
 
 import com.google.common.annotations.VisibleForTesting
-import com.krillsson.sysapi.config.SystemApiConfiguration
+import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.core.metrics.cache.Cache
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetrics
 import com.krillsson.sysapi.core.metrics.macos.MacOsMetricsProvider
@@ -43,30 +43,41 @@ class MetricsFactory(
     private val hal: HardwareAbstractionLayer,
     private val operatingSystem: OperatingSystem,
     private val platform: PlatformEnum,
-    private val configuration: SystemApiConfiguration,
     private val speedMeasurementManager: SpeedMeasurementManager,
     private val ticker: Ticker
 ) {
     private val utils: Utils = Utils()
     private var cache = true
-    fun create(): Metrics {
-        val metrics: Metrics = createPlatformSpecific()
-        metrics.initialize()
 
-        return if (cache) Cache.wrap(metrics, configuration.metrics().cache, platform.asPlatform(), operatingSystem.asOperatingSystem()) else metrics
+    private var metrics: Metrics? = null
+
+    fun get(configuration: SysAPIConfiguration): Metrics {
+        if (metrics != null) return metrics!!
+
+        val platformSpecific: Metrics = createPlatformSpecific(configuration)
+        platformSpecific.initialize()
+        metrics = if (cache) Cache.wrap(
+            platformSpecific,
+            configuration.metrics().cache,
+            platform.asPlatform(),
+            operatingSystem.asOperatingSystem()
+        ) else platformSpecific
+
+        return metrics!!
     }
 
-    private fun createPlatformSpecific(): Metrics {
+    private fun createPlatformSpecific(configuration: SysAPIConfiguration): Metrics {
         return when {
-            platform == PlatformEnum.WINDOWS && (configuration.windows() == null || configuration.windows().enableOhmJniWrapper()) -> {
+            platform == PlatformEnum.WINDOWS && (configuration.windows() == null || configuration.windows()
+                .enableOhmJniWrapper()) -> {
                 LOGGER.info("Windows detected")
                 val windowsMetricsFactory = WindowsMetrics(
-                        MonitorManagerFactory(),
-                        hal,
-                        operatingSystem,
-                        speedMeasurementManager,
-                        utils,
-                        ticker
+                    MonitorManagerFactory(),
+                    hal,
+                    operatingSystem,
+                    speedMeasurementManager,
+                    utils,
+                    ticker
                 )
                 if (windowsMetricsFactory.prerequisitesFilled()) {
                     LOGGER.error("Unable to use Windows specific implementation: falling through to default one")
@@ -75,35 +86,35 @@ class MetricsFactory(
                     null
                 }
             }
-            platform == PlatformEnum.LINUX && (operatingSystem.family.toLowerCase().contains(RaspbianCpuMetrics.RASPBIAN_QUALIFIER)) -> {
+            platform == PlatformEnum.LINUX && (operatingSystem.family.toLowerCase()
+                .contains(RaspbianCpuMetrics.RASPBIAN_QUALIFIER)) -> {
                 LOGGER.info("Raspberry Pi detected")
                 RaspbianMetrics(
-                        hal,
-                        operatingSystem,
-                        speedMeasurementManager,
-                        ticker,
-                        utils
+                    hal,
+                    operatingSystem,
+                    speedMeasurementManager,
+                    ticker,
+                    utils
                 )
             }
             platform == PlatformEnum.MACOSX -> {
                 //https://github.com/Chris911/iStats
                 MacOsMetricsProvider(
-                        hal,
-                        operatingSystem,
-                        speedMeasurementManager,
-                        ticker,
-                        utils
+                    hal,
+                    operatingSystem,
+                    speedMeasurementManager,
+                    ticker,
+                    utils
                 )
             }
             else -> null
         } ?: return DefaultMetrics(
-                hal,
-                operatingSystem,
-                speedMeasurementManager,
-                ticker,
-                utils
+            hal,
+            operatingSystem,
+            speedMeasurementManager,
+            ticker,
+            utils
         )
-
     }
 
     @VisibleForTesting
@@ -114,5 +125,4 @@ class MetricsFactory(
     companion object {
         private val LOGGER = LoggerFactory.getLogger(MetricsFactory::class.java)
     }
-
 }

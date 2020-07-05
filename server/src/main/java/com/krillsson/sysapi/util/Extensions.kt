@@ -24,3 +24,7 @@ fun PlatformEnum.asPlatform(): Platform {
 fun oshi.software.os.OperatingSystem.ProcessSort.asProcessSort(): ProcessSort {
     return ProcessSort.values().first { this.name == it.name }
 }
+
+fun ProcessSort.asOshiProcessSort(): oshi.software.os.OperatingSystem.ProcessSort {
+    return oshi.software.os.OperatingSystem.ProcessSort.values().first() { this.name == it.name }
+}

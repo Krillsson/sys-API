@@ -20,14 +20,13 @@
  */
 package com.krillsson.sysapi
 
-import com.coxautodev.graphql.tools.SchemaParser
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider
 import com.google.common.eventbus.EventBus
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.krillsson.sysapi.auth.BasicAuthenticator
 import com.krillsson.sysapi.auth.BasicAuthorizer
-import com.krillsson.sysapi.config.SystemApiConfiguration
+import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.config.UserConfiguration
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceMixin
 import com.krillsson.sysapi.core.domain.system.SystemLoad
@@ -42,9 +41,7 @@ import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
 import com.krillsson.sysapi.core.monitoring.MonitorStore
 import com.krillsson.sysapi.core.query.MetricQueryManager
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
-import com.krillsson.sysapi.graphql.MutationResolver
-import com.krillsson.sysapi.graphql.QueryResolver
-import com.krillsson.sysapi.graphql.scalars.ScalarTypes
+import com.krillsson.sysapi.graphql.GraphQLConfiguration
 import com.krillsson.sysapi.rest.CpuResource
 import com.krillsson.sysapi.rest.DrivesResource
 import com.krillsson.sysapi.rest.EventResource
@@ -82,16 +79,50 @@ import java.util.function.Supplier
 import javax.servlet.DispatcherType
 import javax.servlet.FilterRegistration
 
-class SystemApiApplication : Application<SystemApiConfiguration>() {
+class SysAPIApplication : Application<SysAPIConfiguration>() {
 
     override fun getName(): String {
         return "system-API"
     }
 
-    val queryResolver = QueryResolver()
-    val mutationResolver = MutationResolver()
+    val speedMeasurementManager = SpeedMeasurementManager(
+        Executors.newScheduledThreadPool(
+            1,
+            ThreadFactoryBuilder()
+                .setNameFormat("speed-mgr-%d")
+                .build()
+        ), Clock.systemUTC(), 5
+    )
 
-    override fun initialize(bootstrap: Bootstrap<SystemApiConfiguration>) {
+    val queryScheduledExecutor = Executors.newScheduledThreadPool(
+        2,
+        ThreadFactoryBuilder()
+            .setNameFormat("query-mgr-%d")
+            .build()
+    )
+
+    val ticker = Ticker(
+        Executors.newScheduledThreadPool(
+            1,
+            ThreadFactoryBuilder()
+                .setNameFormat("tick-mgr-%d")
+                .build()
+        ), 5
+    )
+
+    val systemInfo = SystemInfo()
+    val hal = systemInfo.hardware
+    val os = systemInfo.operatingSystem
+    val eventBus = EventBus()
+    val metricsFactory = MetricsFactory(hal, os, SystemInfo.getCurrentPlatformEnum(), speedMeasurementManager, ticker)
+    val graphQLConfiguration = GraphQLConfiguration()
+
+
+    lateinit var eventStore: EventStore
+    lateinit var monitorStore: MonitorStore
+    lateinit var eventManager: EventManager
+
+    override fun initialize(bootstrap: Bootstrap<SysAPIConfiguration>) {
         val mapper = bootstrap.objectMapper
         mapper.addMixInAnnotations(NetworkInterface::class.java, NetworkInterfaceMixin::class.java)
         val filterProvider = SimpleFilterProvider()
@@ -107,32 +138,16 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
                 )
             )
         mapper.setFilters(filterProvider)
+
+        eventStore = EventStore(mapper)
+        monitorStore = MonitorStore(mapper)
+        eventManager = EventManager(eventStore)
+
         bootstrap.addBundle(SslReloadBundle())
-        val bundle: GraphQLBundle<SystemApiConfiguration> = object : GraphQLBundle<SystemApiConfiguration>() {
-            override fun getGraphQLFactory(configuration: SystemApiConfiguration): GraphQLFactory? {
+        val bundle: GraphQLBundle<SysAPIConfiguration> = object : GraphQLBundle<SysAPIConfiguration>() {
+            override fun getGraphQLFactory(configuration: SysAPIConfiguration): GraphQLFactory? {
                 val factory = configuration.graphQLFactory
-                factory.setGraphQLSchema(
-                    SchemaParser.newParser()
-                        .file(factory.schemaFiles.first())
-                        .resolvers(
-                            queryResolver,
-                            mutationResolver,
-                            queryResolver.systemInfoResolver,
-                            queryResolver.historyResolver,
-                            queryResolver.monitorResolver,
-                            queryResolver.monitorEventResolver,
-                            queryResolver.motherboardResolver,
-                            queryResolver.processorResolver,
-                            queryResolver.driveResolver,
-                            queryResolver.networkInterfaceResolver,
-                            queryResolver.memoryLoadResolver,
-                            queryResolver.processorMetricsResolver,
-                            queryResolver.driveMetricResolver,
-                            queryResolver.networkInterfaceMetricResolver
-                        )
-                        .scalars(ScalarTypes.scalars)
-                        .build().makeExecutableSchema()
-                )
+                factory.setGraphQLSchema(graphQLConfiguration.createExecutableSchema(factory.schemaFiles.first()))
                 return factory
             }
 
@@ -144,57 +159,21 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
     }
 
     @Throws(Exception::class)
-    override fun run(config: SystemApiConfiguration, environment: Environment) {
+    override fun run(config: SysAPIConfiguration, environment: Environment) {
         val cors: FilterRegistration.Dynamic = environment.servlets().addFilter("cors", CrossOriginFilter::class.java)
         cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType::class.java), true, "/*")
-
-        val systemInfo = SystemInfo()
-        val hal = systemInfo.hardware
-        val os = systemInfo.operatingSystem
-        val eventBus = EventBus()
 
         if (config.forwardHttps()) {
             EnvironmentUtils.addHttpsForward(environment.applicationContext)
         }
 
-        val ticker = Ticker(
-            Executors.newScheduledThreadPool(
-                1,
-                ThreadFactoryBuilder()
-                    .setNameFormat("tick-mgr-%d")
-                    .build()
-            ), 5
-        )
-        val speedMeasurementManager = SpeedMeasurementManager(
-            Executors.newScheduledThreadPool(
-                1,
-                ThreadFactoryBuilder()
-                    .setNameFormat("speed-mgr-%d")
-                    .build()
-            ), Clock.systemUTC(), 5
-        )
-
-        val provider = MetricsFactory(
-            hal,
-            os,
-            SystemInfo.getCurrentPlatformEnum(),
-            config,
-            speedMeasurementManager,
-            ticker
-        ).create()
-
-        val queryScheduledExecutor = Executors.newScheduledThreadPool(
-            2,
-            ThreadFactoryBuilder()
-                .setNameFormat("query-mgr-%d")
-                .build()
-        )
+        val metrics = metricsFactory.get(config)
 
         val historyMetricQueryManager = object : MetricQueryManager<HistoryMetricQueryEvent>(
             queryScheduledExecutor,
             config.metrics().history.interval,
             config.metrics().history.unit,
-            provider,
+            metrics,
             eventBus
         ) {
             override fun event(load: SystemLoad): HistoryMetricQueryEvent {
@@ -205,7 +184,7 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
             queryScheduledExecutor,
             config.metrics().monitor.interval,
             config.metrics().monitor.unit,
-            provider,
+            metrics,
             eventBus
         ) {
             override fun event(load: SystemLoad): MonitorMetricQueryEvent {
@@ -214,20 +193,11 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
         }
 
         val historyManager = MetricsHistoryManager(config.metrics().history, eventBus)
-
-        val eventStore = EventStore(environment.objectMapper)
-        val monitorStore = MonitorStore(environment.objectMapper)
-        val eventManager = EventManager(eventStore)
         val monitorManager =
-            MonitorManager(eventManager, eventBus, monitorStore, provider, com.krillsson.sysapi.util.Clock())
+            MonitorManager(eventManager, eventBus, monitorStore, metrics, com.krillsson.sysapi.util.Clock())
 
-        queryResolver.monitorManager = monitorManager
-        queryResolver.historyManager = historyManager
-        queryResolver.metrics = provider
-        queryResolver.os = os
-        mutationResolver.historyManager = historyManager
-        mutationResolver.metrics = provider
-        setupManagedObjects(
+        graphQLConfiguration.initialize(metrics, monitorManager, eventManager, historyManager)
+        registerManagedObjects(
             environment,
             monitorManager,
             eventManager,
@@ -238,10 +208,10 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
             historyMetricQueryManager
         )
         registerFeatures(environment, config.user())
-        registerResources(environment, os, provider, historyManager, monitorManager, eventManager)
+        registerResources(environment, os, metrics, historyManager, monitorManager, eventManager)
     }
 
-    private fun setupManagedObjects(
+    private fun registerManagedObjects(
         environment: Environment,
         monitorManager: MonitorManager,
         eventManager: EventManager,
@@ -303,12 +273,12 @@ class SystemApiApplication : Application<SystemApiConfiguration>() {
     }
 
     companion object {
-        private val LOGGER = org.slf4j.LoggerFactory.getLogger(SystemApiApplication::class.java)
+        private val LOGGER = org.slf4j.LoggerFactory.getLogger(SysAPIApplication::class.java)
 
         @Throws(Exception::class)
         @JvmStatic
         fun main(args: Array<String>) {
-            SystemApiApplication().run(*args)
+            SysAPIApplication().run(*args)
         }
     }
 }

@@ -24,15 +24,21 @@ import com.krillsson.sysapi.core.monitoring.EventManager
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import oshi.hardware.UsbDevice
-import oshi.software.os.OperatingSystem
 
 class QueryResolver : GraphQLQueryResolver {
 
-    var metrics: Metrics? = null
-    var monitorManager: MonitorManager? = null
-    var eventManager: EventManager? = null
-    var historyManager: HistoryManager? = null
-    var os: OperatingSystem? = null
+    lateinit var metrics: Metrics
+    lateinit var monitorManager: MonitorManager
+    lateinit var eventManager: EventManager
+    lateinit var historyManager: HistoryManager
+
+    fun initialize(metrics: Metrics, monitorManager: MonitorManager, eventManager: EventManager, historyManager: HistoryManager) {
+        this.metrics = metrics
+        this.monitorManager = monitorManager
+        this.eventManager = eventManager
+        this.historyManager = historyManager
+    }
+
     val systemInfoResolver = SystemInfoResolver()
     val historyResolver = HistoryResolver()
     val monitorResolver = MonitorResolver()
@@ -44,7 +50,6 @@ class QueryResolver : GraphQLQueryResolver {
     val driveMetricResolver = DriveMetricResolver()
     val networkInterfaceResolver = NetworkInterfaceResolver()
     val memoryLoadResolver = MemoryLoadResolver()
-
     val networkInterfaceMetricResolver = NetworkInterfaceMetricResolver()
 
     fun system(): SystemInfo {

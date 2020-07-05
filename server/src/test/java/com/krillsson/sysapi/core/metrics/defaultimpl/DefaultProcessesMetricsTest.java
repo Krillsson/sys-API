@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
+import com.krillsson.sysapi.core.domain.processes.ProcessSort;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +43,7 @@ public class DefaultProcessesMetricsTest {
     @Test
     public void shouldHandleNoProcessesPresent() {
         when(os.getProcesses(anyInt(), any(OperatingSystem.ProcessSort.class))).thenReturn(Collections.emptyList());
-        ProcessesInfo processesInfo = provider.processesInfo(OperatingSystem.ProcessSort.CPU, 0);
+        ProcessesInfo processesInfo = provider.processesInfo(ProcessSort.CPU, 0);
 
         assertTrue(processesInfo.getProcesses().isEmpty());
     }
@@ -59,7 +60,7 @@ public class DefaultProcessesMetricsTest {
         //when(memory.getAvailable()).thenReturn(3000L);
         when(memory.getTotal()).thenReturn(4000L);
 
-        ProcessesInfo processes = provider.processesInfo(OperatingSystem.ProcessSort.CPU, 0);
+        ProcessesInfo processes = provider.processesInfo(ProcessSort.CPU, 0);
 
         assertEquals(processes.getProcesses().get(0).getMemoryPercent(), usage, 0);
     }
@@ -75,9 +76,8 @@ public class DefaultProcessesMetricsTest {
         when(process.getUserTime()).thenReturn(4L);
         when(process.getUpTime()).thenReturn(100L);
         when(os.getProcesses(anyInt(), any(OperatingSystem.ProcessSort.class))).thenReturn(Collections.singletonList(process));
-        //when(memory.getAvailable()).thenReturn(3000L);
 
-        ProcessesInfo processes = provider.processesInfo(OperatingSystem.ProcessSort.CPU, 0);
+        ProcessesInfo processes = provider.processesInfo(ProcessSort.CPU, 0);
 
         assertEquals(processes.getProcesses().get(0).getCpuPercent(), usage, 0);
     }

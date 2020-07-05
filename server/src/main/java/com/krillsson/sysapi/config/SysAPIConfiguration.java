@@ -27,7 +27,7 @@ import io.dropwizard.Configuration;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-public class SystemApiConfiguration extends Configuration {
+public class SysAPIConfiguration extends Configuration {
 
     @Valid
     @NotNull
