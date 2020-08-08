@@ -42,28 +42,26 @@ import javax.ws.rs.core.Response
 
 @Path("nics")
 @Produces(MediaType.APPLICATION_JSON)
+@RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
 class NetworkInterfacesResource(
     private val infoProvider: NetworkMetrics,
     private val historyManager: MetricsHistoryManager
 ) {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun networkInterfaces(@Auth user: UserConfiguration?): List<NetworkInterface> {
+    fun networkInterfaces(): List<NetworkInterface> {
         return NetworkInterfacesMapper.INSTANCE.map(infoProvider.networkInterfaces())
     }
 
     @GET
     @Path("loads")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun networkInterfaceLoads(@Auth user: UserConfiguration?): List<NetworkInterfaceLoad> {
+    fun networkInterfaceLoads(): List<NetworkInterfaceLoad> {
         return NetworkInterfacesMapper.INSTANCE.mapLoads(infoProvider.networkInterfaceLoads())
     }
 
     @GET
     @Path("{id}")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     fun networkInterfaceById(
-        @Auth user: UserConfiguration?,
         @PathParam("id") id: String?
     ): NetworkInterface {
         return NetworkInterfacesMapper.INSTANCE.map(
@@ -74,9 +72,7 @@ class NetworkInterfacesResource(
 
     @GET
     @Path("loads/{id}")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     fun networkInterfaceLoadById(
-        @Auth user: UserConfiguration?,
         @PathParam("id") id: String?
     ): NetworkInterfaceLoad {
         return NetworkInterfacesMapper.INSTANCE.map(
@@ -87,9 +83,7 @@ class NetworkInterfacesResource(
 
     @GET
     @Path("loads/history")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     fun getLoadHistory(
-        @Auth user: UserConfiguration?,
         @QueryParam("fromDate") fromDate: OffsetDateTime?,
         @QueryParam("toDate") toDate: OffsetDateTime?
     ): List<HistoryEntry<List<NetworkInterfaceLoad>>> {

@@ -36,17 +36,17 @@ import javax.ws.rs.core.MediaType
 
 @Path("motherboard")
 @Produces(MediaType.APPLICATION_JSON)
+@RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
 class MotherboardResource(var provider: MotherboardMetrics) {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getRoot(@Auth user: UserConfiguration?): Motherboard {
+    fun getRoot(): Motherboard {
         return MotherboardMapper.INSTANCE.map(provider.motherboard())
     }
 
     @GET
     @Path("health")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getHealths(@Auth user: UserConfiguration?): List<HealthData> {
+    fun getHealths(): List<HealthData> {
         return SensorsInfoMapper.INSTANCE.mapDatas(provider.motherboardHealth())
     }
 }

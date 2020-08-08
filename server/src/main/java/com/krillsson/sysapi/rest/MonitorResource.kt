@@ -19,17 +19,16 @@ import javax.ws.rs.core.Response
 
 @Path("monitors")
 @Produces(MediaType.APPLICATION_JSON)
+@RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
 class MonitorResource(private val monitorManager: MonitorManager, private val eventManager: EventManager) {
     @GET
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getRoot(@Auth user: UserConfiguration?): List<Monitor> {
+    fun getRoot(): List<Monitor> {
         return MonitorMapper.INSTANCE.mapList(monitorManager.getAll())
     }
 
     @GET
     @Path("{id}")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun monitorById(@Auth user: UserConfiguration?, @PathParam("id") id: String): Monitor {
+    fun monitorById(@PathParam("id") id: String): Monitor {
         val monitor = monitorManager.getById(UUID.fromString(id))
                 ?: throw WebApplicationException("No monitor with id $id was found", Response.Status.NOT_FOUND)
         return MonitorMapper.INSTANCE.map(monitor)
@@ -37,15 +36,13 @@ class MonitorResource(private val monitorManager: MonitorManager, private val ev
 
     @GET
     @Path("{id}/events")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getEventForMonitorId(@Auth user: UserConfiguration?, @PathParam("id") monitorId: String?): List<MonitorEvent> {
+    fun getEventForMonitorId(@PathParam("id") monitorId: String?): List<MonitorEvent> {
         val events = eventManager.eventsForMonitorId(UUID.fromString(monitorId))
         return MonitorMapper.INSTANCE.map(events)
     }
 
     @POST
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun createMonitor(@Auth user: UserConfiguration?, monitor: CreateMonitor): MonitorCreated {
+    fun createMonitor(monitor: CreateMonitor): MonitorCreated {
         return try {
             val added = monitorManager.add(Duration.ofSeconds(monitor.inertiaInSeconds), MonitorMapper.INSTANCE.map(monitor.type), monitor.threshold, monitor.idToMonitor)
             MonitorCreated(added.toString())
@@ -56,8 +53,7 @@ class MonitorResource(private val monitorManager: MonitorManager, private val ev
 
     @DELETE
     @Path("{id}")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun delete(@Auth user: UserConfiguration?, @PathParam("id") id: String?) {
+    fun delete(@PathParam("id") id: String?) {
         val removed = monitorManager.remove(UUID.fromString(id))
         if (!removed) {
             throw WebApplicationException(Response.Status.NOT_FOUND)

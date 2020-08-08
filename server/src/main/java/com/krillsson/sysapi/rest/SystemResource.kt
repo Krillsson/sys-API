@@ -47,14 +47,14 @@ import javax.ws.rs.core.Response
 
 @Path("system")
 @Produces(MediaType.APPLICATION_JSON)
+@RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
 class SystemResource(
     private val systemMetrics: SystemMetrics,
     private val historyManager: MetricsHistoryManager,
     private val uptimeSupplier: Supplier<Long>
 ) {
     @GET
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getRoot(@Auth user: UserConfiguration?): SystemInfo {
+    fun getRoot(): SystemInfo {
         return SystemInfoMapper.INSTANCE.map(
             systemMetrics.systemInfo()
         )
@@ -62,9 +62,7 @@ class SystemResource(
 
     @GET
     @Path("load")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     fun getLoad(
-        @Auth user: UserConfiguration?,
         @QueryParam("sortBy") processSort: Optional<String>,
         @QueryParam("limit") limit: Optional<Int>
     ): SystemLoad {
@@ -100,9 +98,7 @@ class SystemResource(
 
     @GET
     @Path("load/history")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     fun getLoadHistory(
-        @Auth user: UserConfiguration?,
         @QueryParam("fromDate") fromDate: OffsetDateTime?,
         @QueryParam("toDate") toDate: OffsetDateTime?
     ): List<HistoryEntry<SystemLoad>> {
@@ -111,15 +107,13 @@ class SystemResource(
 
     @GET
     @Path("uptime")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getUptime(@Auth user: UserConfiguration?): Long {
+    fun getUptime(): Long {
         return uptimeSupplier.get()
     }
 
     @GET
     @Path("jvm")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getProperties(@Auth user: UserConfiguration?): JvmProperties {
+    fun getProperties(): JvmProperties {
         val propertiesMap: MutableMap<String, String> =
             HashMap()
         val systemProperties = System.getProperties()

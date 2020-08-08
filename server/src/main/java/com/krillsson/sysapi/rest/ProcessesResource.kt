@@ -42,11 +42,10 @@ import javax.ws.rs.core.Response
 
 @Path("processes")
 @Produces(MediaType.APPLICATION_JSON)
+@RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
 class ProcessesResource(private val provider: ProcessesMetrics) {
     @GET
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     fun getRoot(
-        @Auth user: UserConfiguration?,
         @QueryParam("sortBy") processSort: Optional<String>,
         @QueryParam("limit") limit: Optional<Int>
     ): ProcessInfo {
@@ -82,7 +81,6 @@ class ProcessesResource(private val provider: ProcessesMetrics) {
 
     @GET
     @Path("{pid}")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     fun getProcessByPid(@PathParam("pid") pid: Int): Process? {
         val process =
             provider.getProcessByPid(pid)

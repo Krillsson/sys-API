@@ -39,17 +39,16 @@ import javax.ws.rs.core.MediaType
 
 @Path("cpu")
 @Produces(MediaType.APPLICATION_JSON)
+@RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
 class CpuResource(private val provider: CpuMetrics, private val historyManager: MetricsHistoryManager) {
     @GET
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getRoot(@Auth user: UserConfiguration?): CpuInfo {
+    fun getRoot(): CpuInfo {
         return CpuInfoMapper.INSTANCE.map(provider.cpuInfo())
     }
 
     @GET
     @Path("load")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getLoad(@Auth user: UserConfiguration?): CpuLoad {
+    fun getLoad(): CpuLoad {
         return CpuInfoMapper.INSTANCE.map(provider.cpuLoad())
     }
 
@@ -57,7 +56,6 @@ class CpuResource(private val provider: CpuMetrics, private val historyManager: 
     @Path("load/history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     fun getLoadHistory(
-        @Auth user: UserConfiguration?,
         @QueryParam("fromDate") fromDate: OffsetDateTime?,
         @QueryParam("toDate") toDate: OffsetDateTime?
     ): List<HistoryEntry<CpuLoad>> {

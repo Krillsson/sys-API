@@ -38,13 +38,14 @@ import javax.ws.rs.core.MediaType
 
 @Path("memory")
 @Produces(MediaType.APPLICATION_JSON)
+@RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
 class MemoryResource(
     private val provider: MemoryMetrics,
     private val historyManager: MetricsHistoryManager
 ) {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getRoot(@Auth user: UserConfiguration?): MemoryLoad? {
+    fun getRoot(): MemoryLoad? {
         return MemoryMapper.INSTANCE.map(provider.memoryLoad())
     }
 
@@ -52,7 +53,6 @@ class MemoryResource(
     @Path("history")
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     fun getLoadHistory(
-        @Auth user: UserConfiguration?,
         @QueryParam("fromDate") fromDate: OffsetDateTime?,
         @QueryParam("toDate") toDate: OffsetDateTime?
     ): List<HistoryEntry<MemoryLoad>> {

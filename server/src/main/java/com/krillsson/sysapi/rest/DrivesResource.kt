@@ -42,16 +42,15 @@ import javax.ws.rs.core.Response
 
 @Path("drives")
 @Produces(MediaType.APPLICATION_JSON)
+@RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
 class DrivesResource(private val provider: DriveMetrics, private val historyManager: MetricsHistoryManager) {
     @GET
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getRoot(@Auth user: UserConfiguration?): List<Drive> {
+    fun getRoot(): List<Drive> {
         return DriveMetricsMapper.INSTANCE.map(provider.drives())
     }
 
     @GET
     @Path("{name}")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     fun getDiskByName(@PathParam("name") name: String?): Drive {
         return DriveMetricsMapper.INSTANCE.map(
             provider.driveByName(name)
@@ -68,7 +67,6 @@ class DrivesResource(private val provider: DriveMetrics, private val historyMana
 
     @GET
     @Path("loads/{name}")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     fun getDiskLoadByName(@PathParam("name") name: String?): DriveLoad {
         return DriveMetricsMapper.INSTANCE.map(
             provider.driveLoadByName(name)
@@ -85,14 +83,12 @@ class DrivesResource(private val provider: DriveMetrics, private val historyMana
 
     @GET
     @Path("loads")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     fun getLoads(@Auth user: UserConfiguration?): List<DriveLoad> {
         return DriveMetricsMapper.INSTANCE.mapLoads(provider.driveLoads())
     }
 
     @GET
     @Path("loads/history")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     fun getLoadHistory(
         @Auth user: UserConfiguration?,
         @QueryParam("fromDate") fromDate: OffsetDateTime?,

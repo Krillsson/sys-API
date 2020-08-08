@@ -33,21 +33,24 @@ import javax.ws.rs.core.MediaType
 
 @Path("/meta")
 @Produces(MediaType.APPLICATION_JSON)
+@RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
 class MetaInfoResource(
-    private val version: String, private val endpoints: Array<String>, @get:GET
-    @get:Path("pid")
-    @get:RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE) val thisPid: Int
+    private val version: String, private val endpoints: Array<String>, private val thisPid: Int
 ) {
 
     @GET
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getRoot(@Auth user: UserConfiguration?): Meta {
+    @Path("pid")
+    fun getPid(): Int {
+        return thisPid
+    }
+
+    @GET
+    fun getRoot(): Meta {
         return MetaMapper.INSTANCE.map(com.krillsson.sysapi.core.domain.metadata.Meta(endpoints, version))
     }
 
     @GET
     @Path("version")
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     fun getVersion(@Auth user: UserConfiguration?): String {
         return version
     }
