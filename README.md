@@ -20,7 +20,7 @@ Sys-API publishes and monitors values from [OSHI](https://github.com/oshi/oshi) 
 - Show info from sensors and fans
 - Motherboard information
 
-## Endpoints
+### Endpoints
 
 ```
 
@@ -74,6 +74,25 @@ Sys-API publishes and monitors values from [OSHI](https://github.com/oshi/oshi) 
     GET     /system/jvm
     GET     /system/uptime
     GET     /version
+```
+
+### GraphQL
+
+GraphQL is now available through the /graphql endpoint. It supports the exact same features as the REST-API. Checkout the [schema](server/src/main/resources/schema.graphqls).
+
+A web-UI for trying out the GraphQL-API is also available at `<IP>:8080/`. If you don't want to expose this functionality. It can be disabled via the configuration.
+
+```yaml
+graphQLPlayGround:
+  enabled: false
+```
+
+If the server is protected by Basic Auth, you need to configure GraphQL Playground to send the `authorization` header. Here's an example with the default credentials:
+
+```json
+{
+  "authorization": "Basic dXNlcjpwYXNzd29yZA=="
+}
 ```
 
 ## Usage
@@ -214,15 +233,6 @@ mvn clean package
 ```
 
 And the resulting files should be located in */server/target/*
-
-
-
-
-```json
-{
-  "authorization": "Basic dXNlcjpwYXNzd29yZA=="
-}
-```
 
 License
 -------

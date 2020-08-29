@@ -1,3 +1,9 @@
+### 0.12
+ 
+ - Migration to Kotlin
+ - GraphQL support
+ - Events persistence
+
 ### 0.11
 
 **REST API Breaking changes**
