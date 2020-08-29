@@ -49,7 +49,7 @@ public class SysAPIConfiguration extends Configuration {
 
     @Valid
     @JsonProperty
-    private GraphQLConfiguration graphQL;
+    private GraphQLPlayGroundConfiguration graphQLPlayGround;
 
     @Valid
     @JsonProperty
@@ -74,5 +74,10 @@ public class SysAPIConfiguration extends Configuration {
     @JsonProperty
     public GraphQLFactory getGraphQLFactory() {
         return graphql;
+    }
+
+    @JsonProperty
+    public GraphQLPlayGroundConfiguration getGraphQLPlayGround() {
+        return graphQLPlayGround;
     }
 }

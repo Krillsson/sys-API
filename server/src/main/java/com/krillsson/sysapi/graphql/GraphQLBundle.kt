@@ -22,7 +22,7 @@ class GraphQLBundle(private val graphQLConfiguration: GraphQLConfiguration) : Co
     }
 
     override fun initialize(bootstrap: Bootstrap<*>) {
-        bootstrap.addBundle(AssetsBundle("/assets", "/", "index.htm", "graphql-playground"))
+        bootstrap.addBundle(GraphQLPlaygroundConfiguredBundle())
     }
 
     @Throws(java.lang.Exception::class)
