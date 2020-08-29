@@ -6,9 +6,10 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.krillsson.sysapi.config.CacheConfiguration;
 import com.krillsson.sysapi.core.domain.processes.Process;
+import com.krillsson.sysapi.core.domain.processes.ProcessSort;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import com.krillsson.sysapi.core.metrics.ProcessesMetrics;
-import oshi.software.os.OperatingSystem;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -42,7 +43,14 @@ public class CachingProcessesMetrics implements ProcessesMetrics {
     }
 
     @Override
-    public ProcessesInfo processesInfo(OperatingSystem.ProcessSort sortBy, int limit) {
+    public Optional<Process> getProcessByPid(int pid) {
+        return processQueryCache.getUnchecked(pid);
+    }
+
+
+    @NotNull
+    @Override
+    public ProcessesInfo processesInfo(@NotNull ProcessSort sortBy, int limit) {
         try {
             return processesInfoCache.get(
                     sortBy.name() + ":" + String.valueOf(limit),
@@ -52,11 +60,4 @@ public class CachingProcessesMetrics implements ProcessesMetrics {
             throw new IllegalStateException(e);
         }
     }
-
-    @Override
-    public Optional<Process> getProcessByPid(int pid) {
-        return processQueryCache.getUnchecked(pid);
-    }
-
-
 }

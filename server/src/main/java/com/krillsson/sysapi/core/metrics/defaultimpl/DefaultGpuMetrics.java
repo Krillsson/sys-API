@@ -6,6 +6,7 @@ import com.krillsson.sysapi.core.metrics.GpuMetrics;
 import oshi.hardware.Display;
 import oshi.hardware.HardwareAbstractionLayer;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,7 +31,7 @@ public class DefaultGpuMetrics implements GpuMetrics {
 
     @Override
     public List<Display> displays() {
-        return Stream.of(hal.getDisplays()).collect(Collectors.toList());
+        return hal.getDisplays();
     }
 
 }

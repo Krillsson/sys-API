@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.util;
 
-import com.krillsson.sysapi.SystemApiApplication;
+import com.krillsson.sysapi.SysAPIApplication;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -16,7 +16,7 @@ public class Utils {
 
 
     public static String getVersionFromManifest() throws IOException {
-        Class clazz = SystemApiApplication.class;
+        Class clazz = SysAPIApplication.class;
         String className = clazz.getSimpleName() + ".class";
         String classPath = clazz.getResource(className).toString();
         if (!classPath.startsWith("jar")) {
@@ -50,9 +50,5 @@ public class Utils {
 
     public void sleep(long ms) {
         oshi.util.Util.sleep(ms);
-    }
-
-    public boolean isOutsideMaximumDuration(long sampleTimeStamp, long maxSampleThreshold) {
-        return currentSystemTime() - sampleTimeStamp > maxSampleThreshold;
     }
 }

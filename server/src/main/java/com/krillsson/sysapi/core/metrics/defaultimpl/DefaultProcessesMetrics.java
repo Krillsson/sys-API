@@ -2,9 +2,14 @@ package com.krillsson.sysapi.core.metrics.defaultimpl;
 
 import com.krillsson.sysapi.core.domain.memory.MemoryLoad;
 import com.krillsson.sysapi.core.domain.processes.Process;
+import com.krillsson.sysapi.core.domain.processes.ProcessSort;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import com.krillsson.sysapi.core.metrics.ProcessesMetrics;
+import com.krillsson.sysapi.util.ExtensionsKt;
+import org.jetbrains.annotations.NotNull;
+import oshi.hardware.GlobalMemory;
 import oshi.hardware.HardwareAbstractionLayer;
+import oshi.hardware.VirtualMemory;
 import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
 
@@ -24,12 +29,33 @@ public class DefaultProcessesMetrics implements ProcessesMetrics {
     }
 
     @Override
-    public ProcessesInfo processesInfo(OperatingSystem.ProcessSort sortBy, int limit) {
+    public Optional<Process> getProcessByPid(int pid) {
+        MemoryLoad memory = memoryLoad();
+        return Optional
+                .of(operatingSystem.getProcess(pid))
+                .map((OSProcess p) -> Process.create(p, memory));
+    }
+
+    public MemoryLoad memoryLoad() {
+        GlobalMemory memory = hal.getMemory();
+        VirtualMemory virtualMemory = memory.getVirtualMemory();
+        return new MemoryLoad(
+                operatingSystem.getProcessCount(),
+                virtualMemory.getSwapTotal(),
+                virtualMemory.getSwapUsed(),
+                memory.getTotal(),
+                memory.getAvailable()
+        );
+    }
+
+    @NotNull
+    @Override
+    public ProcessesInfo processesInfo(@NotNull ProcessSort sortBy, int limit) {
         MemoryLoad memory = memoryLoad();
         List<Process> processes = Collections.emptyList();
         if (limit > -1) {
-            processes = Arrays
-                    .stream(operatingSystem.getProcesses(limit, sortBy))
+            processes = operatingSystem.getProcesses(limit, ExtensionsKt.asOshiProcessSort(sortBy))
+                    .stream()
                     .map(p -> Process.create(p, memory))
                     .collect(Collectors.toList());
         }
@@ -41,22 +67,5 @@ public class DefaultProcessesMetrics implements ProcessesMetrics {
                 processes
         );
     }
-
-    @Override
-    public Optional<Process> getProcessByPid(int pid) {
-        MemoryLoad memory = memoryLoad();
-        return Optional
-                .of(operatingSystem.getProcess(pid))
-                .map((OSProcess p) -> Process.create(p, memory));
-    }
-
-    public MemoryLoad memoryLoad() {
-        return new MemoryLoad(
-                operatingSystem.getProcessCount(),
-                hal.getMemory().getSwapTotal(),
-                hal.getMemory().getSwapUsed(),
-                hal.getMemory().getTotal(),
-                hal.getMemory().getAvailable()
-        );
-    }
 }
+

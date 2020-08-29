@@ -1,10 +1,9 @@
 package com.krillsson.sysapi.core.metrics.windows;
 
-import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.domain.drives.DriveSpeed;
 import com.krillsson.sysapi.core.domain.drives.OsPartition;
+import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import ohmwrapper.DriveMonitor;
-import ohmwrapper.MonitorManager;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

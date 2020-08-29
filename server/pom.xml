@@ -19,26 +19,39 @@
         <m2e.apt.activation>jdt_apt</m2e.apt.activation>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.dropwizard</groupId>
+                <artifactId>dropwizard-dependencies</artifactId>
+                <version>${dropwizard.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>
-            <version>${dropwizard.version}</version>
         </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-auth</artifactId>
-            <version>${dropwizard.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-assets</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
-            <version>3.13.0</version>
+            <version>5.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-jdk8
-            </artifactId> <!-- OR use this with Java 8 and beyond: <artifactId>mapstruct-jdk8</artifactId> -->
+            <artifactId>mapstruct-jdk8</artifactId>
             <version>${org.mapstruct.version}</version>
         </dependency>
         <dependency>
@@ -60,6 +73,16 @@
             <version>0.0.1</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/OhmJniWrapper.j4n.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.graphql-java-kickstart</groupId>
+            <artifactId>graphql-java-tools</artifactId>
+            <version>5.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.smoketurner.dropwizard</groupId>
+            <artifactId>graphql-core</artifactId>
+            <version>2.0.10-1</version>
         </dependency>
         <dependency>
             <groupId>com.krillsson</groupId>
@@ -95,7 +118,6 @@
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-testing</artifactId>
-            <version>${dropwizard.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -227,7 +249,7 @@
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 
                                     <manifestEntries>
-                                        <Main-Class>com.krillsson.sysapi.SystemApiApplication</Main-Class>
+                                        <Main-Class>com.krillsson.sysapi.SysAPIApplication</Main-Class>
                                         <Class-Path>lib/jni4net.j-0.8.8.0.jar lib/OhmJniWrapper.j4n.jar</Class-Path>
                                         <Version>${project.version}</Version>
                                     </manifestEntries>

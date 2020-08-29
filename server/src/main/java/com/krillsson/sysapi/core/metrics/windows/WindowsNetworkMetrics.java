@@ -50,7 +50,7 @@ public class WindowsNetworkMetrics extends DefaultNetworkMetrics {
 
     @Override
     protected NetworkInterfaceSpeed speedForInterfaceWithName(String name) {
-        Optional<NetworkIF> networkOptional = Arrays.stream(hal.getNetworkIFs())
+        Optional<NetworkIF> networkOptional = hal.getNetworkIFs().stream()
                 .filter(n -> name.equals(n.getName()))
                 .findAny();
         if (!networkOptional.isPresent()) {

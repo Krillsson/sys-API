@@ -60,13 +60,13 @@ public class DefaultDriveProvider implements DriveMetrics {
 
     @Override
     public List<Drive> drives() {
-        return Stream.of(hal.getDiskStores()).map(d -> new Drive(
+        return hal.getDiskStores().stream().map(d -> new Drive(
                 d.getModel(),
                 d.getName(),
                 getSerial(d),
                 d.getSize(),
                 findAssociatedFileStore(d).orElse(Empty.OS_PARTITION),
-                Stream.of(d.getPartitions())
+                d.getPartitions().stream()
                         .map(p -> new Partition(
                                 p.getIdentification(),
                                 p.getName(),
@@ -82,12 +82,12 @@ public class DefaultDriveProvider implements DriveMetrics {
 
     @Override
     public List<DriveLoad> driveLoads() {
-        return Stream.of(hal.getDiskStores()).map(this::createDiskLoad).collect(Collectors.toList());
+        return hal.getDiskStores().stream().map(this::createDiskLoad).collect(Collectors.toList());
     }
 
     @Override
     public Optional<DriveLoad> driveLoadByName(String name) {
-        return Stream.of(hal.getDiskStores())
+        return hal.getDiskStores().stream()
                 .filter(n -> n.getName().equalsIgnoreCase(name))
                 .map(this::createDiskLoad)
                 .findAny();
@@ -109,13 +109,13 @@ public class DefaultDriveProvider implements DriveMetrics {
 
     @Override
     public Optional<Drive> driveByName(String name) {
-        return Stream.of(hal.getDiskStores()).filter(n -> n.getName().equalsIgnoreCase(name)).map(d -> new Drive(
+        return hal.getDiskStores().stream().filter(n -> n.getName().equalsIgnoreCase(name)).map(d -> new Drive(
                 d.getModel(),
                 d.getName(),
                 getSerial(d),
                 d.getSize(),
                 findAssociatedFileStore(d).orElse(Empty.OS_PARTITION),
-                Stream.of(d.getPartitions())
+                d.getPartitions().stream()
                         .map(p -> new Partition(
                                 p.getIdentification(),
                                 p.getName(),
@@ -144,8 +144,8 @@ public class DefaultDriveProvider implements DriveMetrics {
 
     private Optional<OsPartition> findAssociatedFileStore(HWDiskStore diskStore) {
 
-        List<OSFileStore> fileStores = Arrays.asList(operatingSystem.getFileSystem().getFileStores());
-        List<HWPartition> partitions = Arrays.asList(diskStore.getPartitions());
+        List<OSFileStore> fileStores = operatingSystem.getFileSystem().getFileStores();
+        List<HWPartition> partitions = diskStore.getPartitions();
 
 
         Map<String, HWPartition> hwPartitions = partitions.stream().filter(e -> !StringUtils.isEmpty(e.getUuid()))
@@ -235,18 +235,24 @@ public class DefaultDriveProvider implements DriveMetrics {
 
         @Override
         public long getCurrentRead() {
-            return Arrays.stream(hal.getDiskStores())
+            return hal.getDiskStores().stream()
                     .filter(d -> d.getName().equals(name))
-                    .map(HWDiskStore::getReadBytes)
+                    .map(hwDiskStore -> {
+                        hwDiskStore.updateAttributes();
+                        return hwDiskStore.getReadBytes();
+                    })
                     .findAny()
                     .orElse(0L);
         }
 
         @Override
         public long getCurrentWrite() {
-            return Arrays.stream(hal.getDiskStores())
+            return hal.getDiskStores().stream()
                     .filter(d -> d.getName().equals(name))
-                    .map(HWDiskStore::getWriteBytes)
+                    .map(hwDiskStore -> {
+                        hwDiskStore.updateAttributes();
+                        return hwDiskStore.getWriteBytes();
+                    })
                     .findAny()
                     .orElse(0L);
         }

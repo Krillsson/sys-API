@@ -2,15 +2,19 @@ package com.krillsson.sysapi.core.monitoring.monitors;
 
 import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad;
+import com.krillsson.sysapi.core.domain.monitor.MonitorConfig;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
+import com.krillsson.sysapi.core.monitoring.Monitor;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,9 +35,9 @@ public class CpuTemperatureMonitorTest {
     @Test
     public void monitorValuesCorrectly() {
         when(cpuHealth.getTemperatures()).thenReturn(Arrays.asList(100d));
-        CpuTemperatureMonitor cpuMonitor = new CpuTemperatureMonitor("cpu0", Duration.ofSeconds(0), 90);
-        assertTrue(cpuMonitor.isOutsideThreshold(cpuMonitor.value(systemLoad)));
+        CpuTemperatureMonitor cpuMonitor = new CpuTemperatureMonitor(UUID.randomUUID(), new MonitorConfig(null, 90, Duration.ZERO));
+        assertTrue(cpuMonitor.check(systemLoad));
         when(cpuHealth.getTemperatures()).thenReturn(Collections.emptyList());
-        assertFalse(cpuMonitor.isOutsideThreshold(cpuMonitor.value(systemLoad)));
+        assertFalse(cpuMonitor.check(systemLoad));
     }
 }

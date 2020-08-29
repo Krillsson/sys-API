@@ -34,7 +34,7 @@ public class HistoryTest {
         history.record(new Object());
 
         assertThat(history.get().size(), is(2));
-        assertTrue(history.get().get(0).date.isBefore(history.get().get(1).date));
+        assertTrue(history.get().get(0).getDate().isBefore(history.get().get(1).getDate()));
     }
 
     @Test

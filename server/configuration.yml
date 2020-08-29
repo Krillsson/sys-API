@@ -7,7 +7,7 @@ metricsConfig:
     unit: SECONDS
   history:
     interval: 30
-    unit: MINUTES
+    unit: SECONDS
     purging:
       olderThan: 3
       unit: DAYS
@@ -21,23 +21,32 @@ user:
   password: password
 windows:
   enableOhmJniWrapper: true
+graphQLPlayGround:
+  enabled: true
 #forwardHttps: false
 
 #########################################
 ### Dropwizard specific configuration ###
 #########################################
+graphql:
+  enableTracing: false
+  queryCache: maximumSize=10000
+  schemaFiles:
+    - schema.graphqls
+
 server:
+  type: simple
   maxThreads: 100
   minThreads: 1
   maxQueuedRequests: 100
   idleThreadTimeout: 1 minute
-  applicationContextPath: /v2
-  applicationConnectors:
-    - type: http
+  rootPath: /api/
+  adminContextPath: /admin
+  applicationContextPath: /
+  connector:
+      type: http
       port: 8080
-  adminConnectors:
-    - type: http
-      port: 8081
+
 logging:
 
   # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.

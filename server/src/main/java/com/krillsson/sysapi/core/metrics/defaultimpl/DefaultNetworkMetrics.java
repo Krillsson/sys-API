@@ -20,18 +20,17 @@
  */
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
-import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.domain.network.NetworkInterface;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceValues;
 import com.krillsson.sysapi.core.metrics.NetworkMetrics;
+import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import org.slf4j.Logger;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
 
 import java.net.SocketException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -52,7 +51,8 @@ public class DefaultNetworkMetrics implements NetworkMetrics {
     }
 
     void register() {
-        List<SpeedMeasurementManager.SpeedSource> collect = Arrays.stream(hal.getNetworkIFs())
+        List<SpeedMeasurementManager.SpeedSource> collect = hal.getNetworkIFs()
+                .stream()
                 .map(n -> new SpeedMeasurementManager.SpeedSource() {
                     @Override
                     public String getName() {
@@ -61,14 +61,14 @@ public class DefaultNetworkMetrics implements NetworkMetrics {
 
                     @Override
                     public long getCurrentRead() {
-                        n.updateNetworkStats();
+                        n.updateAttributes();
                         return n.getBytesRecv();
                     }
 
                     @Override
                     public long getCurrentWrite() {
                         //TODO: maybe it's good enough to do this in getCurrentRead since getCurrentWrite is called immediately after
-                        n.updateNetworkStats();
+                        n.updateAttributes();
                         return n.getBytesSent();
                     }
                 })
@@ -78,25 +78,25 @@ public class DefaultNetworkMetrics implements NetworkMetrics {
 
     @Override
     public List<NetworkInterface> networkInterfaces() {
-        return Arrays.stream(hal.getNetworkIFs()).map(mapToNetworkInterface()).collect(Collectors.toList());
+        return hal.getNetworkIFs().stream().map(mapToNetworkInterface()).collect(Collectors.toList());
     }
 
     @Override
     public Optional<NetworkInterface> networkInterfaceById(String id) {
-        return Arrays.stream(hal.getNetworkIFs()).filter(n -> n.getName().equalsIgnoreCase(id)).map(
+        return hal.getNetworkIFs().stream().filter(n -> n.getName().equalsIgnoreCase(id)).map(
                 mapToNetworkInterface()).findAny();
     }
 
     @Override
     public List<NetworkInterfaceLoad> networkInterfaceLoads() {
-        return Arrays.stream(hal.getNetworkIFs())
+        return hal.getNetworkIFs().stream()
                 .map(mapToLoad())
                 .collect(Collectors.toList());
     }
 
     @Override
     public Optional<NetworkInterfaceLoad> networkInterfaceLoadById(String id) {
-        return Arrays.stream(hal.getNetworkIFs())
+        return hal.getNetworkIFs().stream()
                 .filter(n -> n.getName().equalsIgnoreCase(id))
                 .map(mapToLoad())
                 .findAny();
@@ -117,7 +117,7 @@ public class DefaultNetworkMetrics implements NetworkMetrics {
         return nic -> {
             boolean loopback = false;
             try {
-                loopback = nic.getNetworkInterface().isLoopback();
+                loopback = nic.queryNetworkInterface().isLoopback();
             } catch (SocketException e) {
                 //ignore
                 LOGGER.warn("Socket exception while queering for loopback parameter", e);
@@ -138,7 +138,7 @@ public class DefaultNetworkMetrics implements NetworkMetrics {
         return n -> {
             boolean up = false;
             try {
-                up = n.getNetworkInterface().isUp();
+                up = n.queryNetworkInterface().isUp();
             } catch (SocketException e) {
                 LOGGER.error("Error occurred while getting status for NIC", e);
             }

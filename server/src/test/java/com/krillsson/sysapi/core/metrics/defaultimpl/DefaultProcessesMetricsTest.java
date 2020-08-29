@@ -1,12 +1,17 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
+import com.krillsson.sysapi.core.domain.processes.ProcessSort;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
 import org.junit.Before;
 import org.junit.Test;
 import oshi.hardware.GlobalMemory;
 import oshi.hardware.HardwareAbstractionLayer;
+import oshi.hardware.VirtualMemory;
 import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -18,6 +23,7 @@ import static org.mockito.Mockito.when;
 public class DefaultProcessesMetricsTest {
     HardwareAbstractionLayer hal;
     GlobalMemory memory;
+    VirtualMemory virtualMemory;
     OperatingSystem os;
     DefaultProcessesMetrics provider;
 
@@ -25,7 +31,10 @@ public class DefaultProcessesMetricsTest {
     public void setUp() throws Exception {
         hal = mock(HardwareAbstractionLayer.class);
         memory = mock(GlobalMemory.class);
+        virtualMemory = mock(VirtualMemory.class);
+
         when(hal.getMemory()).thenReturn(memory);
+        when(memory.getVirtualMemory()).thenReturn(virtualMemory);
         os = mock(OperatingSystem.class);
 
         provider = new DefaultProcessesMetrics(os, hal);
@@ -33,8 +42,8 @@ public class DefaultProcessesMetricsTest {
 
     @Test
     public void shouldHandleNoProcessesPresent() {
-        when(os.getProcesses(anyInt(), any(OperatingSystem.ProcessSort.class))).thenReturn(new OSProcess[0]);
-        ProcessesInfo processesInfo = provider.processesInfo(OperatingSystem.ProcessSort.CPU, 0);
+        when(os.getProcesses(anyInt(), any(OperatingSystem.ProcessSort.class))).thenReturn(Collections.emptyList());
+        ProcessesInfo processesInfo = provider.processesInfo(ProcessSort.CPU, 0);
 
         assertTrue(processesInfo.getProcesses().isEmpty());
     }
@@ -47,11 +56,11 @@ public class DefaultProcessesMetricsTest {
 
         OSProcess process = mock(OSProcess.class);
         when(process.getResidentSetSize()).thenReturn(1000L);
-        when(os.getProcesses(anyInt(), any(OperatingSystem.ProcessSort.class))).thenReturn(new OSProcess[]{process});
+        when(os.getProcesses(anyInt(), any(OperatingSystem.ProcessSort.class))).thenReturn(Collections.singletonList(process));
         //when(memory.getAvailable()).thenReturn(3000L);
         when(memory.getTotal()).thenReturn(4000L);
 
-        ProcessesInfo processes = provider.processesInfo(OperatingSystem.ProcessSort.CPU, 0);
+        ProcessesInfo processes = provider.processesInfo(ProcessSort.CPU, 0);
 
         assertEquals(processes.getProcesses().get(0).getMemoryPercent(), usage, 0);
     }
@@ -66,10 +75,9 @@ public class DefaultProcessesMetricsTest {
         when(process.getKernelTime()).thenReturn(16L);
         when(process.getUserTime()).thenReturn(4L);
         when(process.getUpTime()).thenReturn(100L);
-        when(os.getProcesses(anyInt(), any(OperatingSystem.ProcessSort.class))).thenReturn(new OSProcess[]{process});
-        //when(memory.getAvailable()).thenReturn(3000L);
+        when(os.getProcesses(anyInt(), any(OperatingSystem.ProcessSort.class))).thenReturn(Collections.singletonList(process));
 
-        ProcessesInfo processes = provider.processesInfo(OperatingSystem.ProcessSort.CPU, 0);
+        ProcessesInfo processes = provider.processesInfo(ProcessSort.CPU, 0);
 
         assertEquals(processes.getProcesses().get(0).getCpuPercent(), usage, 0);
     }

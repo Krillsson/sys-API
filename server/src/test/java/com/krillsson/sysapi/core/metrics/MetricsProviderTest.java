@@ -2,21 +2,20 @@ package com.krillsson.sysapi.core.metrics;
 
 import com.krillsson.sysapi.config.CacheConfiguration;
 import com.krillsson.sysapi.config.MetricsConfiguration;
-import com.krillsson.sysapi.config.SystemApiConfiguration;
-import com.krillsson.sysapi.util.Ticker;
+import com.krillsson.sysapi.config.SysAPIConfiguration;
 import com.krillsson.sysapi.core.metrics.cache.Cache;
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory;
-import com.krillsson.sysapi.core.metrics.rasbian.RaspbianMetricsFactory;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetrics;
+import com.krillsson.sysapi.core.metrics.rasbian.RaspbianMetrics;
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
+import com.krillsson.sysapi.util.Ticker;
 import org.junit.Before;
 import org.junit.Test;
 import oshi.PlatformEnum;
 import oshi.hardware.CentralProcessor;
-import oshi.hardware.HWDiskStore;
 import oshi.hardware.HardwareAbstractionLayer;
-import oshi.hardware.NetworkIF;
 import oshi.software.os.OperatingSystem;
 
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
@@ -26,7 +25,7 @@ import static org.mockito.Mockito.when;
 public class MetricsProviderTest {
     private HardwareAbstractionLayer hal;
     private oshi.software.os.OperatingSystem os;
-    private SystemApiConfiguration config;
+    private SysAPIConfiguration config;
     private SpeedMeasurementManager measurementManager;
     private Ticker ticker;
     private MetricsConfiguration metricsConfig;
@@ -37,7 +36,7 @@ public class MetricsProviderTest {
     public void setUp() throws Exception {
         hal = mock(HardwareAbstractionLayer.class);
         os = mock(OperatingSystem.class);
-        config = mock(SystemApiConfiguration.class);
+        config = mock(SysAPIConfiguration.class);
         metricsConfig = mock(MetricsConfiguration.class);
         cacheConfig = mock(CacheConfiguration.class);
         when(cacheConfig.getDuration()).thenReturn(5L);
@@ -49,49 +48,49 @@ public class MetricsProviderTest {
         ticker = mock(Ticker.class);
 
         measurementManager = mock(SpeedMeasurementManager.class);
-        when(hal.getNetworkIFs()).thenReturn(new NetworkIF[0]);
-        when(hal.getDiskStores()).thenReturn(new HWDiskStore[0]);
+        when(hal.getNetworkIFs()).thenReturn(Collections.emptyList());
+        when(hal.getDiskStores()).thenReturn(Collections.emptyList());
         //when(hal.getProcessor()).thenReturn(centralProcessor);
     }
 
     @Test
     public void providingDefaultIfPlatformIsUnknown() throws Exception {
-        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.UNKNOWN, config, measurementManager, ticker);
+        MetricsFactory factory = new MetricsFactory(hal, os, PlatformEnum.UNKNOWN, measurementManager, ticker);
         factory.setCache(false);
 
-        MetricsFactory provider = factory.create();
+        Metrics provider = factory.get(config);
         assertNotNull(provider);
-        assertTrue(provider instanceof DefaultMetricsFactory);
+        assertTrue(provider instanceof DefaultMetrics);
     }
 
     @Test
     public void providerDetectsRaspbian() throws Exception {
         when(os.getFamily()).thenReturn("Raspbian GNU/Linux");
-        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.LINUX, config, measurementManager, ticker);
+        MetricsFactory factory = new MetricsFactory(hal, os, PlatformEnum.LINUX, measurementManager, ticker);
         factory.setCache(false);
 
-        MetricsFactory provider = factory.create();
+        Metrics provider = factory.get(config);
         assertNotNull(provider);
-        assertTrue(provider instanceof RaspbianMetricsFactory);
+        assertTrue(provider instanceof RaspbianMetrics);
     }
 
     @Test
     public void providerDetectsLinux() throws Exception {
         when(os.getFamily()).thenReturn("Debian GNU/Linux");
-        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.LINUX, config, measurementManager, ticker);
+        MetricsFactory factory = new MetricsFactory(hal, os, PlatformEnum.LINUX, measurementManager, ticker);
         factory.setCache(false);
 
-        MetricsFactory provider = factory.create();
+        Metrics provider = factory.get(config);
         assertNotNull(provider);
-        assertFalse(provider instanceof RaspbianMetricsFactory);
-        assertTrue(provider instanceof DefaultMetricsFactory);
+        assertFalse(provider instanceof RaspbianMetrics);
+        assertTrue(provider instanceof DefaultMetrics);
     }
 
     @Test
     public void cachesByDefault() throws Exception {
-        MetricsProvider factory = new MetricsProvider(hal, os, PlatformEnum.UNKNOWN, config, measurementManager, ticker);
+        MetricsFactory factory = new MetricsFactory(hal, os, PlatformEnum.UNKNOWN, measurementManager, ticker);
 
-        MetricsFactory provider = factory.create();
+        Metrics provider = factory.get(config);
         assertNotNull(provider);
         assertTrue(provider instanceof Cache);
     }

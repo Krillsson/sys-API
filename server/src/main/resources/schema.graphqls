@@ -1,0 +1,369 @@
+scalar UUID
+scalar ZonedDateTime
+scalar Long
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Query {
+    system: System!
+    history: [SystemMetricsHistoryEntry!]!
+    monitors: [Monitor!]!
+    events: [MonitorEvent!]!
+}
+
+type Mutation {
+    createMonitor(input: CreateMonitorInput) : CreateMonitorOutput
+    deleteMonitor(input: DeleteMonitorInput) : DeleteMonitorOutput
+    deleteEvent(input: DeleteEventInput) : DeleteEventOutput
+    deleteEventsForMonitor(input: DeleteEventsForMonitorInput) : DeleteEventOutput
+}
+
+input CreateMonitorInput {
+    inertiaInSeconds: Int!
+    type: MonitorType!
+    threshold: Float!
+    id: String
+}
+
+type CreateMonitorOutput {
+    id: UUID
+}
+
+input DeleteMonitorInput {
+    id: UUID
+}
+
+type DeleteMonitorOutput {
+    removed: Boolean
+}
+
+input DeleteEventInput {
+    id: UUID
+}
+
+input DeleteEventsForMonitorInput {
+    id: UUID
+}
+
+type DeleteEventOutput {
+    removed: Boolean
+}
+
+# Root node
+type System {
+    operatingSystem: OperatingSystem
+    uptime: Int
+    baseboard: Board
+    usbDevices: [UsbDevices]
+    processor: Processor
+    drives: [Drive]
+    networkInterfaces: [NetworkInterface]
+    #graphics: [Graphics]
+    # 0 means no limitation
+    processes(limit: Int = 0, sortBy: ProcessSortMethod = MEMORY): [Process]
+    memory: Memory
+}
+
+## History
+
+type SystemMetricsHistoryEntry {
+    date: String
+    processorMetrics: ProcessorMetrics
+    driveMetrics: [DriveMetrics]
+    networkInterfaceMetrics: [NetworkInterfaceMetrics]
+    #graphicsMetrics: [GraphicsMetrics]
+}
+
+## Monitoring
+
+type Monitor {
+    id: UUID
+    inertiaInSeconds: Int
+    type: MonitorType
+    threshold: Float
+}
+
+enum MonitorType {
+    CPU_LOAD,
+    CPU_TEMP,
+    DRIVE_SPACE,
+    DRIVE_TEMP,
+    GPU_LOAD,
+    GPU_TEMP,
+    MEMORY_SPACE,
+    NETWORK_UP
+}
+
+enum EventType {
+    START,
+    STOP
+}
+
+type MonitorEvent {
+    id: UUID
+    monitorId: UUID
+    time: String
+    type: MonitorType
+    eventType: EventType
+    threshold: Float
+    value: Float
+}
+
+## Operating system
+
+type OperatingSystem {
+    manufacturer: String
+    family: String
+    versionInfo: OperatingSystemVersion
+}
+
+type OperatingSystemVersion {
+    version: String
+    codeName: String
+    buildNumber: String
+}
+
+# System
+
+type UsbDevices {
+    name: String
+    vendor: String
+    vendorId: String
+    productId: String
+    serialNumber: String
+    connectedDevices: [String ]
+}
+
+type Board {
+    manufacturer: String
+    model: String
+    serialNumber: String
+    firmware: BoardFirmware
+}
+
+type BoardFirmware {
+    manufacturer: String
+    name: String
+    description: String
+    version: String
+    releaseDate: String
+}
+
+## Processor
+
+type Processor {
+    logicalProcessorCount: Int
+    physicalProcessorCount: Int
+    name: String
+    identifier: String
+    family: String
+    vendor: String
+    vendorFreq: Int
+    model: String
+    stepping: String
+    cpu64bit: Boolean
+    metrics: ProcessorMetrics
+}
+
+type ProcessorMetrics {
+    cpuLoadCountingTicks: Float
+    cpuLoadOsMxBean: Float
+    systemLoadAverage: Float
+    processCount: Int
+    threadCount: Int
+    voltage: Int
+    fanRpm: Int
+    fanPercent: Int
+    temperatures: [Float ]
+    coreLoads: [ProcessorCoreMetrics ]
+}
+
+type ProcessorCoreMetrics {
+    user: Float
+    nice: Float
+    sys: Float
+    idle: Float
+    ioWait: Float
+    irq: Float
+    softIrq: Float
+    steal: Float
+}
+
+## Drives
+
+type Drive {
+    model: String
+    name: String
+    id: String
+    serial: String
+    sizeBytes: Long
+    diskOsPartition: DiskOsPartition
+    partitions: [Partition ]
+    metrics: DriveMetrics
+}
+
+type DiskOsPartition {
+    identification: String
+    name: String
+    type: String
+    uuid: UUID
+    size: Int
+    major: Int
+    minor: Int
+    mountPoint: String
+    volume: String
+    logicalVolume: String
+    mount: String
+    description: String
+    usableSpace: Int
+    totalSpace: Int
+}
+
+type Partition {
+    identification: String
+    name: String
+    type: String
+    uuid: String
+    size: Int
+    major: Int
+    minor: Int
+    mountPoint: String
+}
+
+type DriveMetrics {
+    driveId: UUID
+    temperature: Int
+    healthData: [DriveHealth]
+    usableSpace: Int
+    totalSpace: Int
+    openFileDescriptors: Int
+    maxFileDescriptors: Int
+    reads: Int
+    readBytes: Long
+    writes: Int
+    writeBytes: Long
+    currentReadWriteRate: DriveReadWriteRate
+}
+
+type DriveHealth{
+    value: Float
+    type: DriveHealthDataType
+}
+
+enum DriveHealthDataType {
+    CLOCK,
+    VOLTAGE,
+    PERCENT,
+    RPM,
+    CELCIUS,
+    GIGABYTE
+}
+
+
+type DriveReadWriteRate { readBytesPerSecond: Long writeBytesPerSecond: Long }
+
+## Network interface
+
+type NetworkInterface {
+    name: String
+    id: String
+    displayName: String
+    mac: String
+    speed: Int
+    mtu: Int
+    loopback: Boolean
+    ipv6: [String ]
+    ipv4: [String ]
+    metrics: NetworkInterfaceMetrics
+}
+
+type NetworkInterfaceMetrics {
+    networkInterfaceid: UUID
+    speed: Int
+    bytesReceived: Long
+    bytesSent: Long
+    packetsReceived: Int
+    packetsSent: Int
+    inErrors: Int
+    outErrors: Int
+    up: Boolean
+    readWriteRate: NetworkInterfaceReadWriteRate
+}
+
+type NetworkInterfaceReadWriteRate {
+    receiveBytesPerSecond: Long
+    sendBytesPerSecond: Long
+}
+
+# GPU
+
+#type Graphics {
+#    vendor: String
+#    model: String
+#    coreMhz: Float
+#    memoryMhz: Float
+#    metrics: GraphicsMetrics
+#}
+#
+#type GraphicsMetrics {
+#    fanRpm: Float
+#    fanPercent: Float
+#    temperature: Float
+#    coreLoad: Float
+#    memoryLoad: Float
+#}
+
+# Processes
+
+type Process {
+    name: String
+    path: String
+    commandLine: String
+    user: String
+    userID: String
+    group: String
+    groupID: String
+    state: String
+    processID: Int
+    parentProcessID: Int
+    threadCount: Int
+    priority: Int
+    virtualSize: Int
+    residentSetSize: Int
+    memoryPercent: Float
+    kernelTime: Int
+    userTime: Int
+    upTime: Int
+    cpuPercent: Float
+    startTime: Int
+    bytesRead: Long
+    bytesWritten: Long
+}
+
+enum ProcessSortMethod{
+    CPU,
+    MEMORY,
+    OLDEST,
+    NEWEST,
+    PID,
+    PARENTPID,
+    NAME
+}
+
+# Memory
+
+type Memory {
+    swapTotalBytes: Long
+    totalBytes: Long
+    metrics: MemoryMetrics
+}
+
+type MemoryMetrics {
+    numberOfProcesses: Int
+    swapUsedBytes: Long
+    availableBytes: Long
+}
+
