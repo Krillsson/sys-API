@@ -49,6 +49,10 @@ public class SysAPIConfiguration extends Configuration {
 
     @Valid
     @JsonProperty
+    private GraphQLConfiguration graphQL;
+
+    @Valid
+    @JsonProperty
     private boolean forwardHttps;
 
     public MetricsConfiguration metrics() {

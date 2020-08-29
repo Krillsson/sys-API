@@ -215,6 +215,15 @@ mvn clean package
 
 And the resulting files should be located in */server/target/*
 
+
+
+
+```json
+{
+  "authorization": "Basic dXNlcjpwYXNzd29yZA=="
+}
+```
+
 License
 -------
 

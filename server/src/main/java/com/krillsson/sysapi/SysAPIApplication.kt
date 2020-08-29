@@ -38,6 +38,7 @@ import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
 import com.krillsson.sysapi.core.monitoring.MonitorStore
 import com.krillsson.sysapi.core.query.MetricQueryManager
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
+import com.krillsson.sysapi.graphql.GraphQLBundle
 import com.krillsson.sysapi.graphql.GraphQLConfiguration
 import com.krillsson.sysapi.rest.CpuResource
 import com.krillsson.sysapi.rest.DrivesResource
@@ -54,54 +55,24 @@ import com.krillsson.sysapi.util.EnvironmentUtils
 import com.krillsson.sysapi.util.OffsetDateTimeConverter
 import com.krillsson.sysapi.util.Ticker
 import com.krillsson.sysapi.util.Utils
-import com.smoketurner.dropwizard.graphql.CachingPreparsedDocumentProvider
 import com.smoketurner.dropwizard.graphql.GraphQLFactory
-import graphql.execution.preparsed.PreparsedDocumentProvider
-import graphql.kickstart.execution.GraphQLQueryInvoker
-import graphql.kickstart.servlet.GraphQLHttpServlet
 import io.dropwizard.Application
-import io.dropwizard.Configuration
-import io.dropwizard.ConfiguredBundle
-import io.dropwizard.assets.AssetsBundle
-import io.dropwizard.auth.Auth
 import io.dropwizard.auth.AuthDynamicFeature
 import io.dropwizard.auth.AuthValueFactoryProvider
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter
 import io.dropwizard.setup.Bootstrap
 import io.dropwizard.setup.Environment
 import io.dropwizard.sslreload.SslReloadBundle
-import org.eclipse.jetty.security.ConstraintMapping
-import org.eclipse.jetty.security.ConstraintSecurityHandler
-import org.eclipse.jetty.security.HashLoginService
-import org.eclipse.jetty.security.SecurityHandler
-import org.eclipse.jetty.security.UserStore
 import org.eclipse.jetty.servlets.CrossOriginFilter
-import org.eclipse.jetty.util.security.Constraint
-import org.eclipse.jetty.util.security.Credential
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature
-import org.glassfish.jersey.server.model.AnnotatedMethod
 import oshi.SystemInfo
 import oshi.software.os.OperatingSystem
-import java.io.IOException
 import java.time.Clock
 import java.util.EnumSet
-import java.util.Objects
-import java.util.Optional
 import java.util.concurrent.Executors
 import java.util.function.Supplier
-import javax.annotation.Priority
-import javax.annotation.security.DenyAll
-import javax.annotation.security.PermitAll
-import javax.annotation.security.RolesAllowed
 import javax.servlet.DispatcherType
 import javax.servlet.FilterRegistration
-import javax.ws.rs.Priorities
-import javax.ws.rs.WebApplicationException
-import javax.ws.rs.container.ContainerRequestContext
-import javax.ws.rs.container.ContainerRequestFilter
-import javax.ws.rs.container.DynamicFeature
-import javax.ws.rs.container.ResourceInfo
-import javax.ws.rs.core.FeatureContext
 
 class SysAPIApplication : Application<SysAPIConfiguration>() {
 
@@ -139,7 +110,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     val os = systemInfo.operatingSystem
     val eventBus = EventBus()
     val metricsFactory = MetricsFactory(hal, os, SystemInfo.getCurrentPlatformEnum(), speedMeasurementManager, ticker)
-    val graphQLConfiguration = GraphQLConfiguration()
+    val graphqlConfiguration = GraphQLConfiguration()
+    val graphqlBundle = GraphQLBundle(graphqlConfiguration)
 
     lateinit var eventStore: EventStore
     lateinit var monitorStore: MonitorStore
@@ -153,59 +125,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         eventManager = EventManager(eventStore)
 
         bootstrap.addBundle(SslReloadBundle())
-        val bundle: GraphQLBundle<SysAPIConfiguration> = object : GraphQLBundle<SysAPIConfiguration>() {
-            override fun getGraphQLFactory(configuration: SysAPIConfiguration): GraphQLFactory? {
-                val factory = configuration.graphQLFactory
-                factory.setGraphQLSchema(graphQLConfiguration.createExecutableSchema(factory.schemaFiles.first()))
-                return factory
-            }
-        }
-        bootstrap.addBundle(bundle)
-    }
-
-    abstract class GraphQLBundle<C : Configuration?> : ConfiguredBundle<C>,
-        com.smoketurner.dropwizard.graphql.GraphQLConfiguration<C> {
-        override fun initialize(bootstrap: Bootstrap<*>) {
-            bootstrap.addBundle(AssetsBundle("/assets", "/", "index.htm", "graphql-playground"))
-        }
-
-        @Throws(java.lang.Exception::class)
-        override fun run(configuration: C, environment: Environment) {
-            val factory = getGraphQLFactory(configuration)
-            val provider: PreparsedDocumentProvider =
-                CachingPreparsedDocumentProvider(factory.queryCache, environment.metrics())
-            val schema = factory.build()
-            val queryInvoker =
-                GraphQLQueryInvoker.newBuilder().withPreparsedDocumentProvider(provider)
-                    .withInstrumentation(factory.instrumentations).build()
-            val config =
-                graphql.kickstart.servlet.GraphQLConfiguration.with(schema).with(queryInvoker).build()
-            val servlet = GraphQLHttpServlet.with(config)
-            environment.servlets().addServlet("graphql", servlet)
-                .addMapping(*arrayOf("/graphql", "/schema.json"))
-            environment.servlets().setSecurityHandler(basicAuth("user", "password"))
-        }
-
-        fun basicAuth(username: String, password: String): SecurityHandler {
-            val l = HashLoginService()
-            val userStore: UserStore = UserStore()
-            userStore.addUser(username, Credential.getCredential(password), arrayOf("AUTHENTICATED"))
-            l.setUserStore(userStore)
-            l.setName("system-API")
-            val constraint = Constraint()
-            constraint.setName(Constraint.__BASIC_AUTH)
-            constraint.setRoles(arrayOf("AUTHENTICATED"))
-            constraint.setAuthenticate(true)
-            val cm = ConstraintMapping()
-            cm.setConstraint(constraint)
-            cm.setPathSpec("/graphql")
-            val csh = ConstraintSecurityHandler()
-            csh.setAuthenticator(org.eclipse.jetty.security.authentication.BasicAuthenticator())
-            csh.setRealmName("system-API")
-            csh.addConstraintMapping(cm)
-            csh.setLoginService(l)
-            return csh
-        }
+        bootstrap.addBundle(graphqlBundle)
     }
 
     @Throws(Exception::class)
@@ -246,7 +166,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         val monitorManager =
             MonitorManager(eventManager, eventBus, monitorStore, metrics, com.krillsson.sysapi.util.Clock())
 
-        graphQLConfiguration.initialize(metrics, monitorManager, eventManager, historyManager)
+        graphqlConfiguration.initialize(metrics, monitorManager, eventManager, historyManager)
         registerManagedObjects(
             environment,
             monitorManager,
@@ -286,78 +206,11 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             .setRealm(name)
             .setAuthorizer(BasicAuthorizer(userConfig))
             .buildAuthFilter()
-        //environment.jersey().register(GraphQLAuthDynamicFeature(userBasicCredentialAuthFilter))
         environment.jersey().register(RolesAllowedDynamicFeature::class.java)
         environment.jersey().register(OffsetDateTimeConverter::class.java)
         environment.jersey().register(AuthDynamicFeature(userBasicCredentialAuthFilter))
         environment.jersey().register(AuthValueFactoryProvider.Binder(UserConfiguration::class.java))
     }
-
-    /*class GraphQLAuthDynamicFeature(private val authFilter: ContainerRequestFilter) : DynamicFeature {
-        override fun configure(
-            resourceInfo: ResourceInfo,
-            context: FeatureContext
-        ) {
-            val am =
-                AnnotatedMethod(resourceInfo.resourceMethod)
-            val parameterAnnotations = am.parameterAnnotations
-            val parameterTypes = am.parameterTypes
-
-            // First, check for any @Auth annotations on the method.
-            for (i in parameterAnnotations.indices) {
-                for (annotation in parameterAnnotations[i]) {
-                    if (annotation is Auth) {
-                        // Optional auth requires that a concrete AuthFilter be provided.
-                        if (parameterTypes[i] == Optional::class.java && authFilter != null) {
-                            context.register(WebApplicationExceptionCatchingFilter(authFilter))
-                            return
-                        } else {
-                            registerAuthFilter(context)
-                            return
-                        }
-                    }
-                }
-            }
-
-            // Second, check for any authorization annotations on the class or method.
-            // Note that @DenyAll shouldn't be attached to classes.
-            val annotationOnClass =
-                resourceInfo.resourceClass.getAnnotation(RolesAllowed::class.java) != null ||
-                    resourceInfo.resourceClass.getAnnotation(PermitAll::class.java) != null
-            val annotationOnMethod =
-                am.isAnnotationPresent(RolesAllowed::class.java) || am.isAnnotationPresent(
-                    DenyAll::class.java
-                ) ||
-                    am.isAnnotationPresent(PermitAll::class.java)
-            if (annotationOnClass || annotationOnMethod) {
-                registerAuthFilter(context)
-            }
-        }
-
-        private fun registerAuthFilter(context: FeatureContext) {
-            context.register(authFilter)
-        }
-    }
-
-    @Priority(Priorities.AUTHENTICATION)
-    internal class WebApplicationExceptionCatchingFilter(underlying: ContainerRequestFilter) :
-        ContainerRequestFilter {
-        private val underlying: ContainerRequestFilter
-
-        @Throws(IOException::class)
-        override fun filter(requestContext: ContainerRequestContext) {
-            try {
-                underlying.filter(requestContext)
-            } catch (err: WebApplicationException) {
-                // Pass through.
-            }
-        }
-
-        init {
-            Objects.requireNonNull(underlying, "Underlying ContainerRequestFilter is not set")
-            this.underlying = underlying
-        }
-    }*/
 
     private fun registerResources(
         environment: Environment,

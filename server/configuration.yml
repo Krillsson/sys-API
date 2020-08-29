@@ -21,6 +21,8 @@ user:
   password: password
 windows:
   enableOhmJniWrapper: true
+graphQL:
+  enablePlayGround: false
 #forwardHttps: false
 
 #########################################
