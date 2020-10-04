@@ -32,7 +32,12 @@ class QueryResolver : GraphQLQueryResolver {
     lateinit var eventManager: EventManager
     lateinit var historyManager: HistoryManager
 
-    fun initialize(metrics: Metrics, monitorManager: MonitorManager, eventManager: EventManager, historyManager: HistoryManager) {
+    fun initialize(
+        metrics: Metrics,
+        monitorManager: MonitorManager,
+        eventManager: EventManager,
+        historyManager: HistoryManager
+    ) {
         this.metrics = metrics
         this.monitorManager = monitorManager
         this.eventManager = eventManager
@@ -79,6 +84,10 @@ class QueryResolver : GraphQLQueryResolver {
 
         fun getBaseboard(system: SystemInfo): Motherboard? {
             return metrics?.motherboardMetrics()?.motherboard()
+        }
+
+        fun getHostname(system: SystemInfo): String {
+            return system.hostName
         }
 
         fun getUsbDevices(system: SystemInfo): List<UsbDevice> {
@@ -132,8 +141,11 @@ class QueryResolver : GraphQLQueryResolver {
     inner class ProcessorMetricsResolver : GraphQLResolver<CpuLoad> {
         fun getVoltage(cpuLoad: CpuLoad) = metrics?.cpuMetrics()?.cpuLoad()?.cpuHealth?.voltage
         fun getFanRpm(cpuLoad: CpuLoad) = metrics?.cpuMetrics()?.cpuLoad()?.cpuHealth?.fanRpm
-        fun getFanPercent(cpuLoad: CpuLoad) = metrics?.cpuMetrics()?.cpuLoad()?.cpuHealth?.fanPercent
-        fun getTemperatures(cpuLoad: CpuLoad) = metrics?.cpuMetrics()?.cpuLoad()?.cpuHealth?.temperatures
+        fun getFanPercent(cpuLoad: CpuLoad) =
+            metrics?.cpuMetrics()?.cpuLoad()?.cpuHealth?.fanPercent
+
+        fun getTemperatures(cpuLoad: CpuLoad) =
+            metrics?.cpuMetrics()?.cpuLoad()?.cpuHealth?.temperatures
     }
 
     inner class MonitorResolver : GraphQLResolver<Monitor> {
@@ -161,7 +173,9 @@ class QueryResolver : GraphQLQueryResolver {
     inner class DriveMetricResolver : GraphQLResolver<DriveLoad> {
         fun getDriveId(driveLoad: DriveLoad) = driveLoad.serial
         fun getTemperature(driveLoad: DriveLoad) = driveLoad.health.temperature
-        fun getHealthData(driveLoad: DriveLoad) = driveLoad.health.healthData.map { DriveHealth(it.data, it.dataType) }
+        fun getHealthData(driveLoad: DriveLoad) =
+            driveLoad.health.healthData.map { DriveHealth(it.data, it.dataType) }
+
         fun getUsableSpace(driveLoad: DriveLoad) = driveLoad.values.usableSpace
         fun getTotalSpace(driveLoad: DriveLoad) = driveLoad.values.totalSpace
         fun getOpenFileDescriptors(driveLoad: DriveLoad) = driveLoad.values.openFileDescriptors
@@ -171,7 +185,12 @@ class QueryResolver : GraphQLQueryResolver {
         fun getReadBytes(driveLoad: DriveLoad) = driveLoad.values.readBytes
         fun getWriteBytes(driveLoad: DriveLoad) = driveLoad.values.writeBytes
         fun getCurrentReadWriteRate(driveLoad: DriveLoad) =
-            driveLoad.speed.let { DriveReadWriteRate(it.readBytesPerSecond, it.writeBytesPerSecond) }
+            driveLoad.speed.let {
+                DriveReadWriteRate(
+                    it.readBytesPerSecond,
+                    it.writeBytesPerSecond
+                )
+            }
     }
 
     data class DriveHealth(
@@ -188,33 +207,52 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     inner class NetworkInterfaceMetricResolver : GraphQLResolver<NetworkInterfaceLoad> {
-        fun getNetworkInterfaceid(networkInterfaceLoad: NetworkInterfaceLoad) = networkInterfaceLoad.name
-        fun getBytesReceived(networkInterfaceLoad: NetworkInterfaceLoad) = networkInterfaceLoad.values.bytesReceived
-        fun getBytesSent(networkInterfaceLoad: NetworkInterfaceLoad) = networkInterfaceLoad.values.bytesSent
-        fun getPacketsReceived(networkInterfaceLoad: NetworkInterfaceLoad) = networkInterfaceLoad.values.packetsReceived
-        fun getPacketsSent(networkInterfaceLoad: NetworkInterfaceLoad) = networkInterfaceLoad.values.packetsSent
-        fun getInErrors(networkInterfaceLoad: NetworkInterfaceLoad) = networkInterfaceLoad.values.inErrors
-        fun getOutErrors(networkInterfaceLoad: NetworkInterfaceLoad) = networkInterfaceLoad.values.outErrors
-        fun getReadWriteRate(networkInterfaceLoad: NetworkInterfaceLoad) = networkInterfaceLoad.speed.let {
-            NetworkInterfaceReadWriteRate(
-                it.receiveBytesPerSecond,
-                it.sendBytesPerSecond
-            )
-        }
+        fun getNetworkInterfaceid(networkInterfaceLoad: NetworkInterfaceLoad) =
+            networkInterfaceLoad.name
+
+        fun getBytesReceived(networkInterfaceLoad: NetworkInterfaceLoad) =
+            networkInterfaceLoad.values.bytesReceived
+
+        fun getBytesSent(networkInterfaceLoad: NetworkInterfaceLoad) =
+            networkInterfaceLoad.values.bytesSent
+
+        fun getPacketsReceived(networkInterfaceLoad: NetworkInterfaceLoad) =
+            networkInterfaceLoad.values.packetsReceived
+
+        fun getPacketsSent(networkInterfaceLoad: NetworkInterfaceLoad) =
+            networkInterfaceLoad.values.packetsSent
+
+        fun getInErrors(networkInterfaceLoad: NetworkInterfaceLoad) =
+            networkInterfaceLoad.values.inErrors
+
+        fun getOutErrors(networkInterfaceLoad: NetworkInterfaceLoad) =
+            networkInterfaceLoad.values.outErrors
+
+        fun getReadWriteRate(networkInterfaceLoad: NetworkInterfaceLoad) =
+            networkInterfaceLoad.speed.let {
+                NetworkInterfaceReadWriteRate(
+                    it.receiveBytesPerSecond,
+                    it.sendBytesPerSecond
+                )
+            }
     }
 
-    data class NetworkInterfaceReadWriteRate(val receiveBytesPerSecond: Long, val sendBytesPerSecond: Long)
+    data class NetworkInterfaceReadWriteRate(
+        val receiveBytesPerSecond: Long,
+        val sendBytesPerSecond: Long
+    )
 
     inner class MemoryLoadResolver : GraphQLResolver<MemoryLoad> {
         fun getSwapTotalBytes(memoryLoad: MemoryLoad) = memoryLoad.swapTotal
         fun getTotalBytes(memoryLoad: MemoryLoad) = memoryLoad.total
         fun getMetrics(memoryLoad: MemoryLoad) =
-            MemoryMetrics(memoryLoad.numberOfProcesses, memoryLoad.swapUsed, memoryLoad.available)
+            MemoryMetrics(memoryLoad.numberOfProcesses, memoryLoad.swapUsed, memoryLoad.available, memoryLoad.usedPercent)
     }
 
     data class MemoryMetrics(
         val numberOfProcesses: Int,
         val swapUsedBytes: Long,
-        val availableBytes: Long
+        val availableBytes: Long,
+        val usedPercent: Double
     )
 }

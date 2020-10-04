@@ -5,5 +5,6 @@ class MemoryLoad(
     val swapTotal: Long,
     val swapUsed: Long,
     val total: Long,
-    val available: Long
+    val available: Long,
+    val usedPercent: Double
 ) 

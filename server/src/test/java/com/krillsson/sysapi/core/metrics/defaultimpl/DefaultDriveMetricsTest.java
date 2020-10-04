@@ -22,11 +22,11 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class DefaultDriveProviderTest {
+public class DefaultDriveMetricsTest {
 
     String DEV_SDA1 = "/dev/sda1";
     String DEV_SDA2 = "/dev/sda2";
-    DefaultDriveProvider provider;
+    DefaultDriveMetrics provider;
     SpeedMeasurementManager measurementManager;
     OperatingSystem os;
     FileSystem fs;
@@ -50,7 +50,7 @@ public class DefaultDriveProviderTest {
         os = mock(OperatingSystem.class);
         fs = mock(FileSystem.class);
         hal = mock(HardwareAbstractionLayer.class);
-        provider = new DefaultDriveProvider(os, hal, measurementManager);
+        provider = new DefaultDriveMetrics(os, hal, measurementManager);
 
         disk1 = mock(HWDiskStore.class);
         when(disk1.getName()).thenReturn(DEV_SDA1);

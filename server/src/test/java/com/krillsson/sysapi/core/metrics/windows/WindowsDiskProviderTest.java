@@ -22,7 +22,7 @@ public class WindowsDiskProviderTest {
 
     DelegatingMonitorManager monitorManager;
 
-    WindowsDriveProvider diskProvider;
+    WindowsDriveMetrics diskProvider;
     private HWDiskStore store;
     private OsPartition osFileStore;
     private DriveMonitor driveMonitor;
@@ -34,7 +34,7 @@ public class WindowsDiskProviderTest {
         osFileStore = mock(OsPartition.class);
         driveMonitor = mock(DriveMonitor.class);
 
-        diskProvider = new WindowsDriveProvider(
+        diskProvider = new WindowsDriveMetrics(
                 mock(OperatingSystem.class),
                 mock(HardwareAbstractionLayer.class),
                 mock(SpeedMeasurementManager.class)

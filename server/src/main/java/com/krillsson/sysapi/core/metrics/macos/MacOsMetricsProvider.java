@@ -25,6 +25,6 @@ public class MacOsMetricsProvider extends DefaultMetrics {
         super.initialize();
         // this is a not so clean solution since super.initialize will first set DefaultCpuMetrics
         // and then this directly overwrites that variable
-        setDriveMetrics(new MacOsDriveProvider(operatingSystem, hal, speedMeasurementManager));
+        setDriveMetrics(new MacOsDriveMetrics(operatingSystem, hal, speedMeasurementManager));
     }
 }

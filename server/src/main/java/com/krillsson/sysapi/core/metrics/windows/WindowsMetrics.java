@@ -43,7 +43,7 @@ public class WindowsMetrics extends DefaultMetrics {
             setCpuMetrics(new WindowsCpuMetrics(hal, operatingSystem, monitorManager, ticker, utils));
             setNetworkMetrics(new WindowsNetworkMetrics(hal, speedMeasurementManager, monitorManager));
             setGpuMetrics(new WindowsGpuMetrics(hal, monitorManager));
-            setDriveMetrics(new WindowsDriveProvider(operatingSystem, hal, speedMeasurementManager));
+            setDriveMetrics(new WindowsDriveMetrics(operatingSystem, hal, speedMeasurementManager));
             setProcessesMetrics(new DefaultProcessesMetrics(operatingSystem, hal));
             setMotherboardMetrics(new WindowsMotherboardMetrics(hal, monitorManager));
             setMemoryMetrics(new DefaultMemoryMetrics(hal, operatingSystem));

@@ -4,7 +4,7 @@ import com.krillsson.sysapi.core.domain.drives.Drive;
 import com.krillsson.sysapi.core.domain.drives.DriveLoad;
 import com.krillsson.sysapi.core.domain.drives.DriveSpeed;
 import com.krillsson.sysapi.core.domain.drives.DriveValues;
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDriveProvider;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDriveMetrics;
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import oshi.hardware.HWPartition;
 import oshi.hardware.HardwareAbstractionLayer;
@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
-public class MacOsDriveProvider extends DefaultDriveProvider {
+public class MacOsDriveMetrics extends DefaultDriveMetrics {
 
     private static final String FIRST_SECTOR_ON_DRIVE = "s1";
     private static final String ROOT_MOUNT = "/";
 
-    protected MacOsDriveProvider(OperatingSystem operatingSystem, HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
+    protected MacOsDriveMetrics(OperatingSystem operatingSystem, HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
         super(operatingSystem, hal, speedMeasurementManager);
     }
 
@@ -91,8 +91,10 @@ public class MacOsDriveProvider extends DefaultDriveProvider {
         return result;
     }
 
+
+
     @Override
-    protected Optional<String> pickMostSuitableOsPartition(Map<String, HWPartition> hwPartitions, Map<String, OSFileStore> osStores) {
+    protected Optional<String> pickMostSuitableOsPartition(Map<String, ? extends HWPartition> hwPartitions, Map<String, ? extends OSFileStore> osStores) {
         Set<String> strings = hwPartitions.keySet();
         /*intersection*/
         strings.retainAll(osStores.keySet());
