@@ -27,10 +27,9 @@ import com.krillsson.sysapi.core.domain.drives.DriveSpeed;
 import com.krillsson.sysapi.core.domain.drives.OsPartition;
 import com.krillsson.sysapi.core.domain.sensors.DataType;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDriveProvider;
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDriveMetrics;
 import com.krillsson.sysapi.util.Streams;
 import ohmwrapper.DriveMonitor;
-import ohmwrapper.MonitorManager;
 import org.slf4j.Logger;
 import oshi.hardware.HWDiskStore;
 import oshi.hardware.HardwareAbstractionLayer;
@@ -43,12 +42,12 @@ import java.util.stream.Collectors;
 
 import static com.krillsson.sysapi.core.metrics.windows.util.NullSafeOhmMonitor.nullSafeGetValue;
 
-public class WindowsDriveProvider extends DefaultDriveProvider {
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(WindowsDriveProvider.class);
+public class WindowsDriveMetrics extends DefaultDriveMetrics {
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(WindowsDriveMetrics.class);
 
     private DelegatingMonitorManager monitorManager;
 
-    public WindowsDriveProvider(OperatingSystem operatingSystem, HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
+    public WindowsDriveMetrics(OperatingSystem operatingSystem, HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
         super(operatingSystem, hal, speedMeasurementManager);
     }
 

@@ -1,4 +1,4 @@
-### 0.13
+### 0.12
  
  - Migration to Kotlin
  - GraphQL support

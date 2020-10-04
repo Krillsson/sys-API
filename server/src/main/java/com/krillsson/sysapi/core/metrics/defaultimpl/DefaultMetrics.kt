@@ -40,7 +40,12 @@ open class DefaultMetrics(
         networkInfoProvider.register()
         setNetworkMetrics(networkInfoProvider)
         setGpuMetrics(DefaultGpuMetrics(hal))
-        val diskInfoProvider = DefaultDriveProvider(operatingSystem, hal, speedMeasurementManager)
+        val diskInfoProvider =
+            DefaultDriveMetrics(
+                operatingSystem,
+                hal,
+                speedMeasurementManager
+            )
         diskInfoProvider.register()
         setDriveMetrics(diskInfoProvider)
         setProcessesMetrics(DefaultProcessesMetrics(operatingSystem, hal))

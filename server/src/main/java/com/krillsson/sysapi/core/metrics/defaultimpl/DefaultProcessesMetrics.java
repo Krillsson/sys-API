@@ -44,7 +44,8 @@ public class DefaultProcessesMetrics implements ProcessesMetrics {
                 virtualMemory.getSwapTotal(),
                 virtualMemory.getSwapUsed(),
                 memory.getTotal(),
-                memory.getAvailable()
+                memory.getAvailable(),
+                usedPercent(memory)
         );
     }
 
@@ -66,6 +67,13 @@ public class DefaultProcessesMetrics implements ProcessesMetrics {
                 operatingSystem.getProcessCount(),
                 processes
         );
+    }
+
+    private int usedPercent(GlobalMemory memory) {
+        long free = memory.getAvailable();
+        long total = memory.getTotal();
+        long used = total - free;
+        return (int) (used * 100.0 / (total) + 0.5);
     }
 }
 

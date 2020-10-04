@@ -25,7 +25,7 @@ input CreateMonitorInput {
     inertiaInSeconds: Int!
     type: MonitorType!
     threshold: Float!
-    id: String
+    id: UUID
 }
 
 type CreateMonitorOutput {
@@ -60,6 +60,8 @@ type System {
     usbDevices: [UsbDevices]
     processor: Processor
     drives: [Drive]
+    hostname: String!
+    platform: Platform!
     networkInterfaces: [NetworkInterface]
     #graphics: [Graphics]
     # 0 means no limitation
@@ -365,5 +367,15 @@ type MemoryMetrics {
     numberOfProcesses: Int
     swapUsedBytes: Long
     availableBytes: Long
+    usedPercent: Float
+}
+
+enum Platform {
+    WINDOWS,
+    LINUX,
+    MACOSX,
+    SOLARIS,
+    FREEBSD,
+    UNKNOWN
 }
 

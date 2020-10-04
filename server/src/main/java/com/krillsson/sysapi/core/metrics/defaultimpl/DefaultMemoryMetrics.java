@@ -20,7 +20,7 @@ public class DefaultMemoryMetrics implements MemoryMetrics {
     public MemoryLoad memoryLoad() {
         GlobalMemory memory = hal.getMemory();
         VirtualMemory virtualMemory = memory.getVirtualMemory();
-        return new MemoryLoad(operatingSystem.getProcessCount(), virtualMemory.getSwapTotal(), virtualMemory.getSwapUsed(), memory.getTotal(), memory.getAvailable());
+        return new MemoryLoad(operatingSystem.getProcessCount(), virtualMemory.getSwapTotal(), virtualMemory.getSwapUsed(), memory.getTotal(), memory.getAvailable(), usedPercent(memory));
     }
 
     private int usedPercent(GlobalMemory memory) {
