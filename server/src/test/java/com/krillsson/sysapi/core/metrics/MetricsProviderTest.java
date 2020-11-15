@@ -17,6 +17,7 @@ import oshi.software.os.OperatingSystem;
 
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
+import oshi.software.os.OperatingSystem.OSVersionInfo;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
@@ -36,6 +37,9 @@ public class MetricsProviderTest {
     public void setUp() throws Exception {
         hal = mock(HardwareAbstractionLayer.class);
         os = mock(OperatingSystem.class);
+        when(os.getManufacturer()).thenReturn("Manufacturer");
+        when(os.getFamily()).thenReturn("Family");
+        when(os.getVersionInfo()).thenReturn(new OSVersionInfo("", "", ""));
         config = mock(SysAPIConfiguration.class);
         metricsConfig = mock(MetricsConfiguration.class);
         cacheConfig = mock(CacheConfiguration.class);

@@ -19,6 +19,8 @@ import java.util.UUID;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.RETURNS_MOCKS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -52,13 +54,13 @@ public class DefaultDriveMetricsTest {
         hal = mock(HardwareAbstractionLayer.class);
         provider = new DefaultDriveMetrics(os, hal, measurementManager);
 
-        disk1 = mock(HWDiskStore.class);
+        disk1 = mock(HWDiskStore.class, RETURNS_MOCKS);
         when(disk1.getName()).thenReturn(DEV_SDA1);
-        disk1Partition1 = mock(HWPartition.class);
+        disk1Partition1 = mock(HWPartition.class, RETURNS_MOCKS);
         when(disk1Partition1.getUuid()).thenReturn(UUID.randomUUID().toString());
-        disk1Partition2 = mock(HWPartition.class);
+        disk1Partition2 = mock(HWPartition.class, RETURNS_MOCKS);
         when(disk1Partition2.getUuid()).thenReturn(osPartitionDisk1Uuid);
-        disk1OsPartition = mock(OSFileStore.class);
+        disk1OsPartition = mock(OSFileStore.class, RETURNS_MOCKS);
         when(disk1OsPartition.getUUID()).thenReturn(osPartitionDisk1Uuid);
         when(disk1.getPartitions()).thenReturn(Arrays.asList(disk1Partition1, disk1Partition2));
         when(measurementManager.getCurrentSpeedForName(DEV_SDA1)).thenReturn(Optional.of(new SpeedMeasurementManager.CurrentSpeed(
@@ -66,13 +68,13 @@ public class DefaultDriveMetricsTest {
                 1000
         )));
 
-        disk2 = mock(HWDiskStore.class);
+        disk2 = mock(HWDiskStore.class, RETURNS_MOCKS);
         when(disk2.getName()).thenReturn(DEV_SDA2);
-        disk2Partition1 = mock(HWPartition.class);
+        disk2Partition1 = mock(HWPartition.class, RETURNS_MOCKS);
         when(disk2Partition1.getUuid()).thenReturn(UUID.randomUUID().toString());
-        disk2Partition2 = mock(HWPartition.class);
+        disk2Partition2 = mock(HWPartition.class, RETURNS_MOCKS);
         when(disk2Partition2.getUuid()).thenReturn(osPartitionDisk2Uuid);
-        disk2OsPartition = mock(OSFileStore.class);
+        disk2OsPartition = mock(OSFileStore.class, RETURNS_MOCKS);
         when(disk2OsPartition.getUUID()).thenReturn(osPartitionDisk2Uuid);
         when(disk2.getPartitions()).thenReturn(Arrays.asList(disk2Partition1, disk2Partition2));
         when(measurementManager.getCurrentSpeedForName(DEV_SDA2)).thenReturn(Optional.of(new SpeedMeasurementManager.CurrentSpeed(

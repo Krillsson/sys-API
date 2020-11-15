@@ -15,6 +15,7 @@ import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Answers.RETURNS_MOCKS;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -54,7 +55,7 @@ public class DefaultProcessesMetricsTest {
         double usage = 100d * 1000L / 4000L;
         assertEquals(usage, 25L, 0);
 
-        OSProcess process = mock(OSProcess.class);
+        OSProcess process = mock(OSProcess.class, RETURNS_MOCKS);
         when(process.getResidentSetSize()).thenReturn(1000L);
         when(os.getProcesses(anyInt(), any(OperatingSystem.ProcessSort.class))).thenReturn(Collections.singletonList(process));
         //when(memory.getAvailable()).thenReturn(3000L);
@@ -71,7 +72,7 @@ public class DefaultProcessesMetricsTest {
         double usage = 100d * 20 / 100;
         assertEquals(usage, 20, 0);
 
-        OSProcess process = mock(OSProcess.class);
+        OSProcess process = mock(OSProcess.class, RETURNS_MOCKS);
         when(process.getKernelTime()).thenReturn(16L);
         when(process.getUserTime()).thenReturn(4L);
         when(process.getUpTime()).thenReturn(100L);
