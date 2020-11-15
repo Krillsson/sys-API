@@ -19,62 +19,6 @@ It publishes and monitors values from [OSHI](https://github.com/oshi/oshi) with 
 - Show info from sensors and fans
 - Motherboard information
 
-### Endpoints
-
-```
-
-    // Static information about the system
-    GET     /system
-    
-    // Current load of the system
-    GET     /system/load
-    
-    // An array of (date, system load) entries
-    GET     /system/load/history
-
-    // Currently configured monitors
-    GET     /monitors
-    
-    // Configure a new monitor
-    POST    /monitors
-    
-    // Remove an existing monitor
-    DELETE  /monitors/{id}
-
-    // Get currently ongoing threshold violations, if any.
-    GET     /events
-
-    // displays meta info about the Sys-API server
-    GET     /
-
-    GET     /cpu
-    GET     /cpu/load
-    GET     /cpu/load/history
-    GET     /drives
-    GET     /drives/loads
-    GET     /drives/loads/history
-    GET     /drives/loads/{name}
-    GET     /drives/{name}
-    GET     /gpus
-    GET     /gpus/loads
-    GET     /gpus/loads/history
-    GET     /memory
-    GET     /memory/history
-    GET     /motherboard
-    GET     /motherboard/health
-    GET     /nics
-    GET     /nics/loads
-    GET     /nics/loads/history
-    GET     /nics/loads/{id}
-    GET     /nics/{id}
-    GET     /pid
-    GET     /processes
-    GET     /processes/{pid}
-    GET     /system/jvm
-    GET     /system/uptime
-    GET     /version
-```
-
 ### GraphQL
 
 GraphQL is available through the `/graphql` endpoint. It supports the exact same features as the REST-API. Checkout the [schema](server/src/main/resources/schema.graphqls).
@@ -94,7 +38,7 @@ If the server is protected by Basic Auth, you need to configure GraphQL Playgrou
 }
 ```
 
-## Usage
+## REST-API
 
 The `/system` endpoint contains accumulated information about the whole system. Then if you want information for just a specific part of the system you can use the part specific endpoint.
 So for example the cpu temperature and usage is under `/cpu`. Some things are excluded from `/system`, such as `/system/jvm` and `/processes` since they contain so much information.
