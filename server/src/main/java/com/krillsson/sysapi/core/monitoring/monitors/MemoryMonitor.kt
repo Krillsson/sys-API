@@ -10,7 +10,7 @@ class MemoryMonitor(override val id: UUID, override val config: MonitorConfig) :
     override val type: MonitorType = MonitorType.MEMORY_SPACE
 
     override fun selectValue(load: SystemLoad): Double {
-        return load.memory.available.toDouble()
+        return load.memory.availableBytes.toDouble()
     }
 
     override fun isPastThreshold(value: Double): Boolean {

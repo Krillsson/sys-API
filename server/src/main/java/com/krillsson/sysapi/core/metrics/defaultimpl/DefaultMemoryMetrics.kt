@@ -1,15 +1,18 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl
 
+import com.krillsson.sysapi.core.domain.memory.MemoryInfo
 import com.krillsson.sysapi.core.domain.memory.MemoryLoad
 import com.krillsson.sysapi.core.metrics.MemoryMetrics
 import oshi.hardware.GlobalMemory
 import oshi.hardware.HardwareAbstractionLayer
+import oshi.hardware.PhysicalMemory
 import oshi.software.os.OperatingSystem
 
 class DefaultMemoryMetrics(
     private val hal: HardwareAbstractionLayer,
     private val operatingSystem: OperatingSystem
 ) : MemoryMetrics {
+
     override fun memoryLoad(): MemoryLoad {
         val memory = hal.memory
         val virtualMemory = memory.virtualMemory
@@ -22,6 +25,26 @@ class DefaultMemoryMetrics(
             usedPercent(memory).toDouble()
         )
     }
+
+    override fun memoryInfo(): MemoryInfo {
+        val memory = hal.memory
+        val virtualMemory = memory.virtualMemory
+        return MemoryInfo(
+            virtualMemory.swapTotal,
+            memory.total,
+            memory.physicalMemory.map {
+                it.asPhysicalMemory()
+            }
+        )
+    }
+
+    private fun PhysicalMemory.asPhysicalMemory() =
+        com.krillsson.sysapi.core.domain.memory.PhysicalMemory(
+            bankLabel,
+            capacity,
+            clockSpeed,
+            manufacturer, memoryType
+        )
 
     private fun usedPercent(memory: GlobalMemory): Int {
         val free = memory.available

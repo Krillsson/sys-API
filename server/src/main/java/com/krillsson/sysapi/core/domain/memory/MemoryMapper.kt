@@ -30,6 +30,7 @@ import java.time.LocalDateTime
 @Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR, uses = [DateMapper::class])
 interface MemoryMapper {
     fun map(load: MemoryLoad): com.krillsson.sysapi.dto.memory.MemoryLoad
+    fun map(info: MemoryInfo): com.krillsson.sysapi.dto.memory.MemoryInfo
     fun mapHistory(history: Map<LocalDateTime, MemoryLoad>): Map<String, com.krillsson.sysapi.dto.memory.MemoryLoad>
     fun mapHistory(history: List<HistoryEntry<MemoryLoad>>): List<com.krillsson.sysapi.dto.history.HistoryEntry<com.krillsson.sysapi.dto.memory.MemoryLoad>>
 

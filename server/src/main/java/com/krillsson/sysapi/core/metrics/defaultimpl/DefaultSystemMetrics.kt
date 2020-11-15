@@ -48,7 +48,7 @@ open class DefaultSystemMetrics(
             platform,
             cpuMetrics.cpuInfo(),
             motherboardMetrics.motherboard(),
-            memoryMetrics.memoryLoad(),
+            memoryMetrics.memoryInfo(),
             driveMetrics.drives(),
             networkMetrics.networkInterfaces(),
             gpuMetrics.gpus()
