@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.rest
 
-import com.krillsson.sysapi.dto.monitor.MonitorType
+import com.krillsson.sysapi.core.monitoring.MonitorType
 
 data class CreateMonitor(
     var idToMonitor: String,

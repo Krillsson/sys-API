@@ -24,7 +24,6 @@ import com.krillsson.sysapi.auth.BasicAuthorizer
 import com.krillsson.sysapi.core.domain.history.HistoryEntry
 import com.krillsson.sysapi.core.domain.network.NetworkInterface
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad
-import com.krillsson.sysapi.core.domain.network.NetworkInterfacesMapper
 import com.krillsson.sysapi.core.history.MetricsHistoryManager
 import com.krillsson.sysapi.core.metrics.NetworkMetrics
 import java.time.OffsetDateTime

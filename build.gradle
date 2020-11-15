@@ -1,0 +1,99 @@
+buildscript {
+    ext {
+        kotlinVersion = '1.4.10'
+    }
+    repositories {
+        repositories {
+            mavenCentral()
+        }
+
+        jcenter()
+    }
+    dependencies {
+        classpath(
+                "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",
+                'com.github.jengelman.gradle.plugins:shadow:6.1.0',
+        )
+    }
+}
+
+ext {
+    kotlinJvmVersion = '1.8'
+    sourceCompatibilityVersion = JavaVersion.VERSION_1_8
+    targetCompatibilityVersion = JavaVersion.VERSION_1_8
+}
+
+allprojects {
+    group = 'com.krillsson'
+    version = '0.14'
+}
+
+subprojects {
+    apply plugin: 'maven'
+    apply plugin: 'java'
+    apply plugin: 'kotlin'
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        flatDir {
+            dirs 'lib'
+        }
+    }
+}
+
+project(':sys-api-server') {
+    apply plugin: 'com.github.johnrengelman.shadow'
+    apply plugin: 'application'
+
+    dependencies {
+        implementation 'io.dropwizard:dropwizard-core:2.0.15'
+        implementation 'io.dropwizard:dropwizard-auth:2.0.15'
+        implementation 'io.dropwizard:dropwizard-assets:2.0.15'
+        implementation 'com.github.oshi:oshi-core:5.3.5'
+        implementation 'com.graphql-java-kickstart:graphql-java-tools:5.6.1'
+        implementation 'com.smoketurner.dropwizard:graphql-core:2.0.12-1'
+        implementation 'javax.xml.bind:jaxb-api:2.2.11'
+        implementation 'com.sun.xml.bind:jaxb-core:2.2.11'
+        implementation 'com.sun.xml.bind:jaxb-impl:2.2.11'
+        implementation 'javax.activation:activation:1.1.1'
+        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+        implementation name: 'jni4net.j-0.8.8.0'
+        implementation name: 'OhmJniWrapper.j4n'
+
+
+        testImplementation 'junit:junit:4.13.1'
+        testImplementation 'io.dropwizard:dropwizard-testing:2.0.15'
+        testImplementation 'org.hamcrest:hamcrest-all:1.1'
+        testImplementation 'org.mockito:mockito-core:2.20.0'
+    }
+
+    shadowJar {
+        mergeServiceFiles()
+        minimize()
+        exclude 'META-INF/*.DSA'
+        exclude 'META-INF/*.RSA'
+    }
+
+    mainClassName = 'com.krillsson.sysapi.SysAPIApplication'
+
+    applicationDefaultJvmArgs = ["-Xmx512m"]
+
+    run {
+        args project.hasProperty("appArgs") ? Eval.me(appArgs) : ['server', 'src/dist/configuration.yml']
+    }
+
+    runShadow {
+
+    }
+
+    jar {
+        manifest {
+            attributes('Main-Class': mainClassName, "Implementation-Version": version)
+        }
+    }
+
+    distZip{
+
+    }
+}

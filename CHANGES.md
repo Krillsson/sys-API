@@ -2,6 +2,7 @@
 
 **REST API Breaking changes**
 
+ - Migrated project to Gradle
  - Add PhysicalMemory to MemoryInfo
  - Remove as much nullability from GraphQL schema as possible
  - Events persistence

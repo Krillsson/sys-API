@@ -5,7 +5,6 @@ import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultGpuMetrics;
 import com.krillsson.sysapi.util.Streams;
-import ohmwrapper.MonitorManager;
 import oshi.hardware.HardwareAbstractionLayer;
 
 import java.util.List;
