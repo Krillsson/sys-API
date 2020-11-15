@@ -33,16 +33,12 @@ import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager.CurrentSpeed
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager.SpeedSource
 import org.apache.commons.lang3.StringUtils
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder
-import org.slf4j.LoggerFactory
 import oshi.hardware.HWDiskStore
 import oshi.hardware.HWPartition
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.software.os.FileSystem
-import oshi.software.os.OSFileStore
 import oshi.software.os.OperatingSystem
 import java.util.Optional
-import java.util.function.Consumer
 import java.util.stream.Collectors
 
 open class DefaultDriveMetrics(
@@ -57,28 +53,9 @@ open class DefaultDriveMetrics(
     }
 
     override fun drives(): List<Drive> {
-        return hal.diskStores.stream().map { d: HWDiskStore ->
-            Drive(
-                d.model,
-                d.name,
-                getSerial(d),
-                d.size,
-                findAssociatedFileStore(d).orElse(Empty.OS_PARTITION),
-                d.partitions.stream()
-                    .map { p: HWPartition ->
-                        Partition(
-                            p.identification,
-                            p.name,
-                            p.type,
-                            p.uuid,
-                            p.size,
-                            p.major,
-                            p.minor,
-                            p.mountPoint
-                        )
-                    }.collect(Collectors.toList())
-            )
-        }.collect(Collectors.toList())
+        return hal.diskStores.map { store ->
+            store.asDrive()
+        }
     }
 
     override fun driveLoads(): List<DriveLoad> {
@@ -93,7 +70,7 @@ open class DefaultDriveMetrics(
             .findAny()
     }
 
-    protected fun diskMetrics(
+    private fun diskMetrics(
         disk: HWDiskStore,
         partition: OsPartition,
         fileSystem: FileSystem
@@ -113,27 +90,8 @@ open class DefaultDriveMetrics(
     override fun driveByName(name: String?): Optional<Drive> {
         return hal.diskStores.stream()
             .filter { n: HWDiskStore -> n.name.equals(name, ignoreCase = true) }
-            .map { d: HWDiskStore ->
-                Drive(
-                    d.model,
-                    d.name,
-                    getSerial(d),
-                    d.size,
-                    findAssociatedFileStore(d).orElse(Empty.OS_PARTITION),
-                    d.partitions.stream()
-                        .map { p: HWPartition ->
-                            Partition(
-                                p.identification,
-                                p.name,
-                                p.type,
-                                p.uuid,
-                                p.size,
-                                p.major,
-                                p.minor,
-                                p.mountPoint
-                            )
-                        }.collect(Collectors.toList())
-                )
+            .map { store: HWDiskStore ->
+                store.asDrive()
             }.findAny()
     }
 
@@ -159,20 +117,24 @@ open class DefaultDriveMetrics(
     private fun findAssociatedFileStore(diskStore: HWDiskStore): Optional<OsPartition> {
         val fileStores = operatingSystem.fileSystem.fileStores
         val partitions = diskStore.partitions
-        val hwPartitions =
-            partitions.stream().filter { e: HWPartition -> !StringUtils.isEmpty(e.uuid) }
-                .collect(Collectors.toMap({ f: HWPartition -> f.uuid.toUpperCase() }) { f: HWPartition? -> f })
-        val osStores = fileStores.stream().filter { e: OSFileStore -> !StringUtils.isEmpty(e.uuid) }
-            .collect(Collectors.toMap({ f: OSFileStore -> f.uuid.toUpperCase() }) { f: OSFileStore? -> f })
-        val matchingUuid = pickMostSuitableOsPartition(hwPartitions, osStores)
-        if (matchingUuid.isPresent) {
-            val osStore = osStores[matchingUuid.get()]
-            val partition = hwPartitions[matchingUuid.get()]
-            return Optional.of(
+
+        val fileStoreIds = fileStores.map { it.uuid }
+        val partitionIds = partitions.map { it.uuid }
+        fileStoreIds.intersect(partitionIds)
+
+        val intersectedId = fileStores
+            .map { it.uuid }
+            .intersect(partitions.map { it.uuid })
+            .firstOrNull()
+
+        return intersectedId?.let { id ->
+            val osStore = fileStores.first { it.uuid == id }
+            val partition = partitions.first { it.uuid == id }
+            Optional.of(
                 OsPartition(
-                    partition!!.identification,
+                    partition.identification,
                     partition.name,
-                    osStore!!.type,
+                    osStore.type,
                     partition.uuid,
                     partition.size,
                     partition.major,
@@ -186,43 +148,7 @@ open class DefaultDriveMetrics(
                     osStore.totalSpace
                 )
             )
-        }
-        return Optional.empty()
-    }
-
-    protected open fun pickMostSuitableOsPartition(
-        hwPartitions: Map<String?, HWPartition?>,
-        osStores: Map<String?, OSFileStore?>
-    ): Optional<String> {
-        val strings: MutableSet<String?> = hwPartitions.keys.toMutableSet()
-        /*intersection*/strings.retainAll(osStores.keys)
-        if (strings.size >= 1) {
-            if (strings.size > 1) {
-                LOGGER.warn(
-                    "Ops! Looks like there's more than one OS partition associated with this hardware partition. Send this in a bug report: "
-                )
-                LOGGER.warn("-------------------------------------------------")
-                LOGGER.warn("HWPartitions: ")
-                hwPartitions.values
-                    .forEach(Consumer { partition: HWPartition? ->
-                        LOGGER.warn(
-                            "Partition: {}",
-                            ReflectionToStringBuilder.toString(partition)
-                        )
-                    })
-                LOGGER.warn("OSFileStores: ")
-                osStores.values
-                    .forEach(Consumer { partition: OSFileStore? ->
-                        LOGGER.warn(
-                            "Partition: {}",
-                            ReflectionToStringBuilder.toString(partition)
-                        )
-                    })
-                LOGGER.warn("-------------------------------------------------")
-            }
-            return Optional.of(strings.toTypedArray()[0]!!)
-        }
-        return Optional.empty()
+        } ?: Optional.empty()
     }
 
     private fun createDiskLoad(d: HWDiskStore): DriveLoad {
@@ -268,9 +194,25 @@ open class DefaultDriveMetrics(
         }
     }
 
-    companion object {
-        private val LOGGER = LoggerFactory.getLogger(
-            DefaultDriveMetrics::class.java
-        )
-    }
+    private fun HWDiskStore.asDrive() = Drive(
+        model,
+        name,
+        serial.takeIf { !it.isNullOrBlank() } ?: "N/A",
+        size,
+        findAssociatedFileStore(this).orElse(Empty.OS_PARTITION),
+        partitions.asPartitions()
+    )
+
+    private fun HWPartition.asPartition() = Partition(
+        identification,
+        name,
+        type,
+        uuid,
+        size,
+        major,
+        minor,
+        mountPoint
+    )
+
+    private fun List<HWPartition>.asPartitions() = map { it.asPartition() }
 }
