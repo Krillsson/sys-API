@@ -24,7 +24,6 @@ import com.google.common.annotations.VisibleForTesting
 import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.core.metrics.cache.Cache
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetrics
-import com.krillsson.sysapi.core.metrics.macos.MacOsMetricsProvider
 import com.krillsson.sysapi.core.metrics.rasbian.RaspbianCpuMetrics
 import com.krillsson.sysapi.core.metrics.rasbian.RaspbianMetrics
 import com.krillsson.sysapi.core.metrics.windows.MonitorManagerFactory
@@ -90,16 +89,6 @@ class MetricsFactory(
                 .contains(RaspbianCpuMetrics.RASPBIAN_QUALIFIER)) -> {
                 LOGGER.info("Raspberry Pi detected")
                 RaspbianMetrics(
-                    hal,
-                    operatingSystem,
-                    speedMeasurementManager,
-                    ticker,
-                    utils
-                )
-            }
-            platform == PlatformEnum.MACOSX -> {
-                //https://github.com/Chris911/iStats
-                MacOsMetricsProvider(
                     hal,
                     operatingSystem,
                     speedMeasurementManager,
