@@ -28,9 +28,9 @@ public class MemoryResourceTest {
     @Test
     public void getMemoryHappyPath() throws Exception {
         com.krillsson.sysapi.core.domain.memory.MemoryLoad memory = mock(com.krillsson.sysapi.core.domain.memory.MemoryLoad.class);
-        when(memory.getAvailable()).thenReturn(100L);
-        when(memory.getSwapTotal()).thenReturn(100L);
-        when(memory.getTotal()).thenReturn(100L);
+        when(memory.getAvailableBytes()).thenReturn(100L);
+        when(memory.getSwapTotalBytes()).thenReturn(100L);
+        when(memory.getTotalBytes()).thenReturn(100L);
         when(provider.memoryLoad()).thenReturn(memory);
 
         final com.krillsson.sysapi.dto.memory.MemoryLoad response = RESOURCES.getJerseyTest().target("/memory")
