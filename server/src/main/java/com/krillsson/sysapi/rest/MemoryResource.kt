@@ -22,10 +22,14 @@ package com.krillsson.sysapi.rest
 
 import com.krillsson.sysapi.auth.BasicAuthorizer
 import com.krillsson.sysapi.config.UserConfiguration
+import com.krillsson.sysapi.core.domain.cpu.CpuInfoMapper
 import com.krillsson.sysapi.core.domain.memory.MemoryMapper
 import com.krillsson.sysapi.core.history.MetricsHistoryManager
 import com.krillsson.sysapi.core.metrics.MemoryMetrics
+import com.krillsson.sysapi.dto.cpu.CpuInfo
+import com.krillsson.sysapi.dto.cpu.CpuLoad
 import com.krillsson.sysapi.dto.history.HistoryEntry
+import com.krillsson.sysapi.dto.memory.MemoryInfo
 import com.krillsson.sysapi.dto.memory.MemoryLoad
 import io.dropwizard.auth.Auth
 import java.time.OffsetDateTime
@@ -43,9 +47,15 @@ class MemoryResource(
     private val provider: MemoryMetrics,
     private val historyManager: MetricsHistoryManager
 ) {
+
     @GET
-    @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-    fun getRoot(): MemoryLoad? {
+    fun getRoot(): MemoryInfo {
+        return MemoryMapper.INSTANCE.map(provider.memoryInfo())
+    }
+
+    @GET
+    @Path("load")
+    fun getLoad(): MemoryLoad {
         return MemoryMapper.INSTANCE.map(provider.memoryLoad())
     }
 

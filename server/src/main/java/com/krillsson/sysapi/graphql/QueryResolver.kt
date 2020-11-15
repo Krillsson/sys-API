@@ -10,6 +10,7 @@ import com.krillsson.sysapi.core.domain.event.MonitorEvent
 import com.krillsson.sysapi.core.domain.gpu.Gpu
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad
 import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
+import com.krillsson.sysapi.core.domain.memory.MemoryInfo
 import com.krillsson.sysapi.core.domain.memory.MemoryLoad
 import com.krillsson.sysapi.core.domain.motherboard.Motherboard
 import com.krillsson.sysapi.core.domain.network.NetworkInterface
@@ -55,6 +56,7 @@ class QueryResolver : GraphQLQueryResolver {
     val driveMetricResolver = DriveMetricResolver()
     val networkInterfaceResolver = NetworkInterfaceResolver()
     val memoryLoadResolver = MemoryLoadResolver()
+    val memoryInfoResolver = MemoryInfoResolver()
     val networkInterfaceMetricResolver = NetworkInterfaceMetricResolver()
 
     fun system(): SystemInfo {
@@ -65,25 +67,25 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     fun history(): List<SystemHistoryEntry> {
-        return historyManager?.getHistory()?.map {
+        return historyManager.getHistory().map {
             SystemHistoryEntry(
                 it.date,
                 it.value
             )
-        }?.toList().orEmpty()
+        }.toList()
     }
 
     fun monitors(): List<Monitor> {
-        return monitorManager?.getAll()?.toList().orEmpty()
+        return monitorManager.getAll().toList()
     }
 
-    fun events() = eventManager?.getAll()?.toList().orEmpty()
+    fun events() = eventManager.getAll().toList()
 
     inner class SystemInfoResolver : GraphQLResolver<SystemInfo> {
-        fun processorMetrics(system: SystemInfo) = metrics?.cpuMetrics()?.cpuLoad()
+        fun processorMetrics(system: SystemInfo) = metrics.cpuMetrics().cpuLoad()
 
         fun getBaseboard(system: SystemInfo): Motherboard? {
-            return metrics?.motherboardMetrics()?.motherboard()
+            return metrics.motherboardMetrics().motherboard()
         }
 
         fun getHostname(system: SystemInfo): String {
@@ -95,15 +97,15 @@ class QueryResolver : GraphQLQueryResolver {
         }
 
         fun getUptime(system: SystemInfo): Long? {
-            return metrics?.cpuMetrics()?.uptime()
+            return metrics.cpuMetrics().uptime()
         }
 
         fun getProcessor(system: SystemInfo): CentralProcessor? {
-            return metrics?.cpuMetrics()?.cpuInfo()?.centralProcessor
+            return metrics.cpuMetrics().cpuInfo().centralProcessor
         }
 
         fun getGraphics(system: SystemInfo): List<Gpu?>? {
-            return metrics?.gpuMetrics()?.gpus()
+            return metrics.gpuMetrics().gpus()
         }
 
         fun getProcesses(
@@ -111,8 +113,8 @@ class QueryResolver : GraphQLQueryResolver {
             limit: Int = 0,
             processSortMethod: ProcessSort = ProcessSort.MEMORY
         ): List<Process?>? {
-            return metrics?.processesMetrics()
-                ?.processesInfo(processSortMethod, limit)?.processes
+            return metrics.processesMetrics()
+                .processesInfo(processSortMethod, limit).processes
         }
     }
 
@@ -135,17 +137,17 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     inner class ProcessorResolver : GraphQLResolver<CentralProcessor> {
-        fun getMetrics(processor: CentralProcessor) = metrics?.cpuMetrics()?.cpuLoad()
+        fun getMetrics(processor: CentralProcessor) = metrics.cpuMetrics().cpuLoad()
     }
 
     inner class ProcessorMetricsResolver : GraphQLResolver<CpuLoad> {
-        fun getVoltage(cpuLoad: CpuLoad) = metrics?.cpuMetrics()?.cpuLoad()?.cpuHealth?.voltage
-        fun getFanRpm(cpuLoad: CpuLoad) = metrics?.cpuMetrics()?.cpuLoad()?.cpuHealth?.fanRpm
+        fun getVoltage(cpuLoad: CpuLoad) = metrics.cpuMetrics().cpuLoad().cpuHealth.voltage
+        fun getFanRpm(cpuLoad: CpuLoad) = metrics.cpuMetrics().cpuLoad().cpuHealth.fanRpm
         fun getFanPercent(cpuLoad: CpuLoad) =
-            metrics?.cpuMetrics()?.cpuLoad()?.cpuHealth?.fanPercent
+            metrics.cpuMetrics().cpuLoad().cpuHealth.fanPercent
 
         fun getTemperatures(cpuLoad: CpuLoad) =
-            metrics?.cpuMetrics()?.cpuLoad()?.cpuHealth?.temperatures
+            metrics.cpuMetrics().cpuLoad().cpuHealth.temperatures
     }
 
     inner class MonitorResolver : GraphQLResolver<Monitor> {
@@ -167,7 +169,7 @@ class QueryResolver : GraphQLQueryResolver {
 
     inner class DriveResolver : GraphQLResolver<Drive> {
         fun getId(drive: Drive) = drive.serial
-        fun getMetrics(drive: Drive) = metrics?.driveMetrics()?.driveLoadByName(drive.name)
+        fun getMetrics(drive: Drive) = metrics.driveMetrics().driveLoadByName(drive.name)
     }
 
     inner class DriveMetricResolver : GraphQLResolver<DriveLoad> {
@@ -203,7 +205,7 @@ class QueryResolver : GraphQLQueryResolver {
     inner class NetworkInterfaceResolver : GraphQLResolver<NetworkInterface> {
         fun getId(networkInterface: NetworkInterface) = networkInterface.name
         fun getMetrics(networkInterface: NetworkInterface) =
-            metrics?.networkMetrics()?.networkInterfaceLoadById(networkInterface.name)
+            metrics.networkMetrics().networkInterfaceLoadById(networkInterface.name)
     }
 
     inner class NetworkInterfaceMetricResolver : GraphQLResolver<NetworkInterfaceLoad> {
@@ -243,16 +245,10 @@ class QueryResolver : GraphQLQueryResolver {
     )
 
     inner class MemoryLoadResolver : GraphQLResolver<MemoryLoad> {
-        fun getSwapTotalBytes(memoryLoad: MemoryLoad) = memoryLoad.swapTotal
-        fun getTotalBytes(memoryLoad: MemoryLoad) = memoryLoad.total
-        fun getMetrics(memoryLoad: MemoryLoad) =
-            MemoryMetrics(memoryLoad.numberOfProcesses, memoryLoad.swapUsed, memoryLoad.available, memoryLoad.usedPercent)
+
     }
 
-    data class MemoryMetrics(
-        val numberOfProcesses: Int,
-        val swapUsedBytes: Long,
-        val availableBytes: Long,
-        val usedPercent: Double
-    )
+    inner class MemoryInfoResolver : GraphQLResolver<MemoryInfo> {
+        fun metrics(info: MemoryInfo) = metrics.memoryMetrics().memoryLoad()
+    }
 }

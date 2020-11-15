@@ -28,6 +28,7 @@ class GraphQLConfiguration {
                 queryResolver.driveResolver,
                 queryResolver.networkInterfaceResolver,
                 queryResolver.memoryLoadResolver,
+                queryResolver.memoryInfoResolver,
                 queryResolver.processorMetricsResolver,
                 queryResolver.driveMetricResolver,
                 queryResolver.networkInterfaceMetricResolver

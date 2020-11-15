@@ -69,7 +69,7 @@ class Process(
                 process.priority,
                 process.virtualSize,
                 process.residentSetSize,
-                100.0 * process.residentSetSize / memory.total,
+                100.0 * process.residentSetSize / memory.totalBytes,
                 process.kernelTime, process.userTime,
                 process.upTime,
                 100.0 * (process.kernelTime + process.userTime) / process.upTime,
