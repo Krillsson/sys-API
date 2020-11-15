@@ -29,7 +29,6 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: 'maven'
     apply plugin: 'java'
     apply plugin: 'kotlin'
 
@@ -81,10 +80,6 @@ project(':sys-api-server') {
 
     run {
         args project.hasProperty("appArgs") ? Eval.me(appArgs) : ['server', 'src/dist/configuration.yml']
-    }
-
-    runShadow {
-
     }
 
     jar {
