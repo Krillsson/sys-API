@@ -1,13 +1,12 @@
 :computer: System API
 =====================
-[![Build Status](https://travis-ci.org/Krillsson/sys-API.svg?branch=master)](https://travis-ci.org/Krillsson/sys-API)
 [![Coverage Status](https://coveralls.io/repos/github/Krillsson/sys-api/badge.svg?branch=develop)](https://coveralls.io/github/Krillsson/sys-api?branch=develop)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=com.krillsson%3Asys-api&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=com.krillsson%3Asys-api)
 
-System API (sys-API) is a RESTful API to your computers hardware.
+System API (sys-API) provide both GraphQL and RESTful API's to your computers hardware.
 
-Sys-API publishes and monitors values from [OSHI](https://github.com/oshi/oshi) with the help of [Dropwizard](https://github.com/dropwizard/dropwizard). On Windows the information is supplemented with
-[OpenHardwareMonitor](https://github.com/openhardwaremonitor/openhardwaremonitor) with a little help from [OhmJni4Net](https://github.com/Krillsson/ohmjni4net).
+It publishes and monitors values from [OSHI](https://github.com/oshi/oshi) with the help of [Dropwizard](https://github.com/dropwizard/dropwizard). On Windows the information is supplemented with
+[OpenHardwareMonitor](https://github.com/openhardwaremonitor/openhardwaremonitor) with a bit of help from [OhmJni4Net](https://github.com/Krillsson/ohmjni4net).
 
 ## What can it do?
 
@@ -78,7 +77,7 @@ Sys-API publishes and monitors values from [OSHI](https://github.com/oshi/oshi) 
 
 ### GraphQL
 
-GraphQL is now available through the /graphql endpoint. It supports the exact same features as the REST-API. Checkout the [schema](server/src/main/resources/schema.graphqls).
+GraphQL is available through the `/graphql` endpoint. It supports the exact same features as the REST-API. Checkout the [schema](server/src/main/resources/schema.graphqls).
 
 A web-UI for trying out the GraphQL-API is also available at `<IP>:8080/`. If you don't want to expose this functionality. It can be disabled via the configuration.
 
