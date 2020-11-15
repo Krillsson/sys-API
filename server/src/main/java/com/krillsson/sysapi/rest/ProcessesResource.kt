@@ -21,13 +21,10 @@
 package com.krillsson.sysapi.rest
 
 import com.krillsson.sysapi.auth.BasicAuthorizer
-import com.krillsson.sysapi.config.UserConfiguration
-import com.krillsson.sysapi.core.domain.processes.ProcessInfoMapper
+import com.krillsson.sysapi.core.domain.processes.Process
 import com.krillsson.sysapi.core.domain.processes.ProcessSort
+import com.krillsson.sysapi.core.domain.processes.ProcessesInfo
 import com.krillsson.sysapi.core.metrics.ProcessesMetrics
-import com.krillsson.sysapi.dto.processes.Process
-import com.krillsson.sysapi.dto.processes.ProcessInfo
-import io.dropwizard.auth.Auth
 import org.slf4j.LoggerFactory
 import java.util.Optional
 import javax.annotation.security.RolesAllowed
@@ -48,7 +45,7 @@ class ProcessesResource(private val provider: ProcessesMetrics) {
     fun getRoot(
         @QueryParam("sortBy") processSort: Optional<String>,
         @QueryParam("limit") limit: Optional<Int>
-    ): ProcessInfo {
+    ): ProcessesInfo {
         var sortBy = DEFAULT_PROCESS_ORDER
         if (processSort.isPresent) {
             val method = processSort.get().toUpperCase()
@@ -75,22 +72,18 @@ class ProcessesResource(private val provider: ProcessesMetrics) {
             LOGGER.error(message)
             throw WebApplicationException(message, Response.Status.BAD_REQUEST)
         }
-        val value = provider.processesInfo(sortBy, theLimit)
-        return ProcessInfoMapper.INSTANCE.map(value)
+        return provider.processesInfo(sortBy, theLimit)
     }
 
     @GET
     @Path("{pid}")
-    fun getProcessByPid(@PathParam("pid") pid: Int): Process? {
-        val process =
-            provider.getProcessByPid(pid)
-        if (!process.isPresent) {
+    fun getProcessByPid(@PathParam("pid") pid: Int): Process {
+        return provider.getProcessByPid(pid).orElseThrow {
             throw WebApplicationException(
                 String.format("No process with PID %d was found.", pid),
                 Response.Status.NOT_FOUND
             )
         }
-        return ProcessInfoMapper.INSTANCE.map(process.get())
     }
 
     companion object {

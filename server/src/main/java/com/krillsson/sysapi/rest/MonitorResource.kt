@@ -1,15 +1,11 @@
 package com.krillsson.sysapi.rest
 
 import com.krillsson.sysapi.auth.BasicAuthorizer
-import com.krillsson.sysapi.config.UserConfiguration
+import com.krillsson.sysapi.core.domain.event.MonitorEvent
 import com.krillsson.sysapi.core.monitoring.EventManager
+import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.MonitorMapper
-import com.krillsson.sysapi.dto.monitor.CreateMonitor
-import com.krillsson.sysapi.dto.monitor.Monitor
-import com.krillsson.sysapi.dto.monitor.MonitorCreated
-import com.krillsson.sysapi.dto.monitor.MonitorEvent
-import io.dropwizard.auth.Auth
 import java.time.Duration
 import java.util.*
 import javax.annotation.security.RolesAllowed
@@ -23,22 +19,20 @@ import javax.ws.rs.core.Response
 class MonitorResource(private val monitorManager: MonitorManager, private val eventManager: EventManager) {
     @GET
     fun getRoot(): List<Monitor> {
-        return MonitorMapper.INSTANCE.mapList(monitorManager.getAll())
+        return monitorManager.getAll()
     }
 
     @GET
     @Path("{id}")
     fun monitorById(@PathParam("id") id: String): Monitor {
-        val monitor = monitorManager.getById(UUID.fromString(id))
+       return monitorManager.getById(UUID.fromString(id))
                 ?: throw WebApplicationException("No monitor with id $id was found", Response.Status.NOT_FOUND)
-        return MonitorMapper.INSTANCE.map(monitor)
     }
 
     @GET
     @Path("{id}/events")
     fun getEventForMonitorId(@PathParam("id") monitorId: String?): List<MonitorEvent> {
-        val events = eventManager.eventsForMonitorId(UUID.fromString(monitorId))
-        return MonitorMapper.INSTANCE.map(events)
+        return eventManager.eventsForMonitorId(UUID.fromString(monitorId))
     }
 
     @POST

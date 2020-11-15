@@ -21,14 +21,12 @@
 package com.krillsson.sysapi.rest
 
 import com.krillsson.sysapi.auth.BasicAuthorizer
-import com.krillsson.sysapi.config.UserConfiguration
+import com.krillsson.sysapi.core.domain.history.HistoryEntry
+import com.krillsson.sysapi.core.domain.network.NetworkInterface
+import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad
 import com.krillsson.sysapi.core.domain.network.NetworkInterfacesMapper
 import com.krillsson.sysapi.core.history.MetricsHistoryManager
 import com.krillsson.sysapi.core.metrics.NetworkMetrics
-import com.krillsson.sysapi.dto.history.HistoryEntry
-import com.krillsson.sysapi.dto.network.NetworkInterface
-import com.krillsson.sysapi.dto.network.NetworkInterfaceLoad
-import io.dropwizard.auth.Auth
 import java.time.OffsetDateTime
 import javax.annotation.security.RolesAllowed
 import javax.ws.rs.GET
@@ -50,35 +48,31 @@ class NetworkInterfacesResource(
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     fun networkInterfaces(): List<NetworkInterface> {
-        return NetworkInterfacesMapper.INSTANCE.map(infoProvider.networkInterfaces())
+        return infoProvider.networkInterfaces()
     }
 
     @GET
     @Path("loads")
     fun networkInterfaceLoads(): List<NetworkInterfaceLoad> {
-        return NetworkInterfacesMapper.INSTANCE.mapLoads(infoProvider.networkInterfaceLoads())
+        return infoProvider.networkInterfaceLoads()
     }
 
     @GET
     @Path("{id}")
     fun networkInterfaceById(
-        @PathParam("id") id: String?
+        @PathParam("id") id: String
     ): NetworkInterface {
-        return NetworkInterfacesMapper.INSTANCE.map(
-            infoProvider.networkInterfaceById(id!!)
-                .orElseThrow { WebApplicationException(Response.Status.NOT_FOUND) }
-        )
+        return infoProvider.networkInterfaceById(id)
+            .orElseThrow { WebApplicationException(Response.Status.NOT_FOUND) }
     }
 
     @GET
     @Path("loads/{id}")
     fun networkInterfaceLoadById(
-        @PathParam("id") id: String?
+        @PathParam("id") id: String
     ): NetworkInterfaceLoad {
-        return NetworkInterfacesMapper.INSTANCE.map(
-            infoProvider.networkInterfaceLoadById(id!!)
-                .orElseThrow { WebApplicationException(Response.Status.NOT_FOUND) }
-        )
+        return infoProvider.networkInterfaceLoadById(id)
+            .orElseThrow { WebApplicationException(Response.Status.NOT_FOUND) }
     }
 
     @GET
@@ -87,6 +81,9 @@ class NetworkInterfacesResource(
         @QueryParam("fromDate") fromDate: OffsetDateTime?,
         @QueryParam("toDate") toDate: OffsetDateTime?
     ): List<HistoryEntry<List<NetworkInterfaceLoad>>> {
-        return NetworkInterfacesMapper.INSTANCE.mapHistory(historyManager.networkInterfaceLoadHistory(fromDate, toDate))
+        return historyManager.networkInterfaceLoadHistory(
+            fromDate,
+            toDate
+        )
     }
 }
