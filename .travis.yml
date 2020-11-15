@@ -1,18 +1,11 @@
 language: java
 
-script: mvn test
-
-after_success:
-  - if [ "$AFTER_SUCCESS" == "jacoco" ]; then
-      mvn clean test jacoco:report coveralls:report -DrepoToken=$COVERALLS_TOKEN;
-      mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.login=$SONAR_TOKEN;
-    fi
+script: gradle test
 
 matrix:
   include:
     - os: linux
       jdk: oraclejdk8
-      env: AFTER_SUCCESS="jacoco"
     - os: linux
       jdk: oraclejdk8
     - os: osx

@@ -5,7 +5,6 @@ import com.krillsson.sysapi.core.domain.event.MonitorEvent
 import com.krillsson.sysapi.core.monitoring.EventManager
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorManager
-import com.krillsson.sysapi.core.monitoring.MonitorMapper
 import java.time.Duration
 import java.util.*
 import javax.annotation.security.RolesAllowed
@@ -38,7 +37,7 @@ class MonitorResource(private val monitorManager: MonitorManager, private val ev
     @POST
     fun createMonitor(monitor: CreateMonitor): MonitorCreated {
         return try {
-            val added = monitorManager.add(Duration.ofSeconds(monitor.inertiaInSeconds), MonitorMapper.INSTANCE.map(monitor.type), monitor.threshold, monitor.idToMonitor)
+            val added = monitorManager.add(Duration.ofSeconds(monitor.inertiaInSeconds), monitor.type, monitor.threshold, monitor.idToMonitor)
             MonitorCreated(added.toString())
         } catch (e: IllegalArgumentException) {
             throw WebApplicationException(e.message, Response.Status.NOT_FOUND)
