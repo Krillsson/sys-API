@@ -21,14 +21,11 @@
 package com.krillsson.sysapi.rest
 
 import com.krillsson.sysapi.auth.BasicAuthorizer
-import com.krillsson.sysapi.config.UserConfiguration
-import com.krillsson.sysapi.core.domain.gpu.GpuInfoMapper
+import com.krillsson.sysapi.core.domain.gpu.Gpu
+import com.krillsson.sysapi.core.domain.gpu.GpuLoad
+import com.krillsson.sysapi.core.domain.history.HistoryEntry
 import com.krillsson.sysapi.core.history.MetricsHistoryManager
 import com.krillsson.sysapi.core.metrics.GpuMetrics
-import com.krillsson.sysapi.dto.gpu.Gpu
-import com.krillsson.sysapi.dto.gpu.GpuLoad
-import com.krillsson.sysapi.dto.history.HistoryEntry
-import io.dropwizard.auth.Auth
 import java.time.OffsetDateTime
 import javax.annotation.security.RolesAllowed
 import javax.ws.rs.GET
@@ -40,16 +37,19 @@ import javax.ws.rs.core.MediaType
 @Path("gpus")
 @Produces(MediaType.APPLICATION_JSON)
 @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-class GpuResource(private val provider: GpuMetrics, private val historyManager: MetricsHistoryManager) {
+class GpuResource(
+    private val provider: GpuMetrics,
+    private val historyManager: MetricsHistoryManager
+) {
     @GET
     fun getRoot(): List<Gpu> {
-        return GpuInfoMapper.INSTANCE.mapGpus(provider.gpus())
+        return provider.gpus()
     }
 
     @GET
     @Path("loads")
     fun getLoad(): List<GpuLoad> {
-        return GpuInfoMapper.INSTANCE.map(provider.gpuLoads())
+        return provider.gpuLoads()
     }
 
     @GET
@@ -58,6 +58,6 @@ class GpuResource(private val provider: GpuMetrics, private val historyManager: 
         @QueryParam("fromDate") fromDate: OffsetDateTime?,
         @QueryParam("toDate") toDate: OffsetDateTime?
     ): List<HistoryEntry<List<GpuLoad>>> {
-        return GpuInfoMapper.INSTANCE.mapHistory(historyManager.gpuLoadHistory(fromDate, toDate))
+        return historyManager.gpuLoadHistory(fromDate, toDate)
     }
 }

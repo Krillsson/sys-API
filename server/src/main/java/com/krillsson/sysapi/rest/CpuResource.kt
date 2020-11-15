@@ -21,14 +21,11 @@
 package com.krillsson.sysapi.rest
 
 import com.krillsson.sysapi.auth.BasicAuthorizer
-import com.krillsson.sysapi.config.UserConfiguration
-import com.krillsson.sysapi.core.domain.cpu.CpuInfoMapper
+import com.krillsson.sysapi.core.domain.cpu.CpuInfo
+import com.krillsson.sysapi.core.domain.cpu.CpuLoad
+import com.krillsson.sysapi.core.domain.history.HistoryEntry
 import com.krillsson.sysapi.core.history.MetricsHistoryManager
 import com.krillsson.sysapi.core.metrics.CpuMetrics
-import com.krillsson.sysapi.dto.cpu.CpuInfo
-import com.krillsson.sysapi.dto.cpu.CpuLoad
-import com.krillsson.sysapi.dto.history.HistoryEntry
-import io.dropwizard.auth.Auth
 import java.time.OffsetDateTime
 import javax.annotation.security.RolesAllowed
 import javax.ws.rs.GET
@@ -43,13 +40,13 @@ import javax.ws.rs.core.MediaType
 class CpuResource(private val provider: CpuMetrics, private val historyManager: MetricsHistoryManager) {
     @GET
     fun getRoot(): CpuInfo {
-        return CpuInfoMapper.INSTANCE.map(provider.cpuInfo())
+        return provider.cpuInfo()
     }
 
     @GET
     @Path("load")
     fun getLoad(): CpuLoad {
-        return CpuInfoMapper.INSTANCE.map(provider.cpuLoad())
+        return provider.cpuLoad()
     }
 
     @GET
@@ -59,6 +56,6 @@ class CpuResource(private val provider: CpuMetrics, private val historyManager: 
         @QueryParam("fromDate") fromDate: OffsetDateTime?,
         @QueryParam("toDate") toDate: OffsetDateTime?
     ): List<HistoryEntry<CpuLoad>> {
-        return CpuInfoMapper.INSTANCE.mapHistory(historyManager.cpuLoadHistory(fromDate, toDate))
+        return historyManager.cpuLoadHistory(fromDate, toDate)
     }
 }

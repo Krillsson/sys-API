@@ -21,16 +21,14 @@
 package com.krillsson.sysapi.rest
 
 import com.krillsson.sysapi.auth.BasicAuthorizer
-import com.krillsson.sysapi.config.UserConfiguration
+import com.krillsson.sysapi.core.domain.history.HistoryEntry
 import com.krillsson.sysapi.core.domain.processes.ProcessSort
+import com.krillsson.sysapi.core.domain.system.JvmProperties
+import com.krillsson.sysapi.core.domain.system.SystemInfo
 import com.krillsson.sysapi.core.domain.system.SystemInfoMapper
+import com.krillsson.sysapi.core.domain.system.SystemLoad
 import com.krillsson.sysapi.core.history.MetricsHistoryManager
 import com.krillsson.sysapi.core.metrics.SystemMetrics
-import com.krillsson.sysapi.dto.history.HistoryEntry
-import com.krillsson.sysapi.dto.system.JvmProperties
-import com.krillsson.sysapi.dto.system.SystemInfo
-import com.krillsson.sysapi.dto.system.SystemLoad
-import io.dropwizard.auth.Auth
 import org.slf4j.LoggerFactory
 import java.time.OffsetDateTime
 import java.util.HashMap
@@ -55,9 +53,7 @@ class SystemResource(
 ) {
     @GET
     fun getRoot(): SystemInfo {
-        return SystemInfoMapper.INSTANCE.map(
-            systemMetrics.systemInfo()
-        )
+        return systemMetrics.systemInfo()
     }
 
     @GET
@@ -91,9 +87,7 @@ class SystemResource(
             LOGGER.error(message)
             throw WebApplicationException(message, Response.Status.BAD_REQUEST)
         }
-        return SystemInfoMapper.INSTANCE.map(
-            systemMetrics.systemLoad(sortBy, theLimit)
-        )
+        return systemMetrics.systemLoad(sortBy, theLimit)
     }
 
     @GET
@@ -102,7 +96,7 @@ class SystemResource(
         @QueryParam("fromDate") fromDate: OffsetDateTime?,
         @QueryParam("toDate") toDate: OffsetDateTime?
     ): List<HistoryEntry<SystemLoad>> {
-        return SystemInfoMapper.INSTANCE.mapHistory(historyManager.systemLoadHistory(fromDate, toDate))
+        return historyManager.systemLoadHistory(fromDate, toDate)
     }
 
     @GET
@@ -120,7 +114,7 @@ class SystemResource(
         for ((key, value) in systemProperties) {
             propertiesMap[key as String] = value as String
         }
-        return SystemInfoMapper.INSTANCE.map(com.krillsson.sysapi.core.domain.system.JvmProperties(propertiesMap))
+        return JvmProperties(propertiesMap)
     }
 
     companion object {

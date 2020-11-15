@@ -21,17 +21,11 @@
 package com.krillsson.sysapi.rest
 
 import com.krillsson.sysapi.auth.BasicAuthorizer
-import com.krillsson.sysapi.config.UserConfiguration
-import com.krillsson.sysapi.core.domain.cpu.CpuInfoMapper
-import com.krillsson.sysapi.core.domain.memory.MemoryMapper
+import com.krillsson.sysapi.core.domain.history.HistoryEntry
+import com.krillsson.sysapi.core.domain.memory.MemoryInfo
+import com.krillsson.sysapi.core.domain.memory.MemoryLoad
 import com.krillsson.sysapi.core.history.MetricsHistoryManager
 import com.krillsson.sysapi.core.metrics.MemoryMetrics
-import com.krillsson.sysapi.dto.cpu.CpuInfo
-import com.krillsson.sysapi.dto.cpu.CpuLoad
-import com.krillsson.sysapi.dto.history.HistoryEntry
-import com.krillsson.sysapi.dto.memory.MemoryInfo
-import com.krillsson.sysapi.dto.memory.MemoryLoad
-import io.dropwizard.auth.Auth
 import java.time.OffsetDateTime
 import javax.annotation.security.RolesAllowed
 import javax.ws.rs.GET
@@ -50,13 +44,13 @@ class MemoryResource(
 
     @GET
     fun getRoot(): MemoryInfo {
-        return MemoryMapper.INSTANCE.map(provider.memoryInfo())
+        return provider.memoryInfo()
     }
 
     @GET
     @Path("load")
     fun getLoad(): MemoryLoad {
-        return MemoryMapper.INSTANCE.map(provider.memoryLoad())
+        return provider.memoryLoad()
     }
 
     @GET
@@ -66,6 +60,6 @@ class MemoryResource(
         @QueryParam("fromDate") fromDate: OffsetDateTime?,
         @QueryParam("toDate") toDate: OffsetDateTime?
     ): List<HistoryEntry<MemoryLoad>> {
-        return MemoryMapper.INSTANCE.mapHistory(historyManager.memoryHistory(fromDate, toDate))
+        return historyManager.memoryHistory(fromDate, toDate)
     }
 }

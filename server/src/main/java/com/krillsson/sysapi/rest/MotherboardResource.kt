@@ -21,13 +21,9 @@
 package com.krillsson.sysapi.rest
 
 import com.krillsson.sysapi.auth.BasicAuthorizer
-import com.krillsson.sysapi.config.UserConfiguration
-import com.krillsson.sysapi.core.domain.motherboard.MotherboardMapper
-import com.krillsson.sysapi.core.domain.sensors.SensorsInfoMapper
+import com.krillsson.sysapi.core.domain.motherboard.Motherboard
+import com.krillsson.sysapi.core.domain.sensors.HealthData
 import com.krillsson.sysapi.core.metrics.MotherboardMetrics
-import com.krillsson.sysapi.dto.motherboard.Motherboard
-import com.krillsson.sysapi.dto.sensors.HealthData
-import io.dropwizard.auth.Auth
 import javax.annotation.security.RolesAllowed
 import javax.ws.rs.GET
 import javax.ws.rs.Path
@@ -41,12 +37,12 @@ class MotherboardResource(var provider: MotherboardMetrics) {
     @GET
     @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
     fun getRoot(): Motherboard {
-        return MotherboardMapper.INSTANCE.map(provider.motherboard())
+        return provider.motherboard()
     }
 
     @GET
     @Path("health")
     fun getHealths(): List<HealthData> {
-        return SensorsInfoMapper.INSTANCE.mapDatas(provider.motherboardHealth())
+        return provider.motherboardHealth()
     }
 }

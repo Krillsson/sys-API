@@ -22,8 +22,7 @@ package com.krillsson.sysapi.rest
 
 import com.krillsson.sysapi.auth.BasicAuthorizer
 import com.krillsson.sysapi.config.UserConfiguration
-import com.krillsson.sysapi.core.domain.metadata.MetaMapper
-import com.krillsson.sysapi.dto.metadata.Meta
+import com.krillsson.sysapi.core.domain.metadata.Meta
 import io.dropwizard.auth.Auth
 import javax.annotation.security.RolesAllowed
 import javax.ws.rs.GET
@@ -46,7 +45,7 @@ class MetaInfoResource(
 
     @GET
     fun getRoot(): Meta {
-        return MetaMapper.INSTANCE.map(com.krillsson.sysapi.core.domain.metadata.Meta(endpoints, version))
+        return Meta(endpoints, version)
     }
 
     @GET

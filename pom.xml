@@ -11,7 +11,6 @@
 
     <modules>
         <module>server</module>
-        <module>dto</module>
     </modules>
 
     <properties>
@@ -19,6 +18,8 @@
         <dropwizard.version>2.0.15</dropwizard.version>
         <copyright>2017</copyright>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+        <kotlin.version>1.4.10</kotlin.version>
+        <java.version>8</java.version>
         <maven.min-version>3.2.3</maven.min-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>

@@ -22,12 +22,11 @@ package com.krillsson.sysapi.rest
 
 import com.krillsson.sysapi.auth.BasicAuthorizer
 import com.krillsson.sysapi.config.UserConfiguration
-import com.krillsson.sysapi.core.domain.drives.DriveMetricsMapper
+import com.krillsson.sysapi.core.domain.drives.Drive
+import com.krillsson.sysapi.core.domain.drives.DriveLoad
+import com.krillsson.sysapi.core.domain.history.HistoryEntry
 import com.krillsson.sysapi.core.history.MetricsHistoryManager
 import com.krillsson.sysapi.core.metrics.DriveMetrics
-import com.krillsson.sysapi.dto.drives.Drive
-import com.krillsson.sysapi.dto.drives.DriveLoad
-import com.krillsson.sysapi.dto.history.HistoryEntry
 import io.dropwizard.auth.Auth
 import java.time.OffsetDateTime
 import javax.annotation.security.RolesAllowed
@@ -43,48 +42,47 @@ import javax.ws.rs.core.Response
 @Path("drives")
 @Produces(MediaType.APPLICATION_JSON)
 @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-class DrivesResource(private val provider: DriveMetrics, private val historyManager: MetricsHistoryManager) {
+class DrivesResource(
+    private val provider: DriveMetrics,
+    private val historyManager: MetricsHistoryManager
+) {
     @GET
     fun getRoot(): List<Drive> {
-        return DriveMetricsMapper.INSTANCE.map(provider.drives())
+        return provider.drives()
     }
 
     @GET
     @Path("{name}")
     fun getDiskByName(@PathParam("name") name: String?): Drive {
-        return DriveMetricsMapper.INSTANCE.map(
-            provider.driveByName(name)
-                .orElseThrow {
-                    WebApplicationException(
-                        String.format(
-                            "No disk with name %s was found.",
-                            name
-                        ), Response.Status.NOT_FOUND
-                    )
-                }
-        )
+        return provider.driveByName(name)
+            .orElseThrow {
+                WebApplicationException(
+                    String.format(
+                        "No disk with name %s was found.",
+                        name
+                    ), Response.Status.NOT_FOUND
+                )
+            }
     }
 
     @GET
     @Path("loads/{name}")
     fun getDiskLoadByName(@PathParam("name") name: String?): DriveLoad {
-        return DriveMetricsMapper.INSTANCE.map(
-            provider.driveLoadByName(name)
-                .orElseThrow {
-                    WebApplicationException(
-                        String.format(
-                            "No disk with name %s was found.",
-                            name
-                        ), Response.Status.NOT_FOUND
-                    )
-                }
-        )
+        return provider.driveLoadByName(name)
+            .orElseThrow {
+                WebApplicationException(
+                    String.format(
+                        "No disk with name %s was found.",
+                        name
+                    ), Response.Status.NOT_FOUND
+                )
+            }
     }
 
     @GET
     @Path("loads")
     fun getLoads(@Auth user: UserConfiguration?): List<DriveLoad> {
-        return DriveMetricsMapper.INSTANCE.mapLoads(provider.driveLoads())
+        return provider.driveLoads()
     }
 
     @GET
@@ -94,6 +92,6 @@ class DrivesResource(private val provider: DriveMetrics, private val historyMana
         @QueryParam("fromDate") fromDate: OffsetDateTime?,
         @QueryParam("toDate") toDate: OffsetDateTime?
     ): List<HistoryEntry<List<DriveLoad>>> {
-        return DriveMetricsMapper.INSTANCE.mapHistory(historyManager.driveLoadHistory(fromDate, toDate))
+        return historyManager.driveLoadHistory(fromDate, toDate)
     }
 }
