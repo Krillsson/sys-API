@@ -1,8 +1,24 @@
-### 0.12
+### 0.14
+
+**REST API Breaking changes**
+
+ - Add PhysicalMemory to MemoryInfo
+ - Remove as much nullability from GraphQL schema as possible
+ - Events persistence
+ - Update dependencies
+ 
+### 0.13
  
  - Migration to Kotlin
  - GraphQL support
  - Events persistence
+ 
+### 0.12
+
+ - Dates are now serialized as: `2019-02-04T22:08:42.048+01:00`
+ - Latest dropwizard
+ - Added `GET /monitors/{id}/events` endpoint (get events for a monitor)
+ 
 
 ### 0.11
 
