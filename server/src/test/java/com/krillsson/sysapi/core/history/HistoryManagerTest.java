@@ -26,7 +26,7 @@ public class HistoryManagerTest {
         when(historyConfiguration.getPurging()).thenReturn(purgingConfiguration);
         history = mock(History.class);
         eventBus = mock(EventBus.class);
-        historyManager = new HistoryManager(historyConfiguration, eventBus);
+        historyManager = new HistoryManager(historyConfiguration, eventBus, history);
     }
 
     @Test
@@ -36,7 +36,7 @@ public class HistoryManagerTest {
 
         historyManager.onEvent(new HistoryMetricQueryEvent(mock(SystemLoad.class)));
 
-        verify(history).record(any());
+        verify(history).record(any(SystemLoad.class));
         verify(history).purge(1, ChronoUnit.HOURS);
     }
 

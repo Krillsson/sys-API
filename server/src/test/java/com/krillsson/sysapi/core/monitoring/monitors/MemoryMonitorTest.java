@@ -30,10 +30,10 @@ public class MemoryMonitorTest {
     public void monitorValuesCorrectly() {
         MemoryMonitor memoryMonitor = new MemoryMonitor(UUID.randomUUID(), new MonitorConfig("mem", 1024, Duration.ZERO));
 
-        when(memoryLoad.getAvailable()).thenReturn(512L);
+        when(memoryLoad.getAvailableBytes()).thenReturn(512L);
         assertTrue(memoryMonitor.check(systemLoad));
 
-        when(memoryLoad.getAvailable()).thenReturn(2048L);
+        when(memoryLoad.getAvailableBytes()).thenReturn(2048L);
         assertFalse(memoryMonitor.check(systemLoad));
     }
 }
