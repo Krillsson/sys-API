@@ -85,7 +85,6 @@ class MetricsFactory(
                         hal,
                         platform,
                         ticker,
-                        utils,
                         speedMeasurementManager
                     )
                 }
@@ -98,7 +97,6 @@ class MetricsFactory(
                     hal,
                     platform,
                     ticker,
-                    utils,
                     speedMeasurementManager
                 )
             }
@@ -107,7 +105,6 @@ class MetricsFactory(
                 hal,
                 platform,
                 ticker,
-                utils,
                 speedMeasurementManager
             )
         }

@@ -21,8 +21,7 @@
 package com.krillsson.sysapi.core.domain.cpu
 
 class CpuLoad(
-    val cpuLoadCountingTicks: Double,
-    val cpuLoadOsMxBean: Double,
+    val usagePercentage: Double,
     val systemLoadAverage: Double,
     val coreLoads: List<CoreLoad>,
     val cpuHealth: CpuHealth,

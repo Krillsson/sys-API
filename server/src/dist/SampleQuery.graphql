@@ -39,15 +39,15 @@ query SampleQuery {
             name
             user
             memoryPercent
+            cpuPercent
         }
         processor {
             name
             metrics {
                 temperatures
-                cpuLoadOsMxBean
-                cpuLoadCountingTicks
+                usagePercentage
                 coreLoads {
-                    user
+                    percentage
                 }
             }
         }

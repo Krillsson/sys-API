@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.metrics.windows;
 
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuLoadMetrics;
 import com.krillsson.sysapi.util.Ticker;
 import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuMetrics;
@@ -18,8 +19,8 @@ import java.util.stream.DoubleStream;
 import static com.krillsson.sysapi.core.metrics.windows.util.NullSafeOhmMonitor.nullSafeGetValue;
 
 public class WindowsCpuMetrics extends DefaultCpuMetrics {
-    public WindowsCpuMetrics(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, DelegatingOHMManager monitorManager, Ticker ticker, Utils utils) {
-        super(hal, operatingSystem, new WindowsCpuSensors(hal, monitorManager), utils, ticker);
+    public WindowsCpuMetrics(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, DefaultCpuLoadMetrics defaultCpuLoadMetrics,  DelegatingOHMManager monitorManager, Ticker ticker, Utils utils) {
+        super(hal, operatingSystem, new WindowsCpuSensors(hal, monitorManager), defaultCpuLoadMetrics);
     }
 
     private static class WindowsCpuSensors extends DefaultCpuSensors {

@@ -171,8 +171,7 @@ type Processor {
 }
 
 type ProcessorMetrics {
-    cpuLoadCountingTicks: Float!
-    cpuLoadOsMxBean: Float!
+    usagePercentage: Float!
     systemLoadAverage: Float!
     processCount: Int!
     threadCount: Int!
@@ -184,14 +183,7 @@ type ProcessorMetrics {
 }
 
 type ProcessorCoreMetrics {
-    user: Float!
-    nice: Float!
-    sys: Float!
-    idle: Float!
-    ioWait: Float!
-    irq: Float!
-    softIrq: Float!
-    steal: Float!
+    percentage: Float!
 }
 
 ## Drives

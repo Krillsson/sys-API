@@ -4,6 +4,7 @@
 
  - Optimize GraphQL layer
  - Convert more classes to Kotlin
+ - fix paths for OHMJNIWrapper
 
 ### 0.14
 

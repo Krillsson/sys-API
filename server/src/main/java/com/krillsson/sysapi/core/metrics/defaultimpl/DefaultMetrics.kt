@@ -20,7 +20,7 @@ open class DefaultMetrics(
     private val networkMetrics: DefaultNetworkMetrics,
     private val gpuMetrics: GpuMetrics,
     private val driveMetrics: DefaultDriveMetrics,
-    private val processesMetrics: ProcessesMetrics,
+    private val processesMetrics: DefaultProcessesMetrics,
     private val motherboardMetrics: MotherboardMetrics,
     private val memoryMetrics: MemoryMetrics,
     private val systemMetrics: SystemMetrics,
@@ -30,6 +30,7 @@ open class DefaultMetrics(
         cpuMetrics.register()
         driveMetrics.register()
         networkMetrics.register()
+        processesMetrics.register()
     }
 
     override fun cpuMetrics(): CpuMetrics {
