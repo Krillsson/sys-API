@@ -24,10 +24,6 @@ class DefaultProcessesMetrics(
     private val ticker: Ticker,
 ) : ProcessesMetrics, Ticker.TickListener {
 
-    companion object {
-
-    }
-
     private val priorSnapshotMap: MutableMap<Int, OSProcess> = mutableMapOf()
     private val currentLoad: MutableMap<Int, Double> = mutableMapOf()
 
