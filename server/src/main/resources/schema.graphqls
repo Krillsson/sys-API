@@ -212,7 +212,7 @@ type DiskOsPartition {
     name: String!
     type: String!
     uuid: UUID!
-    size: Int!
+    sizeBytes: Long!
     major: Int!
     minor: Int!
     mountPoint: String!
@@ -229,7 +229,7 @@ type Partition {
     name: String!
     type: String!
     uuid: String!
-    size: Int!
+    sizeBytes: Long!
     major: Int!
     minor: Int!
     mountPoint: String!
@@ -239,8 +239,8 @@ type DriveMetrics {
     driveId: UUID!
     temperature: Int!
     healthData: [DriveHealth!]!
-    usableSpace: Int!
-    totalSpace: Int!
+    usableSpaceBytes: Long!
+    totalSpaceBytes: Long!
     openFileDescriptors: Int!
     maxFileDescriptors: Int!
     reads: Int!

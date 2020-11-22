@@ -7,6 +7,6 @@ import java.util.Optional
 interface DriveMetrics {
     fun drives(): List<Drive>
     fun driveLoads(): List<DriveLoad>
-    fun driveByName(name: String?): Optional<Drive>
-    fun driveLoadByName(name: String?): Optional<DriveLoad>
+    fun driveByName(name: String): Optional<Drive>
+    fun driveLoadByName(name: String): Optional<DriveLoad>
 }

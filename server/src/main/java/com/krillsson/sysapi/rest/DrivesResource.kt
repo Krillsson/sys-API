@@ -53,7 +53,7 @@ class DrivesResource(
 
     @GET
     @Path("{name}")
-    fun getDiskByName(@PathParam("name") name: String?): Drive {
+    fun getDiskByName(@PathParam("name") name: String): Drive {
         return provider.driveByName(name)
             .orElseThrow {
                 WebApplicationException(
@@ -67,7 +67,7 @@ class DrivesResource(
 
     @GET
     @Path("loads/{name}")
-    fun getDiskLoadByName(@PathParam("name") name: String?): DriveLoad {
+    fun getDiskLoadByName(@PathParam("name") name: String): DriveLoad {
         return provider.driveLoadByName(name)
             .orElseThrow {
                 WebApplicationException(

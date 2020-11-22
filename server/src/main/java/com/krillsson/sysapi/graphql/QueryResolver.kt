@@ -18,12 +18,14 @@ import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad
 import com.krillsson.sysapi.core.domain.processes.Process
 import com.krillsson.sysapi.core.domain.processes.ProcessSort
 import com.krillsson.sysapi.core.domain.sensors.DataType
-import com.krillsson.sysapi.core.domain.system.SystemInfo
+import com.krillsson.sysapi.core.domain.system.OperatingSystem
+import com.krillsson.sysapi.core.domain.system.Platform
 import com.krillsson.sysapi.core.history.HistoryManager
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.EventManager
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorManager
+import com.krillsson.sysapi.util.EnvironmentUtils
 import oshi.hardware.UsbDevice
 
 class QueryResolver : GraphQLQueryResolver {
@@ -32,20 +34,26 @@ class QueryResolver : GraphQLQueryResolver {
     lateinit var monitorManager: MonitorManager
     lateinit var eventManager: EventManager
     lateinit var historyManager: HistoryManager
+    lateinit var operatingSystem: OperatingSystem
+    lateinit var platform: Platform
 
     fun initialize(
         metrics: Metrics,
         monitorManager: MonitorManager,
         eventManager: EventManager,
-        historyManager: HistoryManager
+        historyManager: HistoryManager,
+        operatingSystem: OperatingSystem,
+        platform: Platform
     ) {
         this.metrics = metrics
         this.monitorManager = monitorManager
         this.eventManager = eventManager
         this.historyManager = historyManager
+        this.operatingSystem = operatingSystem
+        this.platform = platform
     }
 
-    val systemInfoResolver = SystemInfoResolver()
+    val systemInfoResolver = SystemResolver()
     val historyResolver = HistoryResolver()
     val monitorResolver = MonitorResolver()
     val monitorEventResolver = MonitorEventResolver()
@@ -59,12 +67,13 @@ class QueryResolver : GraphQLQueryResolver {
     val memoryInfoResolver = MemoryInfoResolver()
     val networkInterfaceMetricResolver = NetworkInterfaceMetricResolver()
 
-    fun system(): SystemInfo {
-        val metric =
-            checkNotNull(metrics) { "System API did not initialize properly. Metrics is null in QueryResolver" }
+    data class System(
+        val hostName: String,
+        val operatingSystem: OperatingSystem,
+        val platform: Platform
+    )
 
-        return metric.systemMetrics().systemInfo()
-    }
+    fun system(): System = System(EnvironmentUtils.getHostName(), operatingSystem, platform)
 
     fun history(): List<SystemHistoryEntry> {
         return historyManager.getHistory().map {
@@ -81,41 +90,46 @@ class QueryResolver : GraphQLQueryResolver {
 
     fun events() = eventManager.getAll().toList()
 
-    inner class SystemInfoResolver : GraphQLResolver<SystemInfo> {
-        fun processorMetrics(system: SystemInfo) = metrics.cpuMetrics().cpuLoad()
+    inner class SystemResolver : GraphQLResolver<System> {
+        fun processorMetrics(system: System) = metrics.cpuMetrics().cpuLoad()
 
-        fun getBaseboard(system: SystemInfo): Motherboard? {
+        fun getBaseboard(system: System): Motherboard {
             return metrics.motherboardMetrics().motherboard()
         }
 
-        fun getHostname(system: SystemInfo): String {
+        fun getHostname(system: System): String {
             return system.hostName
         }
 
-        fun getUsbDevices(system: SystemInfo): List<UsbDevice> {
+        fun getUsbDevices(system: System): List<UsbDevice> {
             return getBaseboard(system)?.usbDevices?.toList().orEmpty()
         }
 
-        fun getUptime(system: SystemInfo): Long? {
+        fun getUptime(system: System): Long {
             return metrics.cpuMetrics().uptime()
         }
 
-        fun getProcessor(system: SystemInfo): CentralProcessor? {
+        fun getProcessor(system: System): CentralProcessor {
             return metrics.cpuMetrics().cpuInfo().centralProcessor
         }
 
-        fun getGraphics(system: SystemInfo): List<Gpu?>? {
+        fun getGraphics(system: System): List<Gpu> {
             return metrics.gpuMetrics().gpus()
         }
 
+        fun getDrives(system: System) = metrics.driveMetrics().drives()
+
         fun getProcesses(
-            system: SystemInfo,
+            system: System,
             limit: Int = 0,
             processSortMethod: ProcessSort = ProcessSort.MEMORY
         ): List<Process?>? {
             return metrics.processesMetrics()
                 .processesInfo(processSortMethod, limit).processes
         }
+
+        fun networkInterfaces(system: System) = metrics.networkMetrics().networkInterfaces()
+        fun getMemory(system: System) = metrics.memoryMetrics().memoryInfo()
     }
 
     inner class HistoryResolver : GraphQLResolver<SystemHistoryEntry> {
@@ -185,6 +199,8 @@ class QueryResolver : GraphQLQueryResolver {
         fun getReads(driveLoad: DriveLoad) = driveLoad.values.reads
         fun getWrites(driveLoad: DriveLoad) = driveLoad.values.writes
         fun getReadBytes(driveLoad: DriveLoad) = driveLoad.values.readBytes
+        fun getUsableSpaceBytes(driveLoad: DriveLoad) = driveLoad.values.usableSpace
+        fun getTotalSpaceBytes(driveLoad: DriveLoad) = driveLoad.values.totalSpace
         fun getWriteBytes(driveLoad: DriveLoad) = driveLoad.values.writeBytes
         fun getCurrentReadWriteRate(driveLoad: DriveLoad) =
             driveLoad.speed.let {

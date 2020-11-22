@@ -63,7 +63,7 @@ open class DefaultDriveMetrics(
             .collect(Collectors.toList())
     }
 
-    override fun driveLoadByName(name: String?): Optional<DriveLoad> {
+    override fun driveLoadByName(name: String): Optional<DriveLoad> {
         return hal.diskStores.stream()
             .filter { n: HWDiskStore -> n.name.equals(name, ignoreCase = true) }
             .map { d: HWDiskStore -> createDiskLoad(d) }
@@ -87,7 +87,7 @@ open class DefaultDriveMetrics(
         )
     }
 
-    override fun driveByName(name: String?): Optional<Drive> {
+    override fun driveByName(name: String): Optional<Drive> {
         return hal.diskStores.stream()
             .filter { n: HWDiskStore -> n.name.equals(name, ignoreCase = true) }
             .map { store: HWDiskStore ->

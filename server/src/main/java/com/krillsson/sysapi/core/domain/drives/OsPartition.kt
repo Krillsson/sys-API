@@ -5,7 +5,7 @@ class OsPartition(
     name: String,
     type: String,
     uuid: String,
-    size: Long,
+    sizeBytes: Long,
     major: Int,
     minor: Int,
     mountPoint: String,
@@ -20,7 +20,7 @@ class OsPartition(
     name,
     type,
     uuid,
-    size,
+    sizeBytes,
     major,
     minor,
     mountPoint
