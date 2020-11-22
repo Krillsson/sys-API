@@ -1,33 +1,31 @@
-package com.krillsson.sysapi.core.metrics.rasbian;
+package com.krillsson.sysapi.core.metrics.rasbian
 
-import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
-import com.krillsson.sysapi.util.Ticker;
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetrics;
-import com.krillsson.sysapi.util.Utils;
-import oshi.hardware.HardwareAbstractionLayer;
-import oshi.software.os.OperatingSystem;
+import com.krillsson.sysapi.core.metrics.SystemMetrics
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuMetrics
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDriveMetrics
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultGpuMetrics
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMemoryMetrics
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetrics
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMotherboardMetrics
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultNetworkMetrics
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultProcessesMetrics
 
-public class RaspbianMetrics extends DefaultMetrics {
-
-    private final HardwareAbstractionLayer hal;
-    private final OperatingSystem operatingSystem;
-    private final Ticker ticker;
-    private final Utils utils;
-
-    public RaspbianMetrics(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, SpeedMeasurementManager speedMeasurementManager, Ticker ticker, Utils utils) {
-        super(hal, operatingSystem, speedMeasurementManager, ticker, utils);
-        this.hal = hal;
-        this.operatingSystem = operatingSystem;
-        this.ticker = ticker;
-        this.utils = utils;
-    }
-
-
-    @Override
-    public void initialize() {
-        super.initialize();
-        // this is a not so clean solution since super.initialize will first set DefaultCpuMetrics
-        // and then this directly overwrites that variable
-        setCpuMetrics(new RaspbianCpuMetrics(hal, operatingSystem, ticker, utils));
-    }
-}
+class RaspbianMetrics(
+    cpuMetrics: DefaultCpuMetrics,
+    networkMetrics: DefaultNetworkMetrics,
+    gpuMetrics: DefaultGpuMetrics,
+    driveMetrics: DefaultDriveMetrics,
+    processesMetrics: DefaultProcessesMetrics,
+    motherboardMetrics: DefaultMotherboardMetrics,
+    memoryMetrics: DefaultMemoryMetrics,
+    systemMetrics: SystemMetrics,
+) : DefaultMetrics(
+    cpuMetrics,
+    networkMetrics,
+    gpuMetrics,
+    driveMetrics,
+    processesMetrics,
+    motherboardMetrics,
+    memoryMetrics,
+    systemMetrics
+)

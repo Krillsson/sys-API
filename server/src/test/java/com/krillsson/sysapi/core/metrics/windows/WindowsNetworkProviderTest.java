@@ -11,7 +11,6 @@ import org.junit.Test;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -24,7 +23,7 @@ import static org.mockito.Mockito.*;
 @Ignore("Currently broken because of UnsatisfiedLinkerError")
 public class WindowsNetworkProviderTest {
 
-    DelegatingMonitorManager monitorManager;
+    DelegatingOHMManager monitorManager;
     NetworkMonitor networkMonitor;
     HardwareAbstractionLayer hal;
     NetworkIF networkIF;
@@ -36,7 +35,7 @@ public class WindowsNetworkProviderTest {
 
     @Before
     public void setUp() throws Exception {
-        monitorManager = mock(DelegatingMonitorManager.class);
+        monitorManager = mock(DelegatingOHMManager.class);
         networkMonitor = mock(NetworkMonitor.class);
         when(monitorManager.getNetworkMonitor()).thenReturn(networkMonitor);
         hal = mock(HardwareAbstractionLayer.class);

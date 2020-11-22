@@ -45,7 +45,7 @@ public class DefaultNetworkMetrics implements NetworkMetrics {
     private final HardwareAbstractionLayer hal;
     private final SpeedMeasurementManager speedMeasurementManager;
 
-    protected DefaultNetworkMetrics(HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
+    public DefaultNetworkMetrics(HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
         this.hal = hal;
         this.speedMeasurementManager = speedMeasurementManager;
     }

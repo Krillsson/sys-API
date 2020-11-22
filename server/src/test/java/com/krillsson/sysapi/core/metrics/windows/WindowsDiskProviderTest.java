@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 @Ignore("Currently broken because of UnsatisfiedLinkerError")
 public class WindowsDiskProviderTest {
 
-    DelegatingMonitorManager monitorManager;
+    DelegatingOHMManager monitorManager;
 
     WindowsDriveMetrics diskProvider;
     private HWDiskStore store;
@@ -29,7 +29,7 @@ public class WindowsDiskProviderTest {
 
     @Before
     public void setUp() throws Exception {
-        monitorManager = mock(DelegatingMonitorManager.class);
+        monitorManager = mock(DelegatingOHMManager.class);
         store = mock(HWDiskStore.class);
         osFileStore = mock(OsPartition.class);
         driveMonitor = mock(DriveMonitor.class);

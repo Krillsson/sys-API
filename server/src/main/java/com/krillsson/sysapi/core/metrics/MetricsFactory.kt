@@ -23,9 +23,8 @@ package com.krillsson.sysapi.core.metrics
 import com.google.common.annotations.VisibleForTesting
 import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.core.metrics.cache.Cache
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetrics
-import com.krillsson.sysapi.core.metrics.rasbian.RaspbianCpuMetrics
-import com.krillsson.sysapi.core.metrics.rasbian.RaspbianMetrics
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory
+import com.krillsson.sysapi.core.metrics.rasbian.RaspbianMetricsFactory
 import com.krillsson.sysapi.core.metrics.windows.WindowsMetricsFactory
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
 import com.krillsson.sysapi.util.Ticker
@@ -69,27 +68,49 @@ class MetricsFactory(
             platform == PlatformEnum.WINDOWS && (configuration.windows() == null || configuration.windows()
                 .enableOhmJniWrapper()) -> {
                 LOGGER.info("Windows detected")
-                WindowsMetricsFactory.create(operatingSystem, hal, platform, ticker, utils, speedMeasurementManager)
+                val metrics = WindowsMetricsFactory.create(
+                    operatingSystem,
+                    hal,
+                    platform,
+                    ticker,
+                    utils,
+                    speedMeasurementManager
+                )
+                if (metrics != null) {
+                    metrics
+                } else {
+                    LOGGER.error("Unable to use Windows specific implementation: falling through to default one")
+                    DefaultMetricsFactory.create(
+                        operatingSystem,
+                        hal,
+                        platform,
+                        ticker,
+                        utils,
+                        speedMeasurementManager
+                    )
+                }
             }
             platform == PlatformEnum.LINUX && (operatingSystem.family.toLowerCase()
-                .contains(RaspbianCpuMetrics.RASPBIAN_QUALIFIER)) -> {
+                .contains(RASPBIAN_QUALIFIER)) -> {
                 LOGGER.info("Raspberry Pi detected")
-                RaspbianMetrics(
-                    hal,
+                RaspbianMetricsFactory.create(
                     operatingSystem,
-                    speedMeasurementManager,
+                    hal,
+                    platform,
                     ticker,
-                    utils
+                    utils,
+                    speedMeasurementManager
                 )
             }
-            else -> null
-        } ?: return DefaultMetrics(
-            hal,
-            operatingSystem,
-            speedMeasurementManager,
-            ticker,
-            utils
-        )
+            else -> DefaultMetricsFactory.create(
+                operatingSystem,
+                hal,
+                platform,
+                ticker,
+                utils,
+                speedMeasurementManager
+            )
+        }
     }
 
     @VisibleForTesting
@@ -99,5 +120,6 @@ class MetricsFactory(
 
     companion object {
         private val LOGGER = LoggerFactory.getLogger(MetricsFactory::class.java)
+        const val RASPBIAN_QUALIFIER = "raspbian"
     }
 }
