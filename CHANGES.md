@@ -1,3 +1,10 @@
+### 0.14.1
+
+**REST API Breaking changes**
+
+ - Optimize GraphQL layer
+ - Convert more classes to Kotlin
+
 ### 0.14
 
 **REST API Breaking changes**

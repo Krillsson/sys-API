@@ -6,7 +6,7 @@ import oshi.hardware.HardwareAbstractionLayer
 import oshi.util.ExecutingCommand
 import oshi.util.FileUtil
 
-class RaspbianCpuSensors(hal: HardwareAbstractionLayer) : DefaultCpuSensors(hal) {
+open class RaspbianCpuSensors(hal: HardwareAbstractionLayer) : DefaultCpuSensors(hal) {
 
     companion object {
         private val LOGGER = LoggerFactory.getLogger(
@@ -40,7 +40,7 @@ class RaspbianCpuSensors(hal: HardwareAbstractionLayer) : DefaultCpuSensors(hal)
         return super.cpuVoltage()
     }
 
-    private fun executeCommand(): String? {
+    open fun executeCommand(): String? {
         return ExecutingCommand.getFirstAnswer(VCGENCMD_VOLT)
     }
 }

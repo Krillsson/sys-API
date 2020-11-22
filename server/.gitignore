@@ -3,6 +3,8 @@ donotadd.yml
 target
 atlassian-ide-plugin.xml
 dependency-reduced-pom.xml
+events.json
+monitors.json
 logs
 *.iml
 *.ipr
