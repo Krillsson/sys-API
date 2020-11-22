@@ -68,7 +68,7 @@ public class RaspbianLinuxInfoProviderTest {
         }
 
         @Override
-        String executeCommand() {
+        public String executeCommand() {
             return commandOutput;
         }
     }
