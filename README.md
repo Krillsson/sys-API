@@ -8,6 +8,10 @@ System API (sys-API) provide both GraphQL and RESTful API's to your computers ha
 It publishes and monitors values from [OSHI](https://github.com/oshi/oshi) with the help of [Dropwizard](https://github.com/dropwizard/dropwizard). On Windows the information is supplemented with
 [OpenHardwareMonitor](https://github.com/openhardwaremonitor/openhardwaremonitor) with a bit of help from [OhmJni4Net](https://github.com/Krillsson/ohmjni4net).
 
+This is the server backend for the Android app Monitee. Latest compatible version is [0.11](https://github.com/Krillsson/sys-API/releases/tag/0.11)
+
+<a href="https://play.google.com/store/apps/details?id=com.krillsson.monitee"><img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" alt="Get it on Play Store" height="80"></a>
+
 ## What can it do?
 
 - Threshold-based monitoring of system values
