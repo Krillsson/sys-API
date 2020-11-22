@@ -14,10 +14,10 @@ import static com.krillsson.sysapi.core.metrics.windows.util.NullSafeOhmMonitor.
 
 public class WindowsGpuMetrics extends DefaultGpuMetrics {
 
-    private final DelegatingMonitorManager monitorManager;
+    private final DelegatingOHMManager monitorManager;
 
 
-    public WindowsGpuMetrics(HardwareAbstractionLayer hal, DelegatingMonitorManager monitorManager) {
+    public WindowsGpuMetrics(HardwareAbstractionLayer hal, DelegatingOHMManager monitorManager) {
         super(hal);
         this.monitorManager = monitorManager;
     }

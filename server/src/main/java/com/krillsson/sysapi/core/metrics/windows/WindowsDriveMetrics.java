@@ -45,13 +45,13 @@ import static com.krillsson.sysapi.core.metrics.windows.util.NullSafeOhmMonitor.
 public class WindowsDriveMetrics extends DefaultDriveMetrics {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(WindowsDriveMetrics.class);
 
-    private DelegatingMonitorManager monitorManager;
+    private DelegatingOHMManager monitorManager;
 
     public WindowsDriveMetrics(OperatingSystem operatingSystem, HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
         super(operatingSystem, hal, speedMeasurementManager);
     }
 
-    public void setMonitorManager(DelegatingMonitorManager monitorManager) {
+    public void setMonitorManager(DelegatingOHMManager monitorManager) {
         this.monitorManager = monitorManager;
     }
 

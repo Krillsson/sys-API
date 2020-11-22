@@ -26,8 +26,7 @@ import com.krillsson.sysapi.core.metrics.cache.Cache
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetrics
 import com.krillsson.sysapi.core.metrics.rasbian.RaspbianCpuMetrics
 import com.krillsson.sysapi.core.metrics.rasbian.RaspbianMetrics
-import com.krillsson.sysapi.core.metrics.windows.MonitorManagerFactory
-import com.krillsson.sysapi.core.metrics.windows.WindowsMetrics
+import com.krillsson.sysapi.core.metrics.windows.WindowsMetricsFactory
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
 import com.krillsson.sysapi.util.Ticker
 import com.krillsson.sysapi.util.Utils
@@ -70,20 +69,7 @@ class MetricsFactory(
             platform == PlatformEnum.WINDOWS && (configuration.windows() == null || configuration.windows()
                 .enableOhmJniWrapper()) -> {
                 LOGGER.info("Windows detected")
-                val windowsMetricsFactory = WindowsMetrics(
-                    MonitorManagerFactory(),
-                    hal,
-                    operatingSystem,
-                    speedMeasurementManager,
-                    utils,
-                    ticker
-                )
-                if (windowsMetricsFactory.prerequisitesFilled()) {
-                    LOGGER.error("Unable to use Windows specific implementation: falling through to default one")
-                    windowsMetricsFactory
-                } else {
-                    null
-                }
+                WindowsMetricsFactory.create(operatingSystem, hal, platform, ticker, utils, speedMeasurementManager)
             }
             platform == PlatformEnum.LINUX && (operatingSystem.family.toLowerCase()
                 .contains(RaspbianCpuMetrics.RASPBIAN_QUALIFIER)) -> {
