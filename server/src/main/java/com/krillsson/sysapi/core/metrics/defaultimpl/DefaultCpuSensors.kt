@@ -1,45 +1,32 @@
-package com.krillsson.sysapi.core.metrics.defaultimpl;
+package com.krillsson.sysapi.core.metrics.defaultimpl
 
-import com.krillsson.sysapi.core.domain.cpu.CpuHealth;
-import oshi.hardware.HardwareAbstractionLayer;
+import com.krillsson.sysapi.core.domain.cpu.CpuHealth
+import oshi.hardware.HardwareAbstractionLayer
+import java.util.Arrays
 
-import java.util.Arrays;
-import java.util.List;
-
-public class DefaultCpuSensors {
-
-    private final HardwareAbstractionLayer hal;
-
-    public DefaultCpuSensors(HardwareAbstractionLayer hal) {
-        this.hal = hal;
+open class DefaultCpuSensors(private val hal: HardwareAbstractionLayer) {
+    open fun cpuHealth(): CpuHealth {
+        return CpuHealth(
+            cpuTemperatures(),
+            cpuVoltage(),
+            cpuFanRpm(),
+            cpuFanPercent()
+        )
     }
 
-    protected CpuHealth cpuHealth() {
-        List<Double> temperature = cpuTemperatures();
-        double fanRpm = cpuFanRpm();
-        double fanPercent = cpuFanPercent();
-        double cpuVoltage = cpuVoltage();
-        return new CpuHealth(
-                temperature,
-                cpuVoltage,
-                fanRpm,
-                fanPercent
-        );
+    open fun cpuVoltage(): Double {
+        return hal.sensors.cpuVoltage
     }
 
-    protected double cpuVoltage() {
-        return hal.getSensors().getCpuVoltage();
+    open fun cpuTemperatures(): List<Double> {
+        return listOf(hal.sensors.cpuTemperature)
     }
 
-    protected List<Double> cpuTemperatures() {
-        return Arrays.asList(hal.getSensors().getCpuTemperature());
+    open fun cpuFanRpm(): Double {
+        return hal.sensors.fanSpeeds.firstOrNull()?.toDouble() ?: 0.0
     }
 
-    protected double cpuFanRpm() {
-        return Arrays.stream(hal.getSensors().getFanSpeeds()).findFirst().orElse(0);
-    }
-
-    protected double cpuFanPercent() {
-        return 0;
+    open fun cpuFanPercent(): Double {
+        return 0.0
     }
 }
