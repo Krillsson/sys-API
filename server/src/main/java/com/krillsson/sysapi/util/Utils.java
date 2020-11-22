@@ -14,7 +14,6 @@ public class Utils {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(Utils.class);
 
-
     public static String getVersionFromManifest() throws IOException {
         Class clazz = SysAPIApplication.class;
         String className = clazz.getSimpleName() + ".class";

@@ -17,12 +17,6 @@ buildscript {
     }
 }
 
-ext {
-    kotlinJvmVersion = '1.8'
-    sourceCompatibilityVersion = JavaVersion.VERSION_1_8
-    targetCompatibilityVersion = JavaVersion.VERSION_1_8
-}
-
 allprojects {
     group = 'com.krillsson'
     version = '0.14.1'
@@ -65,6 +59,12 @@ project(':sys-api-server') {
         testImplementation 'io.dropwizard:dropwizard-testing:2.0.15'
         testImplementation 'org.hamcrest:hamcrest-all:1.1'
         testImplementation 'org.mockito:mockito-core:2.20.0'
+    }
+
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = '1.8'
+        }
     }
 
     shadowJar {

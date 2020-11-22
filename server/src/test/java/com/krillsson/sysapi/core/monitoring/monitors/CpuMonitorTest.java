@@ -29,10 +29,10 @@ public class CpuMonitorTest {
 
     @Test
     public void monitorValuesCorrectly() {
-        when(cpuLoad.getCpuLoadOsMxBean()).thenReturn(0.30);
+        when(cpuLoad.getUsagePercentage()).thenReturn(0.30);
         CpuMonitor cpuMonitor = new CpuMonitor(UUID.randomUUID(), new MonitorConfig(null, 0.20, Duration.ZERO));
         assertTrue(cpuMonitor.check(systemLoad));
-        when(cpuLoad.getCpuLoadOsMxBean()).thenReturn(0.10);
+        when(cpuLoad.getUsagePercentage()).thenReturn(0.10);
         assertFalse(cpuMonitor.check(systemLoad));
     }
 }

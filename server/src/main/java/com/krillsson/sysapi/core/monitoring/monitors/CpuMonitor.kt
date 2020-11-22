@@ -10,7 +10,7 @@ class CpuMonitor(override val id: UUID, override val config: MonitorConfig) : Mo
 
     override val type: MonitorType = MonitorType.CPU_LOAD
 
-    override fun selectValue(load: SystemLoad): Double = load.cpuLoad.cpuLoadOsMxBean
+    override fun selectValue(load: SystemLoad): Double = load.cpuLoad.usagePercentage
 
     override fun isPastThreshold(value: Double): Boolean {
         return value > config.threshold
