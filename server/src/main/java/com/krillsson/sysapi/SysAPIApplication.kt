@@ -55,7 +55,8 @@ import com.krillsson.sysapi.util.EnvironmentUtils
 import com.krillsson.sysapi.util.OffsetDateTimeConverter
 import com.krillsson.sysapi.util.Ticker
 import com.krillsson.sysapi.util.Utils
-import com.smoketurner.dropwizard.graphql.GraphQLFactory
+import com.krillsson.sysapi.util.asOperatingSystem
+import com.krillsson.sysapi.util.asPlatform
 import io.dropwizard.Application
 import io.dropwizard.auth.AuthDynamicFeature
 import io.dropwizard.auth.AuthValueFactoryProvider
@@ -109,7 +110,13 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     val hal = systemInfo.hardware
     val os = systemInfo.operatingSystem
     val eventBus = EventBus()
-    val metricsFactory = MetricsFactory(hal, os, SystemInfo.getCurrentPlatformEnum(), speedMeasurementManager, ticker)
+    val metricsFactory = MetricsFactory(
+        hal,
+        os,
+        SystemInfo.getCurrentPlatformEnum(),
+        speedMeasurementManager,
+        ticker
+    )
     val graphqlConfiguration = GraphQLConfiguration()
     val graphqlBundle = GraphQLBundle(graphqlConfiguration)
 
@@ -130,7 +137,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
 
     @Throws(Exception::class)
     override fun run(config: SysAPIConfiguration, environment: Environment) {
-        val cors: FilterRegistration.Dynamic = environment.servlets().addFilter("cors", CrossOriginFilter::class.java)
+        val cors: FilterRegistration.Dynamic =
+            environment.servlets().addFilter("cors", CrossOriginFilter::class.java)
         cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType::class.java), true, "/*")
 
         if (config.forwardHttps()) {
@@ -164,9 +172,22 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
 
         val historyManager = MetricsHistoryManager(config.metrics().history, eventBus)
         val monitorManager =
-            MonitorManager(eventManager, eventBus, monitorStore, metrics, com.krillsson.sysapi.util.Clock())
+            MonitorManager(
+                eventManager,
+                eventBus,
+                monitorStore,
+                metrics,
+                com.krillsson.sysapi.util.Clock()
+            )
 
-        graphqlConfiguration.initialize(metrics, monitorManager, eventManager, historyManager)
+        graphqlConfiguration.initialize(
+            metrics,
+            monitorManager,
+            eventManager,
+            historyManager,
+            os.asOperatingSystem(),
+            SystemInfo.getCurrentPlatformEnum().asPlatform()
+        )
         registerManagedObjects(
             environment,
             monitorManager,
@@ -209,7 +230,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         environment.jersey().register(RolesAllowedDynamicFeature::class.java)
         environment.jersey().register(OffsetDateTimeConverter::class.java)
         environment.jersey().register(AuthDynamicFeature(userBasicCredentialAuthFilter))
-        environment.jersey().register(AuthValueFactoryProvider.Binder(UserConfiguration::class.java))
+        environment.jersey()
+            .register(AuthValueFactoryProvider.Binder(UserConfiguration::class.java))
     }
 
     private fun registerResources(
@@ -227,7 +249,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         environment.jersey().register(DrivesResource(provider.driveMetrics(), historyManager))
         environment.jersey().register(GpuResource(provider.gpuMetrics(), historyManager))
         environment.jersey().register(MemoryResource(provider.memoryMetrics(), historyManager))
-        environment.jersey().register(NetworkInterfacesResource(provider.networkMetrics(), historyManager))
+        environment.jersey()
+            .register(NetworkInterfacesResource(provider.networkMetrics(), historyManager))
         environment.jersey().register(ProcessesResource(provider.processesMetrics()))
         environment.jersey().register(CpuResource(provider.cpuMetrics(), historyManager))
         environment.jersey().register(MotherboardResource(provider.motherboardMetrics()))

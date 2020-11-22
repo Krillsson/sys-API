@@ -31,7 +31,7 @@ public class WindowsCpuMetrics extends DefaultCpuMetrics {
         }
 
         @Override
-        protected CpuHealth cpuHealth() {
+        public CpuHealth cpuHealth() {
             monitorManager.update();
             return super.cpuHealth();
         }
@@ -70,7 +70,7 @@ public class WindowsCpuMetrics extends DefaultCpuMetrics {
         }
 
         @Override
-        protected double cpuVoltage() {
+        public double cpuVoltage() {
             return Streams.ofNullable(monitorManager.CpuMonitors())
                     .findFirst()
                     .map(cm -> nullSafeGetValue(cm.getVoltage())).orElse(-1d);

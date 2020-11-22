@@ -5,7 +5,7 @@ open class Partition(
     val name: String,
     val type: String,
     val uuid: String,
-    val size: Long,
+    val sizeBytes: Long,
     val major: Int,
     val minor: Int,
     val mountPoint: String

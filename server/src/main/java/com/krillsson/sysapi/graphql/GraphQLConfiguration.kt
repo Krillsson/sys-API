@@ -1,6 +1,8 @@
 package com.krillsson.sysapi.graphql
 
 import com.coxautodev.graphql.tools.SchemaParser
+import com.krillsson.sysapi.core.domain.system.OperatingSystem
+import com.krillsson.sysapi.core.domain.system.Platform
 import com.krillsson.sysapi.core.history.HistoryManager
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.EventManager
@@ -38,8 +40,8 @@ class GraphQLConfiguration {
             .makeExecutableSchema()
     }
 
-    fun initialize(metrics: Metrics, monitorManager: MonitorManager, eventManager: EventManager, historyManager: HistoryManager) {
-        queryResolver.initialize(metrics, monitorManager, eventManager, historyManager)
+    fun initialize(metrics: Metrics, monitorManager: MonitorManager, eventManager: EventManager, historyManager: HistoryManager, operatingSystem: OperatingSystem, platform: Platform) {
+        queryResolver.initialize(metrics, monitorManager, eventManager, historyManager, operatingSystem, platform)
         mutationResolver.initialize(metrics, monitorManager, eventManager, historyManager)
     }
 }
