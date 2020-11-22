@@ -20,10 +20,7 @@
  */
 package com.krillsson.sysapi.core.domain.processes
 
-import com.krillsson.sysapi.core.domain.memory.MemoryLoad
-
 class ProcessesInfo(
-    val memory: MemoryLoad,
     val processId: Long,
     val threadCount: Long,
     val processCount: Long,
