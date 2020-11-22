@@ -14,7 +14,7 @@ import com.krillsson.sysapi.core.metrics.ProcessesMetrics
 import com.krillsson.sysapi.core.metrics.SystemMetrics
 
 class Cache private constructor(
-    provider: Metrics,
+    metrics: Metrics,
     cacheConfiguration: CacheConfiguration,
     platform: Platform,
     operatingSystem: OperatingSystem
@@ -74,13 +74,13 @@ class Cache private constructor(
     }
 
     init {
-        cpuMetrics = CachingCpuMetrics(provider.cpuMetrics(), cacheConfiguration)
-        networkMetrics = CachingNetworkMetrics(provider.networkMetrics(), cacheConfiguration)
-        gpuMetrics = CachingGpuMetrics(provider.gpuMetrics(), cacheConfiguration)
-        driveMetrics = CachingDriveMetrics(provider.driveMetrics(), cacheConfiguration)
-        processesMetrics = CachingProcessesMetrics(provider.processesMetrics(), cacheConfiguration)
-        motherboardMetrics = CachingMotherboardMetrics(provider.motherboardMetrics(), cacheConfiguration)
-        memoryMetrics = CachingMemoryMetrics(provider.memoryMetrics(), cacheConfiguration)
+        cpuMetrics = CachingCpuMetrics(metrics.cpuMetrics(), cacheConfiguration)
+        networkMetrics = CachingNetworkMetrics(metrics.networkMetrics(), cacheConfiguration)
+        gpuMetrics = CachingGpuMetrics(metrics.gpuMetrics(), cacheConfiguration)
+        driveMetrics = CachingDriveMetrics(metrics.driveMetrics(), cacheConfiguration)
+        processesMetrics = CachingProcessesMetrics(metrics.processesMetrics(), cacheConfiguration)
+        motherboardMetrics = CachingMotherboardMetrics(metrics.motherboardMetrics(), cacheConfiguration)
+        memoryMetrics = CachingMemoryMetrics(metrics.memoryMetrics(), cacheConfiguration)
         systemMetrics = CachingSystemMetrics(
             cpuMetrics,
             networkMetrics,
