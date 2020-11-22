@@ -18,14 +18,14 @@ import java.util.stream.DoubleStream;
 import static com.krillsson.sysapi.core.metrics.windows.util.NullSafeOhmMonitor.nullSafeGetValue;
 
 public class WindowsCpuMetrics extends DefaultCpuMetrics {
-    WindowsCpuMetrics(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, DelegatingMonitorManager monitorManager, Ticker ticker, Utils utils) {
+    public WindowsCpuMetrics(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, DelegatingOHMManager monitorManager, Ticker ticker, Utils utils) {
         super(hal, operatingSystem, new WindowsCpuSensors(hal, monitorManager), utils, ticker);
     }
 
     private static class WindowsCpuSensors extends DefaultCpuSensors {
-        private final DelegatingMonitorManager monitorManager;
+        private final DelegatingOHMManager monitorManager;
 
-        WindowsCpuSensors(HardwareAbstractionLayer hal, DelegatingMonitorManager monitorManager) {
+        WindowsCpuSensors(HardwareAbstractionLayer hal, DelegatingOHMManager monitorManager) {
             super(hal);
             this.monitorManager = monitorManager;
         }

@@ -23,7 +23,6 @@ package com.krillsson.sysapi.core.metrics.windows;
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultNetworkMetrics;
-import ohmwrapper.MonitorManager;
 import ohmwrapper.NetworkMonitor;
 import ohmwrapper.NicInfo;
 import org.slf4j.Logger;
@@ -38,11 +37,11 @@ public class WindowsNetworkMetrics extends DefaultNetworkMetrics {
 
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(WindowsNetworkMetrics.class);
 
-    private DelegatingMonitorManager monitorManager;
+    private DelegatingOHMManager monitorManager;
     private HardwareAbstractionLayer hal;
 
 
-    public WindowsNetworkMetrics(HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager, DelegatingMonitorManager monitorManager) {
+    public WindowsNetworkMetrics(HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager, DelegatingOHMManager monitorManager) {
         super(hal, speedMeasurementManager);
         this.hal = hal;
         this.monitorManager = monitorManager;

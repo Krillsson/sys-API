@@ -4,7 +4,6 @@ import com.krillsson.sysapi.core.domain.sensors.DataType;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMotherboardMetrics;
 import com.krillsson.sysapi.util.Streams;
-import ohmwrapper.MonitorManager;
 import oshi.hardware.HardwareAbstractionLayer;
 
 import java.util.ArrayList;
@@ -14,9 +13,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class WindowsMotherboardMetrics extends DefaultMotherboardMetrics {
-    private final DelegatingMonitorManager monitorManager;
+    private final DelegatingOHMManager monitorManager;
 
-    public WindowsMotherboardMetrics(HardwareAbstractionLayer hal, DelegatingMonitorManager monitorManager) {
+    public WindowsMotherboardMetrics(HardwareAbstractionLayer hal, DelegatingOHMManager monitorManager) {
         super(hal);
         this.monitorManager = monitorManager;
     }

@@ -2,10 +2,10 @@ package com.krillsson.sysapi.core.metrics.windows;
 
 import ohmwrapper.*;
 
-public class DelegatingMonitorManager {
+public class DelegatingOHMManager {
     private final MonitorManager monitorManager;
 
-    public DelegatingMonitorManager(MonitorManager monitorManager) {
+    public DelegatingOHMManager(MonitorManager monitorManager) {
         this.monitorManager = monitorManager;
     }
 

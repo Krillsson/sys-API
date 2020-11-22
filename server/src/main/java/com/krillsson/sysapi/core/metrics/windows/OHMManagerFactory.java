@@ -1,8 +1,6 @@
 package com.krillsson.sysapi.core.metrics.windows;
 
 import net.sf.jni4net.Bridge;
-import ohmwrapper.MonitorManager;
-import ohmwrapper.OHMManagerFactory;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -10,15 +8,15 @@ import java.io.IOException;
 
 import static com.krillsson.sysapi.util.JarLocation.*;
 
-public class MonitorManagerFactory {
+public class OHMManagerFactory {
 
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(MonitorManagerFactory.class);
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(OHMManagerFactory.class);
 
     private static final File OHM_JNI_WRAPPER_DLL = new File(LIB_LOCATION + SEPARATOR + "OhmJniWrapper.dll");
     private static final File OPEN_HARDWARE_MONITOR_LIB_DLL = new File(LIB_LOCATION + SEPARATOR + "OpenHardwareMonitorLib.dll");
     private static final File OHM_JNI_WRAPPER_J4N_DLL = new File(LIB_LOCATION + SEPARATOR + "OhmJniWrapper.j4n.dll");
 
-    private DelegatingMonitorManager monitorManager;
+    private DelegatingOHMManager monitorManager;
 
     public boolean prerequisitesFilled() {
         return OHM_JNI_WRAPPER_DLL.exists() &&
@@ -26,7 +24,7 @@ public class MonitorManagerFactory {
                 OHM_JNI_WRAPPER_J4N_DLL.exists();
     }
 
-    public DelegatingMonitorManager getMonitorManager() {
+    public DelegatingOHMManager getMonitorManager() {
         if (monitorManager == null) {
             throw new IllegalStateException("MonitorManager requires initialization. Call initialize");
         }
@@ -43,11 +41,11 @@ public class MonitorManagerFactory {
             return false;
         }
 
-        OHMManagerFactory factory = loadFromInstallDir();
+        ohmwrapper.OHMManagerFactory factory = loadFromInstallDir();
         if (factory != null) {
             try {
                 factory.init();
-                this.monitorManager = new DelegatingMonitorManager(factory.GetManager());
+                this.monitorManager = new DelegatingOHMManager(factory.GetManager());
                 return true;
             } catch (Exception e) {
                 LOGGER.error("Trouble while initializing JNI4Net Bridge. Do I have admin privileges?", e);
@@ -58,7 +56,7 @@ public class MonitorManagerFactory {
     }
 
 
-    private OHMManagerFactory loadFromInstallDir() {
+    private ohmwrapper.OHMManagerFactory loadFromInstallDir() {
         try {
             LOGGER.debug("Attempting to load {}", OHM_JNI_WRAPPER_DLL);
             Bridge.LoadAndRegisterAssemblyFrom(OHM_JNI_WRAPPER_DLL);
@@ -66,7 +64,7 @@ public class MonitorManagerFactory {
             Bridge.LoadAndRegisterAssemblyFrom(OHM_JNI_WRAPPER_J4N_DLL);
             LOGGER.debug("Attempting to load {}", OPEN_HARDWARE_MONITOR_LIB_DLL);
             Bridge.LoadAndRegisterAssemblyFrom(OPEN_HARDWARE_MONITOR_LIB_DLL);
-            return new OHMManagerFactory();
+            return new ohmwrapper.OHMManagerFactory();
         } catch (Exception e) {
             LOGGER.error("Unable to load OHM from installation directory {}", SOURCE_LIB_LOCATION, e);
             return null;
