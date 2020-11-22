@@ -1,0 +1,55 @@
+query SampleQuery {
+    system {
+        operatingSystem{
+            manufacturer
+            family
+            versionInfo{
+                version
+            }
+        }
+        hostname
+        memory {
+            physicalMemory {
+                manufacturer
+                capacityBytes
+                memoryType
+            }
+            metrics {
+                usedPercent
+            }
+        }
+        drives {
+            name
+            partitions {
+                name
+                sizeBytes
+            }
+        }
+        networkInterfaces {
+            name
+            speed
+            metrics {
+                readWriteRate {
+                    receiveBytesPerSecond
+                    sendBytesPerSecond
+                }
+            }
+        }
+        processes(limit: 10) {
+            name
+            user
+            memoryPercent
+        }
+        processor {
+            name
+            metrics {
+                temperatures
+                cpuLoadOsMxBean
+                cpuLoadCountingTicks
+                coreLoads {
+                    user
+                }
+            }
+        }
+    }
+}
