@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.CodeSource;
 
 import static com.krillsson.sysapi.util.JarLocation.*;
 
@@ -19,6 +21,9 @@ public class OHMManagerFactory {
     private DelegatingOHMManager monitorManager;
 
     public boolean prerequisitesFilled() {
+        LOGGER.info("Checking if {} exists: {}", OHM_JNI_WRAPPER_DLL, OHM_JNI_WRAPPER_DLL.exists() ? "YES" : "NO");
+        LOGGER.info("Checking if {} exists: {}", OPEN_HARDWARE_MONITOR_LIB_DLL, OPEN_HARDWARE_MONITOR_LIB_DLL.exists() ? "YES" : "NO");
+        LOGGER.info("Checking if {} exists: {}", OHM_JNI_WRAPPER_J4N_DLL, OHM_JNI_WRAPPER_J4N_DLL.exists() ? "YES" : "NO");
         return OHM_JNI_WRAPPER_DLL.exists() &&
                 OPEN_HARDWARE_MONITOR_LIB_DLL.exists() &&
                 OHM_JNI_WRAPPER_J4N_DLL.exists();
@@ -32,11 +37,11 @@ public class OHMManagerFactory {
     }
 
     public boolean initialize() {
-        LOGGER.info("Enabling OHMJNIWrapper impl. Disable this in the configuration.yml (see README.md)");
+        LOGGER.info("Enabling OHMJNIWrapper impl. This functionality is EXPERIMENTAL and can be disabled in the configuration.yml (see README.md)");
         Bridge.setDebug(true);
         try {
-            Bridge.init();
-        } catch (IOException | UnsupportedOperationException e) {
+            Bridge.init(new File(LIB_LOCATION));
+        } catch (Exception e) {
             LOGGER.error("Trouble while initializing JNI4Net Bridge. Do I have admin privileges?", e);
             return false;
         }
