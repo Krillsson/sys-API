@@ -13,7 +13,7 @@ import static org.mockito.Mockito.mock;
 
 public class RaspbianLinuxInfoProviderTest {
 
-    RaspbianCpuMetrics.RaspbianCpuSensors infoProvider;
+    RaspbianCpuSensors infoProvider;
     HardwareAbstractionLayer hal;
     OperatingSystem os;
     Utils utils;
@@ -54,7 +54,7 @@ public class RaspbianLinuxInfoProviderTest {
         assertEquals(0.0, voltage, 0.0);
     }
 
-    private static class TestableRaspbianLinuxInfoProvider extends RaspbianCpuMetrics.RaspbianCpuSensors {
+    private static class TestableRaspbianLinuxInfoProvider extends RaspbianCpuSensors {
 
         private String commandOutput;
 

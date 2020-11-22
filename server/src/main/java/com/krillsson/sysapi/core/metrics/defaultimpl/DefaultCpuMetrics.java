@@ -27,7 +27,7 @@ public class DefaultCpuMetrics implements CpuMetrics, Ticker.TickListener {
     private long[] ticks;
     private CpuLoad cpuLoad;
 
-    protected DefaultCpuMetrics(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, DefaultCpuSensors cpuSensors, Utils utils, Ticker ticker) {
+    public DefaultCpuMetrics(HardwareAbstractionLayer hal, OperatingSystem operatingSystem, DefaultCpuSensors cpuSensors, Utils utils, Ticker ticker) {
         this.hal = hal;
         this.operatingSystem = operatingSystem;
         this.cpuSensors = cpuSensors;

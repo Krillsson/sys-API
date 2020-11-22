@@ -58,6 +58,7 @@ object WindowsMetricsFactory {
                 systemMetrics
             )
         }
+
         return null
     }
 }
