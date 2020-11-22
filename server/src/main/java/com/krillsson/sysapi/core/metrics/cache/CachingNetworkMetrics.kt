@@ -1,69 +1,62 @@
-package com.krillsson.sysapi.core.metrics.cache;
+package com.krillsson.sysapi.core.metrics.cache
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.krillsson.sysapi.config.CacheConfiguration;
-import com.krillsson.sysapi.core.domain.network.NetworkInterface;
-import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad;
-import com.krillsson.sysapi.core.metrics.NetworkMetrics;
+import com.google.common.base.Supplier
+import com.google.common.base.Suppliers
+import com.google.common.cache.CacheBuilder
+import com.google.common.cache.CacheLoader
+import com.google.common.cache.LoadingCache
+import com.krillsson.sysapi.config.CacheConfiguration
+import com.krillsson.sysapi.core.domain.network.NetworkInterface
+import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad
+import com.krillsson.sysapi.core.metrics.NetworkMetrics
+import java.util.Optional
 
-import java.util.List;
-import java.util.Optional;
+class CachingNetworkMetrics(
+    networkMetrics: NetworkMetrics,
+    cacheConfiguration: CacheConfiguration
+) : NetworkMetrics {
+    private val networkInterfacesCache: Supplier<List<NetworkInterface>> =
+        Suppliers.memoizeWithExpiration(
+            { networkMetrics.networkInterfaces() },
+            cacheConfiguration.duration, cacheConfiguration.unit
+        )
+    private val networkInterfaceLoadsCache: Supplier<List<NetworkInterfaceLoad>> =
+        Suppliers.memoizeWithExpiration(
+            { networkMetrics.networkInterfaceLoads() },
+            cacheConfiguration.duration, cacheConfiguration.unit
+        )
+    private val networkInterfaceQueryCache: LoadingCache<String, Optional<NetworkInterface>> =
+        CacheBuilder.newBuilder()
+            .expireAfterWrite(cacheConfiguration.duration, cacheConfiguration.unit)
+            .build(object : CacheLoader<String, Optional<NetworkInterface>>() {
+                @Throws(Exception::class)
+                override fun load(s: String): Optional<NetworkInterface> {
+                    return networkMetrics.networkInterfaceById(s)
+                }
+            })
+    private val networkInterfaceLoadQueryCache: LoadingCache<String, Optional<NetworkInterfaceLoad>> =
+        CacheBuilder.newBuilder()
+            .expireAfterWrite(cacheConfiguration.duration, cacheConfiguration.unit)
+            .build(object : CacheLoader<String, Optional<NetworkInterfaceLoad>>() {
+                @Throws(Exception::class)
+                override fun load(s: String): Optional<NetworkInterfaceLoad> {
+                    return networkMetrics.networkInterfaceLoadById(s)
+                }
+            })
 
-public class CachingNetworkMetrics implements NetworkMetrics {
-
-    private final Supplier<List<NetworkInterface>> networkInterfacesCache;
-    private final Supplier<List<NetworkInterfaceLoad>> networkInterfaceLoadsCache;
-    private final LoadingCache<String, Optional<NetworkInterface>> networkInterfaceQueryCache;
-    private final LoadingCache<String, Optional<NetworkInterfaceLoad>> networkInterfaceLoadQueryCache;
-
-    public CachingNetworkMetrics(NetworkMetrics networkMetrics, CacheConfiguration cacheConfiguration) {
-        this.networkInterfacesCache = Suppliers.memoizeWithExpiration(
-                networkMetrics::networkInterfaces,
-                cacheConfiguration.getDuration(), cacheConfiguration.getUnit()
-        );
-        this.networkInterfaceLoadsCache = Suppliers.memoizeWithExpiration(
-                networkMetrics::networkInterfaceLoads,
-                cacheConfiguration.getDuration(), cacheConfiguration.getUnit()
-        );
-        this.networkInterfaceLoadQueryCache = CacheBuilder.newBuilder()
-                .expireAfterWrite(cacheConfiguration.getDuration(), cacheConfiguration.getUnit())
-                .build(new CacheLoader<String, Optional<NetworkInterfaceLoad>>() {
-                    @Override
-                    public Optional<NetworkInterfaceLoad> load(String s) throws Exception {
-                        return networkMetrics.networkInterfaceLoadById(s);
-                    }
-                });
-        this.networkInterfaceQueryCache = CacheBuilder.newBuilder()
-                .expireAfterWrite(cacheConfiguration.getDuration(), cacheConfiguration.getUnit())
-                .build(new CacheLoader<String, Optional<NetworkInterface>>() {
-                    @Override
-                    public Optional<NetworkInterface> load(String s) throws Exception {
-                        return networkMetrics.networkInterfaceById(s);
-                    }
-                });
+    override fun networkInterfaces(): List<NetworkInterface> {
+        return networkInterfacesCache.get()
     }
 
-    @Override
-    public List<NetworkInterface> networkInterfaces() {
-        return networkInterfacesCache.get();
+    override fun networkInterfaceById(id: String): Optional<NetworkInterface> {
+        return networkInterfaceQueryCache.getUnchecked(id)
     }
 
-    @Override
-    public Optional<NetworkInterface> networkInterfaceById(String id) {
-        return networkInterfaceQueryCache.getUnchecked(id);
+    override fun networkInterfaceLoads(): List<NetworkInterfaceLoad> {
+        return networkInterfaceLoadsCache.get()
     }
 
-    @Override
-    public List<NetworkInterfaceLoad> networkInterfaceLoads() {
-        return networkInterfaceLoadsCache.get();
-    }
-
-    @Override
-    public Optional<NetworkInterfaceLoad> networkInterfaceLoadById(String id) {
-        return networkInterfaceLoadQueryCache.getUnchecked(id);
+    override fun networkInterfaceLoadById(id: String): Optional<NetworkInterfaceLoad> {
+        return networkInterfaceLoadQueryCache.getUnchecked(id)
     }
 }
