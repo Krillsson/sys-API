@@ -1,3 +1,11 @@
+### 0.15.0
+
+**REST API Breaking changes**
+
+- Persist history to save memory
+- History no longer include running processes (it was taking up too much memory)
+- Update OSHI dependency
+
 ### 0.14.1
 
 **REST API Breaking changes**

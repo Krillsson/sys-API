@@ -13,7 +13,7 @@ fun oshi.software.os.OperatingSystem.asOperatingSystem(): OperatingSystem {
         family,
         OperatingSystem.VersionInfo(
             versionInfo.version,
-            versionInfo.codeName,
+            versionInfo.codeName.orEmpty(),
             versionInfo.buildNumber
         )
     )

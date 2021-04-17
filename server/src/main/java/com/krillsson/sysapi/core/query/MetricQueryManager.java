@@ -5,7 +5,6 @@ import com.krillsson.sysapi.core.domain.processes.ProcessSort;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
 import com.krillsson.sysapi.core.metrics.Metrics;
 import io.dropwizard.lifecycle.Managed;
-import oshi.software.os.OperatingSystem;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +35,7 @@ public abstract class MetricQueryManager<T extends MetricQueryEvent> implements 
     public void start() throws Exception {
         executorService.scheduleAtFixedRate(
                 this::query,
-                period,
+                0,
                 period,
                 unit
         );

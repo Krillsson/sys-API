@@ -20,43 +20,30 @@
  */
 package com.krillsson.sysapi
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.google.common.eventbus.EventBus
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.krillsson.sysapi.auth.BasicAuthenticator
 import com.krillsson.sysapi.auth.BasicAuthorizer
 import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.config.UserConfiguration
+import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.domain.system.SystemLoad
 import com.krillsson.sysapi.core.history.HistoryMetricQueryEvent
+import com.krillsson.sysapi.core.history.HistoryRepository
+import com.krillsson.sysapi.core.history.HistoryStore
 import com.krillsson.sysapi.core.history.MetricsHistoryManager
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.metrics.MetricsFactory
-import com.krillsson.sysapi.core.monitoring.EventManager
-import com.krillsson.sysapi.core.monitoring.EventStore
-import com.krillsson.sysapi.core.monitoring.MonitorManager
-import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
-import com.krillsson.sysapi.core.monitoring.MonitorStore
+import com.krillsson.sysapi.core.monitoring.*
 import com.krillsson.sysapi.core.query.MetricQueryManager
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
 import com.krillsson.sysapi.graphql.GraphQLBundle
 import com.krillsson.sysapi.graphql.GraphQLConfiguration
-import com.krillsson.sysapi.rest.CpuResource
-import com.krillsson.sysapi.rest.DrivesResource
-import com.krillsson.sysapi.rest.EventResource
-import com.krillsson.sysapi.rest.GpuResource
-import com.krillsson.sysapi.rest.MemoryResource
-import com.krillsson.sysapi.rest.MetaInfoResource
-import com.krillsson.sysapi.rest.MonitorResource
-import com.krillsson.sysapi.rest.MotherboardResource
-import com.krillsson.sysapi.rest.NetworkInterfacesResource
-import com.krillsson.sysapi.rest.ProcessesResource
-import com.krillsson.sysapi.rest.SystemResource
-import com.krillsson.sysapi.util.EnvironmentUtils
-import com.krillsson.sysapi.util.OffsetDateTimeConverter
-import com.krillsson.sysapi.util.Ticker
-import com.krillsson.sysapi.util.Utils
-import com.krillsson.sysapi.util.asOperatingSystem
-import com.krillsson.sysapi.util.asPlatform
+import com.krillsson.sysapi.persistence.Store
+import com.krillsson.sysapi.rest.*
+import com.krillsson.sysapi.util.*
 import io.dropwizard.Application
 import io.dropwizard.auth.AuthDynamicFeature
 import io.dropwizard.auth.AuthValueFactoryProvider
@@ -69,7 +56,7 @@ import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature
 import oshi.SystemInfo
 import oshi.software.os.OperatingSystem
 import java.time.Clock
-import java.util.EnumSet
+import java.util.*
 import java.util.concurrent.Executors
 import java.util.function.Supplier
 import javax.servlet.DispatcherType
@@ -122,13 +109,17 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
 
     lateinit var eventStore: EventStore
     lateinit var monitorStore: MonitorStore
+    lateinit var historyStore: Store<List<SystemHistoryEntry>>
     lateinit var eventManager: EventManager
 
     override fun initialize(bootstrap: Bootstrap<SysAPIConfiguration>) {
         val mapper = bootstrap.objectMapper
+        mapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true)
+        mapper.registerKotlinModule()
 
         eventStore = EventStore(mapper)
         monitorStore = MonitorStore(mapper)
+        historyStore = HistoryStore(mapper)
         eventManager = EventManager(eventStore)
 
         bootstrap.addBundle(SslReloadBundle())
@@ -170,7 +161,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             }
         }
 
-        val historyManager = MetricsHistoryManager(config.metrics().history, eventBus)
+        val historyManager = MetricsHistoryManager(config.metrics().history, eventBus, HistoryRepository(historyStore))
         val monitorManager =
             MonitorManager(
                 eventManager,

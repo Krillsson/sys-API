@@ -21,7 +21,7 @@
 package com.krillsson.sysapi.rest
 
 import com.krillsson.sysapi.auth.BasicAuthorizer
-import com.krillsson.sysapi.core.domain.history.HistoryEntry
+import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.domain.processes.ProcessSort
 import com.krillsson.sysapi.core.domain.system.JvmProperties
 import com.krillsson.sysapi.core.domain.system.SystemInfo
@@ -30,15 +30,10 @@ import com.krillsson.sysapi.core.history.MetricsHistoryManager
 import com.krillsson.sysapi.core.metrics.SystemMetrics
 import org.slf4j.LoggerFactory
 import java.time.OffsetDateTime
-import java.util.HashMap
-import java.util.Optional
+import java.util.*
 import java.util.function.Supplier
 import javax.annotation.security.RolesAllowed
-import javax.ws.rs.GET
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
-import javax.ws.rs.QueryParam
-import javax.ws.rs.WebApplicationException
+import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.Response
 
@@ -94,7 +89,7 @@ class SystemResource(
     fun getLoadHistory(
         @QueryParam("fromDate") fromDate: OffsetDateTime?,
         @QueryParam("toDate") toDate: OffsetDateTime?
-    ): List<HistoryEntry<SystemLoad>> {
+    ): List<SystemHistoryEntry> {
         return historyManager.systemLoadHistory(fromDate, toDate)
     }
 

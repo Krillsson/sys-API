@@ -12,6 +12,7 @@ donotadd.yml
 
 /monitors.json
 /events.json
+/history.json
 
 # Ignore Gradle project-specific cache directory
 .gradle

@@ -2,27 +2,27 @@ package com.krillsson.sysapi.core.metrics.defaultimpl
 
 import com.krillsson.sysapi.core.domain.processes.Process
 import com.krillsson.sysapi.core.domain.processes.ProcessSort
-import com.krillsson.sysapi.core.domain.processes.ProcessSort.CPU
-import com.krillsson.sysapi.core.domain.processes.ProcessSort.MEMORY
-import com.krillsson.sysapi.core.domain.processes.ProcessSort.NAME
-import com.krillsson.sysapi.core.domain.processes.ProcessSort.NEWEST
-import com.krillsson.sysapi.core.domain.processes.ProcessSort.OLDEST
-import com.krillsson.sysapi.core.domain.processes.ProcessSort.PARENTPID
-import com.krillsson.sysapi.core.domain.processes.ProcessSort.PID
+import com.krillsson.sysapi.core.domain.processes.ProcessSort.*
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo
 import com.krillsson.sysapi.core.metrics.ProcessesMetrics
 import com.krillsson.sysapi.util.OSProcessComparators
 import com.krillsson.sysapi.util.Ticker
+import com.krillsson.sysapi.util.measureTimeMillis
+import org.slf4j.LoggerFactory
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.software.os.OSProcess
 import oshi.software.os.OperatingSystem
-import java.util.Optional
+import java.util.*
 
 class DefaultProcessesMetrics(
     private val operatingSystem: OperatingSystem,
     private val hal: HardwareAbstractionLayer,
     private val ticker: Ticker,
 ) : ProcessesMetrics, Ticker.TickListener {
+
+    companion object {
+        private val LOGGER = LoggerFactory.getLogger(ProcessesMetrics::class.java)
+    }
 
     private val priorSnapshotMap: MutableMap<Int, OSProcess> = mutableMapOf()
     private val currentLoad: MutableMap<Int, Double> = mutableMapOf()
@@ -60,12 +60,17 @@ class DefaultProcessesMetrics(
     }
 
     override fun processesInfo(sortBy: ProcessSort, limit: Int): ProcessesInfo {
-        val list = sortAndLimit(priorSnapshotMap.values.toMutableList(), sortBy, limit)
+        val tracedValue = measureTimeMillis {  sortAndLimit(priorSnapshotMap.values.toMutableList(), sortBy, limit) }
+        LOGGER.debug(
+            "Took {} to sort and limit {} processes",
+            "${tracedValue.first.toInt()}ms",
+            tracedValue.second.size
+        )
         return ProcessesInfo(
             operatingSystem.processId.toLong(),
             operatingSystem.threadCount.toLong(),
             operatingSystem.processCount.toLong(),
-            list.map { process ->
+            tracedValue.second.map { process ->
                 process.asProcess(
                     currentLoad.getOrDefault(process.processID, 0.0),
                     hal.memory.total

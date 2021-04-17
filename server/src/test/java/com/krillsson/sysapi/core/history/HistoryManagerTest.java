@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
 public class HistoryManagerTest {
 
     HistoryManager historyManager;
-    History history;
+    HistoryRepository history;
     private EventBus eventBus;
     private HistoryPurgingConfiguration purgingConfiguration;
 
@@ -24,7 +24,7 @@ public class HistoryManagerTest {
         HistoryConfiguration historyConfiguration = mock(HistoryConfiguration.class);
         purgingConfiguration = mock(HistoryPurgingConfiguration.class);
         when(historyConfiguration.getPurging()).thenReturn(purgingConfiguration);
-        history = mock(History.class);
+        history = mock(HistoryRepository.class);
         eventBus = mock(EventBus.class);
         historyManager = new HistoryManager(historyConfiguration, eventBus, history);
     }
@@ -36,7 +36,7 @@ public class HistoryManagerTest {
 
         historyManager.onEvent(new HistoryMetricQueryEvent(mock(SystemLoad.class)));
 
-        verify(history).record(any(SystemLoad.class));
+        verify(history).record(any(com.krillsson.sysapi.core.domain.history.HistorySystemLoad.class));
         verify(history).purge(1, ChronoUnit.HOURS);
     }
 
