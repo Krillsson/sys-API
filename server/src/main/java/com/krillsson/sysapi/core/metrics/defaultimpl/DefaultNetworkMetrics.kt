@@ -64,7 +64,6 @@ open class DefaultNetworkMetrics(
     }
 
     override fun networkInterfaces(): List<NetworkInterface> {
-
         return hal.networkIFs
             .map {
                 var isLoopback = false

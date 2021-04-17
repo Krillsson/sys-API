@@ -48,7 +48,7 @@ open class DefaultDriveMetrics(
 ) : DriveMetrics {
     fun register() {
         for (store in hal.diskStores) {
-            speedMeasurementManager.register(DiskSpeedSource(store.name, hal))
+            speedMeasurementManager.register(DiskSpeedSource(store.name, store))
         }
     }
 
@@ -165,32 +165,20 @@ open class DefaultDriveMetrics(
 
     private class DiskSpeedSource constructor(
         private val name: String,
-        private val hal: HardwareAbstractionLayer
+        private val hwDiskStore: HWDiskStore
     ) : SpeedSource {
         override fun getName(): String {
             return name
         }
 
         override fun getCurrentRead(): Long {
-            return hal.diskStores.stream()
-                .filter { d: HWDiskStore -> d.name == name }
-                .map { hwDiskStore: HWDiskStore ->
-                    hwDiskStore.updateAttributes()
-                    hwDiskStore.readBytes
-                }
-                .findAny()
-                .orElse(0L)
+            hwDiskStore.updateAttributes()
+            return hwDiskStore.readBytes
         }
 
         override fun getCurrentWrite(): Long {
-            return hal.diskStores.stream()
-                .filter { d: HWDiskStore -> d.name == name }
-                .map { hwDiskStore: HWDiskStore ->
-                    hwDiskStore.updateAttributes()
-                    hwDiskStore.writeBytes
-                }
-                .findAny()
-                .orElse(0L)
+            hwDiskStore.updateAttributes()
+            return hwDiskStore.writeBytes
         }
     }
 
