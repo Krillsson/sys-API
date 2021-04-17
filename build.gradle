@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        kotlinVersion = '1.4.10'
+        kotlinVersion = "1.4.10"
     }
     repositories {
         repositories {
@@ -40,9 +40,9 @@ project(':sys-api-server') {
     apply plugin: 'application'
 
     dependencies {
-        implementation 'io.dropwizard:dropwizard-core:2.0.15'
-        implementation 'io.dropwizard:dropwizard-auth:2.0.15'
-        implementation 'io.dropwizard:dropwizard-assets:2.0.15'
+        implementation 'io.dropwizard:dropwizard-core:2.0.21'
+        implementation 'io.dropwizard:dropwizard-auth:2.0.21'
+        implementation 'io.dropwizard:dropwizard-assets:2.0.21'
         implementation 'com.github.oshi:oshi-core:5.3.5'
         implementation 'com.graphql-java-kickstart:graphql-java-tools:5.6.1'
         implementation 'com.smoketurner.dropwizard:graphql-core:2.0.12-1'
@@ -63,7 +63,7 @@ project(':sys-api-server') {
 
     compileKotlin {
         kotlinOptions {
-            jvmTarget = '1.8'
+            jvmTarget = JavaVersion.VERSION_1_8
         }
     }
 
