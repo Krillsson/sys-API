@@ -25,7 +25,7 @@ input CreateMonitorInput {
     inertiaInSeconds: Int!
     type: MonitorType!
     threshold: Float!
-    id: UUID!
+    id: String
 }
 
 type CreateMonitorOutput {
@@ -76,6 +76,7 @@ type SystemMetricsHistoryEntry {
     processorMetrics: ProcessorMetrics!
     driveMetrics: [DriveMetrics!]!
     networkInterfaceMetrics: [NetworkInterfaceMetrics!]!
+    memoryMetrics: MemoryMetrics!
     #graphicsMetrics: [GraphicsMetrics]
 }
 
@@ -191,7 +192,6 @@ type ProcessorCoreMetrics {
 type Drive {
     model: String!
     name: String!
-    id: String!
     serial: String!
     sizeBytes: Long!
     diskOsPartition: DiskOsPartition!
@@ -228,7 +228,7 @@ type Partition {
 }
 
 type DriveMetrics {
-    driveId: UUID!
+    name: String!
     temperature: Int!
     healthData: [DriveHealth!]!
     usableSpaceBytes: Long!
@@ -266,7 +266,6 @@ type DriveReadWriteRate {
 
 type NetworkInterface {
     name: String!
-    id: String!
     displayName: String!
     mac: String!
     speed: Int!
@@ -278,8 +277,7 @@ type NetworkInterface {
 }
 
 type NetworkInterfaceMetrics {
-    networkInterfaceid: UUID!
-    speed: Int!
+    name: String!
     bytesReceived: Long!
     bytesSent: Long!
     packetsReceived: Int!
@@ -329,13 +327,13 @@ type Process {
     threadCount: Int!
     priority: Int!
     virtualSize: Int!
-    residentSetSize: Int!
+    residentSetSize: Long!
     memoryPercent: Float!
     kernelTime: Int!
     userTime: Int!
     upTime: Int!
     cpuPercent: Float!
-    startTime: Int!
+    startTime: Long!
     bytesRead: Long!
     bytesWritten: Long!
 }
@@ -353,8 +351,8 @@ enum ProcessSortMethod{
 # Memory
 
 type Memory {
-    swapTotalBytes: Long
-    totalBytes: Long
+    swapTotalBytes: Long!
+    totalBytes: Long!
     physicalMemory: [PhysicalMemory!]!
     metrics: MemoryMetrics
 }

@@ -47,7 +47,7 @@ class MonitorManager(private val eventManager: EventManager, private val eventBu
         return activeMonitors[id]?.second
     }
 
-    fun add(inertia: Duration, type: MonitorType, threshold: Double, itemId: String?): UUID? {
+    fun add(inertia: Duration, type: MonitorType, threshold: Double, itemId: String?): UUID {
         val config = MonitorConfig(itemId, threshold, inertia)
         val monitor = createMonitor(type, UUID.randomUUID(), config)
         return if (validate(monitor)) {

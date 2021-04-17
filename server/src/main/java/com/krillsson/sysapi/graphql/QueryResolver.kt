@@ -133,7 +133,7 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     inner class HistoryResolver : GraphQLResolver<SystemHistoryEntry> {
-        fun getProcessorMetrics(historyEntry: SystemHistoryEntry): CpuLoad? {
+        fun getProcessorMetrics(historyEntry: SystemHistoryEntry): CpuLoad {
             return historyEntry.value.cpuLoad
         }
 
@@ -147,6 +147,10 @@ class QueryResolver : GraphQLQueryResolver {
 
         fun getGraphicsMetrics(historyEntry: SystemHistoryEntry): List<GpuLoad> {
             return historyEntry.value.gpuLoads
+        }
+
+        fun getMemoryMetrics(historyEntry: SystemHistoryEntry): MemoryLoad {
+            return historyEntry.value.memory
         }
     }
 
