@@ -6,20 +6,20 @@ import com.krillsson.sysapi.core.domain.cpu.CpuLoad
 import com.krillsson.sysapi.core.domain.drives.DriveLoad
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad
 import com.krillsson.sysapi.core.domain.history.HistoryEntry
+import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.domain.memory.MemoryLoad
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad
-import com.krillsson.sysapi.core.domain.system.SystemLoad
 import java.time.OffsetDateTime
 import java.util.stream.Collectors
 
-class MetricsHistoryManager(configuration: HistoryConfiguration, eventBus: EventBus) :
-    HistoryManager(configuration, eventBus) {
+class MetricsHistoryManager(configuration: HistoryConfiguration, eventBus: EventBus, historyRepository: HistoryRepository) :
+    HistoryManager(configuration, eventBus, historyRepository) {
     fun cpuLoadHistory(
         fromDate: OffsetDateTime?,
         toDate: OffsetDateTime?
     ): List<HistoryEntry<CpuLoad>> {
         return systemLoadHistory(fromDate, toDate).stream()
-            .map { e: HistoryEntry<SystemLoad> ->
+            .map { e: SystemHistoryEntry ->
                 HistoryEntry(
                     e.date,
                     e.value.cpuLoad
@@ -31,7 +31,7 @@ class MetricsHistoryManager(configuration: HistoryConfiguration, eventBus: Event
     fun systemLoadHistory(
         fromDate: OffsetDateTime?,
         toDate: OffsetDateTime?
-    ): List<HistoryEntry<SystemLoad>> {
+    ): List<SystemHistoryEntry> {
         return getHistoryLimitedToDates(fromDate, toDate)
     }
 
@@ -40,7 +40,7 @@ class MetricsHistoryManager(configuration: HistoryConfiguration, eventBus: Event
         toDate: OffsetDateTime?
     ): List<HistoryEntry<List<DriveLoad>>> {
         return systemLoadHistory(fromDate, toDate).stream()
-            .map { e: HistoryEntry<SystemLoad> ->
+            .map { e: SystemHistoryEntry ->
                 HistoryEntry(
                     e.date,
                     e.value.driveLoads
@@ -54,7 +54,7 @@ class MetricsHistoryManager(configuration: HistoryConfiguration, eventBus: Event
         toDate: OffsetDateTime?
     ): List<HistoryEntry<List<GpuLoad>>> {
         return systemLoadHistory(fromDate, toDate).stream()
-            .map { e: HistoryEntry<SystemLoad> ->
+            .map { e: SystemHistoryEntry ->
                 HistoryEntry(
                     e.date,
                     e.value.gpuLoads
@@ -68,7 +68,7 @@ class MetricsHistoryManager(configuration: HistoryConfiguration, eventBus: Event
         toDate: OffsetDateTime?
     ): List<HistoryEntry<MemoryLoad>> {
         return systemLoadHistory(fromDate, toDate).stream()
-            .map { e: HistoryEntry<SystemLoad> ->
+            .map { e: SystemHistoryEntry ->
                 HistoryEntry(
                     e.date,
                     e.value.memory
@@ -82,7 +82,7 @@ class MetricsHistoryManager(configuration: HistoryConfiguration, eventBus: Event
         toDate: OffsetDateTime?
     ): List<HistoryEntry<List<NetworkInterfaceLoad>>> {
         return systemLoadHistory(fromDate, toDate).stream()
-            .map { e: HistoryEntry<SystemLoad> ->
+            .map { e: SystemHistoryEntry ->
                 HistoryEntry(
                     e.date,
                     e.value.networkInterfaceLoads
