@@ -11,7 +11,9 @@ type Query {
     system: System!
     history: [SystemMetricsHistoryEntry!]!
     monitors: [Monitor!]!
-    events: [MonitorEvent!]!
+    events: [Event!]!
+    pastEvents: [PastEvent!]!
+    ongoingEvents: [OngoingEvent!]!
 }
 
 type Mutation {
@@ -25,7 +27,7 @@ input CreateMonitorInput {
     inertiaInSeconds: Int!
     type: MonitorType!
     threshold: Float!
-    id: String
+    monitoredItemId: String
 }
 
 type CreateMonitorOutput {
@@ -84,6 +86,7 @@ type SystemMetricsHistoryEntry {
 
 type Monitor {
     id: UUID!
+    monitoredItemId: String,
     inertiaInSeconds: Int!
     type: MonitorType!
     threshold: Float!
@@ -100,17 +103,30 @@ enum MonitorType {
     NETWORK_UP
 }
 
-enum EventType {
-    START,
-    STOP
-}
-
-type MonitorEvent {
+interface Event {
     id: UUID!
     monitorId: UUID!
-    time: String!
+    startTime: String!
     type: MonitorType!
-    eventType: EventType!
+    threshold: Float!
+    value: Float!
+}
+
+type OngoingEvent implements Event{
+    id: UUID!
+    monitorId: UUID!
+    startTime: String!
+    type: MonitorType!
+    threshold: Float!
+    value: Float!
+}
+
+type PastEvent implements Event{
+    id: UUID!
+    monitorId: UUID!
+    startTime: String!
+    endTime: String!
+    type: MonitorType!
     threshold: Float!
     value: Float!
 }

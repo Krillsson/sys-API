@@ -13,7 +13,7 @@ class DriveMonitor(override val id: UUID, override val config: MonitorConfig) : 
 
     override fun selectValue(load: SystemLoad): Double = load.driveLoads
             .stream()
-            .filter { i: DriveLoad -> i.serial.equals(config.id, ignoreCase = true) || i.name.equals(config.id, ignoreCase = true) }
+            .filter { i: DriveLoad -> i.serial.equals(config.monitoredItemId, ignoreCase = true) || i.name.equals(config.monitoredItemId, ignoreCase = true) }
             .findFirst()
             .orElse(Empty.DRIVE_LOAD)
             .values

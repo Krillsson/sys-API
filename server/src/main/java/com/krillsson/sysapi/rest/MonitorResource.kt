@@ -1,7 +1,7 @@
 package com.krillsson.sysapi.rest
 
 import com.krillsson.sysapi.auth.BasicAuthorizer
-import com.krillsson.sysapi.core.domain.event.MonitorEvent
+import com.krillsson.sysapi.core.domain.event.Event
 import com.krillsson.sysapi.core.monitoring.EventManager
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorManager
@@ -30,7 +30,7 @@ class MonitorResource(private val monitorManager: MonitorManager, private val ev
 
     @GET
     @Path("{id}/events")
-    fun getEventForMonitorId(@PathParam("id") monitorId: String?): List<MonitorEvent> {
+    fun getEventForMonitorId(@PathParam("id") monitorId: String?): List<Event> {
         return eventManager.eventsForMonitorId(UUID.fromString(monitorId))
     }
 

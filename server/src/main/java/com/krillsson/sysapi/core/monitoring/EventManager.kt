@@ -1,15 +1,16 @@
 package com.krillsson.sysapi.core.monitoring
 
-import com.krillsson.sysapi.core.domain.event.EventType
-import com.krillsson.sysapi.core.domain.event.MonitorEvent
+import com.krillsson.sysapi.core.domain.event.Event
+import com.krillsson.sysapi.core.domain.event.OngoingEvent
+import com.krillsson.sysapi.core.domain.event.PastEvent
 import com.krillsson.sysapi.persistence.Store
 import io.dropwizard.lifecycle.Managed
 import org.slf4j.LoggerFactory
 import java.util.*
 
-class EventManager(private val store: Store<List<MonitorEvent>>) : Managed {
+class EventManager(private val store: Store<List<Event>>) : Managed {
 
-    private lateinit var events: MutableList<MonitorEvent>
+    private lateinit var events: MutableList<Event>
 
     companion object {
         private val LOGGER = LoggerFactory.getLogger(EventManager::class.java)
@@ -23,26 +24,28 @@ class EventManager(private val store: Store<List<MonitorEvent>>) : Managed {
         persist()
     }
 
-    fun add(event: MonitorEvent) {
-        if (event.eventType == EventType.STOP && getAll().stream()
-                        .noneMatch { me: MonitorEvent -> me.id == event.id }) {
-            LOGGER.warn("Received STOP event for explicitly removed event, ignoring...")
-        } else {
-            events.add(event)
+    fun add(event: Event) {
+        when (event) {
+            is PastEvent -> {
+                events.removeIf { ongoingEvent -> event.id == ongoingEvent.id }
+                events.add(event)
+            }
+            is OngoingEvent -> events.add(event)
         }
+        persist()
     }
 
-    fun getAll(): List<MonitorEvent> = events
+    fun getAll(): List<Event> = events
 
     fun remove(id: UUID): Boolean = events
-            .removeAll { it.id == id }
-            .also { persist() }
+        .removeAll { it.id == id }
+        .also { persist() }
 
-    fun eventsForMonitorId(id: UUID): List<MonitorEvent> = events.filter { it.monitorId == id }
+    fun eventsForMonitorId(id: UUID): List<Event> = events.filter { it.monitorId == id }
 
     fun removeEventsForMonitorId(id: UUID) = events
-            .removeAll { it.monitorId == id }
-            .also { persist() }
+        .removeAll { it.monitorId == id }
+        .also { persist() }
 
     private fun persist() = store.write(events)
 

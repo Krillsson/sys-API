@@ -1,6 +1,5 @@
 package com.krillsson.sysapi.graphql
 
-import com.coxautodev.graphql.tools.SchemaParser
 import com.krillsson.sysapi.core.domain.system.OperatingSystem
 import com.krillsson.sysapi.core.domain.system.Platform
 import com.krillsson.sysapi.core.history.HistoryManager
@@ -8,6 +7,7 @@ import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.EventManager
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.graphql.scalars.ScalarTypes
+import graphql.kickstart.tools.SchemaParser
 import graphql.schema.GraphQLSchema
 
 class GraphQLConfiguration {
@@ -24,7 +24,8 @@ class GraphQLConfiguration {
                 queryResolver.systemInfoResolver,
                 queryResolver.historyResolver,
                 queryResolver.monitorResolver,
-                queryResolver.monitorEventResolver,
+                queryResolver.pastEventEventResolver,
+                queryResolver.ongoingEventResolver,
                 queryResolver.motherboardResolver,
                 queryResolver.processorResolver,
                 queryResolver.driveResolver,

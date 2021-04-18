@@ -1,12 +1,12 @@
 package com.krillsson.sysapi.graphql
 
-import com.coxautodev.graphql.tools.GraphQLQueryResolver
-import com.coxautodev.graphql.tools.GraphQLResolver
 import com.krillsson.sysapi.core.domain.cpu.CentralProcessor
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad
 import com.krillsson.sysapi.core.domain.drives.Drive
 import com.krillsson.sysapi.core.domain.drives.DriveLoad
 import com.krillsson.sysapi.core.domain.event.MonitorEvent
+import com.krillsson.sysapi.core.domain.event.OngoingEvent
+import com.krillsson.sysapi.core.domain.event.PastEvent
 import com.krillsson.sysapi.core.domain.gpu.Gpu
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad
 import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
@@ -26,6 +26,8 @@ import com.krillsson.sysapi.core.monitoring.EventManager
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.util.EnvironmentUtils
+import graphql.kickstart.tools.GraphQLQueryResolver
+import graphql.kickstart.tools.GraphQLResolver
 import oshi.hardware.UsbDevice
 
 class QueryResolver : GraphQLQueryResolver {
@@ -57,6 +59,8 @@ class QueryResolver : GraphQLQueryResolver {
     val historyResolver = HistoryResolver()
     val monitorResolver = MonitorResolver()
     val monitorEventResolver = MonitorEventResolver()
+    val pastEventEventResolver = PastEventEventResolver()
+    val ongoingEventResolver = OngoingEventResolver()
     val motherboardResolver = MotherboardResolver()
     val processorResolver = ProcessorResolver()
     val processorMetricsResolver = ProcessorMetricsResolver()
@@ -89,6 +93,8 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     fun events() = eventManager.getAll().toList()
+    fun pastEvents() = eventManager.getAll().filterIsInstance(PastEvent::class.java)
+    fun ongoingEvents() = eventManager.getAll().filterIsInstance(OngoingEvent::class.java)
 
     inner class SystemResolver : GraphQLResolver<System> {
         fun processorMetrics(system: System) = metrics.cpuMetrics().cpuLoad()
@@ -172,10 +178,19 @@ class QueryResolver : GraphQLQueryResolver {
         fun getInertiaInSeconds(monitor: Monitor) = monitor.config.inertia.seconds
         fun getType(monitor: Monitor) = monitor.type
         fun getThreshold(monitor: Monitor) = monitor.config.threshold
+        fun getMonitoredItemId(monitor: Monitor) = monitor.config.monitoredItemId
     }
 
     inner class MonitorEventResolver : GraphQLResolver<MonitorEvent> {
         fun getType(monitorEvent: MonitorEvent) = monitorEvent.monitorType
+    }
+
+    inner class OngoingEventResolver : GraphQLResolver<OngoingEvent> {
+        fun getType(event: OngoingEvent) = event.monitorType
+    }
+
+    inner class PastEventEventResolver : GraphQLResolver<PastEvent> {
+        fun getType(event: PastEvent) = event.monitorType
     }
 
     inner class MotherboardResolver : GraphQLResolver<Motherboard> {
