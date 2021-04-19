@@ -79,7 +79,6 @@ type SystemMetricsHistoryEntry {
     driveMetrics: [DriveMetrics!]!
     networkInterfaceMetrics: [NetworkInterfaceMetrics!]!
     memoryMetrics: MemoryMetrics!
-    #graphicsMetrics: [GraphicsMetrics]
 }
 
 ## Monitoring
@@ -305,24 +304,6 @@ type NetworkInterfaceReadWriteRate {
     receiveBytesPerSecond: Long!
     sendBytesPerSecond: Long!
 }
-
-# GPU
-
-#type Graphics {
-#    vendor: String
-#    model: String
-#    coreMhz: Float
-#    memoryMhz: Float
-#    metrics: GraphicsMetrics
-#}
-#
-#type GraphicsMetrics {
-#    fanRpm: Float
-#    fanPercent: Float
-#    temperature: Float
-#    coreLoad: Float
-#    memoryLoad: Float
-#}
 
 # Processes
 
