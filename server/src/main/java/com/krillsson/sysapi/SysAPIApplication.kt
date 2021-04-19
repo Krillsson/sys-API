@@ -20,7 +20,6 @@
  */
 package com.krillsson.sysapi
 
-import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.google.common.eventbus.EventBus
 import com.google.common.util.concurrent.ThreadFactoryBuilder
@@ -61,6 +60,7 @@ import java.util.concurrent.Executors
 import java.util.function.Supplier
 import javax.servlet.DispatcherType
 import javax.servlet.FilterRegistration
+
 
 class SysAPIApplication : Application<SysAPIConfiguration>() {
 
@@ -114,13 +114,11 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
 
     override fun initialize(bootstrap: Bootstrap<SysAPIConfiguration>) {
         val mapper = bootstrap.objectMapper
-        mapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true)
         mapper.registerKotlinModule()
-
         eventStore = EventStore(mapper)
         monitorStore = MonitorStore(mapper)
         historyStore = HistoryStore(mapper)
-        eventManager = EventManager(eventStore)
+        eventManager = EventManager(EventRepository(eventStore), com.krillsson.sysapi.util.Clock())
 
         bootstrap.addBundle(SslReloadBundle())
         bootstrap.addBundle(graphqlBundle)
@@ -162,14 +160,13 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         }
 
         val historyManager = MetricsHistoryManager(config.metrics().history, eventBus, HistoryRepository(historyStore))
-        val monitorManager =
-            MonitorManager(
-                eventManager,
-                eventBus,
-                monitorStore,
-                metrics,
-                com.krillsson.sysapi.util.Clock()
-            )
+        val monitorManager = MonitorManager(
+            eventManager,
+            eventBus,
+            MonitorRepository(monitorStore),
+            metrics,
+            com.krillsson.sysapi.util.Clock()
+        )
 
         graphqlConfiguration.initialize(
             metrics,

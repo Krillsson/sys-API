@@ -3,5 +3,5 @@ package com.krillsson.sysapi.graphql.mutations
 import java.util.*
 
 data class DeleteEventInput(
-        val id: UUID
+        val eventId: UUID
 )

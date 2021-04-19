@@ -32,23 +32,23 @@ class MutationResolver : GraphQLMutationResolver {
             Duration.ofSeconds(input.inertiaInSeconds.toLong()),
             input.type,
             input.threshold.toDouble(),
-            input.id
+            input.monitoredItemId
         )
         return CreateMonitorOutput(createdId)
     }
 
     fun deleteMonitor(input: DeleteMonitorInput): DeleteMonitorOutput {
-        val removed = monitorManager.remove(input.id)
+        val removed = monitorManager.remove(input.monitorId)
         return DeleteMonitorOutput(removed)
     }
 
     fun deleteEvent(input: DeleteEventInput): DeleteEventOutput {
-        val removed = eventManager.remove(input.id)
+        val removed = eventManager.remove(input.eventId)
         return DeleteEventOutput(removed)
     }
 
     fun deleteEventsForMonitor(input: DeleteMonitorInput): DeleteEventOutput {
-        val removed = eventManager.removeEventsForMonitorId(input.id)
+        val removed = eventManager.removeEventsForMonitorId(input.monitorId)
         return DeleteEventOutput(removed)
     }
 }

@@ -5,14 +5,19 @@ import com.google.common.eventbus.Subscribe
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.MonitorFactory.createMonitor
-import com.krillsson.sysapi.persistence.Store
 import com.krillsson.sysapi.util.Clock
 import io.dropwizard.lifecycle.Managed
 import org.slf4j.LoggerFactory
 import java.time.Duration
 import java.util.*
 
-class MonitorManager(private val eventManager: EventManager, private val eventBus: EventBus, private val store: Store<List<Monitor>>, private val provider: Metrics, private val clock: Clock) : Managed {
+class MonitorManager(
+    private val eventManager: EventManager,
+    private val eventBus: EventBus,
+    private val repository: MonitorRepository,
+    private val provider: Metrics,
+    private val clock: Clock
+) : Managed {
 
     companion object {
         private val LOGGER = LoggerFactory.getLogger(MonitorManager::class.java)
@@ -71,12 +76,12 @@ class MonitorManager(private val eventManager: EventManager, private val eventBu
 
     private fun persist() {
         val monitors = activeMonitors.map { it.value.second }.toList()
-        store.write(monitors)
+        repository.write(monitors)
     }
 
     private fun restore() {
         activeMonitors = mutableMapOf()
-        store.read().orEmpty().forEach { monitor ->
+        repository.read().forEach { monitor ->
             register(monitor)
         }
     }

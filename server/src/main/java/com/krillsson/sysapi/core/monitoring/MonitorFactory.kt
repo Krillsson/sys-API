@@ -1,11 +1,7 @@
 package com.krillsson.sysapi.core.monitoring
 
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
-import com.krillsson.sysapi.core.monitoring.monitors.CpuMonitor
-import com.krillsson.sysapi.core.monitoring.monitors.CpuTemperatureMonitor
-import com.krillsson.sysapi.core.monitoring.monitors.DriveMonitor
-import com.krillsson.sysapi.core.monitoring.monitors.MemoryMonitor
-import com.krillsson.sysapi.core.monitoring.monitors.NetworkUpMonitor
+import com.krillsson.sysapi.core.monitoring.monitors.*
 import java.util.*
 
 object MonitorFactory {
@@ -23,12 +19,6 @@ object MonitorFactory {
                 id,
                 config
             )
-            MonitorType.DRIVE_TEMP -> DriveMonitor(
-                id,
-                config
-            )
-            MonitorType.GPU_LOAD -> TODO("Not implemented")
-            MonitorType.GPU_TEMP -> TODO("Not implemented")
             MonitorType.MEMORY_SPACE -> MemoryMonitor(
                 id,
                 config

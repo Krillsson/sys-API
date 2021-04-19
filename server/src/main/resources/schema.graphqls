@@ -31,11 +31,11 @@ input CreateMonitorInput {
 }
 
 type CreateMonitorOutput {
-    id: UUID!
+    monitorId: UUID!
 }
 
 input DeleteMonitorInput {
-    id: UUID!
+    monitorId: UUID!
 }
 
 type DeleteMonitorOutput {
@@ -43,11 +43,11 @@ type DeleteMonitorOutput {
 }
 
 input DeleteEventInput {
-    id: UUID!
+    eventId: UUID!
 }
 
 input DeleteEventsForMonitorInput {
-    id: UUID!
+    eventId: UUID!
 }
 
 type DeleteEventOutput {
@@ -96,9 +96,6 @@ enum MonitorType {
     CPU_LOAD,
     CPU_TEMP,
     DRIVE_SPACE,
-    DRIVE_TEMP,
-    GPU_LOAD,
-    GPU_TEMP,
     MEMORY_SPACE,
     NETWORK_UP
 }

@@ -3,12 +3,12 @@ package com.krillsson.sysapi.core.monitoring
 import com.krillsson.sysapi.core.domain.event.Event
 import com.krillsson.sysapi.core.domain.event.OngoingEvent
 import com.krillsson.sysapi.core.domain.event.PastEvent
-import com.krillsson.sysapi.persistence.Store
+import com.krillsson.sysapi.util.Clock
 import io.dropwizard.lifecycle.Managed
 import org.slf4j.LoggerFactory
 import java.util.*
 
-class EventManager(private val store: Store<List<Event>>) : Managed {
+class EventManager(private val repository: EventRepository, private val clock: Clock) : Managed {
 
     private lateinit var events: MutableList<Event>
 
@@ -21,6 +21,7 @@ class EventManager(private val store: Store<List<Event>>) : Managed {
     }
 
     override fun stop() {
+        endOngoingEvents()
         persist()
     }
 
@@ -47,9 +48,31 @@ class EventManager(private val store: Store<List<Event>>) : Managed {
         .removeAll { it.monitorId == id }
         .also { persist() }
 
-    private fun persist() = store.write(events)
+    private fun persist() = repository.write(events)
 
     private fun restore() {
-        events = store.read().orEmpty().toMutableList()
+        events = repository.read().toMutableList()
+    }
+
+    private fun endOngoingEvents() {
+        val newEvents: MutableList<Event> = mutableListOf()
+        events.forEach { event ->
+            if (event is OngoingEvent) {
+                LOGGER.debug("Shutting down - Ending ongoing event ${event.monitorType} (${event.id})")
+                newEvents += PastEvent(
+                    event.id,
+                    event.monitorId,
+                    event.monitoredItemId,
+                    event.startTime,
+                    clock.now(),
+                    event.monitorType,
+                    event.threshold,
+                    event.value
+                )
+            } else {
+                newEvents += event
+            }
+        }
+        events = newEvents
     }
 }

@@ -2,6 +2,8 @@ package com.krillsson.sysapi.persistence
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.util.StdDateFormat
 import com.krillsson.sysapi.util.measureTimeMillis
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -12,8 +14,14 @@ import java.io.IOException
 abstract class JsonFile<T>(
     private val filePath: String,
     private val typeToken: TypeReference<T>,
-    private val objectMapper: ObjectMapper
+    objectMapperBase: ObjectMapper
 ) : Store<T> {
+
+    private val objectMapper = objectMapperBase.copy()
+        .apply {
+            disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            dateFormat = StdDateFormat()
+        }
 
     override fun update(action: (T?) -> T) {
         val previousValue = read()
