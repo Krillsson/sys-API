@@ -1,0 +1,13 @@
+mutation createMonitor($input:CreateMonitorInput!) {
+    createMonitor(input: $input) {
+        monitorId
+    }
+}
+
+#{
+#"input": {
+#"type": "CPU_LOAD",
+#"inertiaInSeconds": 3,
+#"threshold": 5.0
+#}
+#}
