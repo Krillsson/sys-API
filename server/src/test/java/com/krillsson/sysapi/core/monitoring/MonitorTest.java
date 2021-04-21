@@ -1,7 +1,6 @@
 package com.krillsson.sysapi.core.monitoring;
 
-import com.krillsson.sysapi.core.domain.event.EventType;
-import com.krillsson.sysapi.core.domain.event.MonitorEvent;
+import com.krillsson.sysapi.core.domain.event.*;
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
 import com.krillsson.sysapi.util.Clock;
@@ -48,7 +47,7 @@ public class MonitorTest {
     public void insideToOutSideBeforeInertia() {
         monitor.value = OUTSIDE;
 
-        MonitorEvent event = mechanism.check(load, monitor);
+        Event event = mechanism.check(load, monitor);
         assertNull(event);
         assertSame(mechanism.getState(), MonitorMechanism.State.OUTSIDE_BEFORE_INERTIA);
     }
@@ -58,7 +57,7 @@ public class MonitorTest {
 
         //going to outside before inertia
         monitor.value = OUTSIDE;
-        MonitorEvent event = mechanism.check(load, monitor);
+        Event event = mechanism.check(load, monitor);
         assertNull(event);
 
         //time goes past inertia
@@ -70,8 +69,8 @@ public class MonitorTest {
 
         assertEquals(event.getValue(), OUTSIDE, 0.0);
         assertEquals(event.getThreshold(), OUTSIDE, 0.0);
-        assertEquals(event.getTime(), clock.now());
-        assertEquals(event.getEventType(), EventType.START);
+        assertEquals(event.getStartTime(), clock.now());
+        assertTrue(event instanceof OngoingEvent);
     }
 
     @Test
@@ -87,7 +86,7 @@ public class MonitorTest {
 
         //going to inside before inertia
         monitor.value = INSIDE;
-        MonitorEvent event = mechanism.check(load, monitor);
+        Event event = mechanism.check(load, monitor);
 
         assertNull(event);
     }
@@ -108,12 +107,13 @@ public class MonitorTest {
 
         //time goes past inertia
         clock.useFixedClockAt(clock.now().plusSeconds(PAST_INERTIA));
-        MonitorEvent monitorEvent = mechanism.check(load, monitor);
+        Event monitorEvent = mechanism.check(load, monitor);
 
         assertEquals(monitorEvent.getValue(), INSIDE, 0.0);
         assertEquals(monitorEvent.getThreshold(), OUTSIDE, 0.0);
-        assertEquals(monitorEvent.getTime(), clock.now());
-        assertEquals(monitorEvent.getEventType(), EventType.STOP);
+        assertEquals(monitorEvent.getStartTime(), clock.now());
+        assertTrue(monitorEvent instanceof PastEvent);
+
     }
 
     @Test
@@ -126,14 +126,14 @@ public class MonitorTest {
         clock.useFixedClockAt(clock.now().plusSeconds(PAST_INERTIA));
 
         //going to outside
-        MonitorEvent event = mechanism.check(load, monitor);
+        Event event = mechanism.check(load, monitor);
         assertNotNull(event);
         assertSame(mechanism.getState(), MonitorMechanism.State.OUTSIDE);
 
         //should have outside event
 
         assertEquals(monitor.id, event.getMonitorId());
-        assertEquals(clock.now(), event.getTime());
+        assertEquals(clock.now(), event.getStartTime());
         assertEquals(1, event.getThreshold(), 0.0);
         assertEquals(CPU_LOAD, event.getMonitorType());
     }
@@ -149,7 +149,7 @@ public class MonitorTest {
 
         //going back to inside
         monitor.value = INSIDE;
-        MonitorEvent monitorEvent = mechanism.check(load, monitor);
+        Event monitorEvent = mechanism.check(load, monitor);
 
         assertNull(monitorEvent);
     }
@@ -175,7 +175,7 @@ public class MonitorTest {
         monitor.value = OUTSIDE;
         mechanism.check(load, monitor);
 
-        MonitorEvent monitorEvent = mechanism.check(load, monitor);
+        Event monitorEvent = mechanism.check(load, monitor);
         assertNull(monitorEvent);
     }
 

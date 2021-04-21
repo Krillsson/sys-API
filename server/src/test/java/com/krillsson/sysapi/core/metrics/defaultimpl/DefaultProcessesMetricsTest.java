@@ -2,6 +2,7 @@ package com.krillsson.sysapi.core.metrics.defaultimpl;
 
 import com.krillsson.sysapi.core.domain.processes.ProcessSort;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
+import com.krillsson.sysapi.util.Ticker;
 import org.junit.Before;
 import org.junit.Test;
 import oshi.hardware.GlobalMemory;
@@ -27,6 +28,7 @@ public class DefaultProcessesMetricsTest {
     VirtualMemory virtualMemory;
     OperatingSystem os;
     DefaultProcessesMetrics provider;
+    Ticker ticker;
 
     @Before
     public void setUp() throws Exception {
@@ -37,8 +39,9 @@ public class DefaultProcessesMetricsTest {
         when(hal.getMemory()).thenReturn(memory);
         when(memory.getVirtualMemory()).thenReturn(virtualMemory);
         os = mock(OperatingSystem.class);
+        ticker = mock(Ticker.class);
 
-        provider = new DefaultProcessesMetrics(os, hal);
+        provider = new DefaultProcessesMetrics(os, hal, ticker);
     }
 
     @Test
