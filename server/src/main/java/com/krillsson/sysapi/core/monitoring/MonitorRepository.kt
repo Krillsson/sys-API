@@ -49,6 +49,9 @@ class MonitorRepository(private val store: Store<List<MonitorStore.StoredMonitor
             MonitorStore.StoredMonitor.Type.MEMORY_SPACE -> MemoryMonitor(id, config.asConfig())
             MonitorStore.StoredMonitor.Type.NETWORK_UP -> NetworkUpMonitor(id, config.asConfig())
             MonitorStore.StoredMonitor.Type.CONTAINER_RUNNING -> DockerContainerRunningMonitor(id, config.asConfig())
+            MonitorStore.StoredMonitor.Type.PROCESS_CPU_LOAD -> ProcessCpuMonitor(id, config.asConfig())
+            MonitorStore.StoredMonitor.Type.PROCESS_MEMORY_SPACE -> ProcessMemoryMonitor(id, config.asConfig())
+
         }
     }
 
@@ -66,6 +69,8 @@ class MonitorRepository(private val store: Store<List<MonitorStore.StoredMonitor
             MonitorType.MEMORY_SPACE -> MonitorStore.StoredMonitor.Type.MEMORY_SPACE
             MonitorType.NETWORK_UP -> MonitorStore.StoredMonitor.Type.NETWORK_UP
             MonitorType.CONTAINER_RUNNING -> MonitorStore.StoredMonitor.Type.CONTAINER_RUNNING
+            MonitorType.PROCESS_MEMORY_SPACE -> MonitorStore.StoredMonitor.Type.PROCESS_MEMORY_SPACE
+            MonitorType.PROCESS_CPU_LOAD -> MonitorStore.StoredMonitor.Type.PROCESS_CPU_LOAD
         }
     }
 

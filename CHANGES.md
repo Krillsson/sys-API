@@ -3,6 +3,7 @@
 - Docker support! Opt-in by enabling in configuration.yml
 - Persist history to save memory
 - History no longer include running processes (it was taking up too much space)
+- Added monitors for individual process memory and cpu loads
 - Update OSHI dependency
 - Fixed a few serialization errors in GraphQL layer
 
