@@ -38,6 +38,7 @@ import com.krillsson.sysapi.core.metrics.MetricsFactory
 import com.krillsson.sysapi.core.monitoring.*
 import com.krillsson.sysapi.core.query.MetricQueryManager
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
+import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.GraphQLBundle
 import com.krillsson.sysapi.graphql.GraphQLConfiguration
 import com.krillsson.sysapi.persistence.Store
@@ -111,6 +112,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     lateinit var monitorStore: MonitorStore
     lateinit var historyStore: Store<List<SystemHistoryEntry>>
     lateinit var eventManager: EventManager
+    lateinit var dockerClient: DockerClient
 
     override fun initialize(bootstrap: Bootstrap<SysAPIConfiguration>) {
         val mapper = bootstrap.objectMapper
@@ -133,6 +135,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         if (config.forwardHttps()) {
             EnvironmentUtils.addHttpsForward(environment.applicationContext)
         }
+
+        dockerClient = DockerClient(config.metrics().cache, config.docker())
 
         val metrics = metricsFactory.get(config)
 
@@ -173,6 +177,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             monitorManager,
             eventManager,
             historyManager,
+            dockerClient,
             os.asOperatingSystem(),
             SystemInfo.getCurrentPlatformEnum().asPlatform()
         )

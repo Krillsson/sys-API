@@ -2,6 +2,7 @@ package com.krillsson.sysapi.graphql
 
 import com.krillsson.sysapi.core.domain.cpu.CentralProcessor
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad
+import com.krillsson.sysapi.core.domain.docker.State
 import com.krillsson.sysapi.core.domain.drives.Drive
 import com.krillsson.sysapi.core.domain.drives.DriveLoad
 import com.krillsson.sysapi.core.domain.event.MonitorEvent
@@ -25,6 +26,10 @@ import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.EventManager
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorManager
+import com.krillsson.sysapi.docker.DockerClient
+import com.krillsson.sysapi.graphql.domain.Docker
+import com.krillsson.sysapi.graphql.domain.DockerAvailable
+import com.krillsson.sysapi.graphql.domain.DockerUnavailable
 import com.krillsson.sysapi.util.EnvironmentUtils
 import graphql.kickstart.tools.GraphQLQueryResolver
 import graphql.kickstart.tools.GraphQLResolver
@@ -38,12 +43,14 @@ class QueryResolver : GraphQLQueryResolver {
     lateinit var historyManager: HistoryManager
     lateinit var operatingSystem: OperatingSystem
     lateinit var platform: Platform
+    lateinit var dockerClient: DockerClient
 
     fun initialize(
         metrics: Metrics,
         monitorManager: MonitorManager,
         eventManager: EventManager,
         historyManager: HistoryManager,
+        dockerClient: DockerClient,
         operatingSystem: OperatingSystem,
         platform: Platform
     ) {
@@ -53,12 +60,13 @@ class QueryResolver : GraphQLQueryResolver {
         this.historyManager = historyManager
         this.operatingSystem = operatingSystem
         this.platform = platform
+        this.dockerClient = dockerClient
     }
 
     val systemInfoResolver = SystemResolver()
     val historyResolver = HistoryResolver()
     val monitorResolver = MonitorResolver()
-    val monitorEventResolver = MonitorEventResolver()
+    val dockerResolver = DockerResolver()
     val pastEventEventResolver = PastEventEventResolver()
     val ongoingEventResolver = OngoingEventResolver()
     val motherboardResolver = MotherboardResolver()
@@ -95,6 +103,26 @@ class QueryResolver : GraphQLQueryResolver {
     fun events() = eventManager.getAll().toList()
     fun pastEvents() = eventManager.getAll().filterIsInstance(PastEvent::class.java)
     fun ongoingEvents() = eventManager.getAll().filterIsInstance(OngoingEvent::class.java)
+
+
+    fun docker(): Docker {
+        return when (val status = dockerClient.status) {
+            DockerClient.Status.Available -> DockerAvailable
+            DockerClient.Status.Disabled -> DockerUnavailable(
+                "The docker support is currently disabled. You can change this in configuration.yml",
+                isDisabled = true
+            )
+            is DockerClient.Status.Unavailable -> DockerUnavailable(
+                "${status.error.message ?: "Unknown reason"} Type: ${requireNotNull(status.error::class.simpleName)}",
+                isDisabled = false
+            )
+        }
+    }
+
+    inner class DockerResolver : GraphQLResolver<DockerAvailable> {
+        fun containers(docker: DockerAvailable) = dockerClient.listContainers()
+        fun runningContainers(docker: DockerAvailable) = dockerClient.listContainers().filter { it.state == State.RUNNING }
+    }
 
     inner class SystemResolver : GraphQLResolver<System> {
         fun processorMetrics(system: System) = metrics.cpuMetrics().cpuLoad()

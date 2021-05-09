@@ -23,6 +23,8 @@ windows:
   enableOhmJniWrapper: true
 graphQLPlayGround:
   enabled: true
+docker:
+  enabled: true
 #forwardHttps: false
 
 #########################################
