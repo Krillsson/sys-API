@@ -7,7 +7,6 @@ import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.MonitorFactory.createMonitor
 import com.krillsson.sysapi.util.Clock
 import io.dropwizard.lifecycle.Managed
-import org.slf4j.LoggerFactory
 import java.time.Duration
 import java.util.*
 
@@ -19,17 +18,19 @@ class MonitorManager(
     private val clock: Clock
 ) : Managed {
 
-    companion object {
-        private val LOGGER = LoggerFactory.getLogger(MonitorManager::class.java)
-    }
-
     private lateinit var activeMonitors: MutableMap<UUID, Pair<MonitorMechanism, Monitor>>
-
 
     @Subscribe
     fun onEvent(metricQueryEvent: MonitorMetricQueryEvent) {
         activeMonitors.values.forEach { (mechanism, monitor) ->
-            val event = mechanism.check(metricQueryEvent.load(), monitor)
+            val value = monitor.selectValue(metricQueryEvent)
+            val isOverThreshold = monitor.isPastThreshold(value)
+            val event = mechanism.check(
+                monitor,
+                monitor.config,
+                value,
+                isOverThreshold
+            )
             event?.let {
                 eventManager.add(it)
             }
@@ -92,7 +93,7 @@ class MonitorManager(
     }
 
     private fun validate(monitor: Monitor): Boolean {
-        return monitor.selectValue(provider.systemMetrics().systemLoad()) != -1.0
+        return monitor.selectValue(MonitorMetricQueryEvent(provider.systemMetrics().systemLoad(), emptyList())) != -1.0
     }
 }
 

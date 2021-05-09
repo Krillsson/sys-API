@@ -159,7 +159,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             eventBus
         ) {
             override fun event(load: SystemLoad): MonitorMetricQueryEvent {
-                return MonitorMetricQueryEvent(load)
+                return MonitorMetricQueryEvent(load, dockerClient.listContainers())
             }
         }
 
