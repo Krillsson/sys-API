@@ -16,6 +16,7 @@ data class Container(
     val sizeRootFs: Long,
     val sizeRw: Long,
     val state: State,
+    val health: Health?,
     val status: String
 )
 

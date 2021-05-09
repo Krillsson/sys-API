@@ -90,8 +90,10 @@ class DockerClient(
                 val containers = client.listContainersCmd().withShowAll(true).exec()
                 containers.map { container ->
                     val inspection = client.inspectContainerCmd(container.id).exec()
-                    val volumes = if(inspection.volumes == null) emptyList() else inspection.volumes.asVolumeBindings()
-                    container.asContainer(inspection.config.asConfig(volumes))
+                    val volumes = if (inspection.volumes == null) emptyList() else inspection.volumes.asVolumeBindings()
+                    val config = inspection.config.asConfig(volumes)
+                    val health = inspection.state.health?.asHealth()
+                    container.asContainer(config, health)
                 }
             }
             LOGGER.debug(
