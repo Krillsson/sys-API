@@ -1,10 +1,10 @@
 ### 0.15.0
 
-**REST API Breaking changes**
-
+- Docker support! Opt-in by enabling in configuration.yml
 - Persist history to save memory
-- History no longer include running processes (it was taking up too much memory)
+- History no longer include running processes (it was taking up too much space)
 - Update OSHI dependency
+- Fixed a few serialization errors in GraphQL layer
 
 ### 0.14.1
 

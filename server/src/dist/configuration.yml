@@ -24,7 +24,7 @@ windows:
 graphQLPlayGround:
   enabled: true
 docker:
-  enabled: true
+  enabled: false
 forwardHttpToHttps: false
 
 #########################################
