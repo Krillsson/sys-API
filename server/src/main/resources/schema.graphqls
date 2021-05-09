@@ -420,7 +420,7 @@ type DockerContainer {
     command: String!
     created: Long!
     hostConfig: DockerHostConfig!
-    config: DockerConfig
+    config: DockerConfig!
     id: String!
     image: String!
     imageID: String!
@@ -429,7 +429,21 @@ type DockerContainer {
     networkSettings: [DockerNetworkSetting!]!
     ports: [DockerPort!]!
     state: DockerContainerState!
+    health: DockerContainerHealth
     status: String!
+}
+
+type DockerContainerHealth{
+    status: String,
+    failingStreak: Int,
+    logEntries: [DockerHealthLogEntry!]!
+}
+
+type DockerHealthLogEntry{
+    start: String!
+    end: String!
+    output: String!
+    exitCode: Long!
 }
 
 type DockerConfig{
@@ -456,8 +470,8 @@ enum DockerPortProtocol {
 }
 
 type DockerNetworkSetting {
-    name: String,
-    network: DockerNetwork
+    name: String!
+    network: DockerNetwork!
 }
 
 type DockerPort {

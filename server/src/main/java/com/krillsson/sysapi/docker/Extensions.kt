@@ -1,5 +1,7 @@
 package com.krillsson.sysapi.docker
 
+import com.github.dockerjava.api.command.HealthState
+import com.github.dockerjava.api.command.HealthStateLog
 import com.github.dockerjava.api.model.*
 import com.krillsson.sysapi.core.domain.docker.*
 import com.krillsson.sysapi.core.domain.docker.Config
@@ -20,7 +22,7 @@ fun ContainerConfig.asConfig(volumeBindings: List<VolumeBinding>): Config {
     )
 }
 
-fun ExposedPort.asPortConfig() : PortConfig {
+fun ExposedPort.asPortConfig(): PortConfig {
     return PortConfig(
         port,
         protocol.asPortProtocol()
@@ -33,7 +35,7 @@ fun InternetProtocol.asPortProtocol() = when (this) {
     InternetProtocol.SCTP -> PortProtocol.SCTP
 }
 
-fun com.github.dockerjava.api.model.Container.asContainer(config: Config): Container {
+fun com.github.dockerjava.api.model.Container.asContainer(config: Config, health: Health?): Container {
     return Container(
         command,
         created,
@@ -50,6 +52,7 @@ fun com.github.dockerjava.api.model.Container.asContainer(config: Config): Conta
         sizeRootFs ?: 0L,
         sizeRw ?: 0L,
         State.fromString(state),
+        health,
         status
     )
 }
@@ -138,3 +141,22 @@ fun VolumeBind.asVolumeBind() = VolumeBinding(
 )
 
 fun String?.orNotApplicable() = this ?: "N/A"
+
+fun HealthState.asHealth(): Health {
+    return Health(
+        status,
+        failingStreak,
+        log.asHealthLogEntries()
+    )
+}
+
+fun HealthStateLog.asHealthLogEntry() = HealthLogEntry(
+    start,
+    end,
+    output,
+    exitCodeLong
+)
+
+fun List<HealthStateLog>.asHealthLogEntries(): List<HealthLogEntry> {
+    return map { it.asHealthLogEntry() }
+}
