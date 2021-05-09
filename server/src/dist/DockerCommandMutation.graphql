@@ -1,0 +1,18 @@
+mutation DockerCommandMutation($input:PerformDockerContainerCommandInput!) {
+    performDockerContainerCommand(input: $input) {
+        ... on PerformDockerContainerCommandOutputFailed {
+            reason
+        }
+        ... on PerformDockerContainerCommandOutputSucceeded {
+            containerId
+        }
+    }
+}
+
+
+#{
+#"input": {
+#"containerId": : "f99c153b043e26433b06d7adab57f5c1e0d3f8be8604fb8678b4980445799d69",
+#"command": "STOP"
+#}
+#}

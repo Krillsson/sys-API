@@ -14,6 +14,7 @@ type Query {
     events: [Event!]!
     pastEvents: [PastEvent!]!
     ongoingEvents: [OngoingEvent!]!
+    docker: Docker!
 }
 
 type Mutation {
@@ -21,6 +22,7 @@ type Mutation {
     deleteMonitor(input: DeleteMonitorInput) : DeleteMonitorOutput
     deleteEvent(input: DeleteEventInput) : DeleteEventOutput
     deleteEventsForMonitor(input: DeleteEventsForMonitorInput) : DeleteEventOutput
+    performDockerContainerCommand(input: PerformDockerContainerCommandInput) : PerformDockerContainerCommandOutput
 }
 
 input CreateMonitorInput {
@@ -53,6 +55,21 @@ input DeleteEventsForMonitorInput {
 type DeleteEventOutput {
     removed: Boolean!
 }
+
+input PerformDockerContainerCommandInput{
+    containerId: String!,
+    command: ContainerCommand
+}
+
+type PerformDockerContainerCommandOutputFailed {
+    reason: String!
+}
+
+type PerformDockerContainerCommandOutputSucceeded {
+    containerId: String!
+}
+
+union PerformDockerContainerCommandOutput = PerformDockerContainerCommandOutputSucceeded | PerformDockerContainerCommandOutputFailed
 
 # Root node
 type System {
@@ -375,3 +392,124 @@ enum Platform {
     UNKNOWN
 }
 
+# Docker
+
+union Docker = DockerAvailable | DockerUnavailable
+
+type DockerAvailable{
+    containers: [DockerContainer!]!
+    runningContainers: [DockerContainer!]!
+}
+
+type DockerUnavailable{
+    reason: String!
+    isDisabled: Boolean
+}
+
+enum DockerContainerState {
+    CREATED,
+    RESTARTING,
+    RUNNING,
+    PAUSED,
+    EXITED,
+    DEAD,
+    UNKNOWN
+}
+
+type DockerContainer {
+    command: String!
+    created: Long!
+    hostConfig: DockerHostConfig!
+    config: DockerConfig
+    id: String!
+    image: String!
+    imageID: String!
+    mounts: [DockerMount!]!
+    names: [String!]!
+    networkSettings: [DockerNetworkSetting!]!
+    ports: [DockerPort!]!
+    state: DockerContainerState!
+    status: String!
+}
+
+type DockerConfig{
+    env: [String!]!
+    volumeBindings: [DockerVolumeBinding!]!
+    cmd: [String!]!
+    exposedPorts: [DockerPortConfig!]!
+}
+
+type DockerPortConfig{
+    port: Int!
+    portProtocol: DockerPortProtocol!
+}
+
+type DockerVolumeBinding{
+    hostPath: String!
+    containerPath: String!
+}
+
+enum DockerPortProtocol {
+    UDP,
+    TCP,
+    SCTP
+}
+
+type DockerNetworkSetting {
+    name: String,
+    network: DockerNetwork
+}
+
+type DockerPort {
+    ip: String!
+    privatePort: Int!
+    publicPort: Int!
+    type: String!
+}
+
+type DockerNetwork {
+    aliases: [String!]!
+    endpointID: String!
+    gateway: String!
+    globalIPv6Address: String!
+    globalIPv6PrefixLen: Int!
+    iPAMConfig: DockerIpam!
+    iPAddress: String!
+    iPPrefixLen: Int!
+    iPv6Gateway: String!
+    links: [DockerLink!]!
+    macAddress: String!
+    networkID: String!
+}
+
+type DockerLink {
+    name: String!,
+    alias: String!
+}
+
+type DockerIpam {
+    ipv4Address: String!
+    ipv6Address: String!
+}
+
+type DockerMount {
+    destination: String!,
+    driver: String!,
+    mode: String!,
+    name: String!,
+    propagation: String!,
+    rw: Boolean!,
+    source: String!
+}
+
+type DockerHostConfig {
+    networkMode: String!
+}
+
+enum ContainerCommand {
+    START,
+    STOP,
+    RESTART,
+    PAUSE,
+    UNPAUSE,
+}

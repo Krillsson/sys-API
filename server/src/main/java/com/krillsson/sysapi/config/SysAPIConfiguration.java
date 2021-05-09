@@ -53,6 +53,10 @@ public class SysAPIConfiguration extends Configuration {
 
     @Valid
     @JsonProperty
+    private DockerConfiguration docker;
+
+    @Valid
+    @JsonProperty
     private boolean forwardHttps;
 
     public MetricsConfiguration metrics() {
@@ -69,6 +73,10 @@ public class SysAPIConfiguration extends Configuration {
 
     public boolean forwardHttps() {
         return forwardHttps;
+    }
+
+    public DockerConfiguration docker() {
+        return docker;
     }
 
     @JsonProperty
