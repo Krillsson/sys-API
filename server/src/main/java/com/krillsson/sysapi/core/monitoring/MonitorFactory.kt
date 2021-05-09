@@ -27,6 +27,7 @@ object MonitorFactory {
                 id,
                 config
             )
+            MonitorType.CONTAINER_RUNNING -> DockerContainerRunningMonitor(id, config)
         }
     }
 }

@@ -4,7 +4,7 @@ import com.google.common.annotations.VisibleForTesting
 import com.krillsson.sysapi.core.domain.event.Event
 import com.krillsson.sysapi.core.domain.event.OngoingEvent
 import com.krillsson.sysapi.core.domain.event.PastEvent
-import com.krillsson.sysapi.core.domain.system.SystemLoad
+import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.util.Clock
 import org.slf4j.LoggerFactory
 import java.time.Duration
@@ -72,14 +72,15 @@ class MonitorMechanism @VisibleForTesting constructor(private val clock: Clock) 
      * Inside before inertia -> outside
      * reset timestamp
      *
-     * @param systemLoad
      * @return
      */
-    fun check(systemLoad: SystemLoad, monitor: Monitor): Event? {
+    fun check(
+        monitor: Monitor,
+        config: MonitorConfig,
+        value: Double,
+        outsideThreshold: Boolean
+    ): Event? {
         val now = clock.now()
-        val config = monitor.config
-        val value = monitor.selectValue(systemLoad)
-        val outsideThreshold = monitor.check(systemLoad)
         val pastInertia =
             stateChangedAt != null && Duration.between(stateChangedAt,  /* and */now).compareTo(config.inertia) > 0
         var event: Event? = null

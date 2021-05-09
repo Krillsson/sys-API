@@ -2,8 +2,8 @@ package com.krillsson.sysapi.core.monitoring.monitors
 
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad
-import com.krillsson.sysapi.core.domain.system.SystemLoad
 import com.krillsson.sysapi.core.monitoring.Monitor
+import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
 import com.krillsson.sysapi.core.monitoring.MonitorType
 import java.util.*
 
@@ -15,16 +15,16 @@ class NetworkUpMonitor(override val id: UUID, override val config: MonitorConfig
         const val DOWN = 0.0
     }
 
-    override fun selectValue(load: SystemLoad): Double {
-        return load.networkInterfaceLoads
-                .stream()
-                .filter { n: NetworkInterfaceLoad -> n.name.equals(config.monitoredItemId, ignoreCase = true) }
-                .map { n: NetworkInterfaceLoad -> if (n.isUp) UP else DOWN }
-                .findFirst()
-                .orElse(DOWN)
+    override fun selectValue(event: MonitorMetricQueryEvent): Double {
+        return event.load().networkInterfaceLoads
+            .stream()
+            .filter { n: NetworkInterfaceLoad -> n.name.equals(config.monitoredItemId, ignoreCase = true) }
+            .map { n: NetworkInterfaceLoad -> if (n.isUp) UP else DOWN }
+            .findFirst()
+            .orElse(DOWN)
     }
 
     override fun isPastThreshold(value: Double): Boolean {
-        return value != DOWN
+        return value != UP
     }
 }

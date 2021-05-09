@@ -1,6 +1,8 @@
 package com.krillsson.sysapi.core.monitoring;
 
-import com.krillsson.sysapi.core.domain.event.*;
+import com.krillsson.sysapi.core.domain.event.Event;
+import com.krillsson.sysapi.core.domain.event.OngoingEvent;
+import com.krillsson.sysapi.core.domain.event.PastEvent;
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig;
 import com.krillsson.sysapi.core.domain.system.SystemLoad;
 import com.krillsson.sysapi.util.Clock;
@@ -39,7 +41,7 @@ public class MonitorTest {
 
     @Test
     public void nothingIsWrong() {
-        assertNull(mechanism.check(load, monitor));
+        assertNull(mechanism.check(load, monitor, monitor.config, monitor.selectValue(systemLoad), monitor.check(systemLoad)));
         assertSame(mechanism.getState(), MonitorMechanism.State.INSIDE);
     }
 
@@ -47,7 +49,7 @@ public class MonitorTest {
     public void insideToOutSideBeforeInertia() {
         monitor.value = OUTSIDE;
 
-        Event event = mechanism.check(load, monitor);
+        Event event = mechanism.check(load, monitor, monitor.config, monitor.selectValue(systemLoad), monitor.check(systemLoad));
         assertNull(event);
         assertSame(mechanism.getState(), MonitorMechanism.State.OUTSIDE_BEFORE_INERTIA);
     }
@@ -57,13 +59,13 @@ public class MonitorTest {
 
         //going to outside before inertia
         monitor.value = OUTSIDE;
-        Event event = mechanism.check(load, monitor);
+        Event event = mechanism.check(load, monitor, monitor.config, monitor.selectValue(systemLoad), monitor.check(systemLoad));
         assertNull(event);
 
         //time goes past inertia
         clock.useFixedClockAt(clock.now().plusSeconds(PAST_INERTIA));
         //going to outside
-        event = mechanism.check(load, monitor);
+        event = mechanism.check(load, monitor, monitor.config, monitor.selectValue(systemLoad), monitor.check(systemLoad));
 
         assertNotNull(event);
 
@@ -78,15 +80,15 @@ public class MonitorTest {
 
         //going to outside before inertia
         monitor.value = OUTSIDE;
-        mechanism.check(load, monitor);
+        mechanism.check(load, monitor, monitor.config, monitor.selectValue(systemLoad), monitor.check(systemLoad));
         //time goes past inertia
         clock.useFixedClockAt(clock.now().plusSeconds(PAST_INERTIA));
         //going to outside
-        mechanism.check(load, monitor);
+        mechanism.check(load, monitor, monitor.config, monitor.selectValue(systemLoad), monitor.check(systemLoad));
 
         //going to inside before inertia
         monitor.value = INSIDE;
-        Event event = mechanism.check(load, monitor);
+        Event event = mechanism.check(load, monitor, monitor.config, monitor.selectValue(systemLoad), monitor.check(systemLoad));
 
         assertNull(event);
     }
@@ -95,19 +97,19 @@ public class MonitorTest {
     public void insideBeforeInertiaToInside() {
         //going to outside before inertia
         monitor.value = OUTSIDE;
-        mechanism.check(load, monitor);
+        mechanism.check(load, monitor, monitor.config, monitor.selectValue(systemLoad), monitor.check(systemLoad));
         //time goes past inertia
         clock.useFixedClockAt(clock.now().plusSeconds(PAST_INERTIA));
         //going to outside
-        mechanism.check(load, monitor);
+        mechanism.check(load, monitor, monitor.config, monitor.selectValue(systemLoad), monitor.check(systemLoad));
 
         //going to inside before inertia
         monitor.value = INSIDE;
-        mechanism.check(load, monitor);
+        mechanism.check(load, monitor, monitor.config, monitor.selectValue(systemLoad), monitor.check(systemLoad));
 
         //time goes past inertia
         clock.useFixedClockAt(clock.now().plusSeconds(PAST_INERTIA));
-        Event monitorEvent = mechanism.check(load, monitor);
+        Event monitorEvent = mechanism.check(load, monitor, monitor.config, monitor.selectValue(systemLoad), monitor.check(systemLoad));
 
         assertEquals(monitorEvent.getValue(), INSIDE, 0.0);
         assertEquals(monitorEvent.getThreshold(), OUTSIDE, 0.0);
@@ -120,13 +122,13 @@ public class MonitorTest {
     public void insideToOutSideAfterInertia() {
         //going to outside before inertia
         monitor.value = OUTSIDE;
-        mechanism.check(load, monitor);
+        mechanism.check(load, monitor, monitor.config, monitor.selectValue(systemLoad), monitor.check(systemLoad));
 
         //time goes past inertia
         clock.useFixedClockAt(clock.now().plusSeconds(PAST_INERTIA));
 
         //going to outside
-        Event event = mechanism.check(load, monitor);
+        Event event = mechanism.check(load, monitor, monitor.config, monitor.selectValue(systemLoad), monitor.check(systemLoad));
         assertNotNull(event);
         assertSame(mechanism.getState(), MonitorMechanism.State.OUTSIDE);
 
@@ -142,14 +144,14 @@ public class MonitorTest {
     public void outsideBeforeInertiaToInside() {
         //going to outside before inertia
         monitor.value = OUTSIDE;
-        mechanism.check(load, monitor);
+        mechanism.check(load, monitor, monitor.config, monitor.selectValue(systemLoad), monitor.check(systemLoad));
 
         //time does not go past inertia
         clock.useFixedClockAt(clock.now().plusSeconds(NOT_PAST_INERTIA));
 
         //going back to inside
         monitor.value = INSIDE;
-        Event monitorEvent = mechanism.check(load, monitor);
+        Event monitorEvent = mechanism.check(load, monitor, monitor.config, monitor.selectValue(systemLoad), monitor.check(systemLoad));
 
         assertNull(monitorEvent);
     }
@@ -158,24 +160,24 @@ public class MonitorTest {
     public void insideBeforeInertiaToOutside() {
         //going to outside before inertia
         monitor.value = OUTSIDE;
-        mechanism.check(load, monitor);
+        mechanism.check(load, monitor, monitor.config, monitor.selectValue(systemLoad), monitor.check(systemLoad));
         //time goes past inertia
         clock.useFixedClockAt(clock.now().plusSeconds(PAST_INERTIA));
         //going to outside
-        mechanism.check(load, monitor);
+        mechanism.check(load, monitor, monitor.config, monitor.selectValue(systemLoad), monitor.check(systemLoad));
 
         //going to inside before inertia
         monitor.value = INSIDE;
-        mechanism.check(load, monitor);
+        mechanism.check(load, monitor, monitor.config, monitor.selectValue(systemLoad), monitor.check(systemLoad));
 
         //time does not go past inertia
         clock.useFixedClockAt(clock.now().plusSeconds(NOT_PAST_INERTIA));
 
         //going to outside again
         monitor.value = OUTSIDE;
-        mechanism.check(load, monitor);
+        mechanism.check(load, monitor, monitor.config, monitor.selectValue(systemLoad), monitor.check(systemLoad));
 
-        Event monitorEvent = mechanism.check(load, monitor);
+        Event monitorEvent = mechanism.check(load, monitor, monitor.config, monitor.selectValue(systemLoad), monitor.check(systemLoad));
         assertNull(monitorEvent);
     }
 
