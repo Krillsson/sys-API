@@ -1,9 +1,11 @@
 ### 0.15.0
 
+- Requires java 11 jre
 - Docker support! Opt-in by enabling in configuration.yml
 - Persist history to save memory
 - History no longer include running processes (it was taking up too much space)
 - Added monitors for individual process memory and cpu loads
+- Now shipped as a standalone runtime (embedded jre) 
 - Update OSHI dependency
 - Fixed a few serialization errors in GraphQL layer
 
