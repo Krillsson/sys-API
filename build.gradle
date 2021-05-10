@@ -6,6 +6,7 @@ buildscript {
         repositories {
             mavenCentral()
         }
+        maven { url "https://plugins.gradle.org/m2/" }
 
         jcenter()
     }
@@ -13,6 +14,7 @@ buildscript {
         classpath(
                 "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",
                 'com.github.jengelman.gradle.plugins:shadow:6.1.0',
+                "org.beryx:badass-runtime-plugin:1.12.4"
         )
     }
 }
@@ -37,49 +39,19 @@ subprojects {
 
 project(':sys-api-server') {
     apply plugin: 'com.github.johnrengelman.shadow'
-    apply plugin: 'application'
+    apply plugin: "org.beryx.runtime"
 
-    dependencies {
-        implementation 'io.dropwizard:dropwizard-core:2.0.21'
-        implementation 'io.dropwizard:dropwizard-auth:2.0.21'
-        implementation 'io.dropwizard:dropwizard-assets:2.0.21'
-        constraints {
-            implementation('com.fasterxml.jackson.core:jackson-databind:2.12.1') {
-                because 'previous versions have a bug impacting this application'
-            }
-        }
-        implementation 'com.github.oshi:oshi-core:5.7.2'
-        implementation 'com.graphql-java-kickstart:graphql-java-tools:11.0.0'
-        implementation 'com.graphql-java-kickstart:graphql-java-kickstart:11.0.0'
-        implementation 'com.graphql-java-kickstart:graphql-java-servlet:11.0.0'
-        implementation ('com.smoketurner.dropwizard:graphql-core:2.0.12-1'){
-            exclude group: "com.graphql-java-kickstart"
-        }
-        implementation 'javax.xml.bind:jaxb-api:2.2.11'
-        implementation 'com.github.docker-java:docker-java-core:3.2.8'
-        implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.2.8'
-        implementation 'com.sun.xml.bind:jaxb-core:2.2.11'
-        implementation 'com.sun.xml.bind:jaxb-impl:2.2.11'
-        implementation 'javax.activation:activation:1.1.1'
-        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-        implementation name: 'jni4net.j-0.8.8.0'
-        implementation name: 'OhmJniWrapper.j4n'
-
-        testImplementation 'junit:junit:4.13.1'
-        testImplementation 'io.dropwizard:dropwizard-testing:2.0.15'
-        testImplementation 'org.hamcrest:hamcrest-all:1.1'
-        testImplementation 'org.mockito:mockito-core:2.20.0'
-    }
+    sourceCompatibility = 11
+    targetCompatibility = 11
 
     compileKotlin {
         kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_1_8
+            jvmTarget = JavaVersion.VERSION_11
         }
     }
 
     shadowJar {
         mergeServiceFiles()
-        minimize()
         exclude 'META-INF/*.DSA'
         exclude 'META-INF/*.RSA'
     }
@@ -98,7 +70,47 @@ project(':sys-api-server') {
         }
     }
 
-    distZip{
+    runtime {
+        imageZip = project.file("${project.buildDir}/image-zip/${project.name}-${version}.zip")
+        options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+        modules = ['java.management', 'java.naming', 'java.instrument', 'java.sql', 'jdk.unsupported', 'jdk.security.jgss']
+    }
+
+    runtimeZip {
 
     }
+
+    dependencies {
+        implementation ('io.dropwizard:dropwizard-core:2.0.21')
+        implementation 'io.dropwizard:dropwizard-auth:2.0.21'
+        implementation 'io.dropwizard:dropwizard-assets:2.0.21'
+        constraints {
+            implementation('com.fasterxml.jackson.core:jackson-databind:2.12.1') {
+                because 'previous versions have a bug impacting this application'
+            }
+        }
+        implementation 'com.github.oshi:oshi-core:5.7.2'
+        implementation 'com.graphql-java-kickstart:graphql-java-tools:11.0.0'
+        implementation 'com.graphql-java-kickstart:graphql-java-kickstart:11.0.0'
+        implementation 'com.graphql-java-kickstart:graphql-java-servlet:11.0.0'
+        implementation ('com.smoketurner.dropwizard:graphql-core:2.0.12-1'){
+            exclude group: "com.graphql-java-kickstart"
+        }
+        implementation 'org.hibernate.validator:hibernate-validator:6.2.0.Final'
+        implementation 'javax.xml.bind:jaxb-api:2.2.11'
+        implementation 'com.github.docker-java:docker-java-core:3.2.8'
+        implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.2.8'
+        implementation 'com.sun.xml.bind:jaxb-core:2.2.11'
+        implementation 'com.sun.xml.bind:jaxb-impl:2.2.11'
+        implementation 'javax.activation:activation:1.1.1'
+        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+        implementation name: 'jni4net.j-0.8.8.0'
+        implementation name: 'OhmJniWrapper.j4n'
+
+        testImplementation 'junit:junit:4.13.1'
+        testImplementation 'io.dropwizard:dropwizard-testing:2.0.15'
+        testImplementation 'org.hamcrest:hamcrest-all:1.1'
+        testImplementation 'org.mockito:mockito-core:2.20.0'
+    }
+
 }
