@@ -39,6 +39,9 @@ project(':sys-api-server') {
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'application'
 
+    sourceCompatibility = 8
+    targetCompatibility = 8
+
     compileKotlin {
         kotlinOptions {
             jvmTarget = JavaVersion.VERSION_1_8
