@@ -6,7 +6,6 @@ buildscript {
         repositories {
             mavenCentral()
         }
-        maven { url "https://plugins.gradle.org/m2/" }
 
         jcenter()
     }
@@ -14,7 +13,6 @@ buildscript {
         classpath(
                 "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",
                 'com.github.jengelman.gradle.plugins:shadow:6.1.0',
-                "org.beryx:badass-runtime-plugin:1.12.4"
         )
     }
 }
@@ -39,14 +37,11 @@ subprojects {
 
 project(':sys-api-server') {
     apply plugin: 'com.github.johnrengelman.shadow'
-    apply plugin: "org.beryx.runtime"
-
-    sourceCompatibility = 11
-    targetCompatibility = 11
+    apply plugin: 'application'
 
     compileKotlin {
         kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_11
+            jvmTarget = JavaVersion.VERSION_1_8
         }
     }
 
@@ -70,18 +65,12 @@ project(':sys-api-server') {
         }
     }
 
-    runtime {
-        imageZip = project.file("${project.buildDir}/image-zip/${project.name}-${version}.zip")
-        options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
-        modules = ['java.management', 'java.naming', 'java.instrument', 'java.sql', 'jdk.unsupported', 'jdk.security.jgss']
-    }
-
-    runtimeZip {
+    shadowDistZip {
 
     }
 
     dependencies {
-        implementation ('io.dropwizard:dropwizard-core:2.0.21')
+        implementation 'io.dropwizard:dropwizard-core:2.0.21'
         implementation 'io.dropwizard:dropwizard-auth:2.0.21'
         implementation 'io.dropwizard:dropwizard-assets:2.0.21'
         constraints {
@@ -96,7 +85,6 @@ project(':sys-api-server') {
         implementation ('com.smoketurner.dropwizard:graphql-core:2.0.12-1'){
             exclude group: "com.graphql-java-kickstart"
         }
-        implementation 'org.hibernate.validator:hibernate-validator:6.2.0.Final'
         implementation 'javax.xml.bind:jaxb-api:2.2.11'
         implementation 'com.github.docker-java:docker-java-core:3.2.8'
         implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.2.8'

@@ -1,3 +1,10 @@
+### 0.15.1
+
+- Reverts standalone image
+- Reverts to Java 8 for now
+
+_Sorry for the confusion_
+
 ### 0.15.0
 
 - Requires java 11 jre
