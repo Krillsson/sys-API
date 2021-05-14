@@ -18,7 +18,7 @@ fun ContainerConfig.asConfig(volumeBindings: List<VolumeBinding>): Config {
         env?.asList().orEmpty(),
         volumeBindings,
         cmd?.asList().orEmpty(),
-        exposedPorts.map { it.asPortConfig() }
+        exposedPorts.orEmpty().map { it.asPortConfig() }
     )
 }
 
@@ -37,14 +37,14 @@ fun InternetProtocol.asPortProtocol() = when (this) {
 
 fun com.github.dockerjava.api.model.Container.asContainer(config: Config, health: Health?): Container {
     return Container(
-        command,
-        created,
+        command.orNotApplicable(),
+        created ?: 0L,
         hostConfig?.asHostConfig() ?: HostConfig("N/A"),
         config,
         id,
-        image,
+        image.orNotApplicable(),
         imageId.orNotApplicable(),
-        labels,
+        labels.orEmpty(),
         mounts.asMounts(),
         names.toList(),
         networkSettings?.asNetworkSettings() ?: emptyList(),
@@ -53,7 +53,7 @@ fun com.github.dockerjava.api.model.Container.asContainer(config: Config, health
         sizeRw ?: 0L,
         State.fromString(state),
         health,
-        status
+        status.orNotApplicable()
     )
 }
 

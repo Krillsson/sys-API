@@ -20,6 +20,7 @@
  */
 package com.krillsson.sysapi
 
+import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.google.common.eventbus.EventBus
 import com.google.common.util.concurrent.ThreadFactoryBuilder
@@ -117,6 +118,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     override fun initialize(bootstrap: Bootstrap<SysAPIConfiguration>) {
         val mapper = bootstrap.objectMapper
         mapper.registerKotlinModule()
+        mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
         eventStore = EventStore(mapper)
         monitorStore = MonitorStore(mapper)
         historyStore = HistoryStore(mapper)
@@ -136,7 +138,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             EnvironmentUtils.addHttpsForward(environment.applicationContext)
         }
 
-        dockerClient = DockerClient(config.metrics().cache, config.docker())
+        dockerClient = DockerClient(config.metrics().cache, config.docker(), environment.objectMapper)
 
         val metrics = metricsFactory.get(config)
 

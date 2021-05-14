@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.docker
 
-import com.github.dockerjava.core.DefaultDockerClientConfig
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.dockerjava.core.DockerClientConfig
 import com.github.dockerjava.core.DockerClientImpl
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient
@@ -17,14 +17,15 @@ import com.krillsson.sysapi.util.measureTimeMillis
 
 class DockerClient(
     cacheConfiguration: CacheConfiguration,
-    private val dockerConfiguration: DockerConfiguration
+    private val dockerConfiguration: DockerConfiguration,
+    private val objectMapper: ObjectMapper
 ) {
 
     companion object {
         val LOGGER by logger()
     }
 
-    private val config: DockerClientConfig = DefaultDockerClientConfig.createDefaultConfigBuilder()
+    private val config: DockerClientConfig = DefaultDockerClientConfig.createDefaultConfigBuilder(objectMapper)
         .withDockerTlsVerify(false)
         .build()
 
@@ -85,7 +86,6 @@ class DockerClient(
 
     private fun listContainersInternal(): List<Container> {
         return if (status == Status.Available) {
-            LOGGER.info("Printing containers")
             val timedResult = measureTimeMillis {
                 val containers = client.listContainersCmd().withShowAll(true).exec()
                 containers.map { container ->
