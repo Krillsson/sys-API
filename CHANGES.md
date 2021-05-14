@@ -1,3 +1,7 @@
+### 0.15.2
+
+- Fix issues with docker-java
+
 ### 0.15.1
 
 - Reverts standalone image
