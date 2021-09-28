@@ -1,3 +1,9 @@
+### 0.16.0
+
+- Support for generating self-signed certificate for increased privacy
+  - Certificate names are pre-populated with external and internal IP's by default
+  - See `selfSignedCertificates` in `configuration.yml`
+
 ### 0.15.2
 
 - Fix issues with docker-java

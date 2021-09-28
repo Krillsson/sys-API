@@ -26,6 +26,15 @@ graphQLPlayGround:
 docker:
   enabled: false
 forwardHttpToHttps: false
+selfSignedCertificates:
+  enabled: true
+  ## automatically put external IP in CN
+  populateCN: true
+  ## automatically put internal IPs in SAN
+  populateSAN: true
+  ## manually populate CN and SAN below
+  # commonName: sys-api.org
+  # subjectAlternativeNames: [192.168.0.24, 10.8.0.24]
 
 #########################################
 ### Dropwizard specific configuration ###
@@ -37,7 +46,6 @@ graphql:
     - schema.graphqls
 
 server:
-  type: simple
   maxThreads: 100
   minThreads: 1
   maxQueuedRequests: 100
@@ -45,9 +53,16 @@ server:
   rootPath: /api/
   adminContextPath: /admin
   applicationContextPath: /
-  connector:
-      type: http
+  applicationConnectors:
+    - type: http
       port: 8080
+    - type: https
+      port: 8443
+      keyStorePath: ./keystorewww.jks
+      keyStorePassword: sys-api
+      certAlias: sys-api-key
+      validateCerts: false
+      validatePeers: false
 
 logging:
 

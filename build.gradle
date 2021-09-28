@@ -81,13 +81,16 @@ project(':sys-api-server') {
                 because 'previous versions have a bug impacting this application'
             }
         }
-        implementation 'com.github.oshi:oshi-core:5.7.2'
+        implementation 'com.github.oshi:oshi-core:5.8.1'
         implementation 'com.graphql-java-kickstart:graphql-java-tools:11.0.0'
         implementation 'com.graphql-java-kickstart:graphql-java-kickstart:11.0.0'
         implementation 'com.graphql-java-kickstart:graphql-java-servlet:11.0.0'
         implementation ('com.smoketurner.dropwizard:graphql-core:2.0.12-1'){
             exclude group: "com.graphql-java-kickstart"
         }
+        implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+        // implementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
+        implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
         implementation 'javax.xml.bind:jaxb-api:2.2.11'
         implementation 'com.github.docker-java:docker-java-core:3.2.8'
         implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.2.8'

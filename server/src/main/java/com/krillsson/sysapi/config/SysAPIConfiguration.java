@@ -59,6 +59,10 @@ public class SysAPIConfiguration extends Configuration {
     @JsonProperty
     private boolean forwardHttpToHttps;
 
+    @Valid
+    @JsonProperty
+    private SelfSignedCertificateConfiguration selfSignedCertificates;
+
     public MetricsConfiguration metrics() {
         return metricsConfig;
     }
@@ -73,6 +77,10 @@ public class SysAPIConfiguration extends Configuration {
 
     public boolean forwardHttps() {
         return forwardHttpToHttps;
+    }
+
+    public SelfSignedCertificateConfiguration selfSignedCertificates() {
+        return selfSignedCertificates;
     }
 
     public DockerConfiguration docker() {

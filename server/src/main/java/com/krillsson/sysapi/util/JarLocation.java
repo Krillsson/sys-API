@@ -29,10 +29,14 @@ import java.net.URISyntaxException;
 public class JarLocation {
     public static final String SEPARATOR = System.getProperty("file.separator");
     private static final File JAR = jarLocation();
-    public static final String SOURCE_LIB_LOCATION = JAR.getParentFile().getParentFile().getParentFile().getParentFile() + SEPARATOR + "src" + SEPARATOR + "dist" + SEPARATOR + "lib";
     private static final boolean IS_JAR = JAR.isFile() && JAR.getName().endsWith(".jar");
     private static final String JAR_LIB_LOCATION = JAR.getParentFile().getParent() + SEPARATOR + "lib" + SEPARATOR;
+    private static final String JAR_INSTALLATION_LOCATION = JAR.getParentFile().getParent() + SEPARATOR;
+    private static final String SOURCE_INSTALLATION_LOCATION = JAR.getParentFile().getParentFile().getParentFile().getParentFile().getParentFile() + SEPARATOR;
+
+    public static final String SOURCE_LIB_LOCATION = JAR.getParentFile().getParentFile().getParentFile().getParentFile() + SEPARATOR + "src" + SEPARATOR + "dist" + SEPARATOR + "lib";
     public static final String LIB_LOCATION = IS_JAR ? JAR_LIB_LOCATION : SOURCE_LIB_LOCATION;
+    public static final String INSTALLATION_LOCATION = IS_JAR ? JAR_INSTALLATION_LOCATION : SOURCE_INSTALLATION_LOCATION;
 
     private static File jarLocation() {
         try {
