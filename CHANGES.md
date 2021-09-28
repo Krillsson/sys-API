@@ -3,6 +3,7 @@
 - Support for generating self-signed certificate for increased privacy
   - Certificate names are pre-populated with external and internal IP's by default
   - See `selfSignedCertificates` in `configuration.yml`
+  - Please note that this feature is not a substitution for properly signed certificates. It is only there to lower the barrier of entry to https.
 
 ### 0.15.2
 

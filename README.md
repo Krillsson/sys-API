@@ -33,8 +33,6 @@ GraphQL is available through the `/graphql` endpoint. It supports the same featu
 
 A web-UI for trying out the GraphQL-API is also available at `<IP>:8080/`. If you don't want to expose this functionality. It can be disabled via the configuration.
 
-
-
 ```yaml
 graphQLPlayGround:
   enabled: false
@@ -73,6 +71,9 @@ Currently, you can monitor
  - CPU temperature
  - Memory usage
  - Network up or down
+ - Drive space
+ - Process ID CPU or Memory
+ - Docker container in running state
  
 #### Configuring monitors
  
@@ -85,9 +86,6 @@ You add a monitor by doing a POST call to `/monitors` with the body of `com.kril
   "threshold": "123"
 }
 ```
-
-If you exclude the `"id"` field from the JSON the API will create a new monitor. If you include an ID the API will update the monitor of that ID if it exists or return NOT FOUND/404 if it does not exist. 
-
 The response for this call will be the UUID of the monitor that was created:
 
 ```json
@@ -134,8 +132,11 @@ Download the [latest release](https://github.com/Krillsson/sys-api/releases/late
 
 - Windows: unzip the package somewhere convenient and then right click the `.bat` file and choose _Run as administrator_
 - *nix: untar or unzip the package and run the `.sh` file from a terminal
-
-A GUI in JavaFX is in the making
+  - Use `nohup` to run the process disconnected from the terminal:
+  - `$ nohup ./run.sh &`
+  - press CTRL+C
+  - Verify that it started successfully:
+  - `tail -f nohup.out`
 
 ### Concerned about memory usage
 
@@ -161,17 +162,19 @@ Forward HTTP to HTTPS:
 
     forwardHttps: true
 
+### Self-signed certificates
+By default, sys-API will generate a self-signed certificate to enable HTTPS. This is to lower the barrier for encrypted traffic between the client and the server.
+Please note that using properly signed certificates is better. Let's Encrypt is a free and good alternative. Refer [wiki page](https://github.com/Krillsson/sys-API/wiki/Let's-Encrypt) on how to set it up.
+
+For convenience, the certificates are persisted using a java keystore. If you wish to re-generate the certificates, delete the _keystorewww.jks_ file. But note that this will require re-adding the server in Monitee.
+
 ## Development
 Setup
 ```sh
 git clone [this repo] sys-api
 ```
 ```sh
-mvn clean install
-```
-```sh
-cd server
-java -jar target/system-api.jar server configuration.yml
+./gradlew :server:run
 ```
 Test
 
@@ -179,10 +182,10 @@ Test
 curl -i --user user:password -H "Accept: application/json" -X GET http://localhost:8080/v2/system
 ```
 
-Package for distribution in a *.zip*, *tar.gz* and *tar.bz2*:
+Package for distribution in a *.zip*:
 
 ```sh
-mvn clean package
+./gradlew :server:shadowDistZip
 ```
 
 And the resulting files should be located in */server/target/*
