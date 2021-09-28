@@ -35,7 +35,7 @@ subprojects {
     }
 }
 
-project(':sys-api-server') {
+project(':server') {
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'application'
 

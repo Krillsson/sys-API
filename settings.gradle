@@ -3,5 +3,5 @@
  */
 
 rootProject.name = 'sys-api'
-include(':sys-api-server')
-project(':sys-api-server').projectDir = file('server')
+include(':server')
+project(':server').projectDir = file('server')
