@@ -24,12 +24,16 @@ It publishes and monitors values from [OSHI](https://github.com/oshi/oshi) with 
 - List all network interfaces
 - Show info from sensors and fans
 - Motherboard information
+- List docker containers
+- Start/stop docker containers
 
 ### GraphQL
 
-GraphQL is available through the `/graphql` endpoint. It supports the exact same features as the REST-API. Checkout the [schema](server/src/main/resources/schema.graphqls).
+GraphQL is available through the `/graphql` endpoint. It supports the same features as the REST-API. Checkout the [schema](server/src/main/resources/schema.graphqls). There's also a set of sample queries in the _sample-queries_ directory
 
 A web-UI for trying out the GraphQL-API is also available at `<IP>:8080/`. If you don't want to expose this functionality. It can be disabled via the configuration.
+
+
 
 ```yaml
 graphQLPlayGround:

@@ -3,13 +3,9 @@ package com.krillsson.sysapi.core.history;
 import com.google.common.eventbus.EventBus;
 import com.krillsson.sysapi.config.HistoryConfiguration;
 import com.krillsson.sysapi.config.HistoryPurgingConfiguration;
-import com.krillsson.sysapi.core.domain.system.SystemLoad;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.temporal.ChronoUnit;
-
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class HistoryManagerTest {
@@ -27,17 +23,6 @@ public class HistoryManagerTest {
         history = mock(HistoryRepository.class);
         eventBus = mock(EventBus.class);
         historyManager = new HistoryManager(historyConfiguration, eventBus, history);
-    }
-
-    @Test
-    public void delegatesToHistoryOnAnEvent() {
-        when(purgingConfiguration.getOlderThan()).thenReturn(1);
-        when(purgingConfiguration.getUnit()).thenReturn(ChronoUnit.HOURS);
-
-        historyManager.onEvent(new HistoryMetricQueryEvent(mock(SystemLoad.class)));
-
-        verify(history).record(any(com.krillsson.sysapi.core.domain.history.HistorySystemLoad.class));
-        verify(history).purge(1, ChronoUnit.HOURS);
     }
 
     @Test

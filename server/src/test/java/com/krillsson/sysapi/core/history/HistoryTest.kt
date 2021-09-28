@@ -1,12 +1,15 @@
 package com.krillsson.sysapi.core.history
 
 import com.krillsson.sysapi.core.domain.history.HistorySystemLoad
+import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
+import com.krillsson.sysapi.persistence.Store
 import com.krillsson.sysapi.util.Clock
 import org.hamcrest.Matchers
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
+import org.mockito.MockitoAnnotations
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 
@@ -17,13 +20,26 @@ class HistoryTest {
     @Mock
     lateinit var load: HistorySystemLoad
 
-    @Mock
-    lateinit var store: HistoryStore
-
     @Before
     @Throws(Exception::class)
     fun setUp() {
+        MockitoAnnotations.initMocks(this)
         clock = Clock()
+        val store = object: Store<List<SystemHistoryEntry>> {
+            private val data = mutableListOf<SystemHistoryEntry>()
+            override fun write(content: List<SystemHistoryEntry>) {
+                data.clear()
+                data.addAll(content)
+            }
+
+            override fun read(): List<SystemHistoryEntry> {
+                return data
+            }
+
+            override fun clear() {
+                data.clear()
+            }
+        }
         history = HistoryRepository(clock, store)
     }
 

@@ -44,6 +44,9 @@ import com.krillsson.sysapi.graphql.GraphQLBundle
 import com.krillsson.sysapi.graphql.GraphQLConfiguration
 import com.krillsson.sysapi.persistence.Store
 import com.krillsson.sysapi.rest.*
+import com.krillsson.sysapi.tls.CertificateNamesCreator
+import com.krillsson.sysapi.tls.IfConfigMe
+import com.krillsson.sysapi.tls.SelfSignedCertificateManager
 import com.krillsson.sysapi.util.*
 import io.dropwizard.Application
 import io.dropwizard.auth.AuthDynamicFeature
@@ -56,13 +59,14 @@ import org.eclipse.jetty.servlets.CrossOriginFilter
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature
 import oshi.SystemInfo
 import oshi.software.os.OperatingSystem
+import retrofit2.Retrofit
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.time.Clock
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.function.Supplier
 import javax.servlet.DispatcherType
 import javax.servlet.FilterRegistration
-
 
 class SysAPIApplication : Application<SysAPIConfiguration>() {
 
@@ -134,6 +138,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             environment.servlets().addFilter("cors", CrossOriginFilter::class.java)
         cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType::class.java), true, "/*")
 
+
         if (config.forwardHttps()) {
             EnvironmentUtils.addHttpsForward(environment.applicationContext)
         }
@@ -141,6 +146,19 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         dockerClient = DockerClient(config.metrics().cache, config.docker(), environment.objectMapper)
 
         val metrics = metricsFactory.get(config)
+
+        val selfSignedCertificates = config.selfSignedCertificates()
+        if(selfSignedCertificates.enabled){
+
+            val service = Retrofit.Builder()
+                .baseUrl(EXTERNAL_IP_LOOKUP_SERVICE)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build()
+                .create(IfConfigMe::class.java)
+            val certificateNamesCreator = CertificateNamesCreator(metrics.networkMetrics(), service)
+            val names = certificateNamesCreator.createNames(selfSignedCertificates)
+            SelfSignedCertificateManager().start(names)
+        }
 
         val historyMetricQueryManager = object : MetricQueryManager<HistoryMetricQueryEvent>(
             queryScheduledExecutor,
@@ -262,6 +280,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
 
     companion object {
         private val LOGGER = org.slf4j.LoggerFactory.getLogger(SysAPIApplication::class.java)
+        private const val EXTERNAL_IP_LOOKUP_SERVICE = "https://ifconfig.me"
 
         @Throws(Exception::class)
         @JvmStatic
