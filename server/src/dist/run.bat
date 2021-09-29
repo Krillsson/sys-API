@@ -1,3 +1,3 @@
 @echo off
-bin\sys-api-server server configuration.yml
+bin\server server configuration.yml
 pause
