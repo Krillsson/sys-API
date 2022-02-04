@@ -15,6 +15,7 @@ object MonitorFactory {
             MonitorType.CONTAINER_RUNNING -> DockerContainerRunningMonitor(id, config)
             MonitorType.PROCESS_MEMORY_SPACE -> ProcessMemoryMonitor(id, config)
             MonitorType.PROCESS_CPU_LOAD -> ProcessCpuMonitor(id, config)
+            MonitorType.PROCESS_EXISTS -> ProcessExistsMonitor(id, config)
         }
     }
 }
