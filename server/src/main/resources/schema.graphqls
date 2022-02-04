@@ -29,6 +29,10 @@ input CreateMonitorInput {
     inertiaInSeconds: Int!
     type: MonitorType!
     threshold: Float!
+    # Drives: serial or name (ignoring case)
+    # NIC's: name or MAC address (ignoring case)
+    # Process: process ID
+    # Docker: full container ID (ignoring case)
     monitoredItemId: String
 }
 
@@ -49,7 +53,7 @@ input DeleteEventInput {
 }
 
 input DeleteEventsForMonitorInput {
-    eventId: UUID!
+    monitorId: UUID!
 }
 
 type DeleteEventOutput {
@@ -57,7 +61,7 @@ type DeleteEventOutput {
 }
 
 input PerformDockerContainerCommandInput{
-    containerId: String!,
+    containerId: String!
     command: ContainerCommand
 }
 
@@ -113,7 +117,11 @@ enum MonitorType {
     CPU_TEMP,
     DRIVE_SPACE,
     MEMORY_SPACE,
-    NETWORK_UP
+    NETWORK_UP,
+    CONTAINER_RUNNING,
+    PROCESS_MEMORY_SPACE,
+    PROCESS_CPU_LOAD,
+    PROCESS_EXISTS
 }
 
 interface Event {
@@ -502,8 +510,8 @@ type DockerLink {
 }
 
 type DockerIpam {
-    ipv4Address: String!
-    ipv6Address: String!
+    ipv4Address: String
+    ipv6Address: String
 }
 
 type DockerMount {

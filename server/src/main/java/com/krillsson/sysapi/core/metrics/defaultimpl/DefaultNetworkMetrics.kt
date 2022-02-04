@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.hardware.NetworkIF
 import java.net.SocketException
-import java.util.Optional
+import java.util.*
 
 open class DefaultNetworkMetrics(
     private val hal: HardwareAbstractionLayer,
@@ -155,6 +155,7 @@ open class DefaultNetworkMetrics(
         nicSpeed: NetworkInterfaceSpeed
     ): NetworkInterfaceLoad = NetworkInterfaceLoad(
         name,
+        macaddr,
         up,
         NetworkInterfaceValues(
             speed,

@@ -17,7 +17,7 @@ class DockerContainerRunningMonitor(override val id: UUID, override val config: 
 
     override fun selectValue(event: MonitorMetricQueryEvent): Double {
         return event.containers.filter {
-            it.id == config.monitoredItemId
+            it.id.equals(config.monitoredItemId, ignoreCase = true)
         }.map {
             if (it.state == State.RUNNING) {
                 RUNNING

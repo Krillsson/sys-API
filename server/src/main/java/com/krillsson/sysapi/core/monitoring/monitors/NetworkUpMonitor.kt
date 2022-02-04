@@ -18,7 +18,7 @@ class NetworkUpMonitor(override val id: UUID, override val config: MonitorConfig
     override fun selectValue(event: MonitorMetricQueryEvent): Double {
         return event.load().networkInterfaceLoads
             .stream()
-            .filter { n: NetworkInterfaceLoad -> n.name.equals(config.monitoredItemId, ignoreCase = true) }
+            .filter { n: NetworkInterfaceLoad -> n.name.equals(config.monitoredItemId, ignoreCase = true) || n.mac.equals(config.monitoredItemId, ignoreCase = true) }
             .map { n: NetworkInterfaceLoad -> if (n.isUp) UP else DOWN }
             .findFirst()
             .orElse(DOWN)
