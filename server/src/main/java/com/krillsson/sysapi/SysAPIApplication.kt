@@ -106,7 +106,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     val metricsFactory = MetricsFactory(
         hal,
         os,
-        SystemInfo.getCurrentPlatformEnum(),
+        SystemInfo.getCurrentPlatform(),
         speedMeasurementManager,
         ticker
     )
@@ -199,7 +199,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             historyManager,
             dockerClient,
             os.asOperatingSystem(),
-            SystemInfo.getCurrentPlatformEnum().asPlatform()
+            SystemInfo.getCurrentPlatform().asPlatform()
         )
         registerManagedObjects(
             environment,

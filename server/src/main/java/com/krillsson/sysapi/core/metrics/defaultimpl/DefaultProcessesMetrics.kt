@@ -28,7 +28,7 @@ class DefaultProcessesMetrics(
     private val currentLoad: MutableMap<Int, Double> = mutableMapOf()
 
     init {
-        updateMap(operatingSystem.getProcesses(0, null))
+        updateMap(operatingSystem.processes)
     }
 
     override fun getProcessByPid(pid: Int): Optional<Process> {
@@ -61,7 +61,7 @@ class DefaultProcessesMetrics(
 
     override fun processesInfo(sortBy: ProcessSort, limit: Int): ProcessesInfo {
         val tracedValue = measureTimeMillis {  sortAndLimit(priorSnapshotMap.values.toMutableList(), sortBy, limit) }
-        LOGGER.debug(
+        LOGGER.trace(
             "Took {} to sort and limit {} processes",
             "${tracedValue.first.toInt()}ms",
             tracedValue.second.size
@@ -84,7 +84,7 @@ class DefaultProcessesMetrics(
     }
 
     override fun onTick() {
-        val processes = operatingSystem.getProcesses(0, null)
+        val processes = operatingSystem.processes
         updateCurrentLoad(processes)
         updateMap(processes)
     }

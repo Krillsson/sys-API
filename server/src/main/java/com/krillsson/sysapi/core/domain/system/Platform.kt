@@ -1,10 +1,17 @@
 package com.krillsson.sysapi.core.domain.system
 
 enum class Platform {
-    WINDOWS,
+    MACOS,
     LINUX,
-    MACOSX,
+    WINDOWS,
     SOLARIS,
     FREEBSD,
+    OPENBSD,
+    WINDOWSCE,
+    AIX,
+    ANDROID,
+    GNU,
+    KFREEBSD,
+    NETBSD,
     UNKNOWN
 }

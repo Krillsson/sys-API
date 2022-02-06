@@ -392,11 +392,18 @@ type PhysicalMemory {
 }
 
 enum Platform {
-    WINDOWS,
+    MACOS,
     LINUX,
-    MACOSX,
+    WINDOWS,
     SOLARIS,
     FREEBSD,
+    OPENBSD,
+    WINDOWSCE,
+    AIX,
+    ANDROID,
+    GNU,
+    KFREEBSD,
+    NETBSD,
     UNKNOWN
 }
 
