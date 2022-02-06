@@ -26,8 +26,12 @@ class EventManager(private val repository: EventRepository, private val clock: C
     }
 
     fun add(event: Event) {
-        events.removeIf { event.id == it.id }
-        events.add(event)
+        when (event) {
+            is OngoingEvent -> {
+                events.removeIf { ongoingEvent -> event.id == ongoingEvent.id }
+                events.add(event)
+            }
+        }
         persist()
     }
 

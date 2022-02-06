@@ -5,7 +5,7 @@ class NetworkInterface(
     val displayName: String,
     val mac: String,
     val speed: Long,
-    val mtu: Int,
+    val mtu: Long,
     val isLoopback: Boolean,
     val ipv4: List<String>,
     val ipv6: List<String>
