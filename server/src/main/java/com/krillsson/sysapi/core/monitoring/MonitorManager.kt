@@ -65,6 +65,25 @@ class MonitorManager(
         }
     }
 
+    fun update(monitorId: UUID, inertia: Duration?, threshold: Double?): UUID {
+        val oldMonitor = getById(monitorId)
+        checkNotNull(oldMonitor) { "No monitor with id $monitorId was found" }
+        check(inertia != null || threshold != null) { "Either inertia or threshold has to be provided" }
+        val updatedConfig = MonitorConfig(
+            oldMonitor.config.monitoredItemId,
+            threshold ?: oldMonitor.config.threshold,
+            inertia ?: oldMonitor.config.inertia
+        )
+        val updatedMonitor = createMonitor(oldMonitor.type, oldMonitor.id, updatedConfig)
+        return if (validate(updatedMonitor)) {
+            register(updatedMonitor)
+            persist()
+            updatedMonitor.id
+        } else {
+            throw IllegalArgumentException("Not mappable to device: ${oldMonitor.type} with ${oldMonitor.config.monitoredItemId}")
+        }
+    }
+
     fun remove(id: UUID): Boolean {
         val removed = activeMonitors.remove(id)
 

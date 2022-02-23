@@ -11,6 +11,8 @@ import com.krillsson.sysapi.graphql.domain.DockerAvailable
 import com.krillsson.sysapi.graphql.domain.DockerUnavailable
 import com.krillsson.sysapi.graphql.mutations.PerformDockerContainerCommandOutputFailed
 import com.krillsson.sysapi.graphql.mutations.PerformDockerContainerCommandOutputSucceeded
+import com.krillsson.sysapi.graphql.mutations.UpdateMonitorOutputFailed
+import com.krillsson.sysapi.graphql.mutations.UpdateMonitorOutputSucceeded
 import com.krillsson.sysapi.graphql.scalars.ScalarTypes
 import graphql.kickstart.tools.SchemaParser
 import graphql.schema.GraphQLSchema
@@ -45,6 +47,8 @@ class GraphQLConfiguration {
             .dictionary(
                 PerformDockerContainerCommandOutputSucceeded::class,
                 PerformDockerContainerCommandOutputFailed::class,
+                UpdateMonitorOutputSucceeded::class,
+                UpdateMonitorOutputFailed::class,
                 DockerUnavailable::class,
                 DockerAvailable::class,
             )

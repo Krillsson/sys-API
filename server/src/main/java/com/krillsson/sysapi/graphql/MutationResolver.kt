@@ -61,6 +61,19 @@ class MutationResolver : GraphQLMutationResolver {
         return DeleteMonitorOutput(removed)
     }
 
+    fun updateMonitor(input: UpdateMonitorInput): UpdateMonitorOutput {
+        return try {
+            val updatedMonitorId = monitorManager.update(
+                input.monitorId,
+                input.inertiaInSeconds?.toLong()?.let { Duration.ofSeconds(it) },
+                input.threshold?.toDouble()
+            )
+            UpdateMonitorOutputSucceeded(updatedMonitorId)
+        } catch (exception: Exception) {
+            UpdateMonitorOutputFailed(exception.message ?: "Unknown reason")
+        }
+    }
+
     fun deleteEvent(input: DeleteEventInput): DeleteEventOutput {
         val removed = eventManager.remove(input.eventId)
         return DeleteEventOutput(removed)

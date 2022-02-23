@@ -20,6 +20,7 @@ type Query {
 type Mutation {
     createMonitor(input: CreateMonitorInput) : CreateMonitorOutput
     deleteMonitor(input: DeleteMonitorInput) : DeleteMonitorOutput
+    updateMonitor(input: UpdateMonitorInput) : UpdateMonitorOutput
     deleteEvent(input: DeleteEventInput) : DeleteEventOutput
     deleteEventsForMonitor(input: DeleteEventsForMonitorInput) : DeleteEventOutput
     performDockerContainerCommand(input: PerformDockerContainerCommandInput) : PerformDockerContainerCommandOutput
@@ -36,8 +37,24 @@ input CreateMonitorInput {
     monitoredItemId: String
 }
 
+input UpdateMonitorInput {
+    monitorId: UUID!
+    inertiaInSeconds: Int
+    threshold: Float
+}
+
 type CreateMonitorOutput {
     monitorId: UUID!
+}
+
+union UpdateMonitorOutput = UpdateMonitorOutputSucceeded | UpdateMonitorOutputFailed
+
+type UpdateMonitorOutputSucceeded {
+    monitorId: UUID!
+}
+
+type UpdateMonitorOutputFailed {
+    reason: String!
 }
 
 input DeleteMonitorInput {
