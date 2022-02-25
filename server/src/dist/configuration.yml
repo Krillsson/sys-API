@@ -24,7 +24,10 @@ windows:
 graphQLPlayGround:
   enabled: true
 docker:
-  enabled: false
+  enabled: true
+connectivityCheck:
+  enabled: true
+  address: https://ifconfig.me
 forwardHttpToHttps: false
 selfSignedCertificates:
   enabled: true

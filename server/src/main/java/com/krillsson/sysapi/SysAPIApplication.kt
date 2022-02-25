@@ -26,8 +26,10 @@ import com.google.common.eventbus.EventBus
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.krillsson.sysapi.auth.BasicAuthenticator
 import com.krillsson.sysapi.auth.BasicAuthorizer
+import com.krillsson.sysapi.client.Clients
 import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.config.UserConfiguration
+import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
 import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.domain.system.SystemLoad
 import com.krillsson.sysapi.core.history.HistoryMetricQueryEvent
@@ -42,10 +44,12 @@ import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
 import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.GraphQLBundle
 import com.krillsson.sysapi.graphql.GraphQLConfiguration
+import com.krillsson.sysapi.graphql.domain.Meta
+import com.krillsson.sysapi.persistence.KeyValueRepository
+import com.krillsson.sysapi.persistence.KeyValueStore
 import com.krillsson.sysapi.persistence.Store
 import com.krillsson.sysapi.rest.*
 import com.krillsson.sysapi.tls.CertificateNamesCreator
-import com.krillsson.sysapi.tls.IfConfigMe
 import com.krillsson.sysapi.tls.SelfSignedCertificateManager
 import com.krillsson.sysapi.util.*
 import io.dropwizard.Application
@@ -59,8 +63,6 @@ import org.eclipse.jetty.servlets.CrossOriginFilter
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature
 import oshi.SystemInfo
 import oshi.software.os.OperatingSystem
-import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.time.Clock
 import java.util.*
 import java.util.concurrent.Executors
@@ -103,21 +105,16 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     val hal = systemInfo.hardware
     val os = systemInfo.operatingSystem
     val eventBus = EventBus()
-    val metricsFactory = MetricsFactory(
-        hal,
-        os,
-        SystemInfo.getCurrentPlatform(),
-        speedMeasurementManager,
-        ticker
-    )
     val graphqlConfiguration = GraphQLConfiguration()
     val graphqlBundle = GraphQLBundle(graphqlConfiguration)
 
     lateinit var eventStore: EventStore
     lateinit var monitorStore: MonitorStore
+    lateinit var keyValueRepository: KeyValueRepository
     lateinit var historyStore: Store<List<SystemHistoryEntry>>
     lateinit var eventManager: EventManager
     lateinit var dockerClient: DockerClient
+    lateinit var metricsFactory: MetricsFactory
 
     override fun initialize(bootstrap: Bootstrap<SysAPIConfiguration>) {
         val mapper = bootstrap.objectMapper
@@ -127,6 +124,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         monitorStore = MonitorStore(mapper)
         historyStore = HistoryStore(mapper)
         eventManager = EventManager(EventRepository(eventStore), com.krillsson.sysapi.util.Clock())
+        keyValueRepository = KeyValueRepository(KeyValueStore(mapper))
 
         bootstrap.addBundle(SslReloadBundle())
         bootstrap.addBundle(graphqlBundle)
@@ -137,25 +135,27 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         val cors: FilterRegistration.Dynamic =
             environment.servlets().addFilter("cors", CrossOriginFilter::class.java)
         cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType::class.java), true, "/*")
-
+        val clients = Clients(config.connectivityCheck.address)
 
         if (config.forwardHttps()) {
             EnvironmentUtils.addHttpsForward(environment.applicationContext)
         }
 
         dockerClient = DockerClient(config.metrics().cache, config.docker(), environment.objectMapper)
+        metricsFactory = MetricsFactory(
+            hal,
+            os,
+            SystemInfo.getCurrentPlatform(),
+            speedMeasurementManager,
+            ticker,
+            ConnectivityCheckManager(clients.externalIpService, keyValueRepository, config.connectivityCheck)
+        )
 
         val metrics = metricsFactory.get(config)
 
         val selfSignedCertificates = config.selfSignedCertificates()
         if(selfSignedCertificates.enabled){
-
-            val service = Retrofit.Builder()
-                .baseUrl(EXTERNAL_IP_LOOKUP_SERVICE)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .build()
-                .create(IfConfigMe::class.java)
-            val certificateNamesCreator = CertificateNamesCreator(metrics.networkMetrics(), service)
+            val certificateNamesCreator = CertificateNamesCreator(metrics.networkMetrics(), clients.externalIpService)
             val names = certificateNamesCreator.createNames(selfSignedCertificates)
             SelfSignedCertificateManager().start(names)
         }
@@ -199,7 +199,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             historyManager,
             dockerClient,
             os.asOperatingSystem(),
-            SystemInfo.getCurrentPlatform().asPlatform()
+            SystemInfo.getCurrentPlatform().asPlatform(),
+            Meta(Utils.getVersionFromManifest(), os.processId)
         )
         registerManagedObjects(
             environment,
@@ -209,7 +210,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             ticker,
             monitorMetricQueryManager,
             historyManager,
-            historyMetricQueryManager
+            historyMetricQueryManager,
+            keyValueRepository
         )
         registerFeatures(environment, config.user())
         registerResources(environment, os, metrics, historyManager, monitorManager, eventManager)
@@ -223,7 +225,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         ticker: Ticker,
         monitorMetricQueryManager: MetricQueryManager<MonitorMetricQueryEvent>,
         historyManager: MetricsHistoryManager,
-        historyMetricQueryManager: MetricQueryManager<HistoryMetricQueryEvent>
+        historyMetricQueryManager: MetricQueryManager<HistoryMetricQueryEvent>,
+        keyValueRepository: KeyValueRepository
     ) {
         environment.lifecycle().manage(monitorManager)
         environment.lifecycle().manage(eventManager)
@@ -232,6 +235,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         environment.lifecycle().manage(monitorMetricQueryManager)
         environment.lifecycle().manage(historyManager)
         environment.lifecycle().manage(historyMetricQueryManager)
+        environment.lifecycle().manage(keyValueRepository)
     }
 
     private fun registerFeatures(environment: Environment, userConfig: UserConfiguration) {
@@ -280,7 +284,6 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
 
     companion object {
         private val LOGGER = org.slf4j.LoggerFactory.getLogger(SysAPIApplication::class.java)
-        private const val EXTERNAL_IP_LOOKUP_SERVICE = "https://ifconfig.me"
 
         @Throws(Exception::class)
         @JvmStatic

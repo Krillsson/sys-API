@@ -15,6 +15,12 @@ type Query {
     pastEvents: [PastEvent!]!
     ongoingEvents: [OngoingEvent!]!
     docker: Docker!
+    meta: Meta
+}
+
+type Meta {
+    version: String!
+    processId: Int!
 }
 
 type Mutation {
@@ -102,6 +108,7 @@ type System {
     drives: [Drive!]!
     hostname: String!
     platform: Platform!
+    connectivity: Connectivity!
     networkInterfaces: [NetworkInterface!]!
     #graphics: [Graphics]
     # 0 means no limitation
@@ -116,6 +123,7 @@ type SystemMetricsHistoryEntry {
     processorMetrics: ProcessorMetrics!
     driveMetrics: [DriveMetrics!]!
     networkInterfaceMetrics: [NetworkInterfaceMetrics!]!
+    connectivity: Connectivity!
     memoryMetrics: MemoryMetrics!
 }
 
@@ -138,7 +146,9 @@ enum MonitorType {
     CONTAINER_RUNNING,
     PROCESS_MEMORY_SPACE,
     PROCESS_CPU_LOAD,
-    PROCESS_EXISTS
+    PROCESS_EXISTS,
+    CONNECTIVITY,
+    EXTERNAL_IP_CHANGED
 }
 
 interface Event {
@@ -317,6 +327,12 @@ type DriveReadWriteRate {
 }
 
 ## Network interface
+
+type Connectivity{
+    externalIp: String
+    previousExternalIp: String
+    connected: Boolean!
+}
 
 type NetworkInterface {
     name: String!

@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.metrics.windows
 
+import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuLoadMetrics
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMemoryMetrics
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultProcessesMetrics
@@ -20,7 +21,8 @@ object WindowsMetricsFactory {
         platformEnum: PlatformEnum,
         ticker: Ticker,
         utils: Utils,
-        measurementManager: SpeedMeasurementManager
+        measurementManager: SpeedMeasurementManager,
+        connectivityCheckManager: ConnectivityCheckManager
     ): WindowsMetrics? {
         val ohmFactory = OHMManagerFactory()
         if (ohmFactory.prerequisitesFilled() && ohmFactory.initialize()) {
@@ -31,7 +33,7 @@ object WindowsMetricsFactory {
             val cpuMetrics =
                 WindowsCpuMetrics(hal, os, defaultCpuLoadMetrics, monitorManager, ticker, utils)
             val networkMetrics =
-                WindowsNetworkMetrics(hal, measurementManager, monitorManager)
+                WindowsNetworkMetrics(ticker, hal, measurementManager, connectivityCheckManager, monitorManager)
             val gpuMetrics = WindowsGpuMetrics(hal, monitorManager)
             val driveMetrics =
                 WindowsDriveMetrics(os, hal, measurementManager)

@@ -21,13 +21,13 @@ public class Utils {
         if (!classPath.startsWith("jar")) {
             // Class not from JAR
             LOGGER.error("Unable to determine version");
-            return "";
+            return "N/A";
         }
         String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1) +
                 "/META-INF/MANIFEST.MF";
         Manifest manifest = new Manifest(new URL(manifestPath).openStream());
         Attributes attr = manifest.getMainAttributes();
-        return "v." + attr.getValue("Version");
+        return attr.getValue("Implementation-Version");
     }
 
     public static double round(double value, int places) {

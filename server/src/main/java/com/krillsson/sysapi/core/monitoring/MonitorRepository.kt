@@ -34,7 +34,7 @@ class MonitorRepository(private val store: Store<List<MonitorStore.StoredMonitor
         return when (type) {
             MonitorStore.StoredMonitor.Type.CPU_LOAD -> CpuMonitor(id, config.asConfig())
             MonitorStore.StoredMonitor.Type.CPU_TEMP -> CpuTemperatureMonitor(id, config.asConfig())
-            MonitorStore.StoredMonitor.Type.DRIVE_SPACE -> DriveMonitor(id, config.asConfig())
+            MonitorStore.StoredMonitor.Type.DRIVE_SPACE -> DriveSpaceMonitor(id, config.asConfig())
             MonitorStore.StoredMonitor.Type.MEMORY_SPACE -> MemoryMonitor(id, config.asConfig())
             MonitorStore.StoredMonitor.Type.NETWORK_UP -> NetworkUpMonitor(id, config.asConfig())
             MonitorStore.StoredMonitor.Type.CONTAINER_RUNNING -> DockerContainerRunningMonitor(id, config.asConfig())

@@ -8,7 +8,7 @@ import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
 import com.krillsson.sysapi.core.monitoring.MonitorType
 import java.util.*
 
-class DriveMonitor(override val id: UUID, override val config: MonitorConfig) : Monitor() {
+class DriveSpaceMonitor(override val id: UUID, override val config: MonitorConfig) : Monitor() {
     override val type: MonitorType = MonitorType.DRIVE_SPACE
 
     override fun selectValue(event: MonitorMetricQueryEvent): Double = event.load().driveLoads
