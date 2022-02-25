@@ -1,3 +1,15 @@
+### 0.17.0
+
+ - Adds connectivity check and external IP functionality
+ - Several new monitors:
+   - Connectivity
+   - Drive read/write rate
+   - Network upload/download rate
+   - External IP changed
+   - Process CPU usage
+   - Process memory usage
+   - Process died (pid disappeared)
+
 ### 0.16.0
 
 - Support for generating self-signed certificate for increased privacy
