@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl
 
+import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
 import com.krillsson.sysapi.util.Ticker
 import com.krillsson.sysapi.util.asOperatingSystem
@@ -14,12 +15,13 @@ object DefaultMetricsFactory {
         hal: HardwareAbstractionLayer,
         platformEnum: PlatformEnum,
         ticker: Ticker,
-        measurementManager: SpeedMeasurementManager
+        measurementManager: SpeedMeasurementManager,
+        connectivityCheckManager: ConnectivityCheckManager
     ): DefaultMetrics {
         val defaultCpuLoadMetrics = DefaultCpuLoadMetrics(hal.processor, ticker)
         val defaultCpuSensors = DefaultCpuSensors(hal)
         val cpuMetrics = DefaultCpuMetrics(hal, os, defaultCpuSensors, defaultCpuLoadMetrics)
-        val networkMetrics = DefaultNetworkMetrics(hal, measurementManager)
+        val networkMetrics = DefaultNetworkMetrics(ticker, hal, measurementManager, connectivityCheckManager)
         val gpuMetrics = DefaultGpuMetrics(hal)
         val driveMetrics = DefaultDriveMetrics(os, hal, measurementManager)
         val processesMetrics = DefaultProcessesMetrics(os, hal, ticker)

@@ -14,6 +14,7 @@ import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.domain.memory.MemoryInfo
 import com.krillsson.sysapi.core.domain.memory.MemoryLoad
 import com.krillsson.sysapi.core.domain.motherboard.Motherboard
+import com.krillsson.sysapi.core.domain.network.Connectivity
 import com.krillsson.sysapi.core.domain.network.NetworkInterface
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad
 import com.krillsson.sysapi.core.domain.processes.Process
@@ -30,6 +31,7 @@ import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.domain.Docker
 import com.krillsson.sysapi.graphql.domain.DockerAvailable
 import com.krillsson.sysapi.graphql.domain.DockerUnavailable
+import com.krillsson.sysapi.graphql.domain.Meta
 import com.krillsson.sysapi.util.EnvironmentUtils
 import graphql.kickstart.tools.GraphQLQueryResolver
 import graphql.kickstart.tools.GraphQLResolver
@@ -44,6 +46,7 @@ class QueryResolver : GraphQLQueryResolver {
     lateinit var operatingSystem: OperatingSystem
     lateinit var platform: Platform
     lateinit var dockerClient: DockerClient
+    lateinit var meta: Meta
 
     fun initialize(
         metrics: Metrics,
@@ -52,7 +55,8 @@ class QueryResolver : GraphQLQueryResolver {
         historyManager: HistoryManager,
         dockerClient: DockerClient,
         operatingSystem: OperatingSystem,
-        platform: Platform
+        platform: Platform,
+        meta: Meta
     ) {
         this.metrics = metrics
         this.monitorManager = monitorManager
@@ -61,6 +65,7 @@ class QueryResolver : GraphQLQueryResolver {
         this.operatingSystem = operatingSystem
         this.platform = platform
         this.dockerClient = dockerClient
+        this.meta = meta
     }
 
     val systemInfoResolver = SystemResolver()
@@ -143,6 +148,10 @@ class QueryResolver : GraphQLQueryResolver {
             return metrics.cpuMetrics().uptime()
         }
 
+        fun getConnectivity(system: System): Connectivity {
+            return metrics.networkMetrics().connectivity()
+        }
+
         fun getProcessor(system: System): CentralProcessor {
             return metrics.cpuMetrics().cpuInfo().centralProcessor
         }
@@ -177,6 +186,10 @@ class QueryResolver : GraphQLQueryResolver {
 
         fun getNetworkInterfaceMetrics(historyEntry: SystemHistoryEntry): List<NetworkInterfaceLoad> {
             return historyEntry.value.networkInterfaceLoads
+        }
+
+        fun getConnectivity(historyEntry: SystemHistoryEntry): Connectivity {
+            return historyEntry.value.connectivity
         }
 
         fun getGraphicsMetrics(historyEntry: SystemHistoryEntry): List<GpuLoad> {

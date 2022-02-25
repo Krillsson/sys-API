@@ -44,6 +44,7 @@ open class HistoryManager constructor(
             systemLoadAverage,
             cpuLoad,
             networkInterfaceLoads,
+            connectivity,
             driveLoads,
             memory,
             gpuLoads,

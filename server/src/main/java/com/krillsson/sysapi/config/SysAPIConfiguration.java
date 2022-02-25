@@ -48,6 +48,11 @@ public class SysAPIConfiguration extends Configuration {
     private WindowsConfiguration windows;
 
     @Valid
+    @NotNull
+    @JsonProperty
+    private ConnectivityCheckConfiguration connectivityCheck;
+
+    @Valid
     @JsonProperty
     private GraphQLPlayGroundConfiguration graphQLPlayGround;
 
@@ -85,6 +90,10 @@ public class SysAPIConfiguration extends Configuration {
 
     public DockerConfiguration docker() {
         return docker;
+    }
+
+    public ConnectivityCheckConfiguration getConnectivityCheck() {
+        return connectivityCheck;
     }
 
     @JsonProperty

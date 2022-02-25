@@ -6,10 +6,11 @@ import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
 import com.krillsson.sysapi.config.CacheConfiguration
+import com.krillsson.sysapi.core.domain.network.Connectivity
 import com.krillsson.sysapi.core.domain.network.NetworkInterface
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad
 import com.krillsson.sysapi.core.metrics.NetworkMetrics
-import java.util.Optional
+import java.util.*
 
 class CachingNetworkMetrics(
     networkMetrics: NetworkMetrics,
@@ -25,6 +26,10 @@ class CachingNetworkMetrics(
             { networkMetrics.networkInterfaceLoads() },
             cacheConfiguration.duration, cacheConfiguration.unit
         )
+    private val connectivityCache: Supplier<Connectivity> = Suppliers.memoizeWithExpiration(
+        { networkMetrics.connectivity() },
+        cacheConfiguration.duration, cacheConfiguration.unit
+    )
     private val networkInterfaceQueryCache: LoadingCache<String, Optional<NetworkInterface>> =
         CacheBuilder.newBuilder()
             .expireAfterWrite(cacheConfiguration.duration, cacheConfiguration.unit)
@@ -43,6 +48,10 @@ class CachingNetworkMetrics(
                     return networkMetrics.networkInterfaceLoadById(s)
                 }
             })
+
+    override fun connectivity(): Connectivity {
+        return connectivityCache.get()
+    }
 
     override fun networkInterfaces(): List<NetworkInterface> {
         return networkInterfacesCache.get()

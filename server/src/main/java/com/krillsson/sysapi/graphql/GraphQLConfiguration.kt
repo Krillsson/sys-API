@@ -9,6 +9,7 @@ import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.domain.DockerAvailable
 import com.krillsson.sysapi.graphql.domain.DockerUnavailable
+import com.krillsson.sysapi.graphql.domain.Meta
 import com.krillsson.sysapi.graphql.mutations.PerformDockerContainerCommandOutputFailed
 import com.krillsson.sysapi.graphql.mutations.PerformDockerContainerCommandOutputSucceeded
 import com.krillsson.sysapi.graphql.mutations.UpdateMonitorOutputFailed
@@ -64,7 +65,8 @@ class GraphQLConfiguration {
         historyManager: HistoryManager,
         dockerClient: DockerClient,
         operatingSystem: OperatingSystem,
-        platform: Platform
+        platform: Platform,
+        meta: Meta
     ) {
         queryResolver.initialize(
             metrics,
@@ -73,7 +75,8 @@ class GraphQLConfiguration {
             historyManager,
             dockerClient,
             operatingSystem,
-            platform
+            platform,
+            meta
         )
         mutationResolver.initialize(metrics, monitorManager, eventManager, historyManager, dockerClient)
     }

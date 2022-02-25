@@ -22,6 +22,7 @@ package com.krillsson.sysapi.core.metrics
 
 import com.google.common.annotations.VisibleForTesting
 import com.krillsson.sysapi.config.SysAPIConfiguration
+import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
 import com.krillsson.sysapi.core.metrics.cache.Cache
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory
 import com.krillsson.sysapi.core.metrics.rasbian.RaspbianMetricsFactory
@@ -41,7 +42,8 @@ class MetricsFactory(
     private val operatingSystem: OperatingSystem,
     private val platform: PlatformEnum,
     private val speedMeasurementManager: SpeedMeasurementManager,
-    private val ticker: Ticker
+    private val ticker: Ticker,
+    private val connectivityCheckManager: ConnectivityCheckManager
 ) {
     private val utils: Utils = Utils()
     private var cache = true
@@ -74,7 +76,8 @@ class MetricsFactory(
                     platform,
                     ticker,
                     utils,
-                    speedMeasurementManager
+                    speedMeasurementManager,
+                    connectivityCheckManager
                 )
                 if (metrics != null) {
                     metrics
@@ -85,7 +88,8 @@ class MetricsFactory(
                         hal,
                         platform,
                         ticker,
-                        speedMeasurementManager
+                        speedMeasurementManager,
+                        connectivityCheckManager
                     )
                 }
             }
@@ -97,7 +101,8 @@ class MetricsFactory(
                     hal,
                     platform,
                     ticker,
-                    speedMeasurementManager
+                    speedMeasurementManager,
+                    connectivityCheckManager
                 )
             }
             else -> DefaultMetricsFactory.create(
@@ -105,7 +110,8 @@ class MetricsFactory(
                 hal,
                 platform,
                 ticker,
-                speedMeasurementManager
+                speedMeasurementManager,
+                connectivityCheckManager
             )
         }
     }
