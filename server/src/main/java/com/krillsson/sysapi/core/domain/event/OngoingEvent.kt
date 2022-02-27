@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.domain.event
 
+import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.monitoring.Monitor
 import java.time.OffsetDateTime
 import java.util.*
@@ -10,6 +11,6 @@ class OngoingEvent(
     monitoredItemId: String?,
     monitorType: Monitor.Type,
     startTime: OffsetDateTime,
-    threshold: Double,
-    value: Double
+    threshold: MonitoredValue,
+    value: MonitoredValue
 ) : Event(id, monitorId, monitoredItemId, monitorType, startTime, threshold, value)

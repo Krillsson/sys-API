@@ -12,6 +12,7 @@ import com.krillsson.sysapi.core.domain.gpu.GpuLoad
 import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.domain.memory.MemoryInfo
 import com.krillsson.sysapi.core.domain.memory.MemoryLoad
+import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.domain.motherboard.Motherboard
 import com.krillsson.sysapi.core.domain.network.Connectivity
 import com.krillsson.sysapi.core.domain.network.NetworkInterface
@@ -97,7 +98,7 @@ class QueryResolver : GraphQLQueryResolver {
         }.toList()
     }
 
-    fun monitors(): List<Monitor> {
+    fun monitors(): List<Monitor<MonitoredValue>> {
         return monitorManager.getAll().toList()
     }
 
@@ -211,11 +212,11 @@ class QueryResolver : GraphQLQueryResolver {
             metrics.cpuMetrics().cpuLoad().cpuHealth.temperatures
     }
 
-    inner class MonitorResolver : GraphQLResolver<Monitor> {
-        fun getInertiaInSeconds(monitor: Monitor) = monitor.config.inertia.seconds
-        fun getType(monitor: Monitor) = monitor.type
-        fun getThreshold(monitor: Monitor) = monitor.config.threshold
-        fun getMonitoredItemId(monitor: Monitor) = monitor.config.monitoredItemId
+    inner class MonitorResolver : GraphQLResolver<Monitor<MonitoredValue>> {
+        fun getInertiaInSeconds(monitor: Monitor<MonitoredValue>) = monitor.config.inertia.seconds
+        fun getType(monitor: Monitor<MonitoredValue>) = monitor.type
+        fun getThreshold(monitor: Monitor<MonitoredValue>) = monitor.config.threshold
+        fun getMonitoredItemId(monitor: Monitor<MonitoredValue>) = monitor.config.monitoredItemId
     }
 
     inner class MonitorEventResolver : GraphQLResolver<MonitorEvent> {

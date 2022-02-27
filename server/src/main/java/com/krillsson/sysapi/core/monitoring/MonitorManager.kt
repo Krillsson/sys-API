@@ -3,9 +3,11 @@ package com.krillsson.sysapi.core.monitoring
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
+import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.MonitorFactory.createMonitor
 import com.krillsson.sysapi.util.Clock
+import com.krillsson.sysapi.util.logger
 import io.dropwizard.lifecycle.Managed
 import java.time.Duration
 import java.util.*
@@ -18,21 +20,29 @@ class MonitorManager(
     private val clock: Clock
 ) : Managed {
 
-    private lateinit var activeMonitors: MutableMap<UUID, Pair<MonitorMechanism, Monitor>>
+    companion object {
+        val logger by logger()
+    }
+
+    private lateinit var activeMonitors: MutableMap<UUID, Pair<MonitorMechanism, Monitor<MonitoredValue>>>
 
     @Subscribe
     fun onEvent(metricQueryEvent: MonitorMetricQueryEvent) {
         activeMonitors.values.forEach { (mechanism, monitor) ->
             val value = monitor.selectValue(metricQueryEvent)
-            val isOverThreshold = monitor.isPastThreshold(value)
-            val event = mechanism.check(
-                monitor,
-                monitor.config,
-                value,
-                isOverThreshold
-            )
-            event?.let {
-                eventManager.add(it)
+            if (value != null) {
+                val isOverThreshold = monitor.isPastThreshold(value)
+                val event = mechanism.check(
+                    monitor,
+                    monitor.config,
+                    value,
+                    isOverThreshold
+                )
+                event?.let {
+                    eventManager.add(it)
+                }
+            } else {
+                logger.warn("${monitor.type.name} monitoring ${monitor.config.monitoredItemId} is no longer valid")
             }
         }
     }
@@ -49,11 +59,11 @@ class MonitorManager(
 
     fun getAll() = activeMonitors.map { it.value.second }
 
-    fun getById(id: UUID): Monitor? {
+    fun getById(id: UUID): Monitor<MonitoredValue>? {
         return activeMonitors[id]?.second
     }
 
-    fun add(inertia: Duration, type: Monitor.Type, threshold: Double, itemId: String?): UUID {
+    fun add(inertia: Duration, type: Monitor.Type, threshold: MonitoredValue, itemId: String?): UUID {
         val config = MonitorConfig(itemId, threshold, inertia)
         val monitor = createMonitor(type, UUID.randomUUID(), config)
         return if (validate(monitor)) {
@@ -65,7 +75,7 @@ class MonitorManager(
         }
     }
 
-    fun update(monitorId: UUID, inertia: Duration?, threshold: Double?): UUID {
+    fun update(monitorId: UUID, inertia: Duration?, threshold: MonitoredValue?): UUID {
         val oldMonitor = getById(monitorId)
         checkNotNull(oldMonitor) { "No monitor with id $monitorId was found" }
         check(inertia != null || threshold != null) { "Either inertia or threshold has to be provided" }
@@ -106,13 +116,13 @@ class MonitorManager(
         }
     }
 
-    private fun register(monitor: Monitor) {
+    private fun register(monitor: Monitor<MonitoredValue>) {
         val mechanism = MonitorMechanism(clock)
         activeMonitors[monitor.id] = mechanism to monitor
     }
 
-    private fun validate(monitor: Monitor): Boolean {
-        return monitor.selectValue(MonitorMetricQueryEvent(provider.systemMetrics().systemLoad(), emptyList())) != -1.0
+    private fun validate(monitor: Monitor<MonitoredValue>): Boolean {
+        return monitor.selectValue(MonitorMetricQueryEvent(provider.systemMetrics().systemLoad(), emptyList())) != null
     }
 }
 
