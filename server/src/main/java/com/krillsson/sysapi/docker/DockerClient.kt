@@ -116,7 +116,6 @@ class DockerClient(
                 client.pingCmd().exec()
                 Status.Available
             } catch (err: RuntimeException) {
-                LOGGER.error("Unable to access Docker instance", err)
                 Status.Unavailable(err)
             }
         }
