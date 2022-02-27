@@ -16,7 +16,7 @@ class EventStore(objectMapper: ObjectMapper) :
         val monitoredItemId: String?,
         val startTime: OffsetDateTime,
         val endTime: OffsetDateTime?,
-        val monitorType: MonitorType,
+        val monitorType: Monitor.Type,
         val threshold: Double,
         val value: Double,
         val type: Type

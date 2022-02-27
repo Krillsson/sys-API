@@ -1,15 +1,14 @@
-package com.krillsson.sysapi.core.domain.event
+package com.krillsson.sysapi.graphql.domain
 
 import com.krillsson.sysapi.core.monitoring.Monitor
 import java.time.OffsetDateTime
 import java.util.*
 
-abstract class Event(
+class MonitorEvent(
     val id: UUID,
     val monitorId: UUID,
-    val monitoredItemId: String? = null,
+    val time: OffsetDateTime,
     val monitorType: Monitor.Type,
-    val startTime: OffsetDateTime,
     val threshold: Double,
     val value: Double
 )

@@ -3,11 +3,10 @@ package com.krillsson.sysapi.core.monitoring.monitors
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
-import com.krillsson.sysapi.core.monitoring.MonitorType
 import java.util.*
 
 class ProcessExistsMonitor(override val id: UUID, override val config: MonitorConfig) : Monitor() {
-    override val type: MonitorType = MonitorType.PROCESS_EXISTS
+    override val type: Type = Type.PROCESS_EXISTS
 
     companion object {
         const val UP = 1.0

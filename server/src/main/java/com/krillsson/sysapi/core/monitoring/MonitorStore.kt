@@ -17,7 +17,7 @@ class MonitorStore(objectMapper: ObjectMapper) :
 
     data class StoredMonitor(
         val id: UUID,
-        val type: Type,
+        val type: Monitor.Type,
         val config: Config
     ) {
         data class Config(
@@ -25,18 +25,6 @@ class MonitorStore(objectMapper: ObjectMapper) :
             val threshold: Double,
             val inertia: Duration
         )
-
-        enum class Type {
-            CPU_LOAD,
-            CPU_TEMP,
-            DRIVE_SPACE,
-            MEMORY_SPACE,
-            NETWORK_UP,
-            CONTAINER_RUNNING,
-            PROCESS_MEMORY_SPACE,
-            PROCESS_CPU_LOAD,
-            PROCESS_EXISTS
-        }
 
     }
 }

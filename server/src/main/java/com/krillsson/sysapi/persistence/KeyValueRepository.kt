@@ -2,7 +2,7 @@ package com.krillsson.sysapi.persistence
 
 import io.dropwizard.lifecycle.Managed
 
-class KeyValueRepository(private val keyValueStore: KeyValueStore) : Managed {
+class KeyValueRepository(private val keyValueStore: Store<Map<String, String>>) : Managed {
 
     private lateinit var memory: MutableMap<String, String>
 

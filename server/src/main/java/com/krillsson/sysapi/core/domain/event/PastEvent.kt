@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.core.domain.event
 
-import com.krillsson.sysapi.core.monitoring.MonitorType
+import com.krillsson.sysapi.core.monitoring.Monitor
 import java.time.OffsetDateTime
 import java.util.*
 
@@ -10,7 +10,7 @@ class PastEvent(
     monitoredItemId: String?,
     startTime: OffsetDateTime,
     val endTime: OffsetDateTime,
-    monitorType: MonitorType,
+    type: Monitor.Type,
     threshold: Double,
     value: Double
-) : Event(id, monitorId, monitoredItemId, monitorType, startTime, threshold, value)
+) : Event(id, monitorId, monitoredItemId, type, startTime, threshold, value)

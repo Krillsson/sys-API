@@ -5,11 +5,10 @@ import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.metrics.Empty
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
-import com.krillsson.sysapi.core.monitoring.MonitorType
 import java.util.*
 
 class DriveReadRateMonitor(override val id: UUID, override val config: MonitorConfig) : Monitor() {
-    override val type: MonitorType = MonitorType.DRIVE_READ_RATE
+    override val type: Type = Type.DRIVE_READ_RATE
 
     override fun selectValue(event: MonitorMetricQueryEvent): Double = event.load().driveLoads
             .stream()
