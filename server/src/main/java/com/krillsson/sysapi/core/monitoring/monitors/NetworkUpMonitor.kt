@@ -4,11 +4,10 @@ import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
-import com.krillsson.sysapi.core.monitoring.MonitorType
 import java.util.*
 
 class NetworkUpMonitor(override val id: UUID, override val config: MonitorConfig) : Monitor() {
-    override val type: MonitorType = MonitorType.NETWORK_UP
+    override val type: Type = Type.NETWORK_UP
 
     companion object {
         const val UP = 1.0

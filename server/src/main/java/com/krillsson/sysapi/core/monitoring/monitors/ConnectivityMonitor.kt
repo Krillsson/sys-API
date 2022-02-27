@@ -3,7 +3,6 @@ package com.krillsson.sysapi.core.monitoring.monitors
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
-import com.krillsson.sysapi.core.monitoring.MonitorType
 import java.util.*
 
 class ConnectivityMonitor(
@@ -11,7 +10,7 @@ class ConnectivityMonitor(
     override val config: MonitorConfig
 ) : Monitor() {
 
-    override val type: MonitorType = MonitorType.CONNECTIVITY
+    override val type: Monitor.Type = Type.CONNECTIVITY
 
     override fun selectValue(event: MonitorMetricQueryEvent): Double {
         return if (event.load.connectivity.connected) {

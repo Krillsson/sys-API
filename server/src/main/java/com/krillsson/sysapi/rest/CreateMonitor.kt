@@ -1,10 +1,10 @@
 package com.krillsson.sysapi.rest
 
-import com.krillsson.sysapi.core.monitoring.MonitorType
+import com.krillsson.sysapi.core.monitoring.Monitor
 
 data class CreateMonitor(
     var idToMonitor: String,
     var inertiaInSeconds: Long,
-    var type: MonitorType,
+    var type: Monitor.Type,
     var threshold: Double
 )

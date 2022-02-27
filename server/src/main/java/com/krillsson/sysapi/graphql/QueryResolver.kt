@@ -5,7 +5,6 @@ import com.krillsson.sysapi.core.domain.cpu.CpuLoad
 import com.krillsson.sysapi.core.domain.docker.State
 import com.krillsson.sysapi.core.domain.drives.Drive
 import com.krillsson.sysapi.core.domain.drives.DriveLoad
-import com.krillsson.sysapi.core.domain.event.MonitorEvent
 import com.krillsson.sysapi.core.domain.event.OngoingEvent
 import com.krillsson.sysapi.core.domain.event.PastEvent
 import com.krillsson.sysapi.core.domain.gpu.Gpu
@@ -28,10 +27,7 @@ import com.krillsson.sysapi.core.monitoring.EventManager
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.docker.DockerClient
-import com.krillsson.sysapi.graphql.domain.Docker
-import com.krillsson.sysapi.graphql.domain.DockerAvailable
-import com.krillsson.sysapi.graphql.domain.DockerUnavailable
-import com.krillsson.sysapi.graphql.domain.Meta
+import com.krillsson.sysapi.graphql.domain.*
 import com.krillsson.sysapi.util.EnvironmentUtils
 import graphql.kickstart.tools.GraphQLQueryResolver
 import graphql.kickstart.tools.GraphQLResolver
