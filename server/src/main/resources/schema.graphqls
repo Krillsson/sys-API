@@ -24,17 +24,32 @@ type Meta {
 }
 
 type Mutation {
-    createMonitor(input: CreateMonitorInput) : CreateMonitorOutput
+    createNumericalValueMonitor(input: CreateNumericalMonitorInput) : CreateMonitorOutput
+    createBooleanValueMonitor(input: CreateBooleanMonitorInput) : CreateMonitorOutput
+    createFractionalValueMonitor(input: CreateFractionMonitorInput) : CreateMonitorOutput
     deleteMonitor(input: DeleteMonitorInput) : DeleteMonitorOutput
-    updateMonitor(input: UpdateMonitorInput) : UpdateMonitorOutput
+    updateLongValueMonitor(input: UpdateNumericalValueMonitorInput) : UpdateMonitorOutput
+    updateFloatValueMonitor(input: UpdateFractionalValueMonitorInput) : UpdateMonitorOutput
+    updateBooleanValueMonitor(input: UpdateBooleanValueMonitorInput) : UpdateMonitorOutput
     deleteEvent(input: DeleteEventInput) : DeleteEventOutput
     deleteEventsForMonitor(input: DeleteEventsForMonitorInput) : DeleteEventOutput
     performDockerContainerCommand(input: PerformDockerContainerCommandInput) : PerformDockerContainerCommandOutput
 }
 
-input CreateMonitorInput {
+input CreateNumericalMonitorInput {
     inertiaInSeconds: Int!
-    type: MonitorType!
+    type: NumericalValueMonitorType!
+    threshold: Long!
+    # Drives: serial or name (ignoring case)
+    # NIC's: name or MAC address (ignoring case)
+    # Process: process ID
+    # Docker: full container ID (ignoring case)
+    monitoredItemId: String
+}
+
+input CreateFractionMonitorInput {
+    inertiaInSeconds: Int!
+    type: FractionalValueMonitorType!
     threshold: Float!
     # Drives: serial or name (ignoring case)
     # NIC's: name or MAC address (ignoring case)
@@ -43,10 +58,57 @@ input CreateMonitorInput {
     monitoredItemId: String
 }
 
-input UpdateMonitorInput {
+input CreateBooleanMonitorInput {
+    inertiaInSeconds: Int!
+    type: BooleanValueMonitorType!
+    threshold: Boolean!
+    # Drives: serial or name (ignoring case)
+    # NIC's: name or MAC address (ignoring case)
+    # Process: process ID
+    # Docker: full container ID (ignoring case)
+    monitoredItemId: String
+}
+
+enum NumericalValueMonitorType {
+    CPU_TEMP,
+    DRIVE_SPACE,
+    DRIVE_READ_RATE,
+    DRIVE_WRITE_RATE,
+    MEMORY_SPACE,
+    NETWORK_UPLOAD_RATE,
+    NETWORK_DOWNLOAD_RATE,
+    PROCESS_MEMORY_SPACE,
+}
+
+enum FractionalValueMonitorType {
+    CPU_LOAD,
+    PROCESS_CPU_LOAD,
+}
+
+enum BooleanValueMonitorType {
+    NETWORK_UP,
+    CONTAINER_RUNNING,
+    PROCESS_EXISTS,
+    CONNECTIVITY,
+    EXTERNAL_IP_CHANGED
+}
+
+input UpdateNumericalValueMonitorInput {
+    monitorId: UUID!
+    inertiaInSeconds: Int
+    threshold: Long
+}
+
+input UpdateFractionalValueMonitorInput {
     monitorId: UUID!
     inertiaInSeconds: Int
     threshold: Float
+}
+
+input UpdateBooleanValueMonitorInput {
+    monitorId: UUID!
+    inertiaInSeconds: Int
+    threshold: Boolean
 }
 
 type CreateMonitorOutput {
@@ -129,54 +191,150 @@ type SystemMetricsHistoryEntry {
 
 ## Monitoring
 
-type Monitor {
+union MonitoredValue = LongValue | FloatValue | BooleanValue
+
+type LongValue {
+    value: Long
+}
+
+type FloatValue {
+    value: Float
+}
+
+type BooleanValue {
+    value: Boolean
+}
+
+type MonitoredValueHistoryEntry {
+    date: String!
+    value: MonitoredValue!
+}
+
+interface Monitor {
+    id: UUID!
+    inertiaInSeconds: Int!
+    threshold: MonitoredValue!
+    currentValue: MonitoredValue!
+    history: [MonitoredValueHistoryEntry!]!
+}
+
+type CpuLoadMonitor implements Monitor {
+    id: UUID!
+    inertiaInSeconds: Int!
+    threshold: FloatValue!
+    currentValue: FloatValue!
+    history: [MonitoredValueHistoryEntry!]!
+}
+
+type CpuTempMonitor implements Monitor {
+    id: UUID!
+    inertiaInSeconds: Int!
+    threshold: MonitoredValue!
+    currentValue: MonitoredValue!
+    history: [MonitoredValueHistoryEntry!]!
+}
+
+type DriveSpaceMonitor implements Monitor {
     id: UUID!
     monitoredItemId: String,
     inertiaInSeconds: Int!
-    type: MonitorType!
-    threshold: Float!
+    currentValue: MonitoredValue!
+    threshold: MonitoredValue!
+    history: [MonitoredValueHistoryEntry!]!
 }
 
-enum MonitorType {
-    CPU_LOAD,
-    CPU_TEMP,
-    DRIVE_SPACE,
-    MEMORY_SPACE,
-    NETWORK_UP,
-    CONTAINER_RUNNING,
-    PROCESS_MEMORY_SPACE,
-    PROCESS_CPU_LOAD,
-    PROCESS_EXISTS,
-    CONNECTIVITY,
-    EXTERNAL_IP_CHANGED
+type MemorySpaceMonitor implements Monitor {
+    id: UUID!
+    inertiaInSeconds: Int!
+    threshold: MonitoredValue!
+    currentValue: MonitoredValue!
+    history: [MonitoredValueHistoryEntry!]!
+}
+
+type NetworkUpMonitor implements Monitor {
+    id: UUID!
+    monitoredItemId: String,
+    inertiaInSeconds: Int!
+    currentValue: MonitoredValue!
+    threshold: MonitoredValue!
+    history: [MonitoredValueHistoryEntry!]!
+}
+
+type ContainerRunningMonitor implements Monitor {
+    id: UUID!
+    monitoredItemId: String,
+    inertiaInSeconds: Int!
+    currentValue: MonitoredValue!
+    threshold: MonitoredValue!
+    history: [MonitoredValueHistoryEntry!]!
+}
+
+type ProcessMemorySpaceMonitor implements Monitor {
+    id: UUID!
+    monitoredItemId: String,
+    inertiaInSeconds: Int!
+    currentValue: MonitoredValue!
+    threshold: MonitoredValue!
+    history: [MonitoredValueHistoryEntry!]!
+}
+
+type ProcessCpuLoadMonitor implements Monitor {
+    id: UUID!
+    monitoredItemId: String,
+    inertiaInSeconds: Int!
+    currentValue: MonitoredValue!
+    threshold: MonitoredValue!
+    history: [MonitoredValueHistoryEntry!]!
+}
+
+type ProcessExistsMonitor implements Monitor {
+    id: UUID!
+    monitoredItemId: String,
+    inertiaInSeconds: Int!
+    currentValue: MonitoredValue!
+    threshold: MonitoredValue!
+    history: [MonitoredValueHistoryEntry!]!
+}
+
+type ConnectivityMonitor implements Monitor {
+    id: UUID!
+    inertiaInSeconds: Int!
+    threshold: MonitoredValue!
+    currentValue: MonitoredValue!
+    history: [MonitoredValueHistoryEntry!]!
+}
+
+type ExternalIpChangedMonitor implements Monitor {
+    id: UUID!
+    inertiaInSeconds: Int!
+    threshold: MonitoredValue!
+    currentValue: MonitoredValue!
+    history: [MonitoredValueHistoryEntry!]!
 }
 
 interface Event {
     id: UUID!
-    monitorId: UUID!
+    monitor: Monitor!
     startTime: String!
-    type: MonitorType!
-    threshold: Float!
-    value: Float!
+    threshold: MonitoredValue!
+    value: MonitoredValue!
 }
 
 type OngoingEvent implements Event{
     id: UUID!
-    monitorId: UUID!
+    monitor: Monitor!
     startTime: String!
-    type: MonitorType!
-    threshold: Float!
-    value: Float!
+    threshold: MonitoredValue!
+    value: MonitoredValue!
 }
 
 type PastEvent implements Event{
     id: UUID!
-    monitorId: UUID!
+    monitor: Monitor!
     startTime: String!
     endTime: String!
-    type: MonitorType!
-    threshold: Float!
-    value: Float!
+    threshold: MonitoredValue!
+    value: MonitoredValue!
 }
 
 ## Operating system

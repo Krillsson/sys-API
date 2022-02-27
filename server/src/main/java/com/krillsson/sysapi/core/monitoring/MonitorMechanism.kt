@@ -5,6 +5,7 @@ import com.krillsson.sysapi.core.domain.event.Event
 import com.krillsson.sysapi.core.domain.event.OngoingEvent
 import com.krillsson.sysapi.core.domain.event.PastEvent
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
+import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.util.Clock
 import org.slf4j.LoggerFactory
 import java.time.Duration
@@ -75,9 +76,9 @@ class MonitorMechanism @VisibleForTesting constructor(private val clock: Clock) 
      * @return
      */
     fun check(
-        monitor: Monitor,
-        config: MonitorConfig,
-        value: Double,
+        monitor: Monitor<MonitoredValue>,
+        config: MonitorConfig<out MonitoredValue>,
+        value: MonitoredValue,
         outsideThreshold: Boolean
     ): Event? {
         val now = clock.now()

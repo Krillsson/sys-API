@@ -2,31 +2,28 @@ package com.krillsson.sysapi.core.monitoring.monitors
 
 import com.krillsson.sysapi.core.domain.docker.State
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
+import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
+import com.krillsson.sysapi.core.domain.monitor.toBooleanValue
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
 import java.util.*
 
-class DockerContainerRunningMonitor(override val id: UUID, override val config: MonitorConfig) : Monitor() {
+class DockerContainerRunningMonitor(override val id: UUID, override val config: MonitorConfig<MonitoredValue.BooleanValue>) : Monitor<MonitoredValue.BooleanValue>() {
     override val type: Type = Type.CONTAINER_RUNNING
 
-    companion object {
-        const val RUNNING = 1.0
-        const val STOPPED = 0.0
-    }
-
-    override fun selectValue(event: MonitorMetricQueryEvent): Double {
+    override fun selectValue(event: MonitorMetricQueryEvent): MonitoredValue.BooleanValue {
         return event.containers.filter {
             it.id.equals(config.monitoredItemId, ignoreCase = true)
         }.map {
             if (it.state == State.RUNNING) {
-                RUNNING
+                true.toBooleanValue()
             } else {
-                STOPPED
+                false.toBooleanValue()
             }
-        }.firstOrNull() ?: STOPPED
+        }.firstOrNull() ?: false.toBooleanValue()
     }
 
-    override fun isPastThreshold(value: Double): Boolean {
-        return value != RUNNING
+    override fun isPastThreshold(value: MonitoredValue.BooleanValue): Boolean {
+        return !value.value
     }
 }

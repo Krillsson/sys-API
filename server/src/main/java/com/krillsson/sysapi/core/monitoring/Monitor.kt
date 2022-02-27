@@ -1,12 +1,13 @@
 package com.krillsson.sysapi.core.monitoring
 
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
+import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import java.util.*
 
-abstract class Monitor {
+abstract class Monitor<out T : MonitoredValue> {
     abstract val id: UUID
-    abstract val type: Monitor.Type
-    abstract val config: MonitorConfig
+    abstract val type: Type
+    abstract val config: MonitorConfig<out T>
 
     enum class Type {
         CPU_LOAD,
@@ -26,8 +27,6 @@ abstract class Monitor {
         EXTERNAL_IP_CHANGED
     }
 
-    abstract fun selectValue(event: MonitorMetricQueryEvent): Double
-    abstract fun isPastThreshold(value: Double): Boolean
-
-    fun check(event: MonitorMetricQueryEvent): Boolean = isPastThreshold(selectValue(event))
+    abstract fun selectValue(event: MonitorMetricQueryEvent): T?
+    abstract fun isPastThreshold(value: @UnsafeVariance T): Boolean
 }

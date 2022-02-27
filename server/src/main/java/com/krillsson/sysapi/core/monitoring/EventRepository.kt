@@ -3,6 +3,12 @@ package com.krillsson.sysapi.core.monitoring
 import com.krillsson.sysapi.core.domain.event.Event
 import com.krillsson.sysapi.core.domain.event.OngoingEvent
 import com.krillsson.sysapi.core.domain.event.PastEvent
+import com.krillsson.sysapi.core.domain.monitor.toBooleanValue
+import com.krillsson.sysapi.core.domain.monitor.toFractionalValue
+import com.krillsson.sysapi.core.domain.monitor.toNumericalValue
+import com.krillsson.sysapi.graphql.mutations.BooleanValueMonitorType
+import com.krillsson.sysapi.graphql.mutations.FractionalValueMonitorType
+import com.krillsson.sysapi.graphql.mutations.NumericalValueMonitorType
 import com.krillsson.sysapi.persistence.Store
 
 class EventRepository(private val store: Store<List<EventStore.StoredEvent>>) {
@@ -16,25 +22,37 @@ class EventRepository(private val store: Store<List<EventStore.StoredEvent>>) {
     }
 
     private fun EventStore.StoredEvent.asEvent(): Event {
+        val convertedValue = when {
+            BooleanValueMonitorType.values().any { it.name == type.name } -> value.toBooleanValue()
+            FractionalValueMonitorType.values().any { it.name == type.name } -> value.toFractionalValue()
+            NumericalValueMonitorType.values().any { it.name == type.name } -> value.toNumericalValue()
+            else -> throw IllegalStateException("No equivalent to $this exists in ${Monitor.Type::class.simpleName}")
+        }
+        val convertedThreshold = when {
+            BooleanValueMonitorType.values().any { it.name == type.name } -> threshold.toBooleanValue()
+            FractionalValueMonitorType.values().any { it.name == type.name } -> threshold.toFractionalValue()
+            NumericalValueMonitorType.values().any { it.name == type.name } -> threshold.toNumericalValue()
+            else -> throw IllegalStateException("No equivalent to $this exists in ${Monitor.Type::class.simpleName}")
+        }
         return when (type) {
             EventStore.StoredEvent.Type.ONGOING -> OngoingEvent(
-                id,
-                monitorId,
-                monitoredItemId,
-                monitorType,
-                startTime,
-                threshold,
-                value
+                id = id,
+                monitorId = monitorId,
+                monitoredItemId = monitoredItemId,
+                monitorType = monitorType,
+                startTime = startTime,
+                threshold = convertedThreshold,
+                value = convertedValue
             )
             EventStore.StoredEvent.Type.PAST -> PastEvent(
-                id,
-                monitorId,
-                monitoredItemId,
-                startTime,
-                requireNotNull(endTime) { "endTime is required for past events" },
-                monitorType,
-                threshold,
-                value
+                id = id,
+                monitorId = monitorId,
+                monitoredItemId = monitoredItemId,
+                startTime = startTime,
+                endTime = requireNotNull(endTime) { "endTime is required for past events" },
+                type = monitorType,
+                threshold = convertedThreshold,
+                value = convertedValue
             )
         }
     }
@@ -48,8 +66,8 @@ class EventRepository(private val store: Store<List<EventStore.StoredEvent>>) {
                 startTime,
                 endTime,
                 monitorType,
-                threshold,
-                value,
+                threshold.toDouble(),
+                value.toDouble(),
                 EventStore.StoredEvent.Type.PAST
             )
             is OngoingEvent -> EventStore.StoredEvent(
@@ -59,8 +77,8 @@ class EventRepository(private val store: Store<List<EventStore.StoredEvent>>) {
                 startTime,
                 null,
                 monitorType,
-                threshold,
-                value,
+                threshold.toDouble(),
+                value.toDouble(),
                 EventStore.StoredEvent.Type.ONGOING
             )
             else -> throw IllegalArgumentException("Unknown event type encountered $this")

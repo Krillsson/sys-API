@@ -1,31 +1,33 @@
 package com.krillsson.sysapi.core.monitoring.monitors
 
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
+import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
+import com.krillsson.sysapi.core.domain.monitor.toBooleanValue
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
 import java.util.*
 
 class ExternalIpChangedMonitor(
     override val id: UUID,
-    override val config: MonitorConfig
-) : Monitor() {
+    override val config: MonitorConfig<MonitoredValue.BooleanValue>
+) : Monitor<MonitoredValue.BooleanValue>() {
 
     override val type: Type = Type.EXTERNAL_IP_CHANGED
 
-    override fun selectValue(event: MonitorMetricQueryEvent): Double {
+    override fun selectValue(event: MonitorMetricQueryEvent): MonitoredValue.BooleanValue {
         val externalIp = event.load.connectivity.externalIp
         val previousExternalIp = event.load.connectivity.previousExternalIp
 
         return if (externalIp == null || previousExternalIp == null) {
-            1.0
+            true.toBooleanValue()
         } else if (externalIp != previousExternalIp) {
-            0.0
+            false.toBooleanValue()
         } else {
-            1.0
+            true.toBooleanValue()
         }
     }
 
-    override fun isPastThreshold(value: Double): Boolean {
-        return value == 0.0
+    override fun isPastThreshold(value: MonitoredValue.BooleanValue): Boolean {
+        return !value.value
     }
 }
