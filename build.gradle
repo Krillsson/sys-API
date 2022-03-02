@@ -59,12 +59,12 @@ project(':server') {
     applicationDefaultJvmArgs = ["-Xmx512m"]
 
     run {
-        args project.hasProperty("appArgs") ? Eval.me(appArgs) : ['server', 'src/dist/configuration.yml']
+        args project.hasProperty("appArgs") ? Eval.me(appArgs) : ['server', 'src/dist/config/configuration.yml']
     }
 
     jar {
         manifest {
-            attributes('Main-Class': mainClassName, "Implementation-Version": version)
+            attributes('Main-Class': mainClassName, "Implementation-Version": project.version)
         }
     }
 
