@@ -1,13 +1,13 @@
 package com.krillsson.sysapi.graphql
 
 import com.krillsson.sysapi.core.domain.docker.Command
-import com.krillsson.sysapi.core.domain.monitor.toBooleanValue
+import com.krillsson.sysapi.core.domain.monitor.toConditionalValue
 import com.krillsson.sysapi.core.domain.monitor.toFractionalValue
 import com.krillsson.sysapi.core.domain.monitor.toNumericalValue
 import com.krillsson.sysapi.core.history.HistoryManager
 import com.krillsson.sysapi.core.metrics.Metrics
-import com.krillsson.sysapi.core.monitoring.EventManager
 import com.krillsson.sysapi.core.monitoring.MonitorManager
+import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.mutations.*
 import graphql.kickstart.tools.GraphQLMutationResolver
@@ -49,31 +49,31 @@ class MutationResolver : GraphQLMutationResolver {
         }
     }
 
-    fun createNumericalMonitor(input: CreateNumericalMonitorInput): CreateMonitorOutput {
+    fun createNumericalValueMonitor(input: CreateNumericalMonitorInput): CreateMonitorOutput {
         val createdId = monitorManager.add(
             Duration.ofSeconds(input.inertiaInSeconds.toLong()),
-            input.type.toMonitorType(),
+            input.type,
             input.threshold.toNumericalValue(),
             input.monitoredItemId
         )
         return CreateMonitorOutput(createdId)
     }
 
-    fun createFractionalMonitor(input: CreateFractionMonitorInput): CreateMonitorOutput {
+    fun createFractionalValueMonitor(input: CreateFractionMonitorInput): CreateMonitorOutput {
         val createdId = monitorManager.add(
             Duration.ofSeconds(input.inertiaInSeconds.toLong()),
-            input.type.toMonitorType(),
+            input.type,
             input.threshold.toFractionalValue(),
             input.monitoredItemId
         )
         return CreateMonitorOutput(createdId)
     }
 
-    fun createBooleanMonitor(input: CreateBooleanMonitorInput): CreateMonitorOutput {
+    fun createConditionalValueMonitor(input: CreateConditionalMonitorInput): CreateMonitorOutput {
         val createdId = monitorManager.add(
             Duration.ofSeconds(input.inertiaInSeconds.toLong()),
-            input.type.toMonitorType(),
-            input.threshold.toBooleanValue(),
+            input.type,
+            input.threshold.toConditionalValue(),
             input.monitoredItemId
         )
         return CreateMonitorOutput(createdId)
@@ -84,7 +84,7 @@ class MutationResolver : GraphQLMutationResolver {
         return DeleteMonitorOutput(removed)
     }
 
-    fun updateNumericalMonitor(input: UpdateNumericalMonitorInput): UpdateMonitorOutput {
+    fun updateNumericalValueMonitor(input: UpdateNumericalMonitorInput): UpdateMonitorOutput {
         return try {
             val updatedMonitorId = monitorManager.update(
                 input.monitorId,
@@ -97,7 +97,7 @@ class MutationResolver : GraphQLMutationResolver {
         }
     }
 
-    fun updateFractionalMonitor(input: UpdateFractionMonitorInput): UpdateMonitorOutput {
+    fun updateFractionalValueMonitor(input: UpdateFractionMonitorInput): UpdateMonitorOutput {
         return try {
             val updatedMonitorId = monitorManager.update(
                 input.monitorId,
@@ -110,12 +110,12 @@ class MutationResolver : GraphQLMutationResolver {
         }
     }
 
-    fun updateBooleanMonitor(input: UpdateBooleanMonitorInput): UpdateMonitorOutput {
+    fun updateConditionalValueMonitor(input: UpdateConditionalMonitorInput): UpdateMonitorOutput {
         return try {
             val updatedMonitorId = monitorManager.update(
                 input.monitorId,
                 input.inertiaInSeconds?.toLong()?.let { Duration.ofSeconds(it) },
-                input.threshold?.toBooleanValue()
+                input.threshold?.toConditionalValue()
             )
             UpdateMonitorOutputSucceeded(updatedMonitorId)
         } catch (exception: Exception) {

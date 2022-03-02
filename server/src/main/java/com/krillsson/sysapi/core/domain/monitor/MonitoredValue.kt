@@ -15,23 +15,14 @@ sealed class MonitoredValue {
         operator fun compareTo(other: FractionalValue) = this.value.compareTo(other.value)
     }
 
-    data class BooleanValue(
+    data class ConditionalValue(
         val value: Boolean
-
     ) : MonitoredValue()
-
-    fun toDouble() : Double {
-        return when (this) {
-            is BooleanValue -> if (value) 1.0 else 0.0
-            is FractionalValue -> value.toDouble()
-            is NumericalValue -> value.toDouble()
-        }
-    }
 }
 
 fun Long.toNumericalValue() = MonitoredValue.NumericalValue(this)
-fun Boolean.toBooleanValue() = MonitoredValue.BooleanValue(this)
+fun Boolean.toConditionalValue() = MonitoredValue.ConditionalValue(this)
 fun Float.toFractionalValue() = MonitoredValue.FractionalValue(this)
 fun Double.toFractionalValue() = MonitoredValue.FractionalValue(this.toFloat())
-fun Double.toBooleanValue() = if (this == 1.0) true.toBooleanValue() else false.toBooleanValue()
+fun Double.toConditionalValue() = if (this == 1.0) true.toConditionalValue() else false.toConditionalValue()
 fun Double.toNumericalValue() = this.roundToLong().toNumericalValue()

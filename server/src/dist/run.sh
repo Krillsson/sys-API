@@ -1,2 +1,2 @@
 #!/bin/sh
-./bin/server server configuration.yml
+./bin/server server config/configuration.yml

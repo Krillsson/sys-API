@@ -3,13 +3,13 @@ package com.krillsson.sysapi.rest
 import com.krillsson.sysapi.auth.BasicAuthorizer
 import com.krillsson.sysapi.core.domain.event.Event
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
-import com.krillsson.sysapi.core.domain.monitor.toBooleanValue
+import com.krillsson.sysapi.core.domain.monitor.toConditionalValue
 import com.krillsson.sysapi.core.domain.monitor.toFractionalValue
 import com.krillsson.sysapi.core.domain.monitor.toNumericalValue
-import com.krillsson.sysapi.core.monitoring.EventManager
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorManager
-import com.krillsson.sysapi.graphql.mutations.CreateBooleanMonitorInput
+import com.krillsson.sysapi.core.monitoring.event.EventManager
+import com.krillsson.sysapi.graphql.mutations.CreateConditionalMonitorInput
 import com.krillsson.sysapi.graphql.mutations.CreateFractionMonitorInput
 import com.krillsson.sysapi.graphql.mutations.CreateMonitorOutput
 import com.krillsson.sysapi.graphql.mutations.CreateNumericalMonitorInput
@@ -47,7 +47,7 @@ class MonitorResource(private val monitorManager: MonitorManager, private val ev
     fun createNumericalMonitor(input: CreateNumericalMonitorInput): CreateMonitorOutput {
         val createdId = monitorManager.add(
             Duration.ofSeconds(input.inertiaInSeconds.toLong()),
-            input.type.toMonitorType(),
+            input.type,
             input.threshold.toNumericalValue(),
             input.monitoredItemId
         )
@@ -59,7 +59,7 @@ class MonitorResource(private val monitorManager: MonitorManager, private val ev
     fun createFractionalMonitor(input: CreateFractionMonitorInput): CreateMonitorOutput {
         val createdId = monitorManager.add(
             Duration.ofSeconds(input.inertiaInSeconds.toLong()),
-            input.type.toMonitorType(),
+            input.type,
             input.threshold.toFractionalValue(),
             input.monitoredItemId
         )
@@ -68,11 +68,11 @@ class MonitorResource(private val monitorManager: MonitorManager, private val ev
 
     @POST
     @Path("boolean")
-    fun createBooleanMonitor(input: CreateBooleanMonitorInput): CreateMonitorOutput {
+    fun createBooleanMonitor(input: CreateConditionalMonitorInput): CreateMonitorOutput {
         val createdId = monitorManager.add(
             Duration.ofSeconds(input.inertiaInSeconds.toLong()),
-            input.type.toMonitorType(),
-            input.threshold.toBooleanValue(),
+            input.type,
+            input.threshold.toConditionalValue(),
             input.monitoredItemId
         )
         return CreateMonitorOutput(createdId)

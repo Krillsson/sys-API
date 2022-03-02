@@ -12,10 +12,12 @@ import java.io.FileWriter
 import java.io.IOException
 
 abstract class JsonFile<T>(
-    private val filePath: String,
+    fileName: String,
     private val typeToken: TypeReference<T>,
     objectMapperBase: ObjectMapper
 ) : Store<T> {
+
+    private val filePath = "data${System.getProperty("file.separator")}$fileName"
 
     private val objectMapper = objectMapperBase.copy()
         .apply {

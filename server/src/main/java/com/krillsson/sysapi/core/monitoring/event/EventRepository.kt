@@ -1,14 +1,13 @@
-package com.krillsson.sysapi.core.monitoring
+package com.krillsson.sysapi.core.monitoring.event
 
 import com.krillsson.sysapi.core.domain.event.Event
 import com.krillsson.sysapi.core.domain.event.OngoingEvent
 import com.krillsson.sysapi.core.domain.event.PastEvent
-import com.krillsson.sysapi.core.domain.monitor.toBooleanValue
+import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
+import com.krillsson.sysapi.core.domain.monitor.toConditionalValue
 import com.krillsson.sysapi.core.domain.monitor.toFractionalValue
 import com.krillsson.sysapi.core.domain.monitor.toNumericalValue
-import com.krillsson.sysapi.graphql.mutations.BooleanValueMonitorType
-import com.krillsson.sysapi.graphql.mutations.FractionalValueMonitorType
-import com.krillsson.sysapi.graphql.mutations.NumericalValueMonitorType
+import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.persistence.Store
 
 class EventRepository(private val store: Store<List<EventStore.StoredEvent>>) {
@@ -22,18 +21,6 @@ class EventRepository(private val store: Store<List<EventStore.StoredEvent>>) {
     }
 
     private fun EventStore.StoredEvent.asEvent(): Event {
-        val convertedValue = when {
-            BooleanValueMonitorType.values().any { it.name == type.name } -> value.toBooleanValue()
-            FractionalValueMonitorType.values().any { it.name == type.name } -> value.toFractionalValue()
-            NumericalValueMonitorType.values().any { it.name == type.name } -> value.toNumericalValue()
-            else -> throw IllegalStateException("No equivalent to $this exists in ${Monitor.Type::class.simpleName}")
-        }
-        val convertedThreshold = when {
-            BooleanValueMonitorType.values().any { it.name == type.name } -> threshold.toBooleanValue()
-            FractionalValueMonitorType.values().any { it.name == type.name } -> threshold.toFractionalValue()
-            NumericalValueMonitorType.values().any { it.name == type.name } -> threshold.toNumericalValue()
-            else -> throw IllegalStateException("No equivalent to $this exists in ${Monitor.Type::class.simpleName}")
-        }
         return when (type) {
             EventStore.StoredEvent.Type.ONGOING -> OngoingEvent(
                 id = id,
@@ -41,8 +28,8 @@ class EventRepository(private val store: Store<List<EventStore.StoredEvent>>) {
                 monitoredItemId = monitoredItemId,
                 monitorType = monitorType,
                 startTime = startTime,
-                threshold = convertedThreshold,
-                value = convertedValue
+                threshold = mapValueToMonitorValue { it.threshold },
+                value = mapValueToMonitorValue { it.value }
             )
             EventStore.StoredEvent.Type.PAST -> PastEvent(
                 id = id,
@@ -51,9 +38,17 @@ class EventRepository(private val store: Store<List<EventStore.StoredEvent>>) {
                 startTime = startTime,
                 endTime = requireNotNull(endTime) { "endTime is required for past events" },
                 type = monitorType,
-                threshold = convertedThreshold,
-                value = convertedValue
+                threshold = mapValueToMonitorValue { it.threshold },
+                value = mapValueToMonitorValue { it.value }
             )
+        }
+    }
+
+    private fun EventStore.StoredEvent.mapValueToMonitorValue(mapper: (EventStore.StoredEvent) -> Double): MonitoredValue {
+        return when(monitorType.valueType) {
+            Monitor.ValueType.Numerical -> mapper(this).toNumericalValue()
+            Monitor.ValueType.Fractional -> mapper(this).toFractionalValue()
+            Monitor.ValueType.Conditional -> mapper(this).toConditionalValue()
         }
     }
 
@@ -66,8 +61,8 @@ class EventRepository(private val store: Store<List<EventStore.StoredEvent>>) {
                 startTime,
                 endTime,
                 monitorType,
-                threshold.toDouble(),
-                value.toDouble(),
+                threshold.asDouble(),
+                value.asDouble(),
                 EventStore.StoredEvent.Type.PAST
             )
             is OngoingEvent -> EventStore.StoredEvent(
@@ -77,11 +72,19 @@ class EventRepository(private val store: Store<List<EventStore.StoredEvent>>) {
                 startTime,
                 null,
                 monitorType,
-                threshold.toDouble(),
-                value.toDouble(),
+                threshold.asDouble(),
+                value.asDouble(),
                 EventStore.StoredEvent.Type.ONGOING
             )
             else -> throw IllegalArgumentException("Unknown event type encountered $this")
+        }
+    }
+
+    private fun MonitoredValue.asDouble() : Double {
+        return when (this) {
+            is MonitoredValue.ConditionalValue -> if (value) 1.0 else 0.0
+            is MonitoredValue.FractionalValue -> value.toDouble()
+            is MonitoredValue.NumericalValue -> value.toDouble()
         }
     }
 }

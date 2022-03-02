@@ -2,7 +2,7 @@ package com.krillsson.sysapi.rest
 
 import com.krillsson.sysapi.auth.BasicAuthorizer
 import com.krillsson.sysapi.core.domain.event.Event
-import com.krillsson.sysapi.core.monitoring.EventManager
+import com.krillsson.sysapi.core.monitoring.event.EventManager
 import java.util.*
 import javax.annotation.security.RolesAllowed
 import javax.ws.rs.*
