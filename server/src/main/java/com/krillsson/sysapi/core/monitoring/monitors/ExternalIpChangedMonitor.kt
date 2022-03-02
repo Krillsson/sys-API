@@ -2,32 +2,36 @@ package com.krillsson.sysapi.core.monitoring.monitors
 
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
-import com.krillsson.sysapi.core.domain.monitor.toBooleanValue
+import com.krillsson.sysapi.core.domain.monitor.toConditionalValue
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
 import java.util.*
 
 class ExternalIpChangedMonitor(
     override val id: UUID,
-    override val config: MonitorConfig<MonitoredValue.BooleanValue>
-) : Monitor<MonitoredValue.BooleanValue>() {
+    override val config: MonitorConfig<MonitoredValue.ConditionalValue>
+) : Monitor<MonitoredValue.ConditionalValue>() {
 
-    override val type: Type = Type.EXTERNAL_IP_CHANGED
+    companion object {
+        val selector: ConditionalValueSelector = { load, _ ->
+            val externalIp = load.connectivity.externalIp
+            val previousExternalIp = load.connectivity.previousExternalIp
 
-    override fun selectValue(event: MonitorMetricQueryEvent): MonitoredValue.BooleanValue {
-        val externalIp = event.load.connectivity.externalIp
-        val previousExternalIp = event.load.connectivity.previousExternalIp
-
-        return if (externalIp == null || previousExternalIp == null) {
-            true.toBooleanValue()
-        } else if (externalIp != previousExternalIp) {
-            false.toBooleanValue()
-        } else {
-            true.toBooleanValue()
+            if (externalIp == null || previousExternalIp == null) {
+                true.toConditionalValue()
+            } else if (externalIp != previousExternalIp) {
+                false.toConditionalValue()
+            } else {
+                true.toConditionalValue()
+            }
         }
     }
 
-    override fun isPastThreshold(value: MonitoredValue.BooleanValue): Boolean {
+    override val type: Type = Type.EXTERNAL_IP_CHANGED
+
+    override fun selectValue(event: MonitorMetricQueryEvent): MonitoredValue.ConditionalValue? = selector(event.load, null)
+
+    override fun isPastThreshold(value: MonitoredValue.ConditionalValue): Boolean {
         return !value.value
     }
 }

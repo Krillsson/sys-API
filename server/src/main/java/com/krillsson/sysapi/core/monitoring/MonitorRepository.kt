@@ -1,9 +1,6 @@
 package com.krillsson.sysapi.core.monitoring
 
 import com.krillsson.sysapi.core.domain.monitor.*
-import com.krillsson.sysapi.graphql.mutations.BooleanValueMonitorType
-import com.krillsson.sysapi.graphql.mutations.FractionalValueMonitorType
-import com.krillsson.sysapi.graphql.mutations.NumericalValueMonitorType
 import com.krillsson.sysapi.persistence.Store
 
 class MonitorRepository(private val store: Store<List<MonitorStore.StoredMonitor>>) {
@@ -28,20 +25,27 @@ class MonitorRepository(private val store: Store<List<MonitorStore.StoredMonitor
 
     private fun MonitorConfig<out MonitoredValue>.asStoredMonitorConfig(): MonitorStore.StoredMonitor.Config {
         return MonitorStore.StoredMonitor.Config(
-            monitoredItemId, threshold.toDouble(), inertia
+            monitoredItemId, threshold.asDouble(), inertia
         )
     }
 
     private fun MonitorStore.StoredMonitor.Config.asConfig(type: Monitor.Type): MonitorConfig<MonitoredValue> {
-        val convertedValue = when {
-            BooleanValueMonitorType.values().any { it.name == type.name } -> threshold.toBooleanValue()
-            FractionalValueMonitorType.values().any { it.name == type.name } -> threshold.toFractionalValue()
-            NumericalValueMonitorType.values().any { it.name == type.name } -> threshold.toNumericalValue()
+        val convertedValue = when(type.valueType) {
+            Monitor.ValueType.Conditional -> threshold.toConditionalValue()
+            Monitor.ValueType.Fractional -> threshold.toFractionalValue()
+            Monitor.ValueType.Numerical -> threshold.toNumericalValue()
             else -> throw IllegalStateException("No equivalent to $this exists in ${Monitor.Type::class.simpleName}")
         }
-        return MonitorConfig<MonitoredValue>(
+        return MonitorConfig(
             monitoredItemId, convertedValue, inertia
         )
     }
 
+    private fun MonitoredValue.asDouble(): Double {
+        return when (this) {
+            is MonitoredValue.ConditionalValue -> if (value) 1.0 else 0.0
+            is MonitoredValue.FractionalValue -> value.toDouble()
+            is MonitoredValue.NumericalValue -> value.toDouble()
+        }
+    }
 }

@@ -4,12 +4,10 @@ import com.krillsson.sysapi.core.domain.system.OperatingSystem
 import com.krillsson.sysapi.core.domain.system.Platform
 import com.krillsson.sysapi.core.history.HistoryManager
 import com.krillsson.sysapi.core.metrics.Metrics
-import com.krillsson.sysapi.core.monitoring.EventManager
 import com.krillsson.sysapi.core.monitoring.MonitorManager
+import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.docker.DockerClient
-import com.krillsson.sysapi.graphql.domain.DockerAvailable
-import com.krillsson.sysapi.graphql.domain.DockerUnavailable
-import com.krillsson.sysapi.graphql.domain.Meta
+import com.krillsson.sysapi.graphql.domain.*
 import com.krillsson.sysapi.graphql.mutations.PerformDockerContainerCommandOutputFailed
 import com.krillsson.sysapi.graphql.mutations.PerformDockerContainerCommandOutputSucceeded
 import com.krillsson.sysapi.graphql.mutations.UpdateMonitorOutputFailed
@@ -32,7 +30,6 @@ class GraphQLConfiguration {
                 queryResolver.dockerResolver,
                 queryResolver.systemInfoResolver,
                 queryResolver.historyResolver,
-                queryResolver.monitorResolver,
                 queryResolver.pastEventEventResolver,
                 queryResolver.ongoingEventResolver,
                 queryResolver.motherboardResolver,
@@ -43,7 +40,8 @@ class GraphQLConfiguration {
                 queryResolver.memoryInfoResolver,
                 queryResolver.processorMetricsResolver,
                 queryResolver.driveMetricResolver,
-                queryResolver.networkInterfaceMetricResolver
+                queryResolver.networkInterfaceMetricResolver,
+                queryResolver.monitorResolver
             )
             .dictionary(
                 PerformDockerContainerCommandOutputSucceeded::class,
@@ -52,6 +50,9 @@ class GraphQLConfiguration {
                 UpdateMonitorOutputFailed::class,
                 DockerUnavailable::class,
                 DockerAvailable::class,
+                NumericalValue::class,
+                FractionalValue::class,
+                ConditionalValue::class
             )
             .scalars(ScalarTypes.scalars)
             .build()

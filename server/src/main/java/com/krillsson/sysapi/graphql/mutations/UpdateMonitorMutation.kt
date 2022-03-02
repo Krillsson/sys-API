@@ -14,7 +14,7 @@ data class UpdateFractionMonitorInput (
     val threshold: Float?,
 )
 
-data class UpdateBooleanMonitorInput (
+data class UpdateConditionalMonitorInput (
     val monitorId: UUID,
     val inertiaInSeconds: Int?,
     val threshold: Boolean?,

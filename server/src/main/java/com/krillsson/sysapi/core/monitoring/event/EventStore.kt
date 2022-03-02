@@ -1,8 +1,9 @@
-package com.krillsson.sysapi.core.monitoring
+package com.krillsson.sysapi.core.monitoring.event
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.persistence.JsonFile
 import java.time.OffsetDateTime
 import java.util.*

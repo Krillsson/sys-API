@@ -8,12 +8,16 @@ import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
 import java.util.*
 
 class ProcessMemoryMonitor(override val id: UUID, override val config: MonitorConfig<MonitoredValue.NumericalValue>) : Monitor<MonitoredValue.NumericalValue>() {
+    companion object {
+        val selector: NumericalValueSelector = { load, monitoredItemID ->
+            val pid = monitoredItemID?.toInt()
+            load.processes.firstOrNull { it.processID == pid }?.residentSetSize?.toNumericalValue()
+        }
+    }
+
     override val type: Type = Type.PROCESS_MEMORY_SPACE
 
-    override fun selectValue(event: MonitorMetricQueryEvent): MonitoredValue.NumericalValue {
-        val pid = config.monitoredItemId?.toInt()
-        return event.load.processes.firstOrNull { it.processID == pid }?.residentSetSize?.toNumericalValue() ?: MonitoredValue.NumericalValue(0)
-    }
+    override fun selectValue(event: MonitorMetricQueryEvent): MonitoredValue.NumericalValue? = selector(event.load, config.monitoredItemId)
 
     override fun isPastThreshold(value: MonitoredValue.NumericalValue): Boolean {
         return value > config.threshold

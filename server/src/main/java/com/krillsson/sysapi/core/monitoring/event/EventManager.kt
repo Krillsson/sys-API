@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.core.monitoring
+package com.krillsson.sysapi.core.monitoring.event
 
 import com.krillsson.sysapi.core.domain.event.Event
 import com.krillsson.sysapi.core.domain.event.OngoingEvent

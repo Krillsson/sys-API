@@ -9,22 +9,28 @@ abstract class Monitor<out T : MonitoredValue> {
     abstract val type: Type
     abstract val config: MonitorConfig<out T>
 
-    enum class Type {
-        CPU_LOAD,
-        CPU_TEMP,
-        DRIVE_SPACE,
-        DRIVE_READ_RATE,
-        DRIVE_WRITE_RATE,
-        MEMORY_SPACE,
-        NETWORK_UP,
-        NETWORK_UPLOAD_RATE,
-        NETWORK_DOWNLOAD_RATE,
-        CONTAINER_RUNNING,
-        PROCESS_MEMORY_SPACE,
-        PROCESS_CPU_LOAD,
-        PROCESS_EXISTS,
-        CONNECTIVITY,
-        EXTERNAL_IP_CHANGED
+    enum class Type(val valueType: ValueType) {
+        CPU_LOAD(ValueType.Fractional),
+        CPU_TEMP(ValueType.Numerical),
+        DRIVE_SPACE(ValueType.Numerical),
+        DRIVE_READ_RATE(ValueType.Numerical),
+        DRIVE_WRITE_RATE(ValueType.Numerical),
+        MEMORY_SPACE(ValueType.Numerical),
+        NETWORK_UP(ValueType.Conditional),
+        NETWORK_UPLOAD_RATE(ValueType.Numerical),
+        NETWORK_DOWNLOAD_RATE(ValueType.Numerical),
+        CONTAINER_RUNNING(ValueType.Conditional),
+        PROCESS_MEMORY_SPACE(ValueType.Numerical),
+        PROCESS_CPU_LOAD(ValueType.Fractional),
+        PROCESS_EXISTS(ValueType.Conditional),
+        CONNECTIVITY(ValueType.Conditional),
+        EXTERNAL_IP_CHANGED(ValueType.Conditional)
+    }
+
+    enum class ValueType{
+        Numerical,
+        Fractional,
+        Conditional
     }
 
     abstract fun selectValue(event: MonitorMetricQueryEvent): T?

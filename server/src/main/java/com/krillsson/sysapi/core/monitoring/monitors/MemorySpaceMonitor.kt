@@ -7,12 +7,18 @@ import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
 import java.util.*
 
-class MemoryMonitor(override val id: UUID, override val config: MonitorConfig<MonitoredValue.NumericalValue>) : Monitor<MonitoredValue.NumericalValue>() {
+class MemorySpaceMonitor(override val id: UUID, override val config: MonitorConfig<MonitoredValue.NumericalValue>) :
+    Monitor<MonitoredValue.NumericalValue>() {
+    companion object {
+        val selector: NumericalValueSelector = { load, _ ->
+            load.memory.availableBytes.toNumericalValue()
+        }
+    }
+
     override val type: Type = Type.MEMORY_SPACE
 
-    override fun selectValue(event: MonitorMetricQueryEvent): MonitoredValue.NumericalValue {
-        return event.load().memory.availableBytes.toNumericalValue()
-    }
+    override fun selectValue(event: MonitorMetricQueryEvent): MonitoredValue.NumericalValue? =
+        selector(event.load, null)
 
     override fun isPastThreshold(value: MonitoredValue.NumericalValue): Boolean {
         return value < config.threshold

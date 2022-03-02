@@ -6,6 +6,7 @@ import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.MonitorFactory.createMonitor
+import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.util.Clock
 import com.krillsson.sysapi.util.logger
 import io.dropwizard.lifecycle.Managed

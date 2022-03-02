@@ -1,16 +1,61 @@
 query Events {
     ongoingEvents {
         id
-        monitorId
         startTime
-        value
-        threshold
+        startValue {
+            ... on NumericalValue {
+                number
+            }
+            ... on ConditionalValue {
+                condition
+            }
+            ... on FractionalValue {
+                fraction
+            }
+        }
+        monitor {
+            type
+            threshold {
+                ... on NumericalValue {
+                    number
+                }
+                ... on ConditionalValue {
+                    condition
+                }
+                ... on FractionalValue {
+                    fraction
+                }
+            }
+        }
     }
     pastEvents {
         id
         startTime
         endTime
-        type
-        threshold
+        endValue {
+            ... on NumericalValue {
+                number
+            }
+            ... on ConditionalValue {
+                condition
+            }
+            ... on FractionalValue {
+                fraction
+            }
+        }
+        monitor {
+            type
+            threshold {
+                ... on NumericalValue {
+                    number
+                }
+                ... on ConditionalValue {
+                    condition
+                }
+                ... on FractionalValue {
+                    fraction
+                }
+            }
+        }
     }
 }

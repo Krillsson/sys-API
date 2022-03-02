@@ -38,7 +38,13 @@ import com.krillsson.sysapi.core.history.HistoryStore
 import com.krillsson.sysapi.core.history.MetricsHistoryManager
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.metrics.MetricsFactory
-import com.krillsson.sysapi.core.monitoring.*
+import com.krillsson.sysapi.core.monitoring.MonitorManager
+import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
+import com.krillsson.sysapi.core.monitoring.MonitorRepository
+import com.krillsson.sysapi.core.monitoring.MonitorStore
+import com.krillsson.sysapi.core.monitoring.event.EventManager
+import com.krillsson.sysapi.core.monitoring.event.EventRepository
+import com.krillsson.sysapi.core.monitoring.event.EventStore
 import com.krillsson.sysapi.core.query.MetricQueryManager
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
 import com.krillsson.sysapi.docker.DockerClient
@@ -75,6 +81,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     override fun getName(): String {
         return "system-API"
     }
+
+    val logger by logger()
 
     val speedMeasurementManager = SpeedMeasurementManager(
         Executors.newScheduledThreadPool(
@@ -123,8 +131,13 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         eventStore = EventStore(mapper)
         monitorStore = MonitorStore(mapper)
         historyStore = HistoryStore(mapper)
-        eventManager = EventManager(EventRepository(eventStore), com.krillsson.sysapi.util.Clock())
+        eventManager = EventManager(EventRepository(eventStore), Clock())
         keyValueRepository = KeyValueRepository(KeyValueStore(mapper))
+
+        if(!FileSystem.data.isDirectory) {
+            logger.info("Attempting to create {}", FileSystem.data)
+            assert(FileSystem.data.mkdir()) {"Unable to create ${FileSystem.data}"}
+        }
 
         bootstrap.addBundle(SslReloadBundle())
         bootstrap.addBundle(graphqlBundle)
@@ -283,8 +296,6 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     }
 
     companion object {
-        private val LOGGER = org.slf4j.LoggerFactory.getLogger(SysAPIApplication::class.java)
-
         @Throws(Exception::class)
         @JvmStatic
         fun main(args: Array<String>) {

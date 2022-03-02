@@ -9,10 +9,10 @@ import com.krillsson.sysapi.core.domain.event.OngoingEvent
 import com.krillsson.sysapi.core.domain.event.PastEvent
 import com.krillsson.sysapi.core.domain.gpu.Gpu
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad
+import com.krillsson.sysapi.core.domain.history.HistorySystemLoad
 import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.domain.memory.MemoryInfo
 import com.krillsson.sysapi.core.domain.memory.MemoryLoad
-import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.domain.motherboard.Motherboard
 import com.krillsson.sysapi.core.domain.network.Connectivity
 import com.krillsson.sysapi.core.domain.network.NetworkInterface
@@ -22,11 +22,12 @@ import com.krillsson.sysapi.core.domain.processes.ProcessSort
 import com.krillsson.sysapi.core.domain.sensors.DataType
 import com.krillsson.sysapi.core.domain.system.OperatingSystem
 import com.krillsson.sysapi.core.domain.system.Platform
+import com.krillsson.sysapi.core.domain.system.SystemLoad
 import com.krillsson.sysapi.core.history.HistoryManager
 import com.krillsson.sysapi.core.metrics.Metrics
-import com.krillsson.sysapi.core.monitoring.EventManager
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorManager
+import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.domain.*
 import com.krillsson.sysapi.util.EnvironmentUtils
@@ -67,7 +68,6 @@ class QueryResolver : GraphQLQueryResolver {
 
     val systemInfoResolver = SystemResolver()
     val historyResolver = HistoryResolver()
-    val monitorResolver = MonitorResolver()
     val dockerResolver = DockerResolver()
     val pastEventEventResolver = PastEventEventResolver()
     val ongoingEventResolver = OngoingEventResolver()
@@ -80,12 +80,7 @@ class QueryResolver : GraphQLQueryResolver {
     val memoryLoadResolver = MemoryLoadResolver()
     val memoryInfoResolver = MemoryInfoResolver()
     val networkInterfaceMetricResolver = NetworkInterfaceMetricResolver()
-
-    data class System(
-        val hostName: String,
-        val operatingSystem: OperatingSystem,
-        val platform: Platform
-    )
+    val monitorResolver = MonitorResolver()
 
     fun system(): System = System(EnvironmentUtils.getHostName(), operatingSystem, platform)
 
@@ -98,8 +93,8 @@ class QueryResolver : GraphQLQueryResolver {
         }.toList()
     }
 
-    fun monitors(): List<Monitor<MonitoredValue>> {
-        return monitorManager.getAll().toList()
+    fun monitors(): List<com.krillsson.sysapi.graphql.domain.Monitor> {
+        return monitorManager.getAll().map { it.asMonitor() }
     }
 
     fun events() = eventManager.getAll().toList()
@@ -123,7 +118,8 @@ class QueryResolver : GraphQLQueryResolver {
 
     inner class DockerResolver : GraphQLResolver<DockerAvailable> {
         fun containers(docker: DockerAvailable) = dockerClient.listContainers()
-        fun runningContainers(docker: DockerAvailable) = dockerClient.listContainers().filter { it.state == State.RUNNING }
+        fun runningContainers(docker: DockerAvailable) =
+            dockerClient.listContainers().filter { it.state == State.RUNNING }
     }
 
     inner class SystemResolver : GraphQLResolver<System> {
@@ -203,20 +199,67 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     inner class ProcessorMetricsResolver : GraphQLResolver<CpuLoad> {
-        fun getVoltage(cpuLoad: CpuLoad) = metrics.cpuMetrics().cpuLoad().cpuHealth.voltage
-        fun getFanRpm(cpuLoad: CpuLoad) = metrics.cpuMetrics().cpuLoad().cpuHealth.fanRpm
+        fun getVoltage(cpuLoad: CpuLoad) = cpuLoad.cpuHealth.voltage
+        fun getFanRpm(cpuLoad: CpuLoad) = cpuLoad.cpuHealth.fanRpm
         fun getFanPercent(cpuLoad: CpuLoad) =
-            metrics.cpuMetrics().cpuLoad().cpuHealth.fanPercent
+            cpuLoad.cpuHealth.fanPercent
 
         fun getTemperatures(cpuLoad: CpuLoad) =
-            metrics.cpuMetrics().cpuLoad().cpuHealth.temperatures
+            cpuLoad.cpuHealth.temperatures
     }
 
-    inner class MonitorResolver : GraphQLResolver<Monitor<MonitoredValue>> {
-        fun getInertiaInSeconds(monitor: Monitor<MonitoredValue>) = monitor.config.inertia.seconds
-        fun getType(monitor: Monitor<MonitoredValue>) = monitor.type
-        fun getThreshold(monitor: Monitor<MonitoredValue>) = monitor.config.threshold
-        fun getMonitoredItemId(monitor: Monitor<MonitoredValue>) = monitor.config.monitoredItemId
+    private fun HistorySystemLoad.toSystemLoad() = SystemLoad(
+        uptime,
+        systemLoadAverage,
+        cpuLoad,
+        networkInterfaceLoads,
+        connectivity,
+        driveLoads,
+        memory,
+        emptyList(),
+        gpuLoads,
+        motherboardHealth
+    )
+
+    inner class MonitorResolver : GraphQLResolver<com.krillsson.sysapi.graphql.domain.Monitor> {
+        fun getHistory(monitor: com.krillsson.sysapi.graphql.domain.Monitor): List<MonitoredValueHistoryEntry> {
+            return historyManager.getHistory().mapNotNull {
+                val monitoredValue = when (monitor.type.valueType) {
+                    Monitor.ValueType.Numerical -> Selectors.forNumericalMonitorType(monitor.type)(
+                        it.value.toSystemLoad(),
+                        monitor.monitoredItemId
+                    )
+                    Monitor.ValueType.Fractional -> Selectors.forFractionalMonitorType(monitor.type)(
+                        it.value.toSystemLoad(),
+                        monitor.monitoredItemId
+                    )
+                    Monitor.ValueType.Conditional -> Selectors.forConditionalMonitorType(monitor.type)(
+                        it.value.toSystemLoad(),
+                        monitor.monitoredItemId
+                    )
+                }
+                monitoredValue?.let { value -> MonitoredValueHistoryEntry(it.date, value.asMonitoredValue()) }
+            }
+        }
+
+        fun getCurrentValue(monitor: com.krillsson.sysapi.graphql.domain.Monitor): MonitoredValue {
+            metrics.systemMetrics().systemLoad()
+            return requireNotNull(when (monitor.type.valueType) {
+                Monitor.ValueType.Numerical -> Selectors.forNumericalMonitorType(monitor.type)(
+                    metrics.systemMetrics().systemLoad(),
+                    monitor.monitoredItemId
+                )
+                Monitor.ValueType.Fractional -> Selectors.forFractionalMonitorType(monitor.type)(
+                    metrics.systemMetrics().systemLoad(),
+                    monitor.monitoredItemId
+                )
+                Monitor.ValueType.Conditional -> Selectors.forConditionalMonitorType(monitor.type)(
+                    metrics.systemMetrics().systemLoad(),
+                    monitor.monitoredItemId
+                )
+            }
+            ) { "No value found for monitor of type ${monitor.type} with id ${monitor.id}" }.asMonitoredValue()
+        }
     }
 
     inner class MonitorEventResolver : GraphQLResolver<MonitorEvent> {
@@ -224,11 +267,27 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     inner class OngoingEventResolver : GraphQLResolver<OngoingEvent> {
-        fun getType(event: OngoingEvent) = event.monitorType
+        fun getMonitor(event: OngoingEvent): com.krillsson.sysapi.graphql.domain.Monitor {
+            return requireNotNull(
+                monitorManager.getById(event.monitorId)?.asMonitor()
+            ) { "No monitor of type ${event.monitorType} with id ${event.monitorId}" }
+        }
+
+        fun getStartValue(event: OngoingEvent): MonitoredValue {
+            return event.value.asMonitoredValue()
+        }
     }
 
     inner class PastEventEventResolver : GraphQLResolver<PastEvent> {
-        fun getType(event: PastEvent) = event.monitorType
+        fun getMonitor(event: PastEvent): com.krillsson.sysapi.graphql.domain.Monitor {
+            return requireNotNull(
+                monitorManager.getById(event.monitorId)?.asMonitor()
+            ) { "No monitor of type ${event.monitorType} with id ${event.monitorId}" }
+        }
+
+        fun getEndValue(event: PastEvent): MonitoredValue {
+            return event.value.asMonitoredValue()
+        }
     }
 
     inner class MotherboardResolver : GraphQLResolver<Motherboard> {
