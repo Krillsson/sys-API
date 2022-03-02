@@ -1,14 +1,22 @@
 ### 0.17.0
 
+**GraphQL API Breaking changes**
+*The monitors API have been rebuilt for better type-safety.*
+
  - Adds connectivity check and external IP functionality
  - Several new monitors:
-   - Connectivity
+   - Connectivity (opt-out in `configuration.yml`)
    - Drive read/write rate
    - Network upload/download rate
    - External IP changed
    - Process CPU usage
    - Process memory usage
    - Process died (pid disappeared)
+ - Monitors now have three subgroups
+   - Numerical: positive integer values such as Bytes, Temperature, etc
+   - Fractional: percentage values such as CPU utilization
+   - Conditional: either or values such as network up/down or connected/disconnected
+ - Monitors now have `currentValue` and `history` fields
 
 ### 0.16.0
 
