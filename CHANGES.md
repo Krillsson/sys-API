@@ -1,3 +1,8 @@
+### 0.17.1
+
+ - Fix issue with adding numerical monitors
+   - java.lang.ClassCastException: java.lang.Integer incompatible with java.lang.Long at com.krillsson.sysapi.graphql.scalars.LongCoercing.serialize
+
 ### 0.17.0
 
 **GraphQL API Breaking changes**
