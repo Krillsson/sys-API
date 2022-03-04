@@ -61,7 +61,7 @@ server:
       port: 8080
     - type: https
       port: 8443
-      keyStorePath: ./keystorewww.jks
+      keyStorePath: data/keystorewww.jks
       keyStorePassword: sys-api
       certAlias: sys-api-key
       validateCerts: false
