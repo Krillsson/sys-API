@@ -1,6 +1,8 @@
 package com.krillsson.sysapi.docker
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.dockerjava.api.async.ResultCallback
+import com.github.dockerjava.api.model.Frame
 import com.github.dockerjava.core.DockerClientConfig
 import com.github.dockerjava.core.DockerClientImpl
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient
@@ -14,6 +16,8 @@ import com.krillsson.sysapi.core.domain.docker.CommandType
 import com.krillsson.sysapi.core.domain.docker.Container
 import com.krillsson.sysapi.util.logger
 import com.krillsson.sysapi.util.measureTimeMillis
+import java.time.OffsetDateTime
+import java.util.concurrent.TimeUnit
 
 class DockerClient(
     cacheConfiguration: CacheConfiguration,
@@ -23,6 +27,7 @@ class DockerClient(
 
     companion object {
         val LOGGER by logger()
+        const val READ_LOGS_COMMAND_TIMEOUT_SEC = 10L
     }
 
     private val config: DockerClientConfig = DefaultDockerClientConfig.createDefaultConfigBuilder(objectMapper)
@@ -48,15 +53,22 @@ class DockerClient(
         data class Unavailable(val error: RuntimeException) : Status()
     }
 
-    val status = checkAvailability()
-
-    fun listContainers() = containersCache.get()
-
     sealed class CommandResult {
         object Success : CommandResult()
         object Unavailable : CommandResult()
         data class Failed(val error: RuntimeException) : CommandResult()
     }
+
+    sealed class ReadLogsCommandResult {
+        data class Success(val lines: List<String>) : ReadLogsCommandResult()
+        object Unavailable : ReadLogsCommandResult()
+        data class Failed(val error: RuntimeException) : ReadLogsCommandResult()
+        data class TimedOut(val timeoutSeconds: Long) : ReadLogsCommandResult()
+    }
+
+    val status = checkAvailability()
+
+    fun listContainers() = containersCache.get()
 
     fun performCommandWithContainer(command: Command): CommandResult {
         if (status == Status.Available) {
@@ -84,6 +96,19 @@ class DockerClient(
         return CommandResult.Unavailable
     }
 
+    fun readLogsForContainer(containerId: String, from: OffsetDateTime?, to: OffsetDateTime?): ReadLogsCommandResult {
+        if (status == Status.Available) {
+            return try {
+                ReadLogsCommandResult.Success(readLogsForContainerInternal(containerId, from, to))
+            } catch (interruptedException: InterruptedException) {
+                ReadLogsCommandResult.TimedOut(READ_LOGS_COMMAND_TIMEOUT_SEC)
+            } catch (e: RuntimeException) {
+                ReadLogsCommandResult.Failed(e)
+            }
+        }
+        return ReadLogsCommandResult.Unavailable
+    }
+
     private fun listContainersInternal(): List<Container> {
         return if (status == Status.Available) {
             val timedResult = measureTimeMillis {
@@ -98,6 +123,39 @@ class DockerClient(
             }
             LOGGER.debug(
                 "Took {} to fetch {} containers",
+                "${timedResult.first.toInt()}ms",
+                timedResult.second.size
+            )
+            timedResult.second
+        } else {
+            emptyList()
+        }
+    }
+
+    private fun readLogsForContainerInternal(
+        containerId: String,
+        from: OffsetDateTime?,
+        to: OffsetDateTime?
+    ): List<String> {
+        return if (status == Status.Available) {
+            val timedResult = measureTimeMillis {
+                val result = mutableListOf<String>()
+                client.logContainerCmd(containerId)
+                    .withFollowStream(false)
+                    .withStdErr(true)
+                    .withStdOut(true)
+                    .withTimestamps(true)
+                    .apply { from?.let { withSince(from.toEpochSecond().toInt()) } }
+                    .apply { to?.let { withUntil(to.toEpochSecond().toInt()) } }
+                    .exec(object : ResultCallback.Adapter<Frame>() {
+                        override fun onNext(frame: Frame?) {
+                            result.add(frame.toString())
+                        }
+                    }).awaitCompletion(READ_LOGS_COMMAND_TIMEOUT_SEC, TimeUnit.SECONDS)
+                result
+            }
+            LOGGER.debug(
+                "Took {} to fetch {} log lines",
                 "${timedResult.first.toInt()}ms",
                 timedResult.second.size
             )

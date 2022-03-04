@@ -8,3 +8,13 @@ data class DockerUnavailable(
 ) : Docker
 
 object DockerAvailable : Docker
+
+interface ReadLogsForContainerOutput
+
+data class ReadLogsForContainerOutputSucceeded(
+    val lines: List<String>
+) : ReadLogsForContainerOutput
+
+data class ReadLogsForContainerOutputFailed(
+    val reason: String
+) : ReadLogsForContainerOutput

@@ -34,6 +34,7 @@ import com.krillsson.sysapi.util.EnvironmentUtils
 import graphql.kickstart.tools.GraphQLQueryResolver
 import graphql.kickstart.tools.GraphQLResolver
 import oshi.hardware.UsbDevice
+import java.time.OffsetDateTime
 
 class QueryResolver : GraphQLQueryResolver {
 
@@ -120,6 +121,15 @@ class QueryResolver : GraphQLQueryResolver {
         fun containers(docker: DockerAvailable) = dockerClient.listContainers()
         fun runningContainers(docker: DockerAvailable) =
             dockerClient.listContainers().filter { it.state == State.RUNNING }
+
+        fun readLogsForContainer(docker: DockerAvailable, containerId: String, from: OffsetDateTime?, to: OffsetDateTime?) : ReadLogsForContainerOutput {
+            return when(val result = dockerClient.readLogsForContainer(containerId, from, to)) {
+                is DockerClient.ReadLogsCommandResult.Success -> ReadLogsForContainerOutputSucceeded(result.lines)
+                is DockerClient.ReadLogsCommandResult.Failed -> ReadLogsForContainerOutputFailed(result.error.message ?: result.error.toString())
+                is DockerClient.ReadLogsCommandResult.TimedOut -> ReadLogsForContainerOutputFailed("Operation timed out after ${result.timeoutSeconds} seconds")
+                DockerClient.ReadLogsCommandResult.Unavailable -> ReadLogsForContainerOutputFailed("Docker is not available")
+            }
+        }
     }
 
     inner class SystemResolver : GraphQLResolver<System> {
