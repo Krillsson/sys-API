@@ -1,11 +1,12 @@
 ### 0.17.0
 
 **GraphQL API Breaking changes**
+
 *The monitors API have been rebuilt for better type-safety.*
 
  - Adds connectivity check and external IP functionality
  - Several new monitors:
-   - Connectivity (opt-out in `configuration.yml`)
+   - Connectivity (opt-out in *configuration.yml*)
    - Drive read/write rate
    - Network upload/download rate
    - External IP changed
@@ -17,6 +18,14 @@
    - Fractional: percentage values such as CPU utilization
    - Conditional: either or values such as network up/down or connected/disconnected
  - Monitors now have `currentValue` and `history` fields
+ - Read logs from a container
+ - To prepare for dockerization of sys-API:
+   - *configuration.yml* now lives in *config/* sub-directory
+   -  json database files as well as keystore files in *data/* sub-directory
+   
+*if you are migrating from v0.16.0 or earlier, simply move **history.json**, **monitors.json**, **events.json** and **keystorewww.jks** to data/ directory*
+
+*it is recommended to re-apply your configuration changes anew in the new **configuration.yml** rather than re-using your old one*
 
 ### 0.16.0
 
