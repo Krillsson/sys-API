@@ -20,6 +20,6 @@ class ProcessCpuMonitor(override val id: UUID, override val config: MonitorConfi
     override fun selectValue(event: MonitorMetricQueryEvent): MonitoredValue.FractionalValue? = selector(event.load, config.monitoredItemId)
 
     override fun isPastThreshold(value: MonitoredValue.FractionalValue): Boolean {
-        return value < config.threshold
+        return value > config.threshold
     }
 }
