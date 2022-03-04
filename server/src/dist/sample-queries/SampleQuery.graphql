@@ -35,6 +35,11 @@ query SampleQuery {
                 }
             }
         }
+        connectivity {
+            connected
+            externalIp
+            previousExternalIp
+        }
         processes(limit: 10) {
             name
             user

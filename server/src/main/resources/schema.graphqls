@@ -1,5 +1,5 @@
 scalar UUID
-scalar ZonedDateTime
+scalar OffsetDateTime
 scalar Long
 
 schema {
@@ -159,6 +159,16 @@ type PerformDockerContainerCommandOutputSucceeded {
 }
 
 union PerformDockerContainerCommandOutput = PerformDockerContainerCommandOutputSucceeded | PerformDockerContainerCommandOutputFailed
+
+type ReadLogsForContainerOutputFailed {
+    reason: String!
+}
+
+type ReadLogsForContainerOutputSucceeded {
+    lines: [String!]!
+}
+
+union ReadLogsForContainerOutput = ReadLogsForContainerOutputSucceeded | ReadLogsForContainerOutputFailed
 
 # Root node
 type System {
@@ -526,6 +536,7 @@ union Docker = DockerAvailable | DockerUnavailable
 type DockerAvailable{
     containers: [DockerContainer!]!
     runningContainers: [DockerContainer!]!
+    readLogsForContainer(containerId: String!, from: OffsetDateTime, to: OffsetDateTime): ReadLogsForContainerOutput
 }
 
 type DockerUnavailable{

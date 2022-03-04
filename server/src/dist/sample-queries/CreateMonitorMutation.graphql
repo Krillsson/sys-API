@@ -1,5 +1,5 @@
-mutation createMonitorMutation($input:CreateMonitorInput!) {
-    createMonitor(input: $input) {
+mutation createMonitorMutation($input: CreateConditionalMonitorInput!) {
+    createConditionalValueMonitor(input: $input) {
         monitorId
     }
 }

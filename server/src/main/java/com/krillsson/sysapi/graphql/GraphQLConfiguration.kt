@@ -50,6 +50,8 @@ class GraphQLConfiguration {
                 UpdateMonitorOutputFailed::class,
                 DockerUnavailable::class,
                 DockerAvailable::class,
+                ReadLogsForContainerOutputSucceeded::class,
+                ReadLogsForContainerOutputFailed::class,
                 NumericalValue::class,
                 FractionalValue::class,
                 ConditionalValue::class
