@@ -13,3 +13,4 @@ logs
 .classpath
 .project
 nb-configuration.xml
+/data/

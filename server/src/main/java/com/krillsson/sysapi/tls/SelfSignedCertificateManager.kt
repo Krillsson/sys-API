@@ -37,7 +37,7 @@ class SelfSignedCertificateManager {
 
     companion object {
         private val logger by logger()
-        private const val JETTY_KEYSTORE_PATH_PROPERTY = "keystorewww.jks"
+        private val JETTY_KEYSTORE_PATH_PROPERTY = "data${System.getProperty("file.separator")}keystorewww.jks"
         private const val KEYSTORE_PASSWORD = "sys-api"
         private const val KEYSTORE_ENTRY_ALIAS = "sys-api-key"
         private const val KEYSTORE_CA_ENTRY_ALIAS = "sys-api-ca-key"
@@ -149,7 +149,7 @@ class SelfSignedCertificateManager {
         store(FileOutputStream(file), password.toCharArray())
 
     private fun writeCertificateToPemFile(fileName: String, certificate: X509Certificate) {
-        val file = File("./$fileName")
+        val file = File("data${System.getProperty("file.separator")}$fileName")
         if (file.exists()) {
             logger.info("$fileName already exists. Delete it if you want to re-write it.")
             return
