@@ -19,7 +19,7 @@ buildscript {
 
 allprojects {
     group = 'com.krillsson'
-    version = '0.16.0'
+    version = '0.17.0'
 }
 
 subprojects {
@@ -39,12 +39,12 @@ project(':server') {
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'application'
 
-    sourceCompatibility = 11
-    targetCompatibility = 11
+    sourceCompatibility = 8
+    targetCompatibility = 8
 
     compileKotlin {
         kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_11
+            jvmTarget = JavaVersion.VERSION_1_8
         }
     }
 
