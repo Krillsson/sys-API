@@ -26,12 +26,8 @@ class EventManager(private val repository: EventRepository, private val clock: C
     }
 
     fun add(event: Event) {
-        when (event) {
-            is OngoingEvent -> {
-                events.removeIf { ongoingEvent -> event.monitorId == ongoingEvent.monitorId }
-                events.add(event)
-            }
-        }
+        removeOngoingEventForMonitor(event.monitorId)
+        events.add(event)
         persist()
     }
 
@@ -51,6 +47,12 @@ class EventManager(private val repository: EventRepository, private val clock: C
 
     private fun restore() {
         events = repository.read().toMutableList()
+    }
+
+    private fun removeOngoingEventForMonitor(monitorId: UUID) {
+        events.removeIf { ongoingEvent ->
+            ongoingEvent is OngoingEvent && monitorId == ongoingEvent.monitorId
+        }
     }
 
     private fun endOngoingEvents() {
