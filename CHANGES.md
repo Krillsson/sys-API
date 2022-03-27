@@ -2,6 +2,7 @@
 
  - Fix issue with adding numerical monitors
    - java.lang.ClassCastException: java.lang.Integer incompatible with java.lang.Long at com.krillsson.sysapi.graphql.scalars.LongCoercing.serialize
+ - Fix ongoing events not stopping properly
 
 ### 0.17.0
 
