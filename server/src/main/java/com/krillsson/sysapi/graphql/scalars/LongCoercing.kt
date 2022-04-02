@@ -31,6 +31,7 @@ class LongCoercing : Coercing<Long?, String?> {
                 is StringValue -> input.value.toLong()
                 is IntValue -> input.value.toLong()
                 is Int -> input.toLong()
+                is Long -> input
                 else -> throw CoercingParseValueException("$input is not any known type")
             }
         } catch (e: Exception) {
