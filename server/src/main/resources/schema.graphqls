@@ -427,7 +427,7 @@ type NetworkInterface {
     name: String!
     displayName: String!
     mac: String!
-    speed: Int!
+    speed: Long!
     mtu: Int!
     loopback: Boolean!
     ipv6: [String!]!
