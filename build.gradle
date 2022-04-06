@@ -8,11 +8,13 @@ buildscript {
         }
 
         jcenter()
+        gradlePluginPortal()
     }
     dependencies {
         classpath(
                 "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",
                 'com.github.jengelman.gradle.plugins:shadow:6.1.0',
+                "gradle.plugin.com.google.cloud.tools:jib-gradle-plugin:3.2.1"
         )
     }
 }
@@ -38,6 +40,7 @@ subprojects {
 project(':server') {
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'application'
+    apply plugin: "com.google.cloud.tools.jib"
 
     sourceCompatibility = 8
     targetCompatibility = 8
@@ -54,9 +57,11 @@ project(':server') {
         exclude 'META-INF/*.RSA'
     }
 
+    def jvmArgs = ["-server", "-Xmx512m", "-Djava.awt.headless=true", "-XX:+UseG1GC", "-XX:MaxGCPauseMillis=100", "-XX:+UseStringDeduplication"]
+
     mainClassName = 'com.krillsson.sysapi.SysAPIApplication'
 
-    applicationDefaultJvmArgs = ["-Xmx512m"]
+    applicationDefaultJvmArgs = jvmArgs
 
     run {
         args project.hasProperty("appArgs") ? Eval.me(appArgs) : ['server', 'src/dist/config/configuration.yml']
@@ -72,6 +77,18 @@ project(':server') {
 
     }
 
+    jib {
+        to.image = "krillsson/sys-api"
+        container {
+            appRoot = "/"
+            args = ["server", "/config/configuration.yml"]
+            ports = ["8080", "8443"]
+            volumes = ["/config", "/data"]
+            creationTime = "USE_CURRENT_TIMESTAMP"
+            jvmFlags = jvmArgs
+        }
+    }
+
     dependencies {
         implementation 'io.dropwizard:dropwizard-core:2.0.28'
         implementation 'io.dropwizard:dropwizard-auth:2.0.28'
@@ -85,7 +102,7 @@ project(':server') {
         implementation 'com.graphql-java-kickstart:graphql-java-tools:11.0.0'
         implementation 'com.graphql-java-kickstart:graphql-java-kickstart:11.0.0'
         implementation 'com.graphql-java-kickstart:graphql-java-servlet:11.0.0'
-        implementation ('com.smoketurner.dropwizard:graphql-core:2.0.12-1'){
+        implementation('com.smoketurner.dropwizard:graphql-core:2.0.12-1') {
             exclude group: "com.graphql-java-kickstart"
         }
         implementation 'com.squareup.retrofit2:retrofit:2.9.0'
