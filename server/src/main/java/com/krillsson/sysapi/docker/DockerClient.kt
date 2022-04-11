@@ -3,7 +3,9 @@ package com.krillsson.sysapi.docker
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.dockerjava.api.async.ResultCallback
 import com.github.dockerjava.api.model.Frame
+import com.github.dockerjava.core.DefaultDockerClientConfig
 import com.github.dockerjava.core.DockerClientConfig
+import com.github.dockerjava.core.DockerClientConfigDelegate
 import com.github.dockerjava.core.DockerClientImpl
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient
 import com.github.dockerjava.transport.DockerHttpClient
@@ -22,7 +24,7 @@ import java.util.concurrent.TimeUnit
 class DockerClient(
     cacheConfiguration: CacheConfiguration,
     private val dockerConfiguration: DockerConfiguration,
-    private val objectMapper: ObjectMapper
+    private val applicationObjectMapper: ObjectMapper
 ) {
 
     companion object {
@@ -30,9 +32,16 @@ class DockerClient(
         const val READ_LOGS_COMMAND_TIMEOUT_SEC = 10L
     }
 
-    private val config: DockerClientConfig = DefaultDockerClientConfig.createDefaultConfigBuilder(objectMapper)
+    private val config: DockerClientConfig = DefaultDockerClientConfig.createDefaultConfigBuilder()
         .withDockerTlsVerify(false)
         .build()
+        .apply {
+            object : DockerClientConfigDelegate(this) {
+                override fun getObjectMapper(): ObjectMapper {
+                    return applicationObjectMapper
+                }
+            }
+        }
 
     private val httpClient: DockerHttpClient = ApacheDockerHttpClient.Builder()
         .dockerHost(config.dockerHost)
