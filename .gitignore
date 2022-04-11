@@ -9,6 +9,7 @@
 
 ### personal dev.yml
 donotadd.yml
+docker-compose-private.yml
 
 /monitors.json
 /events.json
