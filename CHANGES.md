@@ -1,5 +1,10 @@
 ### 0.17.1
 
+- Fix issue with adding memory monitors
+- Fix issue with querying speed on NIC's
+
+### 0.17.1
+
  - Fix issue with adding numerical monitors
    - java.lang.ClassCastException: java.lang.Integer incompatible with java.lang.Long at com.krillsson.sysapi.graphql.scalars.LongCoercing.serialize
  - Fix ongoing events not stopping properly
