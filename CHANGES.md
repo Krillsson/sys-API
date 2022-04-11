@@ -1,4 +1,4 @@
-### 0.17.1
+### 0.17.2
 
 - Fix issue with adding memory monitors
 - Fix issue with querying speed on NIC's
