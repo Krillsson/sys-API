@@ -1,0 +1,34 @@
+version: "3"
+services:
+  sys-api:
+    command:
+      - server
+      - /config/configuration.yml
+    container_name: sys-api
+    entrypoint:
+      - java
+      - -cp
+      - /resources:/classes:/libs/*
+      - com.krillsson.sysapi.SysAPIApplication
+    environment:
+      - PATH=/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - LANGUAGE=en_US:en
+      - LC_ALL=en_US.UTF-8
+      - JAVA_HOME=/opt/java/openjdk
+      - JAVA_VERSION=jdk8u322-b06
+      - LANG=en_US.UTF-8
+    image: krillsson/sys-api:latest
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+      # port for docker management API.
+      - "2375:2375"
+    # expose host processes for container.
+    pid: "host"
+    volumes:
+      # change "/path/to/*" point to a directory on your machine
+      - /path/to/data:/data
+      - /path/to/config:/config
+      # socket for docker management API.
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped

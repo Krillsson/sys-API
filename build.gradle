@@ -82,8 +82,8 @@ project(':server') {
         container {
             appRoot = "/"
             args = ["server", "/config/configuration.yml"]
-            ports = ["8080", "8443"]
-            volumes = ["/config", "/data"]
+            ports = ["8080", "8443", "2375"]
+            volumes = ["/config", "/data", "/var/run/docker.sock"]
             creationTime = "USE_CURRENT_TIMESTAMP"
             jvmFlags = jvmArgs
         }
