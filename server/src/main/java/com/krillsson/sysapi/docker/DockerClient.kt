@@ -32,16 +32,16 @@ class DockerClient(
         const val READ_LOGS_COMMAND_TIMEOUT_SEC = 10L
     }
 
-    private val config: DockerClientConfig = DefaultDockerClientConfig.createDefaultConfigBuilder()
+    private val defaultConfig = DefaultDockerClientConfig.createDefaultConfigBuilder()
         .withDockerTlsVerify(false)
         .build()
-        .apply {
-            object : DockerClientConfigDelegate(this) {
-                override fun getObjectMapper(): ObjectMapper {
-                    return applicationObjectMapper
-                }
-            }
+    private val config: DockerClientConfig = object : DockerClientConfigDelegate(
+        defaultConfig
+    ) {
+        override fun getObjectMapper(): ObjectMapper {
+            return applicationObjectMapper
         }
+    }
 
     private val httpClient: DockerHttpClient = ApacheDockerHttpClient.Builder()
         .dockerHost(config.dockerHost)

@@ -128,6 +128,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         val mapper = bootstrap.objectMapper
         mapper.registerKotlinModule()
         mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+        mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
+        mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_VALUES)
         eventStore = EventStore(mapper)
         monitorStore = MonitorStore(mapper)
         historyStore = HistoryStore(mapper)
