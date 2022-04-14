@@ -20,13 +20,7 @@
  */
 package com.krillsson.sysapi.core.metrics.defaultimpl
 
-import com.krillsson.sysapi.core.domain.drives.Drive
-import com.krillsson.sysapi.core.domain.drives.DriveHealth
-import com.krillsson.sysapi.core.domain.drives.DriveLoad
-import com.krillsson.sysapi.core.domain.drives.DriveSpeed
-import com.krillsson.sysapi.core.domain.drives.DriveValues
-import com.krillsson.sysapi.core.domain.drives.OsPartition
-import com.krillsson.sysapi.core.domain.drives.Partition
+import com.krillsson.sysapi.core.domain.drives.*
 import com.krillsson.sysapi.core.metrics.DriveMetrics
 import com.krillsson.sysapi.core.metrics.Empty
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
@@ -38,7 +32,7 @@ import oshi.hardware.HWPartition
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.software.os.FileSystem
 import oshi.software.os.OperatingSystem
-import java.util.Optional
+import java.util.*
 import java.util.stream.Collectors
 
 open class DefaultDriveMetrics(
@@ -118,24 +112,20 @@ open class DefaultDriveMetrics(
         val fileStores = operatingSystem.fileSystem.fileStores
         val partitions = diskStore.partitions
 
-        val fileStoreIds = fileStores.map { it.uuid }
-        val partitionIds = partitions.map { it.uuid }
-        fileStoreIds.intersect(partitionIds)
-
         val intersectedId = fileStores
             .map { it.uuid }
-            .intersect(partitions.map { it.uuid })
+            .intersect(partitions.map { it.uuid.uppercase() }.toSet())
             .firstOrNull()
 
         return intersectedId?.let { id ->
-            val osStore = fileStores.first { it.uuid == id }
-            val partition = partitions.first { it.uuid == id }
+            val osStore = fileStores.first { it.uuid.uppercase() == id }
+            val partition = partitions.first { it.uuid.uppercase() == id }
             Optional.of(
                 OsPartition(
                     partition.identification,
                     partition.name,
                     osStore.type,
-                    partition.uuid,
+                    partition.uuid.uppercase(),
                     partition.size,
                     partition.major,
                     partition.minor,
