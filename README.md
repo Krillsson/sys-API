@@ -75,11 +75,22 @@ Download the [latest release](https://github.com/Krillsson/sys-api/releases/late
   - `$ nohup ./run.sh &`
   - press CTRL+C
   - Verify that it started successfully:
-  - `tail -f nohup.out`
+  - `$ tail -f nohup.out`
 
-### Concerned about memory usage
+## Running using docker
+Make sure you have [docker compose](https://docs.docker.com/compose/install/) installed.
 
-Change the launcher script to this: `java -Xmx256m -Xms128m -jar system-api.jar server configuration.yml`
+ - Navigate to a directory on your machine that you want to install sys-API docker container in
+ - Create the two directories so sys-API can persist your environment specific stuff outside the container
+   - `$ mkdir data`
+   - `$ mkdir config`
+ - Download the compose file to your root directory
+   - For example: `$ wget https://raw.githubusercontent.com/Krillsson/sys-API/master/docker-compose.yml`
+ - Make the appropriate edits to the docker-compose file. See the comments in there.
+ - Start the container
+   - `$ docker compose -f docker-compose.yml up`
+
+docker compose -f docker-compose-private.yml up
 
 ## Configuration
 The configuration.yml file is a [Dropwizard configuration file](https://www.dropwizard.io/en/latest/manual/configuration.html).
@@ -107,7 +118,7 @@ git clone [this repo] sys-api
 Test
 
 ```sh
-curl -i --user user:password -H "Accept: application/json" -X GET http://localhost:8080/v2/system
+curl -i --user user:password -H "Accept: application/json" -X GET http://localhost:8080/api/system
 ```
 
 Package for distribution in a *.zip*:
