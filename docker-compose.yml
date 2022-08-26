@@ -25,11 +25,14 @@ services:
       - JAVA_VERSION=jdk8u322-b06
       - LANG=en_US.UTF-8
     image: krillsson/sys-api:latest
-    ports:
-      - "8080:8080"
-      - "8443:8443"
-      # port for docker management API.
-      - "2375:2375"
+    # exposes NIC's for sys-API to read
+    network_mode: host
+    # Uncomment if you don't want to run in network_mode: host
+    # ports:
+    # - "8080:8080"
+    # - "8443:8443"
+    #  # port for docker management API.
+    # - "2375:2375"
     # expose host processes for container.
     pid: "host"
     volumes:
