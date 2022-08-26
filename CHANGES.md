@@ -2,6 +2,8 @@
 
 - Fix issue with adding memory monitors
 - Fix issue with querying speed on NIC's
+- Made some improvements to docker-compose file
+- Latest OSHI dependency
 
 ### 0.17.1
 
