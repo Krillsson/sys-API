@@ -215,7 +215,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             dockerClient,
             os.asOperatingSystem(),
             SystemInfo.getCurrentPlatform().asPlatform(),
-            Meta(Utils.getVersionFromManifest(), os.processId)
+            Meta(Build.version, Build.date, os.processId)
         )
         registerManagedObjects(
             environment,

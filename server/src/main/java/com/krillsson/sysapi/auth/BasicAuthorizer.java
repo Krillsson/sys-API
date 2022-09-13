@@ -23,6 +23,7 @@ package com.krillsson.sysapi.auth;
 import com.krillsson.sysapi.config.UserConfiguration;
 import io.dropwizard.auth.Authorizer;
 
+@SuppressWarnings("deprecation")
 public class BasicAuthorizer implements Authorizer<UserConfiguration> {
 
     public static final String AUTHENTICATED_ROLE = "AUTHENTICATED";
