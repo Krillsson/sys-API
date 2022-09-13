@@ -20,6 +20,7 @@ type Query {
 
 type Meta {
     version: String!
+    buildDate: String!
     processId: Int!
 }
 
@@ -173,7 +174,7 @@ union ReadLogsForContainerOutput = ReadLogsForContainerOutputSucceeded | ReadLog
 # Root node
 type System {
     operatingSystem: OperatingSystem!
-    uptime: Int!
+    uptime: Long!
     baseboard: Board!
     usbDevices: [UsbDevices!]!
     processor: Processor!
@@ -470,9 +471,9 @@ type Process {
     virtualSize: Int!
     residentSetSize: Long!
     memoryPercent: Float!
-    kernelTime: Int!
-    userTime: Int!
-    upTime: Int!
+    kernelTime: Long!
+    userTime: Long!
+    upTime: Long!
     cpuPercent: Float!
     startTime: Long!
     bytesRead: Long!

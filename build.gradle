@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 buildscript {
     ext {
         kotlinVersion = "1.5.10"
@@ -57,7 +59,7 @@ project(':server') {
         exclude 'META-INF/*.RSA'
     }
 
-    def jvmArgs = ["-server", "-Xms100m", "-Xmx512m", "-Djava.awt.headless=true", "-XX:+UseG1GC", "-XX:MaxGCPauseMillis=100", "-XX:+UseStringDeduplication"]
+    def jvmArgs = ["-server", "-Xms100m", "-Xmx512m", "-Djava.awt.headless=true", "-XX:+UseG1GC", "-XX:MaxGCPauseMillis=100", "-XX:+UseStringDeduplication", "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED"]
 
     mainClassName = 'com.krillsson.sysapi.SysAPIApplication'
 
@@ -71,11 +73,21 @@ project(':server') {
         manifest {
             attributes('Main-Class': mainClassName, "Implementation-Version": project.version)
         }
+        from("$buildDir/resources/main/build.properties")
     }
 
     shadowDistZip {
 
     }
+
+    task writeProperties(type: WriteProperties) {
+        outputFile "$buildDir/resources/main/build.properties"
+        encoding("UTF-8")
+        property 'version', version
+        property 'date', LocalDate.now()
+    }
+
+    compileKotlin.finalizedBy(writeProperties)
 
     jib {
         to.image = "krillsson/sys-api"
@@ -122,5 +134,4 @@ project(':server') {
         testImplementation 'org.hamcrest:hamcrest-all:1.1'
         testImplementation 'org.mockito:mockito-core:2.20.0'
     }
-
 }
