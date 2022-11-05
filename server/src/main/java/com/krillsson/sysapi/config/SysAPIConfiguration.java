@@ -23,6 +23,8 @@ package com.krillsson.sysapi.config;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.smoketurner.dropwizard.graphql.GraphQLFactory;
 import io.dropwizard.Configuration;
+import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.flyway.FlywayFactory;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -67,6 +69,32 @@ public class SysAPIConfiguration extends Configuration {
     @Valid
     @JsonProperty
     private SelfSignedCertificateConfiguration selfSignedCertificates;
+
+    @Valid
+    @NotNull
+    private DataSourceFactory database;
+
+    @Valid
+    @NotNull
+    private FlywayFactory flyway;
+
+    @JsonProperty("database")
+    public DataSourceFactory getDataSourceFactory() {
+        return database;
+    }
+
+    @JsonProperty("database")
+    public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
+        this.database = dataSourceFactory;
+    }
+
+    public FlywayFactory getFlyway() {
+        return flyway;
+    }
+
+    public void setFlyway(FlywayFactory flyway) {
+        this.flyway = flyway;
+    }
 
     public MetricsConfiguration metrics() {
         return metricsConfig;

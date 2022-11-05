@@ -83,7 +83,7 @@ class QueryResolver : GraphQLQueryResolver {
     val networkInterfaceMetricResolver = NetworkInterfaceMetricResolver()
     val monitorResolver = MonitorResolver()
 
-    fun system(): System = System(EnvironmentUtils.getHostName(), operatingSystem, platform)
+    fun system(): System = System(EnvironmentUtils.hostName, operatingSystem, platform)
 
     fun history(): List<SystemHistoryEntry> {
         return historyManager.getHistory().map {

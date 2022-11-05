@@ -2,67 +2,44 @@ package com.krillsson.sysapi.core.history
 
 import com.google.common.annotations.VisibleForTesting
 import com.krillsson.sysapi.core.domain.history.HistorySystemLoad
+import com.krillsson.sysapi.core.domain.history.HistorySystemLoadDAO
 import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
-import com.krillsson.sysapi.persistence.Store
+import com.krillsson.sysapi.persistence.asEntity
 import com.krillsson.sysapi.util.Clock
-import org.slf4j.LoggerFactory
+import com.krillsson.sysapi.util.logger
+import io.dropwizard.hibernate.UnitOfWork
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
-import java.util.function.Consumer
-import java.util.stream.Collectors
 
-class HistoryRepository @VisibleForTesting constructor(
+open class HistoryRepository @VisibleForTesting constructor(
     private val clock: Clock,
-    private val store: Store<List<SystemHistoryEntry>>
+    private val dao: HistorySystemLoadDAO
 ) {
 
-    constructor(store: Store<List<SystemHistoryEntry>>) : this(Clock(), store) {}
+    val logger by logger()
 
-    fun get(): List<SystemHistoryEntry> {
-        return store.read()?.toList().orEmpty()
+    constructor(store: HistorySystemLoadDAO) : this(Clock(), store) {}
+
+    @UnitOfWork
+    open fun get(): List<SystemHistoryEntry> {
+        return dao.findAll().map { it.asSystemHistoryEntry() }
     }
 
-    fun record(load: HistorySystemLoad) {
+    @UnitOfWork
+    open fun record(load: HistorySystemLoad) {
         val entry = SystemHistoryEntry(clock.now(), load)
-        LOGGER.trace("Recording history for {}", entry)
-        store.update { entries ->
-            val mutableEntries = entries?.toMutableList() ?: mutableListOf()
-            mutableEntries.add(entry)
-            mutableEntries.toList()
-        }
+        logger.trace("Recording history for {}", entry)
+        dao.insert(entry.asEntity())
     }
 
-    fun purge(olderThan: Int, unit: ChronoUnit) {
+    @UnitOfWork
+    open fun purge(olderThan: Int, unit: ChronoUnit) {
         val maxAge = clock.now().minus(olderThan.toLong(), unit)
-        store.update { entries ->
-            val mutableEntries = entries?.toMutableList() ?: mutableListOf()
-            val toBeRemoved: MutableSet<SystemHistoryEntry> =
-                HashSet()
-            for (historyEntry in mutableEntries) {
-                if (historyEntry.date.isBefore(maxAge)) {
-                    toBeRemoved.add(historyEntry)
-                }
-            }
-            LOGGER.debug(
-                "Purging {} entries older than {} {}",
-                toBeRemoved.size,
-                olderThan,
-                unit.name
-            )
-            toBeRemoved.forEach(Consumer { entry: SystemHistoryEntry? ->
-                mutableEntries.remove(
-                    entry
-                )
-            })
-            mutableEntries.toList()
-        }
+        dao.purge(maxAge)
     }
 
-    companion object {
-        private val LOGGER = LoggerFactory.getLogger(HistoryRepository::class.java)
-    }
-
-    fun getHistoryLimitedToDates(
+    @UnitOfWork
+    open fun getHistoryLimitedToDates(
         fromDate: OffsetDateTime?,
         toDate: OffsetDateTime?
     ): List<SystemHistoryEntry> {
@@ -71,11 +48,6 @@ class HistoryRepository @VisibleForTesting constructor(
         }
         val from = fromDate ?: OffsetDateTime.MIN
         val to = toDate ?: OffsetDateTime.MAX
-        return store.read().orEmpty()
-            .stream()
-            .filter { e: SystemHistoryEntry ->
-                e.date.isAfter(from) && e.date.isBefore(to)
-            }
-            .collect(Collectors.toList())
+        return dao.findAllBetween(from, to).map { it.asSystemHistoryEntry() }
     }
 }
