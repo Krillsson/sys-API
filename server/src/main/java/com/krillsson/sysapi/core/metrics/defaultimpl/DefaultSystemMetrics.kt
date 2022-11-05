@@ -37,7 +37,7 @@ open class DefaultSystemMetrics(
 
     override fun systemInfo(): SystemInfo {
         return SystemInfo(
-            EnvironmentUtils.getHostName(),
+            EnvironmentUtils.hostName,
             operatingSystem,
             platform,
             cpuMetrics.cpuInfo(),

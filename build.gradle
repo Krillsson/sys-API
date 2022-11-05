@@ -16,7 +16,8 @@ buildscript {
         classpath(
                 "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",
                 'com.github.jengelman.gradle.plugins:shadow:6.1.0',
-                "gradle.plugin.com.google.cloud.tools:jib-gradle-plugin:3.2.1"
+                "gradle.plugin.com.google.cloud.tools:jib-gradle-plugin:3.2.1",
+                "org.jetbrains.kotlin:kotlin-noarg:$kotlinVersion"
         )
     }
 }
@@ -43,13 +44,14 @@ project(':server') {
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'application'
     apply plugin: "com.google.cloud.tools.jib"
+    apply plugin: "org.jetbrains.kotlin.plugin.jpa"
 
-    sourceCompatibility = 8
-    targetCompatibility = 8
+    sourceCompatibility = 11
+    targetCompatibility = 11
 
     compileKotlin {
         kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_1_8
+            jvmTarget = JavaVersion.VERSION_11
         }
     }
 
@@ -105,6 +107,12 @@ project(':server') {
         implementation 'io.dropwizard:dropwizard-core:2.0.28'
         implementation 'io.dropwizard:dropwizard-auth:2.0.28'
         implementation 'io.dropwizard:dropwizard-assets:2.0.28'
+        implementation 'io.dropwizard:dropwizard-hibernate:2.0.28'
+        implementation 'io.dropwizard.modules:dropwizard-flyway:2.0.28-1'
+        implementation 'org.xerial:sqlite-jdbc:3.39.3.0'
+        implementation 'com.zsoltfabok:sqlite-dialect:1.0'
+        implementation 'org.glassfish:jakarta.el:3.0.0'
+        implementation 'javax.el:javax.el-api:3.0.0'
         constraints {
             implementation('com.fasterxml.jackson.core:jackson-databind:2.12.1') {
                 because 'previous versions have a bug impacting this application'

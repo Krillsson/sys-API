@@ -43,7 +43,7 @@ import javax.ws.rs.core.Response
 class SystemResource(
     private val systemMetrics: SystemMetrics,
     private val historyManager: MetricsHistoryManager,
-    private val uptimeSupplier: Supplier<Long>
+    private val uptimeSupplier: Supplier<Long>,
 ) {
     @GET
     fun getRoot(): SystemInfo {

@@ -2,6 +2,7 @@ package com.krillsson.sysapi.tls
 
 import com.google.common.net.HostSpecifier
 import com.google.common.net.InetAddresses
+import com.krillsson.sysapi.config.SelfSignedCertificateConfiguration
 import com.krillsson.sysapi.util.logger
 import org.bouncycastle.asn1.x500.X500Name
 import org.bouncycastle.asn1.x509.BasicConstraints
@@ -57,12 +58,13 @@ class SelfSignedCertificateManager {
 
 
     @Throws(Exception::class)
-    fun start(names: CertificateNamesCreator.Names) {
+    fun start(namesCreator: CertificateNamesCreator, config: SelfSignedCertificateConfiguration) {
         try {
             val certificateKeyStore = ensureKeystore()
             if (!isCertificateInKeystore(certificateKeyStore.store)) {
                 logger.debug("{} alias not found. Generating a new certificate.", KEYSTORE_ENTRY_ALIAS)
                 val caCertificate = generateX509CACertificate()
+                val names = namesCreator.createNames(config)
                 val serverCertificate =
                     generateX509ServerCertificate(caCertificate, names.commonName, names.subjectAlternativeNames)
                 certificateKeyStore.store.saveCertificate(caCertificate, KEYSTORE_CA_ENTRY_ALIAS)

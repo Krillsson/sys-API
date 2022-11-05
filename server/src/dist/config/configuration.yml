@@ -6,8 +6,8 @@ metricsConfig:
     interval: 45
     unit: SECONDS
   history:
-    interval: 30
-    unit: MINUTES
+    interval: 15
+    unit: SECONDS
     purging:
       olderThan: 3
       unit: DAYS
@@ -67,6 +67,22 @@ server:
       validateCerts: false
       validatePeers: false
 
+database:
+  # the name of your JDBC driver
+  driverClass: org.sqlite.JDBC
+  # configured in runtime
+  url: temp
+  properties:
+    charSet: UTF-8
+    hibernate.dialect: org.hibernate.dialect.SQLiteDialect
+#  maxWaitForConnection: 1s
+#  validationQuery: "/* MyApplication Health Check */ SELECT 1"
+#  minSize: 1
+#  maxSize: 32
+#  checkConnectionWhileIdle: false
+flyway:
+  baselineOnMigrate: true
+
 logging:
 
   # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
@@ -82,5 +98,10 @@ logging:
     "graphql.kickstart":
       additive: false
       level: WARN
+      appenders:
+        - type: console
+    "logging.level.org.hibernate.persister.entity":
+      additive: false
+      level: ERROR
       appenders:
         - type: console
