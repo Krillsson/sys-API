@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.core.domain.history
+package com.krillsson.sysapi.core.history.db
 
 import io.dropwizard.hibernate.AbstractDAO
 import org.hibernate.SessionFactory
@@ -6,7 +6,6 @@ import java.time.OffsetDateTime
 import java.util.*
 import javax.persistence.criteria.CriteriaQuery
 import javax.persistence.criteria.Root
-
 
 class HistorySystemLoadDAO(sessionFactory: SessionFactory) :
     AbstractDAO<HistorySystemLoadEntity>(sessionFactory) {
@@ -40,7 +39,7 @@ class HistorySystemLoadDAO(sessionFactory: SessionFactory) :
     }
 
     fun findAll(): List<HistorySystemLoadEntity> {
-        return list(namedTypedQuery("com.krillsson.sysapi.core.domain.history.HistorySystemLoadEntity.findAll"))
+        return list(namedTypedQuery("com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity.findAll"))
     }
 
     fun findById(id: Long): HistorySystemLoadEntity? {

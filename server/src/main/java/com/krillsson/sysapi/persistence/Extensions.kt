@@ -1,7 +1,7 @@
 package com.krillsson.sysapi.persistence
 
 import com.krillsson.sysapi.config.SysAPIConfiguration
-import com.krillsson.sysapi.core.domain.history.*
+import com.krillsson.sysapi.core.history.db.*
 import com.krillsson.sysapi.util.FileSystem
 import io.dropwizard.db.DataSourceFactory
 import io.dropwizard.flyway.FlywayBundle

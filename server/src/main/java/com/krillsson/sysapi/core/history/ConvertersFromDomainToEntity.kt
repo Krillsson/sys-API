@@ -1,6 +1,8 @@
 package com.krillsson.sysapi.core.history
 
-import com.krillsson.sysapi.core.domain.history.*
+import com.krillsson.sysapi.core.domain.history.HistorySystemLoad
+import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
+import com.krillsson.sysapi.core.history.db.*
 import java.time.OffsetDateTime
 import java.util.*
 

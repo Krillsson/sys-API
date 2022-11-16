@@ -4,8 +4,10 @@ import com.krillsson.sysapi.core.domain.cpu.CoreLoad
 import com.krillsson.sysapi.core.domain.cpu.CpuHealth
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad
 import com.krillsson.sysapi.core.domain.drives.DriveHealth
-import com.krillsson.sysapi.core.domain.history.*
+import com.krillsson.sysapi.core.domain.history.HistorySystemLoad
+import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.domain.sensors.HealthData
+import com.krillsson.sysapi.core.history.db.*
 
 fun HistorySystemLoadEntity.asSystemHistoryEntry(): SystemHistoryEntry {
     return SystemHistoryEntry(
@@ -24,7 +26,7 @@ fun HistorySystemLoadEntity.asSystemHistoryEntry(): SystemHistoryEntry {
     )
 }
 
-private fun com.krillsson.sysapi.core.domain.history.HealthData.asHealthData(): HealthData {
+private fun com.krillsson.sysapi.core.history.db.HealthData.asHealthData(): HealthData {
     return HealthData(
         description, data, dataType.asDataType()
     )
@@ -120,7 +122,7 @@ private fun NetworkInterfaceValues.asNetworkInterfaceValues(): com.krillsson.sys
     )
 }
 
-private fun com.krillsson.sysapi.core.domain.history.CpuLoad.asCpuLoad(): CpuLoad {
+private fun com.krillsson.sysapi.core.history.db.CpuLoad.asCpuLoad(): CpuLoad {
     return CpuLoad(
         usagePercentage,
         systemLoadAverage,
@@ -131,13 +133,13 @@ private fun com.krillsson.sysapi.core.domain.history.CpuLoad.asCpuLoad(): CpuLoa
     )
 }
 
-private fun com.krillsson.sysapi.core.domain.history.CpuHealth.asCpuHealth(): CpuHealth {
+private fun com.krillsson.sysapi.core.history.db.CpuHealth.asCpuHealth(): CpuHealth {
     return CpuHealth(
         temperatures, voltage, fanRpm, fanPercent
     )
 }
 
-private fun com.krillsson.sysapi.core.domain.history.CoreLoad.asCoreLoad(): CoreLoad {
+private fun com.krillsson.sysapi.core.history.db.CoreLoad.asCoreLoad(): CoreLoad {
     return CoreLoad(
         percentage
     )
