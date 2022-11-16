@@ -6,10 +6,10 @@ metricsConfig:
     interval: 45
     unit: SECONDS
   history:
-    interval: 15
-    unit: SECONDS
+    interval: 30
+    unit: MINUTES
     purging:
-      olderThan: 3
+      olderThan: 14
       unit: DAYS
       purgeEvery: 1
       purgeEveryUnit: DAYS
@@ -75,18 +75,13 @@ database:
   properties:
     charSet: UTF-8
     hibernate.dialect: org.hibernate.dialect.SQLiteDialect
-#  maxWaitForConnection: 1s
-#  validationQuery: "/* MyApplication Health Check */ SELECT 1"
-#  minSize: 1
-#  maxSize: 32
-#  checkConnectionWhileIdle: false
 flyway:
   baselineOnMigrate: true
 
 logging:
 
   # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
-  level: WARN
+  level: ERROR
 
   # Logger-specific levels.
   loggers:
@@ -97,16 +92,21 @@ logging:
         - type: console
     "io.dropwizard":
       additive: false
+      level: ERROR
+      appenders:
+        - type: console
+    "io.dropwizard.server.ServerFactory":
+      additive: false
       level: INFO
       appenders:
         - type: console
     "org.hibernate.SQL":
       additive: false
-      level: DEBUG
+      level: ERROR
       appenders:
         - type: console
     "graphql.kickstart":
       additive: false
-      level: WARN
+      level: ERROR
       appenders:
         - type: console
