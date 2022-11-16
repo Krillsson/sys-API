@@ -26,13 +26,13 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.krillsson.sysapi.client.Clients
 import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
-import com.krillsson.sysapi.core.domain.history.HistorySystemLoadDAO
 import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.domain.system.SystemLoad
 import com.krillsson.sysapi.core.history.HistoryMetricQueryEvent
 import com.krillsson.sysapi.core.history.HistoryRepository
 import com.krillsson.sysapi.core.history.HistoryStore
 import com.krillsson.sysapi.core.history.MetricsHistoryManager
+import com.krillsson.sysapi.core.history.db.HistorySystemLoadDAO
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.metrics.MetricsFactory
 import com.krillsson.sysapi.core.monitoring.MonitorManager

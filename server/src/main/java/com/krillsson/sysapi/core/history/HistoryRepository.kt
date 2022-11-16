@@ -2,8 +2,8 @@ package com.krillsson.sysapi.core.history
 
 import com.google.common.annotations.VisibleForTesting
 import com.krillsson.sysapi.core.domain.history.HistorySystemLoad
-import com.krillsson.sysapi.core.domain.history.HistorySystemLoadDAO
 import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
+import com.krillsson.sysapi.core.history.db.HistorySystemLoadDAO
 import com.krillsson.sysapi.util.Clock
 import com.krillsson.sysapi.util.logger
 import io.dropwizard.hibernate.UnitOfWork
