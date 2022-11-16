@@ -14,8 +14,11 @@ class HistorySystemLoadDAO(sessionFactory: SessionFactory) :
         return persist(entity).id
     }
 
-    fun insert(entities: List<HistorySystemLoadEntity>) {
-        entities.forEach { insert(it) }
+    fun insert(entities: List<HistorySystemLoadEntity>): List<UUID> {
+        return entities.map {
+            val createdId = insert(it)
+            createdId
+        }
     }
 
     fun findAllBetween(from: OffsetDateTime, to: OffsetDateTime): List<HistorySystemLoadEntity> {

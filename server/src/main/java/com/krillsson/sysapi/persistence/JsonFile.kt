@@ -12,7 +12,7 @@ import java.io.FileWriter
 import java.io.IOException
 
 abstract class JsonFile<T>(
-    fileName: String,
+    private val fileName: String,
     private val typeToken: TypeReference<T>,
     objectMapperBase: ObjectMapper
 ) : Store<T> {
@@ -80,6 +80,11 @@ abstract class JsonFile<T>(
         getFile().delete()
     }
 
+    fun deleteOnExit() {
+        getFile().deleteOnExit()
+        LOGGER.info("Marked $filePath for deletion. Will delete when application quits")
+    }
+
     private fun getFile(): File {
         val file = File(filePath)
         try { //does not create a file if it already exists
@@ -91,6 +96,7 @@ abstract class JsonFile<T>(
     }
 
     companion object {
+        private const val deletionIdentifier = "TO_BE_DELETED_"
         private val LOGGER = LoggerFactory.getLogger(JsonFile::class.java)
     }
 }

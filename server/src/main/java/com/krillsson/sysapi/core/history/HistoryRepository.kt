@@ -34,6 +34,7 @@ open class HistoryRepository @VisibleForTesting constructor(
     @UnitOfWork
     open fun purge(olderThan: Int, unit: ChronoUnit) {
         val maxAge = clock.now().minus(olderThan.toLong(), unit)
+        logger.info("Purging history older than {}", maxAge)
         dao.purge(maxAge)
     }
 

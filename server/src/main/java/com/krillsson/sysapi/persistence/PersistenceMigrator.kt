@@ -4,7 +4,7 @@ import com.codahale.metrics.MetricRegistry
 import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.core.domain.history.HistorySystemLoadDAO
 import com.krillsson.sysapi.core.domain.history.HistorySystemLoadEntity
-import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
+import com.krillsson.sysapi.core.history.HistoryStore
 import com.krillsson.sysapi.core.history.asEntity
 import com.krillsson.sysapi.util.logger
 import io.dropwizard.flyway.FlywayBundle
@@ -16,7 +16,7 @@ open class PersistenceMigrator(
     private val config: SysAPIConfiguration,
     private val flywayBundle: FlywayBundle<SysAPIConfiguration>,
     private val historyDao: HistorySystemLoadDAO,
-    private val store: Store<List<SystemHistoryEntry>>,
+    private val store: HistoryStore,
     private val metrics: MetricRegistry
 ) {
 
@@ -32,9 +32,10 @@ open class PersistenceMigrator(
         val items: List<HistorySystemLoadEntity> = store.read()
             .orEmpty()
             .map { it.asEntity() }
-        historyDao.insert(items)
-        if (items.isNotEmpty()) {
-            logger.info("Database migration - ${items.size} entries from JSON to SQLite")
+        val itemsInserted = historyDao.insert(items).size
+        if (itemsInserted > 0) {
+            logger.info("Database migration - $itemsInserted entries from JSON to SQLite")
+            store.deleteOnExit()
         }
     }
 

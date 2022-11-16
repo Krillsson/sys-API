@@ -1,5 +1,7 @@
 package com.krillsson.sysapi.util
 
+import com.codahale.metrics.MetricRegistry
+import com.codahale.metrics.health.HealthCheckRegistry
 import com.krillsson.sysapi.SysAPIApplication
 import com.krillsson.sysapi.auth.BasicAuthenticator
 import com.krillsson.sysapi.auth.BasicAuthorizer
@@ -102,6 +104,17 @@ fun ServletEnvironment.configureCrossOriginFilter() {
     cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType::class.java), true, "/*")
 }
 
+fun MetricRegistry.disableMetrics() {
+    names.forEach { name ->
+        remove(name)
+    }
+}
+
+fun HealthCheckRegistry.disableHealthChecks() {
+    names.forEach { name ->
+        unregister(name)
+    }
+}
 
 object EnvironmentUtils {
 
