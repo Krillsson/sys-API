@@ -138,6 +138,9 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     }
 
     override fun run(config: SysAPIConfiguration, environment: Environment) {
+        environment.healthChecks().disableHealthChecks()
+        environment.metrics().disableMetrics()
+
         environment.jersey().registerFeatures(config.user())
         environment.servlets().configureCrossOriginFilter()
         if (config.forwardHttps()) {
@@ -145,10 +148,6 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         }
         val clients = Clients(config.connectivityCheck.address)
         val historyDao = HistorySystemLoadDAO(hibernate.sessionFactory)
-
-//        val migrator = PersistenceMigrator(
-//            config, flyWay, historyDao, historyStore, environment.metrics()
-//        )
         val proxyFactory = UnitOfWorkAwareProxyFactory(hibernate)
         val migrator = proxyFactory
             .create(
@@ -157,7 +156,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
                     SysAPIConfiguration::class.java,
                     FlywayBundle::class.java,
                     HistorySystemLoadDAO::class.java,
-                    Store::class.java,
+                    HistoryStore::class.java,
                     MetricRegistry::class.java
                 ),
                 arrayOf(config, flyWay, historyDao, historyStore, environment.metrics())

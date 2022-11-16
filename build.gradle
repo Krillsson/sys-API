@@ -61,7 +61,7 @@ project(':server') {
         exclude 'META-INF/*.RSA'
     }
 
-    def jvmArgs = ["-server", "-Xms100m", "-Xmx512m", "-Djava.awt.headless=true", "-XX:+UseG1GC", "-XX:MaxGCPauseMillis=100", "-XX:+UseStringDeduplication", "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED"]
+    def jvmArgs = ["-server", "-Xms100m", "-Xmx876m", "-Djava.awt.headless=true", "-XX:+UseG1GC", "-XX:MaxGCPauseMillis=100", "-XX:+UseStringDeduplication", "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED"]
 
     mainClassName = 'com.krillsson.sysapi.SysAPIApplication'
 
