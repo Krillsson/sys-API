@@ -5,6 +5,7 @@ import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.core.domain.history.HistorySystemLoadDAO
 import com.krillsson.sysapi.core.domain.history.HistorySystemLoadEntity
 import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
+import com.krillsson.sysapi.core.history.asEntity
 import com.krillsson.sysapi.util.logger
 import io.dropwizard.flyway.FlywayBundle
 import io.dropwizard.hibernate.UnitOfWork

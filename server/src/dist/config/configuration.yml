@@ -86,7 +86,7 @@ flyway:
 logging:
 
   # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
-  level: INFO
+  level: WARN
 
   # Logger-specific levels.
   loggers:
@@ -95,13 +95,18 @@ logging:
       level: INFO
       appenders:
         - type: console
+    "io.dropwizard":
+      additive: false
+      level: INFO
+      appenders:
+        - type: console
+    "org.hibernate.SQL":
+      additive: false
+      level: DEBUG
+      appenders:
+        - type: console
     "graphql.kickstart":
       additive: false
       level: WARN
-      appenders:
-        - type: console
-    "logging.level.org.hibernate.persister.entity":
-      additive: false
-      level: ERROR
       appenders:
         - type: console

@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.persistence
+package com.krillsson.sysapi.core.history
 
 import com.krillsson.sysapi.core.domain.history.*
 import java.time.OffsetDateTime
@@ -27,6 +27,7 @@ fun HistorySystemLoad.asEntity(id: UUID, dateTime: OffsetDateTime): HistorySyste
 private fun com.krillsson.sysapi.core.domain.sensors.HealthData.asMotherboardHealthData(id: UUID): HealthData {
     return HealthData(
         UUID.randomUUID(),
+        null,
         id,
         description,
         data,
@@ -37,6 +38,7 @@ private fun com.krillsson.sysapi.core.domain.sensors.HealthData.asMotherboardHea
 private fun com.krillsson.sysapi.core.domain.gpu.GpuLoad.asGpuLoad(id: UUID): GpuLoad {
     return GpuLoad(
         UUID.randomUUID(),
+        null,
         id,
         name,
         coreLoad,
@@ -53,7 +55,6 @@ private fun com.krillsson.sysapi.core.domain.gpu.GpuHealth.asGpuHealth(): GpuHea
 
 private fun com.krillsson.sysapi.core.domain.memory.MemoryLoad.asMemoryLoad(id: UUID): MemoryLoad {
     return MemoryLoad(
-        UUID.randomUUID(),
         id,
         numberOfProcesses,
         swapTotalBytes,
@@ -68,6 +69,7 @@ private fun com.krillsson.sysapi.core.domain.drives.DriveLoad.asDriveLoad(id: UU
     val uuid = UUID.randomUUID()
     return DriveLoad(
         uuid,
+        null,
         id,
         name,
         serial,
@@ -78,9 +80,11 @@ private fun com.krillsson.sysapi.core.domain.drives.DriveLoad.asDriveLoad(id: UU
 
     )
 }
+
 private fun com.krillsson.sysapi.core.domain.sensors.HealthData.asHealthData(id: UUID): DriveHealthData {
     return DriveHealthData(
         UUID.randomUUID(),
+        null,
         id,
         description,
         data,
@@ -113,14 +117,17 @@ private fun com.krillsson.sysapi.core.domain.drives.DriveValues.asDriveValues():
 
 private fun com.krillsson.sysapi.core.domain.network.Connectivity.asConnectivity(id: UUID): Connectivity {
     return Connectivity(
-        UUID.randomUUID(),
-        id, externalIp, previousExternalIp, connected
+        id,
+        externalIp,
+        previousExternalIp,
+        connected
     )
 }
 
 private fun com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad.asNetworkInterfaceLoad(id: UUID): NetworkInterfaceLoad {
     return NetworkInterfaceLoad(
         UUID.randomUUID(),
+        null,
         id,
         name,
         mac,
@@ -144,7 +151,6 @@ private fun com.krillsson.sysapi.core.domain.network.NetworkInterfaceValues.asNe
 
 private fun com.krillsson.sysapi.core.domain.cpu.CpuLoad.asCpuLoadEntity(id: UUID): CpuLoad {
     return CpuLoad(
-        UUID.randomUUID(),
         id,
         usagePercentage,
         systemLoadAverage,
@@ -157,7 +163,6 @@ private fun com.krillsson.sysapi.core.domain.cpu.CpuLoad.asCpuLoadEntity(id: UUI
 
 private fun com.krillsson.sysapi.core.domain.cpu.CpuHealth.asCpuHealth(id: UUID): CpuHealth {
     return CpuHealth(
-        UUID.randomUUID(),
         id,
         temperatures,
         voltage,
@@ -169,6 +174,7 @@ private fun com.krillsson.sysapi.core.domain.cpu.CpuHealth.asCpuHealth(id: UUID)
 private fun com.krillsson.sysapi.core.domain.cpu.CoreLoad.asCoreLoad(id: UUID): CoreLoad {
     return CoreLoad(
         UUID.randomUUID(),
+        null,
         id,
         percentage
     )
