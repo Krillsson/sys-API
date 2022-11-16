@@ -1,9 +1,13 @@
+@file:Suppress("JpaAttributeMemberSignatureInspection")
+
 package com.krillsson.sysapi.core.domain.history
 
 import java.time.OffsetDateTime
 import java.util.*
 import javax.persistence.*
 
+// https://vladmihalcea.com/the-best-way-to-map-a-onetomany-association-with-jpa-and-hibernate/
+// https://stackoverflow.com/a/50378345
 @Entity
 @NamedQuery(
     name = "com.krillsson.sysapi.core.domain.history.HistorySystemLoadEntity.findAll",
@@ -15,60 +19,52 @@ class HistorySystemLoadEntity(
     val date: OffsetDateTime,
     val uptime: Long,
     val systemLoadAverage: Double,
-    @OneToOne
-    @JoinColumn(name = "systemLoadId", insertable = false, updatable = false)
+    @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true)
     val cpuLoad: CpuLoad,
-    @OneToMany
-    @JoinColumn(name = "systemLoadId", insertable = false, updatable = false)
+    @OneToMany(mappedBy = "history", cascade = [CascadeType.ALL], orphanRemoval = true)
     val networkInterfaceLoads: List<NetworkInterfaceLoad>,
-    @OneToOne
-    @JoinColumn(name = "systemLoadId", insertable = false, updatable = false)
+    @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true)
     val connectivity: Connectivity,
-    @OneToMany
-    @JoinColumn(name = "systemLoadId", insertable = false, updatable = false)
+    @OneToMany(mappedBy = "history", cascade = [CascadeType.ALL], orphanRemoval = true)
     val driveLoads: List<DriveLoad>,
-    @OneToOne
-    @JoinColumn(name = "systemLoadId", insertable = false, updatable = false)
+    @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true)
     val memory: MemoryLoad,
-    @OneToMany
-    @JoinColumn(name = "systemLoadId", insertable = false, updatable = false)
+    @OneToMany(mappedBy = "history", cascade = [CascadeType.ALL], orphanRemoval = true)
     val gpuLoads: List<GpuLoad>,
-    @OneToMany
-    @JoinColumn(name = "systemLoadId", insertable = false, updatable = false)
+    @OneToMany(mappedBy = "history", cascade = [CascadeType.ALL], orphanRemoval = true)
     val motherboardHealth: List<HealthData>
-)
-
-@Entity
-class CoreLoad(
-    @Id
-    val id: UUID,
-    val cpuLoadId: UUID,
-    val percentage: Double,
 )
 
 @Entity
 class CpuLoad(
     @Id
     val id: UUID,
-    val systemLoadId: UUID,
     val usagePercentage: Double,
     val systemLoadAverage: Double,
-    @OneToMany
-    @JoinColumn(name = "cpuLoadId")
+    @OneToMany(mappedBy = "cpuLoad", cascade = [CascadeType.ALL], orphanRemoval = true)
     val coreLoads: List<CoreLoad>,
-    @OneToOne
-    @JoinColumn(name = "cpuLoadId")
+    @Embedded
     val cpuHealth: CpuHealth,
     val processCount: Int,
     val threadCount: Int
 )
 
 @Entity
+class CoreLoad(
+    @Id
+    val id: UUID,
+    @JoinColumn(name = "cpuLoadId", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    val cpuLoad: CpuLoad? = null,
+    val cpuLoadId: UUID,
+    val percentage: Double,
+)
+
+@Embeddable
 class CpuHealth(
     @Id
     val id: UUID,
-    val cpuLoadId: UUID,
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     val temperatures: List<Double>,
     val voltage: Double,
     val fanRpm: Double,
@@ -79,7 +75,10 @@ class CpuHealth(
 class NetworkInterfaceLoad(
     @Id
     val id: UUID,
-    val systemLoadId: UUID,
+    @JoinColumn(name = "historyId", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    val history: HistorySystemLoadEntity? = null,
+    val historyId: UUID,
     val name: String,
     val mac: String,
     val isUp: Boolean,
@@ -107,7 +106,6 @@ class NetworkInterfaceSpeed(val receiveBytesPerSecond: Long, val sendBytesPerSec
 class Connectivity(
     @Id
     val id: UUID,
-    val systemLoadId: UUID,
     val externalIp: String?,
     val previousExternalIp: String?,
     val connected: Boolean
@@ -117,7 +115,10 @@ class Connectivity(
 class DriveLoad(
     @Id
     val id: UUID,
-    val systemLoadId: UUID,
+    @JoinColumn(name = "historyId", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    val history: HistorySystemLoadEntity? = null,
+    val historyId: UUID,
     val name: String,
     val serial: String,
     @Embedded
@@ -125,8 +126,7 @@ class DriveLoad(
     @Embedded
     val speed: DriveSpeed,
     val temperature: Double,
-    @OneToMany
-    @JoinColumn(name = "driveLoadId")
+    @OneToMany(mappedBy = "driveLoad", cascade = [CascadeType.ALL], orphanRemoval = true)
     val healthData: List<DriveHealthData>
 )
 
@@ -149,7 +149,10 @@ class DriveSpeed(val readBytesPerSecond: Long, val writeBytesPerSecond: Long)
 class HealthData(
     @Id
     val id: UUID,
-    val systemLoadId: UUID,
+    @JoinColumn(name = "historyId", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    val history: HistorySystemLoadEntity? = null,
+    val historyId: UUID,
     val description: String,
     val data: Double,
     val dataType: DataType
@@ -159,6 +162,9 @@ class HealthData(
 class DriveHealthData(
     @Id
     val id: UUID,
+    @JoinColumn(name = "driveLoadId", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    val driveLoad: DriveLoad? = null,
     val driveLoadId: UUID,
     val description: String,
     val data: Double,
@@ -174,7 +180,6 @@ enum class DataType {
 class MemoryLoad(
     @Id
     val id: UUID,
-    val systemLoadId: UUID,
     val numberOfProcesses: Int,
     val swapTotalBytes: Long,
     val swapUsedBytes: Long,
@@ -187,7 +192,10 @@ class MemoryLoad(
 class GpuLoad(
     @Id
     val id: UUID,
-    val systemLoadId: UUID,
+    @JoinColumn(name = "historyId", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    val history: HistorySystemLoadEntity? = null,
+    val historyId: UUID,
     val name: String,
     val coreLoad: Double,
     val memoryLoad: Double,
