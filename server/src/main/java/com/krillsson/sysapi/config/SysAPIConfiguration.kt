@@ -18,119 +18,30 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.config;
+package com.krillsson.sysapi.config
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.smoketurner.dropwizard.graphql.GraphQLFactory;
-import io.dropwizard.Configuration;
-import io.dropwizard.db.DataSourceFactory;
-import io.dropwizard.flyway.FlywayFactory;
+import com.krillsson.sysapi.util.FileSystem
+import com.smoketurner.dropwizard.graphql.GraphQLFactory
+import io.dropwizard.Configuration
+import io.dropwizard.db.DataSourceFactory
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
-public class SysAPIConfiguration extends Configuration {
-
-    @Valid
-    @NotNull
-    public final GraphQLFactory graphql = new GraphQLFactory();
-
-    @Valid
-    @NotNull
-    @JsonProperty
-    private UserConfiguration user;
-
-    @Valid
-    @NotNull
-    @JsonProperty
-    private MetricsConfiguration metricsConfig;
-
-    @Valid
-    @JsonProperty
-    private WindowsConfiguration windows;
-
-    @Valid
-    @NotNull
-    @JsonProperty
-    private ConnectivityCheckConfiguration connectivityCheck;
-
-    @Valid
-    @JsonProperty
-    private GraphQLPlayGroundConfiguration graphQLPlayGround;
-
-    @Valid
-    @JsonProperty
-    private DockerConfiguration docker;
-
-    @Valid
-    @JsonProperty
-    private boolean forwardHttpToHttps;
-
-    @Valid
-    @JsonProperty
-    private SelfSignedCertificateConfiguration selfSignedCertificates;
-
-    @Valid
-    @NotNull
-    private DataSourceFactory database;
-
-    @Valid
-    @NotNull
-    private FlywayFactory flyway;
-
-    @JsonProperty("database")
-    public DataSourceFactory getDataSourceFactory() {
-        return database;
-    }
-
-    @JsonProperty("database")
-    public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
-        this.database = dataSourceFactory;
-    }
-
-    public FlywayFactory getFlyway() {
-        return flyway;
-    }
-
-    public void setFlyway(FlywayFactory flyway) {
-        this.flyway = flyway;
-    }
-
-    public MetricsConfiguration metrics() {
-        return metricsConfig;
-    }
-
-    public UserConfiguration user() {
-        return user;
-    }
-
-    public WindowsConfiguration windows() {
-        return windows;
-    }
-
-    public boolean forwardHttps() {
-        return forwardHttpToHttps;
-    }
-
-    public SelfSignedCertificateConfiguration selfSignedCertificates() {
-        return selfSignedCertificates;
-    }
-
-    public DockerConfiguration docker() {
-        return docker;
-    }
-
-    public ConnectivityCheckConfiguration getConnectivityCheck() {
-        return connectivityCheck;
-    }
-
-    @JsonProperty
-    public GraphQLFactory getGraphQLFactory() {
-        return graphql;
-    }
-
-    @JsonProperty
-    public GraphQLPlayGroundConfiguration getGraphQLPlayGround() {
-        return graphQLPlayGround;
-    }
-}
+class SysAPIConfiguration(
+    val user: UserConfiguration,
+    val metricsConfig: MetricsConfiguration,
+    val windows: WindowsConfiguration,
+    val connectivityCheck: ConnectivityCheckConfiguration,
+    val graphQLPlayGround: GraphQLPlayGroundConfiguration,
+    val graphql: GraphQLFactory,
+    val docker: DockerConfiguration,
+    val forwardHttpToHttps: Boolean,
+    val selfSignedCertificates: SelfSignedCertificateConfiguration,
+    val database: DataSourceFactory = DataSourceFactory()
+        .apply {
+            driverClass = "org.sqlite.JDBC"
+            url = "jdbc:sqlite:${FileSystem.data.absolutePath}/database.sqlite"
+            properties =  mapOf(
+                "charSet" to "UTF-8",
+                "hibernate.dialect" to "org.hibernate.dialect.SQLiteDialect"
+            )
+        }
+) : Configuration()

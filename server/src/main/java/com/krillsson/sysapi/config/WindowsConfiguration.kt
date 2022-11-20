@@ -18,27 +18,21 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.config;
+package com.krillsson.sysapi.config
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-import javax.validation.constraints.NotNull;
-
-public class WindowsConfiguration {
-
+class WindowsConfiguration {
     @JsonProperty
-    private boolean enableOhmJniWrapper;
+    private var enableOhmJniWrapper = false
 
-    public WindowsConfiguration(boolean enableOhmJniWrapper) {
-        this.enableOhmJniWrapper = enableOhmJniWrapper;
+    constructor(enableOhmJniWrapper: Boolean) {
+        this.enableOhmJniWrapper = enableOhmJniWrapper
     }
 
-    public WindowsConfiguration() {
-    }
+    constructor() {}
 
-    public boolean enableOhmJniWrapper() {
-        return enableOhmJniWrapper;
+    fun enableOhmJniWrapper(): Boolean {
+        return enableOhmJniWrapper
     }
-
 }

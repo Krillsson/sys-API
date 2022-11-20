@@ -18,24 +18,10 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.config;
+package com.krillsson.sysapi.config
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class DockerConfiguration {
-
-    @JsonProperty
-    private boolean enabled;
-
-    public DockerConfiguration(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public DockerConfiguration() {
-    }
-
-    public boolean enabled() {
-        return enabled;
-    }
-
-}
+data class DockerConfiguration(
+    @JsonProperty val enabled: Boolean
+)

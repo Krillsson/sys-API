@@ -57,7 +57,7 @@ class MetricsFactory(
         platformSpecific.initialize()
         metrics = if (cache) Cache.wrap(
             platformSpecific,
-            configuration.metrics().cache,
+            configuration.metricsConfig.cache,
             platform.asPlatform(),
             operatingSystem.asOperatingSystem()
         ) else platformSpecific
@@ -67,7 +67,7 @@ class MetricsFactory(
 
     private fun createPlatformSpecific(configuration: SysAPIConfiguration): Metrics {
         return when {
-            platform == PlatformEnum.WINDOWS && (configuration.windows() == null || configuration.windows()
+            platform == PlatformEnum.WINDOWS && (configuration.windows
                 .enableOhmJniWrapper()) -> {
                 LOGGER.info("Windows detected")
                 val metrics = WindowsMetricsFactory.create(

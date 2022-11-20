@@ -7,8 +7,7 @@ import java.util.*
 import javax.persistence.criteria.CriteriaQuery
 import javax.persistence.criteria.Root
 
-class HistorySystemLoadDAO(sessionFactory: SessionFactory) :
-    AbstractDAO<HistorySystemLoadEntity>(sessionFactory) {
+class HistorySystemLoadDAO(sessionFactory: SessionFactory) : AbstractDAO<HistorySystemLoadEntity>(sessionFactory) {
     fun insert(entity: HistorySystemLoadEntity): UUID {
         return persist(entity).id
     }

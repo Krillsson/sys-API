@@ -32,22 +32,17 @@ open class HistoryRepository @VisibleForTesting constructor(
     }
 
     @UnitOfWork
-    open fun purge(olderThan: Int, unit: ChronoUnit) {
-        val maxAge = clock.now().minus(olderThan.toLong(), unit)
+    open fun purge(olderThan: Long, unit: ChronoUnit) {
+        val maxAge = clock.now().minus(olderThan, unit)
         logger.info("Purging history older than {}", maxAge)
         dao.purge(maxAge)
     }
 
     @UnitOfWork
     open fun getHistoryLimitedToDates(
-        fromDate: OffsetDateTime?,
-        toDate: OffsetDateTime?
+        fromDate: OffsetDateTime,
+        toDate: OffsetDateTime
     ): List<SystemHistoryEntry> {
-        if (fromDate == null && toDate == null) {
-            return get()
-        }
-        val from = fromDate ?: OffsetDateTime.MIN
-        val to = toDate ?: OffsetDateTime.MAX
-        return dao.findAllBetween(from, to).map { it.asSystemHistoryEntry() }
+        return dao.findAllBetween(fromDate, toDate).map { it.asSystemHistoryEntry() }
     }
 }

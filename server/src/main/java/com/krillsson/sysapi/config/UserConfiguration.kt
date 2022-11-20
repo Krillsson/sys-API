@@ -18,39 +18,12 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.config;
+package com.krillsson.sysapi.config
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.security.Principal
 
-import javax.validation.constraints.NotNull;
-import java.security.Principal;
-
-public class UserConfiguration implements Principal {
-    @JsonProperty
-    private String username;
-
-    @JsonProperty
-    private String password;
-
-    public UserConfiguration(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-
-    public UserConfiguration() {
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getName() {
-        return username;
+class UserConfiguration(val username: String, val password: String) : Principal {
+    override fun getName(): String {
+        return username
     }
 }
