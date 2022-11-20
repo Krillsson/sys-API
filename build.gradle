@@ -2,20 +2,18 @@ import java.time.LocalDate;
 
 buildscript {
     ext {
-        kotlinVersion = "1.5.10"
+        kotlinVersion = "1.7.20"
     }
     repositories {
         repositories {
             mavenCentral()
         }
-
-        jcenter()
         gradlePluginPortal()
     }
     dependencies {
         classpath(
                 "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",
-                'com.github.jengelman.gradle.plugins:shadow:6.1.0',
+                "gradle.plugin.com.github.johnrengelman:shadow:7.1.2",
                 "com.google.cloud.tools:jib-gradle-plugin:3.3.1",
                 "org.jetbrains.kotlin:kotlin-noarg:$kotlinVersion"
         )
@@ -104,11 +102,11 @@ project(':server') {
     }
 
     dependencies {
-        implementation 'io.dropwizard:dropwizard-core:2.0.28'
-        implementation 'io.dropwizard:dropwizard-auth:2.0.28'
-        implementation 'io.dropwizard:dropwizard-assets:2.0.28'
-        implementation 'io.dropwizard:dropwizard-hibernate:2.0.28'
-        implementation 'io.dropwizard.modules:dropwizard-flyway:2.0.28-1'
+        implementation 'io.dropwizard:dropwizard-core:2.0.34'
+        implementation 'io.dropwizard:dropwizard-auth:2.0.34'
+        implementation 'io.dropwizard:dropwizard-assets:2.0.34'
+        implementation 'io.dropwizard:dropwizard-hibernate:2.0.34'
+        implementation 'io.dropwizard.modules:dropwizard-flyway:2.0.29-1'
         implementation 'org.xerial:sqlite-jdbc:3.39.3.0'
         implementation 'com.zsoltfabok:sqlite-dialect:1.0'
         implementation 'org.glassfish:jakarta.el:3.0.0'
