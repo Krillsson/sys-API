@@ -15,7 +15,8 @@ buildscript {
                 "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",
                 "gradle.plugin.com.github.johnrengelman:shadow:7.1.2",
                 "com.google.cloud.tools:jib-gradle-plugin:3.3.1",
-                "org.jetbrains.kotlin:kotlin-noarg:$kotlinVersion"
+                "org.jetbrains.kotlin:kotlin-noarg:$kotlinVersion",
+                "com.github.gmazzo:gradle-buildconfig-plugin:3.1.0"
         )
     }
 }
@@ -43,6 +44,7 @@ project(':server') {
     apply plugin: 'application'
     apply plugin: "com.google.cloud.tools.jib"
     apply plugin: "org.jetbrains.kotlin.plugin.jpa"
+    apply plugin: "com.github.gmazzo.buildconfig"
 
     sourceCompatibility = 11
     targetCompatibility = 11
@@ -51,6 +53,11 @@ project(':server') {
         kotlinOptions {
             jvmTarget = JavaVersion.VERSION_11
         }
+    }
+    
+    buildConfig {
+        buildConfigField("String", "APP_VERSION", provider { "\"${project.version}\"" })
+        buildConfigField("java.util.Date", "BUILD_TIME", "java.util.Date(" + System.currentTimeMillis() + "L)")
     }
 
     shadowJar {

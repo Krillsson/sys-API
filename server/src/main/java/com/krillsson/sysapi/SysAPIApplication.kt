@@ -23,6 +23,7 @@ package com.krillsson.sysapi
 import com.codahale.metrics.MetricRegistry
 import com.google.common.eventbus.EventBus
 import com.google.common.util.concurrent.ThreadFactoryBuilder
+import com.krillsson.server.BuildConfig
 import com.krillsson.sysapi.client.Clients
 import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
@@ -248,7 +249,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             dockerClient,
             os.asOperatingSystem(),
             SystemInfo.getCurrentPlatform().asPlatform(),
-            Meta(Build.version, Build.date, os.processId)
+            Meta(BuildConfig.APP_VERSION, os.processId)
         )
         environment.jersey().registerJerseyResources(
             os,
