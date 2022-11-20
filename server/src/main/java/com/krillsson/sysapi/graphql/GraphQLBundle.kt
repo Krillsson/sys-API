@@ -8,7 +8,6 @@ import graphql.execution.preparsed.PreparsedDocumentProvider
 import graphql.kickstart.execution.GraphQLQueryInvoker
 import graphql.kickstart.servlet.GraphQLHttpServlet
 import io.dropwizard.ConfiguredBundle
-import io.dropwizard.assets.AssetsBundle
 import io.dropwizard.setup.Bootstrap
 import io.dropwizard.setup.Environment
 
@@ -16,7 +15,7 @@ class GraphQLBundle(private val graphQLConfiguration: GraphQLConfiguration) : Co
     com.smoketurner.dropwizard.graphql.GraphQLConfiguration<SysAPIConfiguration> {
 
     override fun getGraphQLFactory(configuration: SysAPIConfiguration): GraphQLFactory {
-        val factory = configuration.graphQLFactory
+        val factory = configuration.graphql
         factory.setGraphQLSchema(graphQLConfiguration.createExecutableSchema(factory.schemaFiles.first()))
         return factory
     }
@@ -38,10 +37,10 @@ class GraphQLBundle(private val graphQLConfiguration: GraphQLConfiguration) : Co
             graphql.kickstart.servlet.GraphQLConfiguration.with(schema).with(queryInvoker).build()
         val servlet = GraphQLHttpServlet.with(config)
         environment.servlets().addServlet("graphql", servlet)
-            .addMapping(*arrayOf("/graphql", "/schema.json"))
+            .addMapping("/graphql", "/schema.json")
         val securityHandler = BasicAuthSecurityHandlerFactory(
-            configuration.user().username,
-            configuration.user().password
+            configuration.user.username,
+            configuration.user.password
         ).create()
         environment.servlets().setSecurityHandler(securityHandler)
     }

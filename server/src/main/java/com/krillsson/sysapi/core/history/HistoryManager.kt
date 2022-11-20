@@ -35,7 +35,11 @@ open class HistoryManager constructor(
         fromDate: OffsetDateTime?,
         toDate: OffsetDateTime?
     ): List<SystemHistoryEntry> {
-        return history.getHistoryLimitedToDates(fromDate, toDate)
+        return if (fromDate == null || toDate == null) {
+            history.get()
+        } else {
+            history.getHistoryLimitedToDates(fromDate, toDate)
+        }
     }
 
     private fun com.krillsson.sysapi.core.domain.system.SystemLoad.asHistorySystemLoad(): HistorySystemLoad {

@@ -141,9 +141,9 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         environment.healthChecks().disableHealthChecks()
         environment.metrics().disableMetrics()
 
-        environment.jersey().registerFeatures(config.user())
+        environment.jersey().registerFeatures(config.user)
         environment.servlets().configureCrossOriginFilter()
-        if (config.forwardHttps()) {
+        if (config.forwardHttpToHttps) {
             EnvironmentUtils.addHttpsForward(environment.applicationContext)
         }
         val clients = Clients(config.connectivityCheck.address)
@@ -163,7 +163,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             )
         migrator.migrate()
 
-        dockerClient = DockerClient(config.metrics().cache, config.docker(), environment.objectMapper)
+        dockerClient = DockerClient(config.metricsConfig.cache, config.docker, environment.objectMapper)
         metricsFactory = MetricsFactory(
             hal,
             os,
@@ -175,7 +175,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
 
         val metrics = metricsFactory.get(config)
 
-        val selfSignedCertificates = config.selfSignedCertificates()
+        val selfSignedCertificates = config.selfSignedCertificates
         if (selfSignedCertificates.enabled) {
             val certificateNamesCreator = CertificateNamesCreator(metrics.networkMetrics(), clients.externalIpService)
             SelfSignedCertificateManager().start(certificateNamesCreator, selfSignedCertificates)
@@ -183,8 +183,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
 
         val historyMetricQueryManager = object : MetricQueryManager<HistoryMetricQueryEvent>(
             queryScheduledExecutor,
-            config.metrics().history.interval,
-            config.metrics().history.unit,
+            config.metricsConfig.history.interval,
+            config.metricsConfig.history.unit,
             metrics,
             eventBus
         ) {
@@ -194,8 +194,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         }
         val monitorMetricQueryManager = object : MetricQueryManager<MonitorMetricQueryEvent>(
             queryScheduledExecutor,
-            config.metrics().monitor.interval,
-            config.metrics().monitor.unit,
+            config.metricsConfig.monitor.interval,
+            config.metricsConfig.monitor.unit,
             metrics,
             eventBus
         ) {
@@ -208,7 +208,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             HistorySystemLoadDAO::class.java,
             historyDao
         )
-        val historyManager = MetricsHistoryManager(config.metrics().history, eventBus, historyRepository)
+        val historyManager = MetricsHistoryManager(config.metricsConfig.history, eventBus, historyRepository)
         val monitorManager = MonitorManager(
             eventManager,
             eventBus,

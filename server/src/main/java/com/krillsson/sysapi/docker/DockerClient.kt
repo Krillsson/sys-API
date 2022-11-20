@@ -176,7 +176,7 @@ class DockerClient(
 
     private fun checkAvailability(): Status {
         return when {
-            !dockerConfiguration.enabled() -> {
+            !dockerConfiguration.enabled -> {
                 Status.Disabled
             }
             else -> try {

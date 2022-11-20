@@ -2,10 +2,8 @@ package com.krillsson.sysapi.persistence
 
 import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.core.history.db.*
-import com.krillsson.sysapi.util.FileSystem
 import io.dropwizard.db.DataSourceFactory
 import io.dropwizard.flyway.FlywayBundle
-import io.dropwizard.flyway.FlywayFactory
 import io.dropwizard.hibernate.HibernateBundle
 
 fun createHibernateBundle() = object : HibernateBundle<SysAPIConfiguration>(
@@ -22,19 +20,13 @@ fun createHibernateBundle() = object : HibernateBundle<SysAPIConfiguration>(
     DriveHealthData::class.java
 ) {
     override fun getDataSourceFactory(configuration: SysAPIConfiguration): DataSourceFactory {
-        val dataSourceFactory = configuration.dataSourceFactory
-        dataSourceFactory.url = "jdbc:sqlite:${FileSystem.data.absolutePath}/database.sqlite"
-        return dataSourceFactory
+        return configuration.database
     }
 }
 
 fun createFlywayBundle() = object : FlywayBundle<SysAPIConfiguration>() {
     override fun getDataSourceFactory(configuration: SysAPIConfiguration): DataSourceFactory {
-        return configuration.dataSourceFactory
-    }
-
-    override fun getFlywayFactory(configuration: SysAPIConfiguration?): FlywayFactory {
-        return super.getFlywayFactory(configuration)
+        return configuration.database
     }
 }
 

@@ -16,7 +16,7 @@ buildscript {
         classpath(
                 "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",
                 'com.github.jengelman.gradle.plugins:shadow:6.1.0',
-                "gradle.plugin.com.google.cloud.tools:jib-gradle-plugin:3.2.1",
+                "com.google.cloud.tools:jib-gradle-plugin:3.3.1",
                 "org.jetbrains.kotlin:kotlin-noarg:$kotlinVersion"
         )
     }
@@ -92,7 +92,7 @@ project(':server') {
     compileKotlin.finalizedBy(writeProperties)
 
     jib {
-        to.image = "krillsson/sys-api"
+        to.image = "krillsson/sys-api:nightly"
         container {
             appRoot = "/"
             args = ["server", "/config/configuration.yml"]

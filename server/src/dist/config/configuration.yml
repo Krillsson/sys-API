@@ -66,18 +66,6 @@ server:
       certAlias: sys-api-key
       validateCerts: false
       validatePeers: false
-
-database:
-  # the name of your JDBC driver
-  driverClass: org.sqlite.JDBC
-  # configured in runtime
-  url: temp
-  properties:
-    charSet: UTF-8
-    hibernate.dialect: org.hibernate.dialect.SQLiteDialect
-flyway:
-  baselineOnMigrate: true
-
 logging:
 
   # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.

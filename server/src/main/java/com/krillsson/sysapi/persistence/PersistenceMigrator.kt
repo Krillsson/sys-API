@@ -50,7 +50,7 @@ open class PersistenceMigrator(
         return try {
             flywayBundle.getFlywayFactory(config)
                 .build(
-                    config.dataSourceFactory
+                    config.database
                         .build(metrics, "Flyway")
                 )
         } catch (e: FlywayException) {
