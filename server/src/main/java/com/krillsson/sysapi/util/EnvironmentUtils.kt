@@ -2,6 +2,7 @@ package com.krillsson.sysapi.util
 
 import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.health.HealthCheckRegistry
+import com.krillsson.server.BuildConfig
 import com.krillsson.sysapi.SysAPIApplication
 import com.krillsson.sysapi.auth.BasicAuthenticator
 import com.krillsson.sysapi.auth.BasicAuthorizer
@@ -60,7 +61,7 @@ fun JerseyEnvironment.registerJerseyResources(
     register(MonitorResource(monitorManager, eventManager))
     register(
         MetaInfoResource(
-            Utils.getVersionFromManifest(),
+            BuildConfig.APP_VERSION,
             endpoints,
             os.processId
         )
