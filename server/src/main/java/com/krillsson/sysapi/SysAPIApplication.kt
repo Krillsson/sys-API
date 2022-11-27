@@ -97,6 +97,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
                 .build()
         ), 5
     )
+    private val hibernate: HibernateBundle<SysAPIConfiguration> = createHibernateBundle()
+    private val flyWay: FlywayBundle<SysAPIConfiguration> = createFlywayBundle()
 
     val systemInfo = SystemInfo()
     val hal = systemInfo.hardware
@@ -104,9 +106,6 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     val eventBus = EventBus()
     val graphqlConfiguration = GraphQLConfiguration()
     val graphqlBundle = GraphQLBundle(graphqlConfiguration)
-
-    private val hibernate: HibernateBundle<SysAPIConfiguration> = createHibernateBundle()
-    private val flyWay: FlywayBundle<SysAPIConfiguration> = createFlywayBundle()
 
     lateinit var eventStore: EventStore
     lateinit var monitorStore: MonitorStore

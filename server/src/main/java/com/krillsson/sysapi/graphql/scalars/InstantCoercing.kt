@@ -28,7 +28,7 @@ class InstantCoercing : Coercing<Instant?, String> {
         throw CoercingSerializeException("Expected a 'String' or 'Long' but was '" + input::class.java.simpleName.toString() + "'.")
     }
 
-    override fun parseValue(input: Any): Instant? {
+    override fun parseValue(input: Any): Instant {
         if (input is String) {
             return parseInstant(input.toString(), Function { message: String? -> CoercingParseValueException(message) })
         }
@@ -39,7 +39,7 @@ class InstantCoercing : Coercing<Instant?, String> {
         return instant.get()
     }
 
-    override fun parseLiteral(input: Any): Instant? {
+    override fun parseLiteral(input: Any): Instant {
         if (input is StringValue) {
             return parseInstant(input.value, Function { message: String? -> CoercingParseLiteralException(message) })
         }
@@ -50,14 +50,12 @@ class InstantCoercing : Coercing<Instant?, String> {
     }
 
     companion object {
-        private fun parseInstant(input: Any, exceptionMaker: Function<String?, RuntimeException>): Instant? {
+        private fun parseInstant(input: Any, exceptionMaker: Function<String?, RuntimeException>): Instant {
             return try {
-                if (input is String) {
-                    Instant.parse(input)
-                } else if (input is Long) {
-                    Instant.ofEpochSecond(input)
-                } else {
-                    null
+                when (input) {
+                    is String -> Instant.parse(input)
+                    is Long -> Instant.ofEpochSecond(input)
+                    else -> throw exceptionMaker.apply("Unable to parse $input")
                 }
             } catch (e: DateTimeParseException) {
                 throw exceptionMaker.apply(e.message)

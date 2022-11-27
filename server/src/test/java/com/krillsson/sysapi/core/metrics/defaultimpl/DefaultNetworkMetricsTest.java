@@ -1,8 +1,10 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl;
 
+import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager;
 import com.krillsson.sysapi.core.domain.network.NetworkInterface;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad;
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
+import com.krillsson.sysapi.util.Ticker;
 import org.junit.Before;
 import org.junit.Test;
 import oshi.hardware.HardwareAbstractionLayer;
@@ -22,6 +24,8 @@ public class DefaultNetworkMetricsTest {
 
     DefaultNetworkMetrics provider;
     HardwareAbstractionLayer hal;
+    ConnectivityCheckManager connectivityCheckManager;
+    Ticker ticker;
     SpeedMeasurementManager speedMeasurementManager;
 
     NetworkIF nic1;
@@ -32,8 +36,15 @@ public class DefaultNetworkMetricsTest {
     @Before
     public void setUp() throws SocketException {
         hal = mock(HardwareAbstractionLayer.class);
+        connectivityCheckManager = mock(ConnectivityCheckManager.class);
+        ticker = mock(Ticker.class);
         speedMeasurementManager = mock(SpeedMeasurementManager.class);
-        provider = new DefaultNetworkMetrics(hal, speedMeasurementManager);
+        provider = new DefaultNetworkMetrics(
+                ticker,
+                hal,
+                speedMeasurementManager,
+                connectivityCheckManager
+        );
 
         nic1 = mock(NetworkIF.class);
         networkInterface1 = mock(java.net.NetworkInterface.class);
@@ -41,7 +52,7 @@ public class DefaultNetworkMetricsTest {
         when(nic1.getName()).thenReturn("en0");
         when(nic1.getDisplayName()).thenReturn("en0");
         when(nic1.getMacaddr()).thenReturn("00:1B:63:84:45:E6");
-        when(nic1.getMTU()).thenReturn(1500);
+        when(nic1.getMTU()).thenReturn(1500L);
         when(nic1.getIPv4addr()).thenReturn(new String[]{"192.168.1.2"});
         when(nic1.getIPv6addr()).thenReturn(new String[]{"2001:0db8:85a3:0000:0000:8a2e:0370:7334"});
         when(nic1.getSpeed()).thenReturn(1000L);
@@ -63,7 +74,7 @@ public class DefaultNetworkMetricsTest {
         when(nic2.getName()).thenReturn("en1");
         when(nic2.getDisplayName()).thenReturn("en1");
         when(nic2.getMacaddr()).thenReturn("00:1B:63:84:45:E8");
-        when(nic2.getMTU()).thenReturn(1500);
+        when(nic2.getMTU()).thenReturn(1500L);
         when(nic2.getIPv4addr()).thenReturn(new String[]{"192.168.1.3"});
         when(nic2.getIPv6addr()).thenReturn(new String[]{"2001:0db8:85a3:0000:0000:8a2e:0370:7335"});
         when(nic2.getSpeed()).thenReturn(1001L);
