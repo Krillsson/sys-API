@@ -24,6 +24,7 @@ import com.krillsson.sysapi.util.FileSystem
 import com.smoketurner.dropwizard.graphql.GraphQLFactory
 import io.dropwizard.Configuration
 import io.dropwizard.db.DataSourceFactory
+import io.dropwizard.server.DefaultServerFactory
 
 class SysAPIConfiguration(
     val user: UserConfiguration,
@@ -44,4 +45,9 @@ class SysAPIConfiguration(
                 "hibernate.dialect" to "org.hibernate.dialect.SQLiteDialect"
             )
         }
-) : Configuration()
+) : Configuration() {
+    init {
+        //disable admin interface
+        (serverFactory as DefaultServerFactory).adminConnectors = emptyList()
+    }
+}

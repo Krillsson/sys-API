@@ -17,8 +17,6 @@ import java.util.Collections;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Answers.RETURNS_MOCKS;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -46,7 +44,7 @@ public class DefaultProcessesMetricsTest {
 
     @Test
     public void shouldHandleNoProcessesPresent() {
-        when(os.getProcesses(anyInt(), any(OperatingSystem.ProcessSort.class))).thenReturn(Collections.emptyList());
+        when(os.getProcesses()).thenReturn(Collections.emptyList());
         ProcessesInfo processesInfo = provider.processesInfo(ProcessSort.CPU, 0);
 
         assertTrue(processesInfo.getProcesses().isEmpty());
@@ -61,7 +59,7 @@ public class DefaultProcessesMetricsTest {
 
         OSProcess process = mock(OSProcess.class, RETURNS_MOCKS);
         when(process.getResidentSetSize()).thenReturn(1000L);
-        when(os.getProcesses(anyInt(), any(OperatingSystem.ProcessSort.class))).thenReturn(Collections.singletonList(process));
+        when(os.getProcesses()).thenReturn(Collections.singletonList(process));
         //when(memory.getAvailable()).thenReturn(3000L);
         when(memory.getTotal()).thenReturn(4000L);
 
@@ -81,7 +79,7 @@ public class DefaultProcessesMetricsTest {
         when(process.getKernelTime()).thenReturn(16L);
         when(process.getUserTime()).thenReturn(4L);
         when(process.getUpTime()).thenReturn(100L);
-        when(os.getProcesses(anyInt(), any(OperatingSystem.ProcessSort.class))).thenReturn(Collections.singletonList(process));
+        when(os.getProcesses()).thenReturn(Collections.singletonList(process));
 
         ProcessesInfo processes = provider.processesInfo(ProcessSort.CPU, 0);
 

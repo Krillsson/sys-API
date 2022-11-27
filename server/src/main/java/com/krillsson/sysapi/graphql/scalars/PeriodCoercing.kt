@@ -27,7 +27,7 @@ class PeriodCoercing : Coercing<Period?, String> {
         throw CoercingSerializeException("Expected a 'String' or 'TemporalAmount' or 'Integer' but was '" + input::class.java.simpleName.toString() + "'.")
     }
 
-    override fun parseValue(input: Any): Period? {
+    override fun parseValue(input: Any): Period {
         return if (input is String) {
             parsePeriod(input.toString(), Function { message: String? -> CoercingParseValueException(message) })
         } else {
@@ -39,7 +39,7 @@ class PeriodCoercing : Coercing<Period?, String> {
         }
     }
 
-    override fun parseLiteral(input: Any): Period? {
+    override fun parseLiteral(input: Any): Period {
         if (input is StringValue) {
             return parsePeriod(input.value, Function { message: String? -> CoercingParseLiteralException(message) })
         }
@@ -50,14 +50,12 @@ class PeriodCoercing : Coercing<Period?, String> {
     }
 
     companion object {
-        private fun parsePeriod(input: Any, exceptionMaker: Function<String?, RuntimeException>): Period? {
+        private fun parsePeriod(input: Any, exceptionMaker: Function<String?, RuntimeException>): Period {
             return try {
-                if (input is String) {
-                    Period.parse(input)
-                } else if (input is Int) {
-                    Period.ofDays(input)
-                } else {
-                    null
+                when (input) {
+                    is String -> Period.parse(input)
+                    is Int -> Period.ofDays(input)
+                    else -> throw exceptionMaker.apply("Unable to parse $input")
                 }
             } catch (e: DateTimeParseException) {
                 throw exceptionMaker.apply(e.message)

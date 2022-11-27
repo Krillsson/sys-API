@@ -30,12 +30,16 @@ class GraphQLBundle(private val graphQLConfiguration: GraphQLConfiguration) : Co
         val provider: PreparsedDocumentProvider =
             CachingPreparsedDocumentProvider(factory.queryCache, environment.metrics())
         val schema = factory.build()
-        val queryInvoker =
-            GraphQLQueryInvoker.newBuilder().withPreparsedDocumentProvider(provider)
-                .withInstrumentation(factory.instrumentations).build()
-        val config =
-            graphql.kickstart.servlet.GraphQLConfiguration.with(schema).with(queryInvoker).build()
-        val servlet = GraphQLHttpServlet.with(config)
+        val queryInvoker = GraphQLQueryInvoker.newBuilder()
+            .withPreparsedDocumentProvider(provider)
+            .withInstrumentation(factory.instrumentations)
+            .build()
+        val config = graphql.kickstart.servlet.GraphQLConfiguration
+            .with(schema)
+            .with(queryInvoker)
+            .build()
+        val servlet = GraphQLHttpServlet
+            .with(config)
         environment.servlets().addServlet("graphql", servlet)
             .addMapping("/graphql", "/schema.json")
         val securityHandler = BasicAuthSecurityHandlerFactory(

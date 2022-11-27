@@ -16,15 +16,15 @@ class LongCoercing : Coercing<Long?, String?> {
         }
     }
 
-    override fun parseValue(input: Any): Long? {
+    override fun parseValue(input: Any): Long {
         return parse(input)
     }
 
-    override fun parseLiteral(input: Any): Long? {
+    override fun parseLiteral(input: Any): Long {
         return parse(input)
     }
 
-    private fun parse(input: Any): Long? {
+    private fun parse(input: Any): Long {
         return try {
             when (input) {
                 is String -> input.toLong()
