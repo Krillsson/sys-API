@@ -5,6 +5,8 @@ import com.google.common.eventbus.Subscribe
 import com.krillsson.sysapi.config.HistoryConfiguration
 import com.krillsson.sysapi.core.domain.history.HistorySystemLoad
 import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
+import com.krillsson.sysapi.util.logger
+import com.krillsson.sysapi.util.measureTimeMillis
 import io.dropwizard.lifecycle.Managed
 import java.time.OffsetDateTime
 
@@ -13,6 +15,9 @@ open class HistoryManager constructor(
     private val eventBus: EventBus,
     private val history: HistoryRepository
 ) : Managed {
+
+    val logger by logger()
+
     @Subscribe
     fun onEvent(event: HistoryMetricQueryEvent) {
         history.record(event.load().asHistorySystemLoad())
@@ -28,18 +33,26 @@ open class HistoryManager constructor(
     }
 
     fun getHistory(): List<SystemHistoryEntry> {
-        return history.get()
+        return getHistoryLimitedToDates(null, null)
     }
 
     fun getHistoryLimitedToDates(
         fromDate: OffsetDateTime?,
         toDate: OffsetDateTime?
     ): List<SystemHistoryEntry> {
-        return if (fromDate == null || toDate == null) {
-            history.get()
-        } else {
-            history.getHistoryLimitedToDates(fromDate, toDate)
+        val result = measureTimeMillis {
+            if (fromDate == null || toDate == null) {
+                history.get()
+            } else {
+                history.getHistoryLimitedToDates(fromDate, toDate)
+            }
         }
+        logger.info(
+            "Took {} to fetch {} history entries",
+            "${result.first.toInt()}ms",
+            result.second.size
+        )
+        return result.second
     }
 
     private fun com.krillsson.sysapi.core.domain.system.SystemLoad.asHistorySystemLoad(): HistorySystemLoad {

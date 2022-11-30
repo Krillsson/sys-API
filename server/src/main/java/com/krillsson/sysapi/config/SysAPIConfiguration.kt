@@ -40,9 +40,13 @@ class SysAPIConfiguration(
         .apply {
             driverClass = "org.sqlite.JDBC"
             url = "jdbc:sqlite:${FileSystem.data.absolutePath}/database.sqlite"
-            properties =  mapOf(
+            properties = mapOf(
                 "charSet" to "UTF-8",
                 "hibernate.dialect" to "org.hibernate.dialect.SQLiteDialect"
+                /**"hibernate.show_sql" to "false",
+                "hibernate.use_sql_comments" to "true",
+                "hibernate.format_sql" to "true",
+                "hibernate.generate_statistics" to "true"**/
             )
         }
 ) : Configuration() {
