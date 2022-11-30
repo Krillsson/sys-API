@@ -95,6 +95,21 @@ logging:
       level: ERROR
       appenders:
         - type: console
+    "org.hibernate.type":
+      additive: false
+      level: ERROR
+      appenders:
+        - type: console
+    "org.hibernate.stat":
+      additive: false
+      level: ERROR
+      appenders:
+        - type: console
+    "org.hibernate.engine":
+      additive: false
+      level: ERROR
+      appenders:
+        - type: console
     "graphql.kickstart":
       additive: false
       level: ERROR
