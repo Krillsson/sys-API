@@ -94,6 +94,15 @@ class QueryResolver : GraphQLQueryResolver {
         }.toList()
     }
 
+    fun historyBetweenDates(from: OffsetDateTime, to: OffsetDateTime): List<SystemHistoryEntry> {
+        return historyManager.getHistoryLimitedToDates(from, to).map {
+            SystemHistoryEntry(
+                it.date,
+                it.value
+            )
+        }.toList()
+    }
+
     fun monitors(): List<com.krillsson.sysapi.graphql.domain.Monitor> {
         return monitorManager.getAll().map { it.asMonitor() }
     }
@@ -110,6 +119,7 @@ class QueryResolver : GraphQLQueryResolver {
                 "The docker support is currently disabled. You can change this in configuration.yml",
                 isDisabled = true
             )
+
             is DockerClient.Status.Unavailable -> DockerUnavailable(
                 "${status.error.message ?: "Unknown reason"} Type: ${requireNotNull(status.error::class.simpleName)}",
                 isDisabled = false
@@ -122,10 +132,18 @@ class QueryResolver : GraphQLQueryResolver {
         fun runningContainers(docker: DockerAvailable) =
             dockerClient.listContainers().filter { it.state == State.RUNNING }
 
-        fun readLogsForContainer(docker: DockerAvailable, containerId: String, from: OffsetDateTime?, to: OffsetDateTime?) : ReadLogsForContainerOutput {
-            return when(val result = dockerClient.readLogsForContainer(containerId, from, to)) {
+        fun readLogsForContainer(
+            docker: DockerAvailable,
+            containerId: String,
+            from: OffsetDateTime?,
+            to: OffsetDateTime?
+        ): ReadLogsForContainerOutput {
+            return when (val result = dockerClient.readLogsForContainer(containerId, from, to)) {
                 is DockerClient.ReadLogsCommandResult.Success -> ReadLogsForContainerOutputSucceeded(result.lines)
-                is DockerClient.ReadLogsCommandResult.Failed -> ReadLogsForContainerOutputFailed(result.error.message ?: result.error.toString())
+                is DockerClient.ReadLogsCommandResult.Failed -> ReadLogsForContainerOutputFailed(
+                    result.error.message ?: result.error.toString()
+                )
+
                 is DockerClient.ReadLogsCommandResult.TimedOut -> ReadLogsForContainerOutputFailed("Operation timed out after ${result.timeoutSeconds} seconds")
                 DockerClient.ReadLogsCommandResult.Unavailable -> ReadLogsForContainerOutputFailed("Docker is not available")
             }
@@ -144,7 +162,7 @@ class QueryResolver : GraphQLQueryResolver {
         }
 
         fun getUsbDevices(system: System): List<UsbDevice> {
-            return getBaseboard(system)?.usbDevices?.toList().orEmpty()
+            return getBaseboard(system).usbDevices.toList()
         }
 
         fun getUptime(system: System): Long {
@@ -169,7 +187,7 @@ class QueryResolver : GraphQLQueryResolver {
             system: System,
             limit: Int = 0,
             processSortMethod: ProcessSort = ProcessSort.MEMORY
-        ): List<Process?>? {
+        ): List<Process> {
             return metrics.processesMetrics()
                 .processesInfo(processSortMethod, limit).processes
         }
@@ -179,6 +197,11 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     inner class HistoryResolver : GraphQLResolver<SystemHistoryEntry> {
+
+        fun getDateTime(historyEntry: SystemHistoryEntry): OffsetDateTime {
+            return historyEntry.date
+        }
+
         fun getProcessorMetrics(historyEntry: SystemHistoryEntry): CpuLoad {
             return historyEntry.value.cpuLoad
         }
@@ -239,10 +262,12 @@ class QueryResolver : GraphQLQueryResolver {
                         it.value.toSystemLoad(),
                         monitor.monitoredItemId
                     )
+
                     Monitor.ValueType.Fractional -> Selectors.forFractionalMonitorType(monitor.type)(
                         it.value.toSystemLoad(),
                         monitor.monitoredItemId
                     )
+
                     Monitor.ValueType.Conditional -> Selectors.forConditionalMonitorType(monitor.type)(
                         it.value.toSystemLoad(),
                         monitor.monitoredItemId
@@ -254,20 +279,23 @@ class QueryResolver : GraphQLQueryResolver {
 
         fun getCurrentValue(monitor: com.krillsson.sysapi.graphql.domain.Monitor): MonitoredValue {
             metrics.systemMetrics().systemLoad()
-            return requireNotNull(when (monitor.type.valueType) {
-                Monitor.ValueType.Numerical -> Selectors.forNumericalMonitorType(monitor.type)(
-                    metrics.systemMetrics().systemLoad(),
-                    monitor.monitoredItemId
-                )
-                Monitor.ValueType.Fractional -> Selectors.forFractionalMonitorType(monitor.type)(
-                    metrics.systemMetrics().systemLoad(),
-                    monitor.monitoredItemId
-                )
-                Monitor.ValueType.Conditional -> Selectors.forConditionalMonitorType(monitor.type)(
-                    metrics.systemMetrics().systemLoad(),
-                    monitor.monitoredItemId
-                )
-            }
+            return requireNotNull(
+                when (monitor.type.valueType) {
+                    Monitor.ValueType.Numerical -> Selectors.forNumericalMonitorType(monitor.type)(
+                        metrics.systemMetrics().systemLoad(),
+                        monitor.monitoredItemId
+                    )
+
+                    Monitor.ValueType.Fractional -> Selectors.forFractionalMonitorType(monitor.type)(
+                        metrics.systemMetrics().systemLoad(),
+                        monitor.monitoredItemId
+                    )
+
+                    Monitor.ValueType.Conditional -> Selectors.forConditionalMonitorType(monitor.type)(
+                        metrics.systemMetrics().systemLoad(),
+                        monitor.monitoredItemId
+                    )
+                }
             ) { "No value found for monitor of type ${monitor.type} with id ${monitor.id}" }.asMonitoredValue()
         }
     }

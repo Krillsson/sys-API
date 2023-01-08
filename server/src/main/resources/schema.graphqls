@@ -10,6 +10,7 @@ schema {
 type Query {
     system: System!
     history: [SystemMetricsHistoryEntry!]!
+    historyBetweenDates(from: OffsetDateTime!, to: OffsetDateTime!): [SystemMetricsHistoryEntry!]!
     monitors: [Monitor!]!
     events: [Event!]!
     pastEvents: [PastEvent!]!
@@ -192,6 +193,7 @@ type System {
 
 type SystemMetricsHistoryEntry {
     date: String!
+    dateTime: OffsetDateTime!
     processorMetrics: ProcessorMetrics!
     driveMetrics: [DriveMetrics!]!
     networkInterfaceMetrics: [NetworkInterfaceMetrics!]!
@@ -217,6 +219,7 @@ type ConditionalValue {
 
 type MonitoredValueHistoryEntry {
     date: String!
+    dateTime: OffsetDateTime!
     value: MonitoredValue!
 }
 
