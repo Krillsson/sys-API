@@ -43,10 +43,13 @@ class SysAPIConfiguration(
             properties = mapOf(
                 "charSet" to "UTF-8",
                 "hibernate.dialect" to "org.hibernate.dialect.SQLiteDialect"
-                /**"hibernate.show_sql" to "false",
+                /**
+                for troubleshooting SQL
+                "hibernate.show_sql" to "true",
                 "hibernate.use_sql_comments" to "true",
                 "hibernate.format_sql" to "true",
-                "hibernate.generate_statistics" to "true"**/
+                "hibernate.generate_statistics" to "true"
+                 **/
             )
         }
 ) : Configuration() {

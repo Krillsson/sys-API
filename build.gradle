@@ -66,7 +66,19 @@ project(':server') {
         exclude 'META-INF/*.RSA'
     }
 
-    def jvmArgs = ["-server", "-Xms100m", "-Xmx876m", "-Djava.awt.headless=true", "-XX:+UseG1GC", "-XX:MaxGCPauseMillis=100", "-XX:+UseStringDeduplication", "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED"]
+    def jvmArgs = [
+            "-server",
+            "-Djava.awt.headless=true",
+            "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED"
+//            enable jmx to pull out dumps
+//            "-Dcom.sun.management.jmxremote",
+//            "-Dcom.sun.management.jmxremote.authenticate=false",
+//            "-Dcom.sun.management.jmxremote.ssl=false",
+//            "-Dcom.sun.management.jmxremote.port=1098",
+//            "-Dcom.sun.management.jmxremote.rmi.port=1098",
+//            "-Dcom.sun.management.jmxremote.local.only=false",
+//            "-Djava.rmi.server.hostname=<machine IP>",
+    ]
 
     mainClassName = 'com.krillsson.sysapi.SysAPIApplication'
 
