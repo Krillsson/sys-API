@@ -14,7 +14,9 @@ data class ConditionalValue(val condition: Boolean) : com.krillsson.sysapi.graph
 data class MonitoredValueHistoryEntry(
     val date: OffsetDateTime,
     val value: com.krillsson.sysapi.graphql.domain.MonitoredValue
-)
+) {
+    fun getDateTime() = date
+}
 
 data class Monitor(
     val id: UUID,
