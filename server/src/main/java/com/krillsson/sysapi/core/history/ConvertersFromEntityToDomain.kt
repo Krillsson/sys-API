@@ -11,6 +11,7 @@ import com.krillsson.sysapi.core.history.db.*
 
 fun HistorySystemLoadEntity.asSystemHistoryEntry(): SystemHistoryEntry {
     return SystemHistoryEntry(
+        id,
         date,
         HistorySystemLoad(
             uptime,
@@ -26,25 +27,25 @@ fun HistorySystemLoadEntity.asSystemHistoryEntry(): SystemHistoryEntry {
     )
 }
 
-private fun com.krillsson.sysapi.core.history.db.HealthData.asHealthData(): HealthData {
+fun com.krillsson.sysapi.core.history.db.HealthData.asHealthData(): HealthData {
     return HealthData(
         description, data, dataType.asDataType()
     )
 }
 
-private fun GpuLoad.asGpuLoad(): com.krillsson.sysapi.core.domain.gpu.GpuLoad {
+fun GpuLoad.asGpuLoad(): com.krillsson.sysapi.core.domain.gpu.GpuLoad {
     return com.krillsson.sysapi.core.domain.gpu.GpuLoad(
         name, coreLoad, memoryLoad, health.asHealth()
     )
 }
 
-private fun GpuHealth.asHealth(): com.krillsson.sysapi.core.domain.gpu.GpuHealth {
+fun GpuHealth.asHealth(): com.krillsson.sysapi.core.domain.gpu.GpuHealth {
     return com.krillsson.sysapi.core.domain.gpu.GpuHealth(
         fanRpm, fanPercent, temperature
     )
 }
 
-private fun MemoryLoad.asMemoryLoad(): com.krillsson.sysapi.core.domain.memory.MemoryLoad {
+fun MemoryLoad.asMemoryLoad(): com.krillsson.sysapi.core.domain.memory.MemoryLoad {
     return com.krillsson.sysapi.core.domain.memory.MemoryLoad(
         numberOfProcesses,
         swapTotalBytes,
@@ -55,7 +56,7 @@ private fun MemoryLoad.asMemoryLoad(): com.krillsson.sysapi.core.domain.memory.M
     )
 }
 
-private fun DriveLoad.asDriveLoad(): com.krillsson.sysapi.core.domain.drives.DriveLoad {
+fun DriveLoad.asDriveLoad(): com.krillsson.sysapi.core.domain.drives.DriveLoad {
     return com.krillsson.sysapi.core.domain.drives.DriveLoad(
         name,
         serial,
@@ -65,17 +66,17 @@ private fun DriveLoad.asDriveLoad(): com.krillsson.sysapi.core.domain.drives.Dri
     )
 }
 
-private fun DriveLoad.asHealthData(): DriveHealth {
+fun DriveLoad.asHealthData(): DriveHealth {
     return DriveHealth(
         temperature, healthData.map { it.asHealthData() }
     )
 }
 
-private fun DriveHealthData.asHealthData(): HealthData {
+fun DriveHealthData.asHealthData(): HealthData {
     return HealthData(description, data, dataType.asDataType())
 }
 
-private fun DataType.asDataType(): com.krillsson.sysapi.core.domain.sensors.DataType {
+fun DataType.asDataType(): com.krillsson.sysapi.core.domain.sensors.DataType {
     return when (this) {
         DataType.CLOCK -> com.krillsson.sysapi.core.domain.sensors.DataType.CLOCK
         DataType.VOLTAGE -> com.krillsson.sysapi.core.domain.sensors.DataType.VOLTAGE
@@ -86,23 +87,23 @@ private fun DataType.asDataType(): com.krillsson.sysapi.core.domain.sensors.Data
     }
 }
 
-private fun DriveSpeed.asSpeed(): com.krillsson.sysapi.core.domain.drives.DriveSpeed {
+fun DriveSpeed.asSpeed(): com.krillsson.sysapi.core.domain.drives.DriveSpeed {
     return com.krillsson.sysapi.core.domain.drives.DriveSpeed(readBytesPerSecond, writeBytesPerSecond)
 }
 
-private fun DriveValues.asValues(): com.krillsson.sysapi.core.domain.drives.DriveValues {
+fun DriveValues.asValues(): com.krillsson.sysapi.core.domain.drives.DriveValues {
     return com.krillsson.sysapi.core.domain.drives.DriveValues(
         usableSpace, totalSpace, openFileDescriptors, maxFileDescriptors, reads, readBytes, writes, writeBytes
     )
 }
 
-private fun Connectivity.asConnectivity(): com.krillsson.sysapi.core.domain.network.Connectivity {
+fun Connectivity.asConnectivity(): com.krillsson.sysapi.core.domain.network.Connectivity {
     return com.krillsson.sysapi.core.domain.network.Connectivity(
         externalIp, previousExternalIp, connected
     )
 }
 
-private fun NetworkInterfaceLoad.asNetworkInterfaceLoad(): com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad {
+fun NetworkInterfaceLoad.asNetworkInterfaceLoad(): com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad {
     return com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad(
         name,
         mac,
@@ -112,17 +113,17 @@ private fun NetworkInterfaceLoad.asNetworkInterfaceLoad(): com.krillsson.sysapi.
     )
 }
 
-private fun NetworkInterfaceSpeed.asNetworkInterfaceSpeed(): com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed {
+fun NetworkInterfaceSpeed.asNetworkInterfaceSpeed(): com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed {
     return com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed(receiveBytesPerSecond, sendBytesPerSecond)
 }
 
-private fun NetworkInterfaceValues.asNetworkInterfaceValues(): com.krillsson.sysapi.core.domain.network.NetworkInterfaceValues {
+fun NetworkInterfaceValues.asNetworkInterfaceValues(): com.krillsson.sysapi.core.domain.network.NetworkInterfaceValues {
     return com.krillsson.sysapi.core.domain.network.NetworkInterfaceValues(
         speed, bytesReceived, bytesSent, packetsReceived, packetsSent, inErrors, outErrors
     )
 }
 
-private fun com.krillsson.sysapi.core.history.db.CpuLoad.asCpuLoad(): CpuLoad {
+fun com.krillsson.sysapi.core.history.db.CpuLoad.asCpuLoad(): CpuLoad {
     return CpuLoad(
         usagePercentage,
         systemLoadAverage,
@@ -133,13 +134,13 @@ private fun com.krillsson.sysapi.core.history.db.CpuLoad.asCpuLoad(): CpuLoad {
     )
 }
 
-private fun com.krillsson.sysapi.core.history.db.CpuHealth.asCpuHealth(): CpuHealth {
+fun com.krillsson.sysapi.core.history.db.CpuHealth.asCpuHealth(): CpuHealth {
     return CpuHealth(
         temperatures, voltage, fanRpm, fanPercent
     )
 }
 
-private fun com.krillsson.sysapi.core.history.db.CoreLoad.asCoreLoad(): CoreLoad {
+fun com.krillsson.sysapi.core.history.db.CoreLoad.asCoreLoad(): CoreLoad {
     return CoreLoad(
         percentage
     )

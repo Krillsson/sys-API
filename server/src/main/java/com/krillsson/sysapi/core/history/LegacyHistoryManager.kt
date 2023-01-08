@@ -1,7 +1,5 @@
 package com.krillsson.sysapi.core.history
 
-import com.google.common.eventbus.EventBus
-import com.krillsson.sysapi.config.HistoryConfiguration
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad
 import com.krillsson.sysapi.core.domain.drives.DriveLoad
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad
@@ -9,23 +7,26 @@ import com.krillsson.sysapi.core.domain.history.HistoryEntry
 import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.domain.memory.MemoryLoad
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad
+import com.krillsson.sysapi.util.logger
+import com.krillsson.sysapi.util.measureTimeMillis
 import java.time.OffsetDateTime
 import java.util.stream.Collectors
 
-class MetricsHistoryManager(configuration: HistoryConfiguration, eventBus: EventBus, historyRepository: HistoryRepository) :
-    HistoryManager(configuration, eventBus, historyRepository) {
+class LegacyHistoryManager(
+    private val history: HistoryRepository
+) {
     fun cpuLoadHistory(
         fromDate: OffsetDateTime?,
         toDate: OffsetDateTime?
     ): List<HistoryEntry<CpuLoad>> {
-        return systemLoadHistory(fromDate, toDate).stream()
+        return systemLoadHistory(fromDate, toDate)
             .map { e: SystemHistoryEntry ->
                 HistoryEntry(
+                    e.id,
                     e.date,
                     e.value.cpuLoad
                 )
             }
-            .collect(Collectors.toList())
     }
 
     fun systemLoadHistory(
@@ -42,6 +43,7 @@ class MetricsHistoryManager(configuration: HistoryConfiguration, eventBus: Event
         return systemLoadHistory(fromDate, toDate).stream()
             .map { e: SystemHistoryEntry ->
                 HistoryEntry(
+                    e.id,
                     e.date,
                     e.value.driveLoads
                 )
@@ -56,6 +58,7 @@ class MetricsHistoryManager(configuration: HistoryConfiguration, eventBus: Event
         return systemLoadHistory(fromDate, toDate).stream()
             .map { e: SystemHistoryEntry ->
                 HistoryEntry(
+                    e.id,
                     e.date,
                     e.value.gpuLoads
                 )
@@ -70,6 +73,7 @@ class MetricsHistoryManager(configuration: HistoryConfiguration, eventBus: Event
         return systemLoadHistory(fromDate, toDate).stream()
             .map { e: SystemHistoryEntry ->
                 HistoryEntry(
+                    e.id,
                     e.date,
                     e.value.memory
                 )
@@ -84,10 +88,37 @@ class MetricsHistoryManager(configuration: HistoryConfiguration, eventBus: Event
         return systemLoadHistory(fromDate, toDate).stream()
             .map { e: SystemHistoryEntry ->
                 HistoryEntry(
+                    e.id,
                     e.date,
                     e.value.networkInterfaceLoads
                 )
             }
             .collect(Collectors.toList())
     }
+
+    val logger by logger()
+
+    fun getHistory(): List<SystemHistoryEntry> {
+        return getHistoryLimitedToDates(null, null)
+    }
+
+    fun getHistoryLimitedToDates(
+        fromDate: OffsetDateTime?,
+        toDate: OffsetDateTime?
+    ): List<SystemHistoryEntry> {
+        val result = measureTimeMillis {
+            if (fromDate == null || toDate == null) {
+                history.getExtended()
+            } else {
+                history.getExtendedHistoryLimitedToDates(fromDate, toDate)
+            }
+        }
+        logger.info(
+            "Took {} to fetch {} history entries",
+            "${result.first.toInt()}ms",
+            result.second.size
+        )
+        return result.second
+    }
 }
+

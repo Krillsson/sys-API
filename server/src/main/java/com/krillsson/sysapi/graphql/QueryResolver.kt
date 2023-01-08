@@ -8,9 +8,7 @@ import com.krillsson.sysapi.core.domain.drives.DriveLoad
 import com.krillsson.sysapi.core.domain.event.OngoingEvent
 import com.krillsson.sysapi.core.domain.event.PastEvent
 import com.krillsson.sysapi.core.domain.gpu.Gpu
-import com.krillsson.sysapi.core.domain.gpu.GpuLoad
 import com.krillsson.sysapi.core.domain.history.HistorySystemLoad
-import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.domain.memory.MemoryInfo
 import com.krillsson.sysapi.core.domain.memory.MemoryLoad
 import com.krillsson.sysapi.core.domain.motherboard.Motherboard
@@ -23,7 +21,8 @@ import com.krillsson.sysapi.core.domain.sensors.DataType
 import com.krillsson.sysapi.core.domain.system.OperatingSystem
 import com.krillsson.sysapi.core.domain.system.Platform
 import com.krillsson.sysapi.core.domain.system.SystemLoad
-import com.krillsson.sysapi.core.history.HistoryManager
+import com.krillsson.sysapi.core.history.HistoryRepository
+import com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorManager
@@ -41,7 +40,7 @@ class QueryResolver : GraphQLQueryResolver {
     lateinit var metrics: Metrics
     lateinit var monitorManager: MonitorManager
     lateinit var eventManager: EventManager
-    lateinit var historyManager: HistoryManager
+    lateinit var historyRepository: HistoryRepository
     lateinit var operatingSystem: OperatingSystem
     lateinit var platform: Platform
     lateinit var dockerClient: DockerClient
@@ -51,7 +50,7 @@ class QueryResolver : GraphQLQueryResolver {
         metrics: Metrics,
         monitorManager: MonitorManager,
         eventManager: EventManager,
-        historyManager: HistoryManager,
+        historyManager: HistoryRepository,
         dockerClient: DockerClient,
         operatingSystem: OperatingSystem,
         platform: Platform,
@@ -60,7 +59,7 @@ class QueryResolver : GraphQLQueryResolver {
         this.metrics = metrics
         this.monitorManager = monitorManager
         this.eventManager = eventManager
-        this.historyManager = historyManager
+        this.historyRepository = historyManager
         this.operatingSystem = operatingSystem
         this.platform = platform
         this.dockerClient = dockerClient
@@ -85,22 +84,12 @@ class QueryResolver : GraphQLQueryResolver {
 
     fun system(): System = System(EnvironmentUtils.hostName, operatingSystem, platform)
 
-    fun history(): List<SystemHistoryEntry> {
-        return historyManager.getHistory().map {
-            SystemHistoryEntry(
-                it.date,
-                it.value
-            )
-        }.toList()
+    fun history(): List<BasicHistorySystemLoadEntity> {
+        return historyRepository.getBasic()
     }
 
-    fun historyBetweenDates(from: OffsetDateTime, to: OffsetDateTime): List<SystemHistoryEntry> {
-        return historyManager.getHistoryLimitedToDates(from, to).map {
-            SystemHistoryEntry(
-                it.date,
-                it.value
-            )
-        }.toList()
+    fun historyBetweenDates(from: OffsetDateTime, to: OffsetDateTime): List<BasicHistorySystemLoadEntity> {
+        return historyRepository.getHistoryLimitedToDates(from, to)
     }
 
     fun monitors(): List<com.krillsson.sysapi.graphql.domain.Monitor> {
@@ -196,34 +185,30 @@ class QueryResolver : GraphQLQueryResolver {
         fun getMemory(system: System) = metrics.memoryMetrics().memoryInfo()
     }
 
-    inner class HistoryResolver : GraphQLResolver<SystemHistoryEntry> {
+    inner class HistoryResolver : GraphQLResolver<BasicHistorySystemLoadEntity> {
 
-        fun getDateTime(historyEntry: SystemHistoryEntry): OffsetDateTime {
+        fun getDateTime(historyEntry: BasicHistorySystemLoadEntity): OffsetDateTime {
             return historyEntry.date
         }
 
-        fun getProcessorMetrics(historyEntry: SystemHistoryEntry): CpuLoad {
-            return historyEntry.value.cpuLoad
+        fun getProcessorMetrics(historyEntry: BasicHistorySystemLoadEntity): CpuLoad {
+            return historyRepository.getCpuLoadById(historyEntry.id)
         }
 
-        fun getDriveMetrics(historyEntry: SystemHistoryEntry): List<DriveLoad> {
-            return historyEntry.value.driveLoads
+        fun getDriveMetrics(historyEntry: BasicHistorySystemLoadEntity): List<DriveLoad> {
+            return historyRepository.getDriveLoadsById(historyEntry.id)
         }
 
-        fun getNetworkInterfaceMetrics(historyEntry: SystemHistoryEntry): List<NetworkInterfaceLoad> {
-            return historyEntry.value.networkInterfaceLoads
+        fun getNetworkInterfaceMetrics(historyEntry: BasicHistorySystemLoadEntity): List<NetworkInterfaceLoad> {
+            return historyRepository.getNetworkInterfaceLoadsById(historyEntry.id)
         }
 
-        fun getConnectivity(historyEntry: SystemHistoryEntry): Connectivity {
-            return historyEntry.value.connectivity
+        fun getConnectivity(historyEntry: BasicHistorySystemLoadEntity): Connectivity {
+            return historyRepository.getConnectivityById(historyEntry.id)
         }
 
-        fun getGraphicsMetrics(historyEntry: SystemHistoryEntry): List<GpuLoad> {
-            return historyEntry.value.gpuLoads
-        }
-
-        fun getMemoryMetrics(historyEntry: SystemHistoryEntry): MemoryLoad {
-            return historyEntry.value.memory
+        fun getMemoryMetrics(historyEntry: BasicHistorySystemLoadEntity): MemoryLoad {
+            return historyRepository.getMemoryLoadById(historyEntry.id)
         }
     }
 
@@ -256,7 +241,7 @@ class QueryResolver : GraphQLQueryResolver {
 
     inner class MonitorResolver : GraphQLResolver<com.krillsson.sysapi.graphql.domain.Monitor> {
         fun getHistory(monitor: com.krillsson.sysapi.graphql.domain.Monitor): List<MonitoredValueHistoryEntry> {
-            return historyManager.getHistory().mapNotNull {
+            return historyRepository.getExtended().mapNotNull {
                 val monitoredValue = when (monitor.type.valueType) {
                     Monitor.ValueType.Numerical -> Selectors.forNumericalMonitorType(monitor.type)(
                         it.value.toSystemLoad(),

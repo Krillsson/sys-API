@@ -2,7 +2,7 @@ package com.krillsson.sysapi.graphql
 
 import com.krillsson.sysapi.core.domain.system.OperatingSystem
 import com.krillsson.sysapi.core.domain.system.Platform
-import com.krillsson.sysapi.core.history.HistoryManager
+import com.krillsson.sysapi.core.history.HistoryRepository
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.event.EventManager
@@ -65,7 +65,7 @@ class GraphQLConfiguration {
         metrics: Metrics,
         monitorManager: MonitorManager,
         eventManager: EventManager,
-        historyManager: HistoryManager,
+        historyManager: HistoryRepository,
         dockerClient: DockerClient,
         operatingSystem: OperatingSystem,
         platform: Platform,
@@ -81,6 +81,6 @@ class GraphQLConfiguration {
             platform,
             meta
         )
-        mutationResolver.initialize(metrics, monitorManager, eventManager, historyManager, dockerClient)
+        mutationResolver.initialize(metrics, monitorManager, eventManager, dockerClient)
     }
 }

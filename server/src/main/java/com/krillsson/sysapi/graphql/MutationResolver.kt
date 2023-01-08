@@ -4,7 +4,6 @@ import com.krillsson.sysapi.core.domain.docker.Command
 import com.krillsson.sysapi.core.domain.monitor.toConditionalValue
 import com.krillsson.sysapi.core.domain.monitor.toFractionalValue
 import com.krillsson.sysapi.core.domain.monitor.toNumericalValue
-import com.krillsson.sysapi.core.history.HistoryManager
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.event.EventManager
@@ -18,20 +17,17 @@ class MutationResolver : GraphQLMutationResolver {
     lateinit var metrics: Metrics
     lateinit var monitorManager: MonitorManager
     lateinit var eventManager: EventManager
-    lateinit var historyManager: HistoryManager
     lateinit var dockerClient: DockerClient
 
     fun initialize(
         metrics: Metrics,
         monitorManager: MonitorManager,
         eventManager: EventManager,
-        historyManager: HistoryManager,
         dockerClient: DockerClient
     ) {
         this.metrics = metrics
         this.monitorManager = monitorManager
         this.eventManager = eventManager
-        this.historyManager = historyManager
         this.dockerClient = dockerClient
     }
 
@@ -44,6 +40,7 @@ class MutationResolver : GraphQLMutationResolver {
             is DockerClient.CommandResult.Failed -> PerformDockerContainerCommandOutputFailed(
                 "Message: ${result.error.message ?: "Unknown reason"} Type: ${requireNotNull(result.error::class.simpleName)}",
             )
+
             DockerClient.CommandResult.Success -> PerformDockerContainerCommandOutputSucceeded(input.containerId)
             DockerClient.CommandResult.Unavailable -> PerformDockerContainerCommandOutputFailed("Docker client is unavailable")
         }

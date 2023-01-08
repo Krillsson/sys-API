@@ -7,21 +7,17 @@ import com.krillsson.sysapi.SysAPIApplication
 import com.krillsson.sysapi.auth.BasicAuthenticator
 import com.krillsson.sysapi.auth.BasicAuthorizer
 import com.krillsson.sysapi.config.UserConfiguration
-import com.krillsson.sysapi.core.history.HistoryMetricQueryEvent
-import com.krillsson.sysapi.core.history.MetricsHistoryManager
+import com.krillsson.sysapi.core.history.LegacyHistoryManager
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.MonitorManager
-import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
 import com.krillsson.sysapi.core.monitoring.event.EventManager
-import com.krillsson.sysapi.core.query.MetricQueryManager
-import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
-import com.krillsson.sysapi.persistence.KeyValueRepository
 import com.krillsson.sysapi.rest.*
 import io.dropwizard.auth.AuthDynamicFeature
 import io.dropwizard.auth.AuthValueFactoryProvider
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter
 import io.dropwizard.jersey.setup.JerseyEnvironment
 import io.dropwizard.jetty.setup.ServletEnvironment
+import io.dropwizard.lifecycle.Managed
 import io.dropwizard.lifecycle.setup.LifecycleEnvironment
 import io.dropwizard.setup.Environment
 import org.eclipse.jetty.servlet.FilterHolder
@@ -39,7 +35,7 @@ import javax.servlet.http.HttpServletResponse
 fun JerseyEnvironment.registerJerseyResources(
     os: OperatingSystem,
     provider: Metrics,
-    historyManager: MetricsHistoryManager,
+    historyManager: LegacyHistoryManager,
     monitorManager: MonitorManager,
     eventManager: EventManager,
     endpoints: Array<String>
@@ -69,23 +65,11 @@ fun JerseyEnvironment.registerJerseyResources(
 }
 
 fun LifecycleEnvironment.registerManagedObjects(
-    monitorManager: MonitorManager,
-    eventManager: EventManager,
-    speedMeasurementManager: SpeedMeasurementManager,
-    ticker: Ticker,
-    monitorMetricQueryManager: MetricQueryManager<MonitorMetricQueryEvent>,
-    historyManager: MetricsHistoryManager,
-    historyMetricQueryManager: MetricQueryManager<HistoryMetricQueryEvent>,
-    keyValueRepository: KeyValueRepository
+    vararg managedObjects: Managed
 ) {
-    manage(monitorManager)
-    manage(eventManager)
-    manage(speedMeasurementManager)
-    manage(ticker)
-    manage(monitorMetricQueryManager)
-    manage(historyManager)
-    manage(historyMetricQueryManager)
-    manage(keyValueRepository)
+    managedObjects.forEach { item ->
+        manage(item)
+    }
 }
 
 fun JerseyEnvironment.registerFeatures(userConfig: UserConfiguration) {

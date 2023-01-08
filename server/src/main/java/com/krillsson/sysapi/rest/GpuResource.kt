@@ -24,7 +24,7 @@ import com.krillsson.sysapi.auth.BasicAuthorizer
 import com.krillsson.sysapi.core.domain.gpu.Gpu
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad
 import com.krillsson.sysapi.core.domain.history.HistoryEntry
-import com.krillsson.sysapi.core.history.MetricsHistoryManager
+import com.krillsson.sysapi.core.history.LegacyHistoryManager
 import com.krillsson.sysapi.core.metrics.GpuMetrics
 import java.time.OffsetDateTime
 import javax.annotation.security.RolesAllowed
@@ -39,7 +39,7 @@ import javax.ws.rs.core.MediaType
 @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
 class GpuResource(
     private val provider: GpuMetrics,
-    private val historyManager: MetricsHistoryManager
+    private val historyManager: LegacyHistoryManager
 ) {
     @GET
     fun getRoot(): List<Gpu> {

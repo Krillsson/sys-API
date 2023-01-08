@@ -29,11 +29,8 @@ import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
 import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.domain.system.SystemLoad
-import com.krillsson.sysapi.core.history.HistoryMetricQueryEvent
-import com.krillsson.sysapi.core.history.HistoryRepository
-import com.krillsson.sysapi.core.history.HistoryStore
-import com.krillsson.sysapi.core.history.MetricsHistoryManager
-import com.krillsson.sysapi.core.history.db.HistorySystemLoadDAO
+import com.krillsson.sysapi.core.history.*
+import com.krillsson.sysapi.core.history.db.*
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.metrics.MetricsFactory
 import com.krillsson.sysapi.core.monitoring.MonitorManager
@@ -148,6 +145,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         }
         val clients = Clients(config.connectivityCheck.address)
         val historyDao = HistorySystemLoadDAO(hibernate.sessionFactory)
+        val basicHistoryDao = BasicHistorySystemLoadDAO(hibernate.sessionFactory)
         val proxyFactory = UnitOfWorkAwareProxyFactory(hibernate)
         val migrator = proxyFactory
             .create(
@@ -204,11 +202,29 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             }
         }
         val historyRepository = proxyFactory.create(
-            HistoryRepository::class.java,
-            HistorySystemLoadDAO::class.java,
-            historyDao
+            /* clazz = */ HistoryRepository::class.java,
+            /* constructorParamTypes = */ arrayOf(
+                com.krillsson.sysapi.util.Clock::class.java,
+                HistorySystemLoadDAO::class.java,
+                BasicHistorySystemLoadDAO::class.java,
+                CpuLoadDAO::class.java,
+                MemoryLoadDAO::class.java,
+                NetworkLoadDAO::class.java,
+                DriveLoadDAO::class.java,
+                ConnectivityDAO::class.java
+            ),
+            /* constructorArguments = */ arrayOf(
+                com.krillsson.sysapi.util.Clock(),
+                historyDao,
+                basicHistoryDao,
+                CpuLoadDAO(hibernate.sessionFactory),
+                MemoryLoadDAO(hibernate.sessionFactory),
+                NetworkLoadDAO(hibernate.sessionFactory),
+                DriveLoadDAO(hibernate.sessionFactory),
+                ConnectivityDAO(hibernate.sessionFactory)
+            )
         )
-        val historyManager = MetricsHistoryManager(config.metricsConfig.history, eventBus, historyRepository)
+        val historyManager = LegacyHistoryManager(historyRepository)
         val monitorManager = MonitorManager(
             eventManager,
             eventBus,
@@ -216,20 +232,22 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             metrics,
             com.krillsson.sysapi.util.Clock()
         )
+        val historyRecorder = HistoryRecorder(config.metricsConfig.history, eventBus, historyRepository)
         environment.lifecycle().registerManagedObjects(
             monitorManager,
             eventManager,
             speedMeasurementManager,
             ticker,
             monitorMetricQueryManager,
-            historyManager,
             historyMetricQueryManager,
-            keyValueRepository
+            keyValueRepository,
+            historyRecorder
         )
         registerEndpoints(
             metrics,
             monitorManager,
             historyManager,
+            historyRepository,
             environment
         )
     }
@@ -237,14 +255,15 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     private fun registerEndpoints(
         metrics: Metrics,
         monitorManager: MonitorManager,
-        historyManager: MetricsHistoryManager,
+        historyManager: LegacyHistoryManager,
+        historyRepository: HistoryRepository,
         environment: Environment
     ) {
         graphqlConfiguration.initialize(
             metrics,
             monitorManager,
             eventManager,
-            historyManager,
+            historyRepository,
             dockerClient,
             os.asOperatingSystem(),
             SystemInfo.getCurrentPlatform().asPlatform(),

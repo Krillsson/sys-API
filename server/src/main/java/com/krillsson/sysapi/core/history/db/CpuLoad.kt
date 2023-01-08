@@ -1,5 +1,7 @@
 package com.krillsson.sysapi.core.history.db
 
+import io.dropwizard.hibernate.AbstractDAO
+import org.hibernate.SessionFactory
 import java.util.*
 import javax.persistence.*
 
@@ -16,3 +18,9 @@ class CpuLoad(
     val processCount: Int,
     val threadCount: Int
 )
+
+class CpuLoadDAO(sessionFactory: SessionFactory) : AbstractDAO<CpuLoad>(sessionFactory) {
+    fun findById(id: UUID): CpuLoad {
+        return get(id)
+    }
+}
