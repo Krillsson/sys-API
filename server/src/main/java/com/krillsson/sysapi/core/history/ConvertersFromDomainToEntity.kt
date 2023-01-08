@@ -7,7 +7,7 @@ import java.time.OffsetDateTime
 import java.util.*
 
 fun SystemHistoryEntry.asEntity(): HistorySystemLoadEntity {
-    return value.asEntity(UUID.randomUUID(), date)
+    return value.asEntity(id, date)
 }
 
 fun HistorySystemLoad.asEntity(id: UUID, dateTime: OffsetDateTime): HistorySystemLoadEntity {

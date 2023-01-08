@@ -25,17 +25,12 @@ import com.krillsson.sysapi.config.UserConfiguration
 import com.krillsson.sysapi.core.domain.drives.Drive
 import com.krillsson.sysapi.core.domain.drives.DriveLoad
 import com.krillsson.sysapi.core.domain.history.HistoryEntry
-import com.krillsson.sysapi.core.history.MetricsHistoryManager
+import com.krillsson.sysapi.core.history.LegacyHistoryManager
 import com.krillsson.sysapi.core.metrics.DriveMetrics
 import io.dropwizard.auth.Auth
 import java.time.OffsetDateTime
 import javax.annotation.security.RolesAllowed
-import javax.ws.rs.GET
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
-import javax.ws.rs.QueryParam
-import javax.ws.rs.WebApplicationException
+import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.Response
 
@@ -44,7 +39,7 @@ import javax.ws.rs.core.Response
 @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
 class DrivesResource(
     private val provider: DriveMetrics,
-    private val historyManager: MetricsHistoryManager
+    private val historyManager: LegacyHistoryManager
 ) {
     @GET
     fun getRoot(): List<Drive> {

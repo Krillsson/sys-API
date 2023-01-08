@@ -10,7 +10,7 @@ import static org.mockito.Mockito.*;
 
 public class HistoryManagerTest {
 
-    HistoryManager historyManager;
+    LegacyHistoryManager historyManager;
     HistoryRepository history;
     private EventBus eventBus;
     private HistoryPurgingConfiguration purgingConfiguration;
@@ -22,7 +22,7 @@ public class HistoryManagerTest {
         when(historyConfiguration.getPurging()).thenReturn(purgingConfiguration);
         history = mock(HistoryRepository.class);
         eventBus = mock(EventBus.class);
-        historyManager = new HistoryManager(historyConfiguration, eventBus, history);
+        historyManager = new LegacyHistoryManager(historyConfiguration, eventBus, history);
     }
 
     @Test

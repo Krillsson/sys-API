@@ -24,7 +24,7 @@ import com.krillsson.sysapi.auth.BasicAuthorizer
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad
 import com.krillsson.sysapi.core.domain.history.HistoryEntry
-import com.krillsson.sysapi.core.history.MetricsHistoryManager
+import com.krillsson.sysapi.core.history.LegacyHistoryManager
 import com.krillsson.sysapi.core.metrics.CpuMetrics
 import java.time.OffsetDateTime
 import javax.annotation.security.RolesAllowed
@@ -37,7 +37,7 @@ import javax.ws.rs.core.MediaType
 @Path("cpu")
 @Produces(MediaType.APPLICATION_JSON)
 @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
-class CpuResource(private val provider: CpuMetrics, private val historyManager: MetricsHistoryManager) {
+class CpuResource(private val provider: CpuMetrics, private val historyManager: LegacyHistoryManager) {
     @GET
     fun getRoot(): CpuInfo {
         return provider.cpuInfo()

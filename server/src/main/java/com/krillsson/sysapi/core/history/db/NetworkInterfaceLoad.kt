@@ -1,7 +1,11 @@
 package com.krillsson.sysapi.core.history.db
 
+import io.dropwizard.hibernate.AbstractDAO
+import org.hibernate.SessionFactory
 import java.util.*
 import javax.persistence.*
+import javax.persistence.criteria.CriteriaQuery
+import javax.persistence.criteria.Root
 
 @Entity
 class NetworkInterfaceLoad(
@@ -33,3 +37,13 @@ class NetworkInterfaceValues(
 
 @Embeddable
 class NetworkInterfaceSpeed(val receiveBytesPerSecond: Long, val sendBytesPerSecond: Long)
+
+class NetworkLoadDAO(sessionFactory: SessionFactory) : AbstractDAO<NetworkInterfaceLoad>(sessionFactory) {
+    fun findById(id: UUID): List<NetworkInterfaceLoad> {
+        val builder = currentSession().criteriaBuilder
+        val query: CriteriaQuery<NetworkInterfaceLoad> = builder.createQuery(NetworkInterfaceLoad::class.java)
+        val root: Root<NetworkInterfaceLoad> = query.from(NetworkInterfaceLoad::class.java)
+        val equals = builder.equal(root.get<UUID>("historyId"), id)
+        return list(query.where(equals))
+    }
+}

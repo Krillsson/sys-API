@@ -26,7 +26,7 @@ import com.krillsson.sysapi.core.domain.processes.ProcessSort
 import com.krillsson.sysapi.core.domain.system.JvmProperties
 import com.krillsson.sysapi.core.domain.system.SystemInfo
 import com.krillsson.sysapi.core.domain.system.SystemLoad
-import com.krillsson.sysapi.core.history.MetricsHistoryManager
+import com.krillsson.sysapi.core.history.LegacyHistoryManager
 import com.krillsson.sysapi.core.metrics.SystemMetrics
 import org.slf4j.LoggerFactory
 import java.time.OffsetDateTime
@@ -42,7 +42,7 @@ import javax.ws.rs.core.Response
 @RolesAllowed(BasicAuthorizer.AUTHENTICATED_ROLE)
 class SystemResource(
     private val systemMetrics: SystemMetrics,
-    private val historyManager: MetricsHistoryManager,
+    private val historyManager: LegacyHistoryManager,
     private val uptimeSupplier: Supplier<Long>,
 ) {
     @GET

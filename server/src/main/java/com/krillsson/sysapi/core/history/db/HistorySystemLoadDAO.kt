@@ -41,7 +41,35 @@ class HistorySystemLoadDAO(sessionFactory: SessionFactory) : AbstractDAO<History
         return list(namedTypedQuery("com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity.findAll"))
     }
 
-    fun findById(id: Long): HistorySystemLoadEntity? {
+    fun findById(id: UUID): HistorySystemLoadEntity? {
+        return get(id)
+    }
+}
+
+class BasicHistorySystemLoadDAO(sessionFactory: SessionFactory) : AbstractDAO<BasicHistorySystemLoadEntity>(sessionFactory) {
+    fun findAllBetween(from: OffsetDateTime, to: OffsetDateTime): List<BasicHistorySystemLoadEntity> {
+        val builder = currentSession().criteriaBuilder
+        val query: CriteriaQuery<BasicHistorySystemLoadEntity> = builder.createQuery(BasicHistorySystemLoadEntity::class.java)
+        val root: Root<BasicHistorySystemLoadEntity> = query.from(BasicHistorySystemLoadEntity::class.java)
+        val between = builder.between(root.get("date"), from, to)
+        return list(query.where(between))
+    }
+
+    fun purge(maxAge: OffsetDateTime): Int {
+        val builder = currentSession().criteriaBuilder
+        val delete = builder.createCriteriaDelete(BasicHistorySystemLoadEntity::class.java)
+        val table = delete.from(BasicHistorySystemLoadEntity::class.java)
+        val lessThan = builder.lessThan(table.get("date"), maxAge)
+        return currentSession()
+            .createQuery(delete.where(lessThan))
+            .executeUpdate()
+    }
+
+    fun findAll(): List<BasicHistorySystemLoadEntity> {
+        return list(namedTypedQuery("com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity.findAll"))
+    }
+
+    fun findById(id: UUID): BasicHistorySystemLoadEntity? {
         return get(id)
     }
 }
