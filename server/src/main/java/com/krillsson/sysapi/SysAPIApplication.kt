@@ -267,7 +267,11 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             dockerClient,
             os.asOperatingSystem(),
             SystemInfo.getCurrentPlatform().asPlatform(),
-            Meta(BuildConfig.APP_VERSION, os.processId)
+            Meta(
+                version = BuildConfig.APP_VERSION,
+                buildDate = BuildConfig.BUILD_TIME.toString(),
+                processId = os.processId
+            )
         )
         environment.jersey().registerJerseyResources(
             os,
