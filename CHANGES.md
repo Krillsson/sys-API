@@ -1,3 +1,9 @@
+### Unreleased
+
+- History is now stored in a SQLite file. 
+ - Enabling storage of significantly more history and circumventing storing it in memory
+- 
+
 ### 0.17.2
 
 - Fix issue with adding memory monitors
