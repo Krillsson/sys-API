@@ -2,7 +2,7 @@
 
 - History is now stored in a SQLite file. 
  - Enabling storage of significantly more history and circumventing storing it in memory
-- 
+- Improved handling of build-date and version in the API
 
 ### 0.17.2
 
