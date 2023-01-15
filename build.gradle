@@ -138,6 +138,7 @@ project(':server') {
         implementation('com.smoketurner.dropwizard:graphql-core:2.0.12-1') {
             exclude group: "com.graphql-java-kickstart"
         }
+        implementation 'org.jmdns:jmdns:3.5.1'
         implementation 'com.squareup.retrofit2:retrofit:2.9.0'
         implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
         implementation 'javax.xml.bind:jaxb-api:2.2.11'
