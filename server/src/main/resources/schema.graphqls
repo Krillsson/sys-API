@@ -23,6 +23,7 @@ type Meta {
     version: String!
     buildDate: String!
     processId: Int!
+    endpoints: [String!]!
 }
 
 type Mutation {
