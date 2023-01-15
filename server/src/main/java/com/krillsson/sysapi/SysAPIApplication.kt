@@ -45,6 +45,7 @@ import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.GraphQLBundle
 import com.krillsson.sysapi.graphql.GraphQLConfiguration
 import com.krillsson.sysapi.graphql.domain.Meta
+import com.krillsson.sysapi.mdns.ServiceRegistrar
 import com.krillsson.sysapi.persistence.*
 import com.krillsson.sysapi.tls.CertificateNamesCreator
 import com.krillsson.sysapi.tls.SelfSignedCertificateManager
@@ -136,9 +137,9 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     override fun run(config: SysAPIConfiguration, environment: Environment) {
         environment.healthChecks().disableHealthChecks()
         environment.metrics().disableMetrics()
-
         environment.jersey().registerFeatures(config.user)
         environment.servlets().configureCrossOriginFilter()
+
         if (config.forwardHttpToHttps) {
             EnvironmentUtils.addHttpsForward(environment.applicationContext)
         }
@@ -240,7 +241,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             monitorMetricQueryManager,
             historyMetricQueryManager,
             keyValueRepository,
-            historyRecorder
+            historyRecorder,
+            ServiceRegistrar(config)
         )
         registerEndpoints(
             metrics,
@@ -258,6 +260,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         historyRepository: HistoryRepository,
         environment: Environment
     ) {
+        val endpoints = EnvironmentUtils.getEndpoints(environment)
         graphqlConfiguration.initialize(
             metrics,
             monitorManager,
@@ -269,7 +272,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             Meta(
                 version = BuildConfig.APP_VERSION,
                 buildDate = BuildConfig.BUILD_TIME.toString(),
-                processId = os.processId
+                processId = os.processId,
+                endpoints = endpoints.toList(),
             )
         )
         environment.jersey().registerJerseyResources(
@@ -278,7 +282,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             historyManager,
             monitorManager,
             eventManager,
-            EnvironmentUtils.getEndpoints(environment)
+            endpoints
         )
     }
 
