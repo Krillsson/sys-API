@@ -16,9 +16,11 @@ class ServiceRegistrar(val configuration: SysAPIConfiguration) : Managed {
 
     private val logger by logger()
 
-    val jmdns = JmDNS.create(InetAddress.getLocalHost())
+    val address = InetAddress.getLocalHost()
+    val jmdns = JmDNS.create(address)
 
     override fun start() {
+        logger.info("Address: $address")
         connectorFactories()
             .mapNotNull {
                 when (it) {
@@ -27,10 +29,10 @@ class ServiceRegistrar(val configuration: SysAPIConfiguration) : Managed {
                     else -> null
                 }
             }.forEach { (scheme, port) ->
-                val serviceType = "_$scheme._tcp.local."
+                val serviceType = "_$scheme._tcp.local"
                 val serviceName = "SysAPI-$scheme"
                 logger.info("Registering mDNS: $serviceType with name: $serviceName at port $port")
-                val serviceInfo = ServiceInfo.create(serviceType, serviceName, port, "GraphQL over $scheme")
+                val serviceInfo = ServiceInfo.create(serviceType, serviceName, port, "GraphQL at /graphql")
                 jmdns.registerService(serviceInfo)
             }
 
