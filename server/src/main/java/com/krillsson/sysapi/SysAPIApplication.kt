@@ -27,7 +27,6 @@ import com.krillsson.server.BuildConfig
 import com.krillsson.sysapi.client.Clients
 import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
-import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.domain.system.SystemLoad
 import com.krillsson.sysapi.core.history.*
 import com.krillsson.sysapi.core.history.db.*
@@ -107,7 +106,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     lateinit var eventStore: EventStore
     lateinit var monitorStore: MonitorStore
     lateinit var keyValueRepository: KeyValueRepository
-    lateinit var historyStore: Store<List<SystemHistoryEntry>>
+    lateinit var historyStore: Store<List<StoredSystemHistoryEntry>>
     lateinit var eventManager: EventManager
     lateinit var dockerClient: DockerClient
     lateinit var metricsFactory: MetricsFactory

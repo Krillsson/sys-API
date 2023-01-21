@@ -3,6 +3,7 @@ package com.krillsson.sysapi.persistence
 import com.codahale.metrics.MetricRegistry
 import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.core.history.HistoryStore
+import com.krillsson.sysapi.core.history.StoredSystemHistoryEntry
 import com.krillsson.sysapi.core.history.asEntity
 import com.krillsson.sysapi.core.history.db.HistorySystemLoadDAO
 import com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity
@@ -11,6 +12,7 @@ import io.dropwizard.flyway.FlywayBundle
 import io.dropwizard.hibernate.UnitOfWork
 import org.flywaydb.core.Flyway
 import org.flywaydb.core.api.FlywayException
+import java.util.*
 
 open class PersistenceMigrator(
     private val config: SysAPIConfiguration,
@@ -57,5 +59,9 @@ open class PersistenceMigrator(
             logger.error("Error while migrating", e)
             null
         }
+    }
+
+    private fun StoredSystemHistoryEntry.asEntity(): HistorySystemLoadEntity {
+        return value.asEntity(UUID.randomUUID(), date)
     }
 }
