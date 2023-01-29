@@ -23,19 +23,12 @@ class ConnectivityCheckManager(
     private fun resolveConnectivity(): Connectivity {
         val response = externalIpAddressService.getMyIp().execute()
         val storedExternalIp = repository.get(externalIpStoreKey)
-        val storedPreviousExternalIp = repository.get(previousExternalIpKey)
         val newExternalIp = response.body()
         return if (response.isSuccessful && newExternalIp != null) {
-            val previousIp = if (storedExternalIp != null && storedExternalIp != newExternalIp) {
-                repository.put(previousExternalIpKey, storedPreviousExternalIp)
-                storedExternalIp
-            } else {
-                storedPreviousExternalIp
-            }
             repository.put(externalIpStoreKey, newExternalIp)
             Connectivity(
                 externalIp = newExternalIp,
-                previousExternalIp = previousIp,
+                previousExternalIp = storedExternalIp,
                 connected = true
             )
         } else {
@@ -51,7 +44,6 @@ class ConnectivityCheckManager(
 
     companion object {
         const val externalIpStoreKey = "externalIp"
-        const val previousExternalIpKey = "previousExternalIp"
         val defaultConnectivity = Connectivity(null, null, false)
     }
 }
