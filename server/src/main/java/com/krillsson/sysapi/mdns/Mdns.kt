@@ -33,7 +33,10 @@ class Mdns(
                         is HttpConnectorFactory -> "http" to it.port
                         else -> null
                     }
-                }.forEach { (scheme, port) ->
+                }
+                // sorts https to be first
+                .sortedByDescending { it.first.length }
+                .forEach { (scheme, port) ->
                     val serviceType = "_$scheme._tcp.local"
                     val serviceName = "SysAPI-$scheme @ ${EnvironmentUtils.hostName}"
                     logger.info("Registering mDNS: $serviceType with name: $serviceName at port $port")
