@@ -425,6 +425,7 @@ type DriveReadWriteRate {
 type Connectivity{
     externalIp: String
     previousExternalIp: String
+    localIp: String
     connected: Boolean!
 }
 

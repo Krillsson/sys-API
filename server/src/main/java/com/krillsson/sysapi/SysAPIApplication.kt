@@ -162,13 +162,15 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         migrator.migrate()
 
         dockerClient = DockerClient(config.metricsConfig.cache, config.docker, environment.objectMapper)
+        val connectivityCheckManager =
+            ConnectivityCheckManager(clients.externalIpService, keyValueRepository, config.connectivityCheck)
         metricsFactory = MetricsFactory(
             hal,
             os,
             SystemInfo.getCurrentPlatform(),
             speedMeasurementManager,
             ticker,
-            ConnectivityCheckManager(clients.externalIpService, keyValueRepository, config.connectivityCheck)
+            connectivityCheckManager
         )
 
         val metrics = metricsFactory.get(config)
@@ -242,7 +244,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             historyMetricQueryManager,
             keyValueRepository,
             historyRecorder,
-            Mdns(config)
+            Mdns(config, connectivityCheckManager)
         )
         registerEndpoints(
             metrics,
