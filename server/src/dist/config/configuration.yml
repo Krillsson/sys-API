@@ -21,13 +21,19 @@ user:
   password: password
 windows:
   enableOhmJniWrapper: true
+# web interface for running queries
 graphQLPlayGround:
   enabled: true
+# docker management and metrics support
 docker:
   enabled: true
+# resolve external IP and monitor internet connectivity
 connectivityCheck:
   enabled: true
   address: https://ifconfig.me
+# advertise service in local network for easier client setup
+mDNS:
+  enabled: true
 forwardHttpToHttps: false
 selfSignedCertificates:
   enabled: true

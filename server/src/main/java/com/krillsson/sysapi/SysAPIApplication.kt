@@ -45,7 +45,7 @@ import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.GraphQLBundle
 import com.krillsson.sysapi.graphql.GraphQLConfiguration
 import com.krillsson.sysapi.graphql.domain.Meta
-import com.krillsson.sysapi.mdns.ServiceRegistrar
+import com.krillsson.sysapi.mdns.Mdns
 import com.krillsson.sysapi.persistence.*
 import com.krillsson.sysapi.tls.CertificateNamesCreator
 import com.krillsson.sysapi.tls.SelfSignedCertificateManager
@@ -242,7 +242,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             historyMetricQueryManager,
             keyValueRepository,
             historyRecorder,
-            ServiceRegistrar(config)
+            Mdns(config)
         )
         registerEndpoints(
             metrics,
