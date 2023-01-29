@@ -36,6 +36,7 @@ class SysAPIConfiguration(
     val docker: DockerConfiguration,
     val forwardHttpToHttps: Boolean,
     val selfSignedCertificates: SelfSignedCertificateConfiguration,
+    val mDNS: MdnsConfiguration = MdnsConfiguration(false),
     val database: DataSourceFactory = DataSourceFactory()
         .apply {
             driverClass = "org.sqlite.JDBC"

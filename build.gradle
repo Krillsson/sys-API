@@ -67,6 +67,7 @@ project(':server') {
     def jvmArgs = [
             "-server",
             "-Djava.awt.headless=true",
+            "-Djava.net.preferIPv4Stack=true",
             "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED"
 //            enable jmx to pull out dumps
 //            "-Dcom.sun.management.jmxremote",
