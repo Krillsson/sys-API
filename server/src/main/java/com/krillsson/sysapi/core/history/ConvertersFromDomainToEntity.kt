@@ -122,6 +122,7 @@ private fun com.krillsson.sysapi.core.domain.network.Connectivity.asConnectivity
         id,
         externalIp,
         previousExternalIp,
+        localIp,
         connected
     )
 }

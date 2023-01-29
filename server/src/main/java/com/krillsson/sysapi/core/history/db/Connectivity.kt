@@ -12,6 +12,7 @@ class Connectivity(
     val id: UUID,
     val externalIp: String?,
     val previousExternalIp: String?,
+    val localIp: String?,
     val connected: Boolean
 )
 

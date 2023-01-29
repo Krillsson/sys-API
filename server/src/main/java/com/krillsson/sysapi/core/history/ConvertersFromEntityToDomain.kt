@@ -99,7 +99,7 @@ fun DriveValues.asValues(): com.krillsson.sysapi.core.domain.drives.DriveValues 
 
 fun Connectivity.asConnectivity(): com.krillsson.sysapi.core.domain.network.Connectivity {
     return com.krillsson.sysapi.core.domain.network.Connectivity(
-        externalIp, previousExternalIp, connected
+        externalIp, previousExternalIp, localIp, connected
     )
 }
 
