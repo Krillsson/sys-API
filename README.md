@@ -90,8 +90,6 @@ Make sure you have [docker compose](https://docs.docker.com/compose/install/) in
  - Start the container
    - `$ docker compose -f docker-compose.yml up`
 
-docker compose -f docker-compose-private.yml up
-
 ## Configuration
 The configuration.yml file is a [Dropwizard configuration file](https://www.dropwizard.io/en/latest/manual/configuration.html).
 
