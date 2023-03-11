@@ -48,6 +48,7 @@ import com.krillsson.sysapi.periodictasks.*
 import com.krillsson.sysapi.persistence.*
 import com.krillsson.sysapi.tls.CertificateNamesCreator
 import com.krillsson.sysapi.tls.SelfSignedCertificateManager
+import com.krillsson.sysapi.upnp.UpnpIgd
 import com.krillsson.sysapi.util.*
 import io.dropwizard.core.Application
 import io.dropwizard.core.setup.Bootstrap
@@ -233,7 +234,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             eventManager,
             historyRecorder,
             keyValueRepository,
-            Mdns(config, connectivityCheckManager)
+            Mdns(config, connectivityCheckManager),
+            UpnpIgd(config)
         )
         registerEndpoints(
             metrics,

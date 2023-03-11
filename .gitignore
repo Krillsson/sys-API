@@ -6,6 +6,7 @@
 
 ## Directory-based project format:
 .idea/
+.run/
 
 ### personal dev.yml
 donotadd.yml
