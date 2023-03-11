@@ -39,6 +39,7 @@ class SysAPIConfiguration(
     val selfSignedCertificates: SelfSignedCertificateConfiguration,
     val mDNS: MdnsConfiguration = MdnsConfiguration(false),
     val tasks: Map<TaskInterval, TasksConfiguration> = defaultTasksValue,
+    val upnp: UpnpIgdConfiguration = UpnpIgdConfiguration(false),
     val database: DataSourceFactory = DataSourceFactory()
         .apply {
             driverClass = "org.sqlite.JDBC"
