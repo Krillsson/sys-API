@@ -37,7 +37,7 @@ mDNS:
   enabled: true
 # forward https port in router for easier client setup. Requires UPNP to be enabled in router.
 upnp:
-  enabled: true
+  enabled: false
 forwardHttpToHttps: false
 selfSignedCertificates:
   enabled: true
