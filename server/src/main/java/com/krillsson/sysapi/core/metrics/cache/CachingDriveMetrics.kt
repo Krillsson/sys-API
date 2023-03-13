@@ -9,16 +9,16 @@ import com.krillsson.sysapi.config.CacheConfiguration
 import com.krillsson.sysapi.core.domain.drives.Drive
 import com.krillsson.sysapi.core.domain.drives.DriveLoad
 import com.krillsson.sysapi.core.metrics.DriveMetrics
-import java.util.Optional
+import java.util.*
 
 class CachingDriveMetrics(driveMetrics: DriveMetrics, cacheConfiguration: CacheConfiguration) :
     DriveMetrics {
     private val drivesCache: Supplier<List<Drive>> = Suppliers.memoizeWithExpiration(
-        { driveMetrics.drives() },
+        Suppliers.synchronizedSupplier{ driveMetrics.drives() },
         cacheConfiguration.duration, cacheConfiguration.unit
     )
     private val driveLoadsCache: Supplier<List<DriveLoad>> = Suppliers.memoizeWithExpiration(
-        { driveMetrics.driveLoads() },
+        Suppliers.synchronizedSupplier{ driveMetrics.driveLoads() },
         cacheConfiguration.duration, cacheConfiguration.unit
     )
     private val driveQueryCache: LoadingCache<String, Optional<Drive>> = CacheBuilder.newBuilder()

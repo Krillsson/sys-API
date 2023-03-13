@@ -10,11 +10,11 @@ import com.krillsson.sysapi.core.metrics.MemoryMetrics
 class CachingMemoryMetrics(memoryMetrics: MemoryMetrics, cacheConfiguration: CacheConfiguration) :
     MemoryMetrics {
     private val globalMemoryLoadCache: Supplier<MemoryLoad> = Suppliers.memoizeWithExpiration(
-        { memoryMetrics.memoryLoad() },
+        Suppliers.synchronizedSupplier{ memoryMetrics.memoryLoad() },
         cacheConfiguration.duration, cacheConfiguration.unit
     )
     private val globalMemoryInfoCache: Supplier<MemoryInfo> = Suppliers.memoizeWithExpiration(
-        { memoryMetrics.memoryInfo() },
+        Suppliers.synchronizedSupplier{ memoryMetrics.memoryInfo() },
         cacheConfiguration.duration, cacheConfiguration.unit
     )
 

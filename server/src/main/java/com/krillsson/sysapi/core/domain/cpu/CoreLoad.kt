@@ -1,5 +1,5 @@
 package com.krillsson.sysapi.core.domain.cpu
 
-class CoreLoad(
+data class CoreLoad(
     val percentage: Double,
 ) 

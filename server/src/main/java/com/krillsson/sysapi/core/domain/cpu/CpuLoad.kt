@@ -20,7 +20,7 @@
  */
 package com.krillsson.sysapi.core.domain.cpu
 
-class CpuLoad(
+data class CpuLoad(
     val usagePercentage: Double,
     val systemLoadAverage: Double,
     val coreLoads: List<CoreLoad>,

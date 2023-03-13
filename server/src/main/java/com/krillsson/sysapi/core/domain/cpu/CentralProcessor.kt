@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.core.domain.cpu
 
-class CentralProcessor(
+data class CentralProcessor(
     val logicalProcessorCount: Int,
     val physicalProcessorCount: Int,
     val name: String?,

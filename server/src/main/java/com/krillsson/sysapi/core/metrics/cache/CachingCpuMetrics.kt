@@ -6,23 +6,27 @@ import com.krillsson.sysapi.config.CacheConfiguration
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad
 import com.krillsson.sysapi.core.metrics.CpuMetrics
+import com.krillsson.sysapi.util.logger
 
 class CachingCpuMetrics internal constructor(
     cpuMetrics: CpuMetrics,
     cacheConfiguration: CacheConfiguration
 ) : CpuMetrics {
+
+    private val logger by logger()
+
     private val cpuInfoCache: Supplier<CpuInfo> = Suppliers.memoizeWithExpiration(
-        { cpuMetrics.cpuInfo() },
+        Suppliers.synchronizedSupplier{ cpuMetrics.cpuInfo() },
         cacheConfiguration.duration,
         cacheConfiguration.unit
     )
     private val cpuLoadCache: Supplier<CpuLoad> = Suppliers.memoizeWithExpiration(
-        { cpuMetrics.cpuLoad() },
+        Suppliers.synchronizedSupplier{ cpuMetrics.cpuLoad() },
         cacheConfiguration.duration,
         cacheConfiguration.unit
     )
     private val uptimeCache: Supplier<Long> = Suppliers.memoizeWithExpiration(
-        { cpuMetrics.uptime() },
+        Suppliers.synchronizedSupplier{ cpuMetrics.uptime() },
         cacheConfiguration.duration,
         cacheConfiguration.unit
     )
@@ -32,7 +36,9 @@ class CachingCpuMetrics internal constructor(
     }
 
     override fun cpuLoad(): CpuLoad {
-        return cpuLoadCache.get()
+        val get = cpuLoadCache.get()
+        logger.info("CPU load from cache: ${get.usagePercentage}")
+        return get
     }
 
     override fun uptime(): Long {
