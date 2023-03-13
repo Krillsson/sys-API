@@ -1,8 +1,9 @@
 package com.krillsson.sysapi.core.metrics.windows
 
 import com.krillsson.sysapi.core.metrics.MemoryMetrics
-import com.krillsson.sysapi.core.metrics.ProcessesMetrics
 import com.krillsson.sysapi.core.metrics.SystemMetrics
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDiskMetrics
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultFileSystemMetrics
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetrics
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultProcessesMetrics
 
@@ -11,6 +12,8 @@ class WindowsMetrics(
     networkMetrics: WindowsNetworkMetrics,
     gpuMetrics: WindowsGpuMetrics,
     driveMetrics: WindowsDriveMetrics,
+    diskMetrics: DefaultDiskMetrics,
+    fileSystemMetrics: DefaultFileSystemMetrics,
     processesMetrics: DefaultProcessesMetrics,
     motherboardMetrics: WindowsMotherboardMetrics,
     memoryMetrics: MemoryMetrics,
@@ -20,6 +23,8 @@ class WindowsMetrics(
     networkMetrics,
     gpuMetrics,
     driveMetrics,
+    diskMetrics,
+    fileSystemMetrics,
     processesMetrics,
     motherboardMetrics,
     memoryMetrics,

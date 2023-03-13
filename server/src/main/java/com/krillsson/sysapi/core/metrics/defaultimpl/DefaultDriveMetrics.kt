@@ -40,6 +40,7 @@ open class DefaultDriveMetrics(
     private val hal: HardwareAbstractionLayer,
     private val speedMeasurementManager: SpeedMeasurementManager
 ) : DriveMetrics {
+
     fun register() {
         for (store in hal.diskStores) {
             speedMeasurementManager.register(DiskSpeedSource(store.name, store))
@@ -181,7 +182,7 @@ open class DefaultDriveMetrics(
         partitions.asPartitions()
     )
 
-    private fun HWPartition.asPartition() = Partition(
+    private fun HWPartition.asPartition() = DrivePartition(
         identification,
         name,
         type,

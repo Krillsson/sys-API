@@ -21,6 +21,8 @@ object DefaultMetricsFactory {
         val defaultCpuLoadMetrics = DefaultCpuLoadMetrics(hal.processor, ticker)
         val defaultCpuSensors = DefaultCpuSensors(hal)
         val cpuMetrics = DefaultCpuMetrics(hal, os, defaultCpuSensors, defaultCpuLoadMetrics)
+        val diskMetrics = DefaultDiskMetrics(hal, measurementManager)
+        val fileSystemMetrics = DefaultFileSystemMetrics(os)
         val networkMetrics = DefaultNetworkMetrics(ticker, hal, measurementManager, connectivityCheckManager)
         val gpuMetrics = DefaultGpuMetrics(hal)
         val driveMetrics = DefaultDriveMetrics(os, hal, measurementManager)
@@ -43,6 +45,8 @@ object DefaultMetricsFactory {
             networkMetrics,
             gpuMetrics,
             driveMetrics,
+            diskMetrics,
+            fileSystemMetrics,
             processesMetrics,
             motherboardMetrics,
             memoryMetrics,

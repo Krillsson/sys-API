@@ -171,6 +171,8 @@ class QueryResolver : GraphQLQueryResolver {
         }
 
         fun getDrives(system: System) = metrics.driveMetrics().drives()
+        fun getDisks(system: System) = metrics.diskMetrics().disks()
+        fun getFileSystems(system: System) = metrics.fileSystemMetrics().fileSystems()
 
         fun getProcesses(
             system: System,

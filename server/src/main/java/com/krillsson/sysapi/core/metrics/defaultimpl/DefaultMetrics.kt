@@ -1,25 +1,14 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl
 
-import com.krillsson.sysapi.core.metrics.CpuMetrics
-import com.krillsson.sysapi.core.metrics.DriveMetrics
-import com.krillsson.sysapi.core.metrics.GpuMetrics
-import com.krillsson.sysapi.core.metrics.MemoryMetrics
-import com.krillsson.sysapi.core.metrics.Metrics
-import com.krillsson.sysapi.core.metrics.MotherboardMetrics
-import com.krillsson.sysapi.core.metrics.NetworkMetrics
-import com.krillsson.sysapi.core.metrics.ProcessesMetrics
-import com.krillsson.sysapi.core.metrics.SystemMetrics
-import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
-import com.krillsson.sysapi.util.Ticker
-import com.krillsson.sysapi.util.Utils
-import oshi.hardware.HardwareAbstractionLayer
-import oshi.software.os.OperatingSystem
+import com.krillsson.sysapi.core.metrics.*
 
 open class DefaultMetrics(
     private val cpuMetrics: DefaultCpuMetrics,
     private val networkMetrics: DefaultNetworkMetrics,
     private val gpuMetrics: GpuMetrics,
     private val driveMetrics: DefaultDriveMetrics,
+    private val diskMetrics: DefaultDiskMetrics,
+    private val fileSystemMetrics: DefaultFileSystemMetrics,
     private val processesMetrics: DefaultProcessesMetrics,
     private val motherboardMetrics: MotherboardMetrics,
     private val memoryMetrics: MemoryMetrics,
@@ -28,7 +17,7 @@ open class DefaultMetrics(
 
     override fun initialize() {
         cpuMetrics.register()
-        driveMetrics.register()
+        diskMetrics.register()
         networkMetrics.register()
         processesMetrics.register()
     }
@@ -43,6 +32,14 @@ open class DefaultMetrics(
 
     override fun driveMetrics(): DriveMetrics {
         return driveMetrics
+    }
+
+    override fun fileSystemMetrics(): FileSystemMetrics {
+        return fileSystemMetrics
+    }
+
+    override fun diskMetrics(): DiskMetrics {
+        return diskMetrics
     }
 
     override fun memoryMetrics(): MemoryMetrics {

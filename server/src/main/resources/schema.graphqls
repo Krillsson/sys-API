@@ -180,7 +180,10 @@ type System {
     baseboard: Board!
     usbDevices: [UsbDevices!]!
     processor: Processor!
+    @deprecated(reason: "replaced by disks and fileSystems")
     drives: [Drive!]!
+    disks: [Disk!]!
+    fileSystems: [FileSystem!]!
     hostname: String!
     platform: Platform!
     connectivity: Connectivity!
@@ -355,6 +358,26 @@ type Drive {
     diskOsPartition: DiskOsPartition!
     partitions: [Partition!]!
     metrics: DriveMetrics
+}
+
+type Disk {
+    model: String!
+    name: String!
+    serial: String!
+    sizeBytes: Long!
+    partitions: [Partition!]!
+}
+
+type FileSystem{
+    name: String!
+    description: String!
+    label: String!
+    type: String!
+    volume: String!
+    mount: String!
+    freeSpaceBytes: Long!
+    usableSpaceBytes: Long!
+    totalSpaceBytes: Long!
 }
 
 type DiskOsPartition {
