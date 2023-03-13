@@ -20,4 +20,4 @@
  */
 package com.krillsson.sysapi.core.domain.cpu
 
-class CpuInfo(val centralProcessor: CentralProcessor) 
+data class CpuInfo(val centralProcessor: CentralProcessor)

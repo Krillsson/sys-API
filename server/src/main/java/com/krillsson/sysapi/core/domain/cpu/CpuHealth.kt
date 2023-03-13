@@ -20,7 +20,7 @@
  */
 package com.krillsson.sysapi.core.domain.cpu
 
-class CpuHealth(
+data class CpuHealth(
     val temperatures: List<Double>,
     val voltage: Double,
     val fanRpm: Double,

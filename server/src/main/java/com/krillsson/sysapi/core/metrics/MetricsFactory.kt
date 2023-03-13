@@ -48,21 +48,18 @@ class MetricsFactory(
     private val utils: Utils = Utils()
     private var cache = true
 
-    private var metrics: Metrics? = null
 
     fun get(configuration: SysAPIConfiguration): Metrics {
-        if (metrics != null) return metrics!!
 
         val platformSpecific: Metrics = createPlatformSpecific(configuration)
         platformSpecific.initialize()
-        metrics = if (cache) Cache.wrap(
+
+        return if (configuration.metricsConfig.cache.enabled) Cache.wrap(
             platformSpecific,
             configuration.metricsConfig.cache,
             platform.asPlatform(),
             operatingSystem.asOperatingSystem()
         ) else platformSpecific
-
-        return metrics!!
     }
 
     private fun createPlatformSpecific(configuration: SysAPIConfiguration): Metrics {

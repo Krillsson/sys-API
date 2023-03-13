@@ -12,11 +12,11 @@ class CachingMotherboardMetrics(
     cacheConfiguration: CacheConfiguration
 ) : MotherboardMetrics {
     private val motherboardCache: Supplier<Motherboard> = Suppliers.memoizeWithExpiration(
-        { motherboardMetrics.motherboard() },
+        Suppliers.synchronizedSupplier{ motherboardMetrics.motherboard() },
         cacheConfiguration.duration, cacheConfiguration.unit
     )
     private val motherboardHealthCache: Supplier<List<HealthData>> = Suppliers.memoizeWithExpiration(
-        { motherboardMetrics.motherboardHealth() },
+        Suppliers.synchronizedSupplier{ motherboardMetrics.motherboardHealth() },
         cacheConfiguration.duration, cacheConfiguration.unit
     )
 
