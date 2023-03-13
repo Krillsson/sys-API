@@ -25,6 +25,8 @@ object RaspbianMetricsFactory {
         val networkMetrics = DefaultNetworkMetrics(ticker, hal, measurementManager, connectivityCheckManager)
         val gpuMetrics = DefaultGpuMetrics(hal)
         val driveMetrics = DefaultDriveMetrics(os, hal, measurementManager)
+        val diskMetrics = DefaultDiskMetrics(hal, measurementManager)
+        val fileSystemMetrics = DefaultFileSystemMetrics(os)
         val processesMetrics = DefaultProcessesMetrics(os, hal, ticker)
         val motherboardMetrics = DefaultMotherboardMetrics(hal)
         val memoryMetrics = DefaultMemoryMetrics(hal, os)
@@ -44,6 +46,8 @@ object RaspbianMetricsFactory {
             networkMetrics,
             gpuMetrics,
             driveMetrics,
+            diskMetrics,
+            fileSystemMetrics,
             processesMetrics,
             motherboardMetrics,
             memoryMetrics,

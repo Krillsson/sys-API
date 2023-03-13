@@ -5,6 +5,8 @@ interface Metrics {
     fun cpuMetrics(): CpuMetrics
     fun networkMetrics(): NetworkMetrics
     fun driveMetrics(): DriveMetrics
+    fun fileSystemMetrics(): FileSystemMetrics
+    fun diskMetrics(): DiskMetrics
     fun memoryMetrics(): MemoryMetrics
     fun processesMetrics(): ProcessesMetrics
     fun gpuMetrics(): GpuMetrics

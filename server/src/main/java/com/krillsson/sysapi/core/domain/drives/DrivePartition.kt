@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.core.domain.drives
 
-open class Partition(
+open class DrivePartition(
     val identification: String,
     val name: String,
     val type: String,

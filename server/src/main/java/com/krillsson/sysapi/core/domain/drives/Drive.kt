@@ -26,5 +26,5 @@ class Drive(
     val serial: String,
     val sizeBytes: Long,
     val diskOsPartition: OsPartition,
-    val partitions: List<Partition>
+    val partitions: List<DrivePartition>
 ) 

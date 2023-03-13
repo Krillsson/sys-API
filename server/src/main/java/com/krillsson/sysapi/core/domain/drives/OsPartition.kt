@@ -15,7 +15,7 @@ class OsPartition(
     val description: String,
     val usableSpace: Long,
     val totalSpace: Long
-) : Partition(
+) : DrivePartition(
     identification,
     name,
     type,
