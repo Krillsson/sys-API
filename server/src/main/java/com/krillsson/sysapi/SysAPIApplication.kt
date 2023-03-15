@@ -213,6 +213,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
                 MemoryLoadDAO::class.java,
                 NetworkLoadDAO::class.java,
                 DriveLoadDAO::class.java,
+                DiskLoadDAO::class.java,
+                FileSystemLoadDAO::class.java,
                 ConnectivityDAO::class.java
             ),
             /* constructorArguments = */ arrayOf(
@@ -223,6 +225,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
                 MemoryLoadDAO(hibernate.sessionFactory),
                 NetworkLoadDAO(hibernate.sessionFactory),
                 DriveLoadDAO(hibernate.sessionFactory),
+                DiskLoadDAO(hibernate.sessionFactory),
+                FileSystemLoadDAO(hibernate.sessionFactory),
                 ConnectivityDAO(hibernate.sessionFactory)
             )
         )

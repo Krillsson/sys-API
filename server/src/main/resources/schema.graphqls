@@ -199,7 +199,10 @@ type SystemMetricsHistoryEntry {
     date: String!
     dateTime: OffsetDateTime!
     processorMetrics: ProcessorMetrics!
+    @deprecated(reason: "Replaced by DiskMetrics and FileSystemMetrics")
     driveMetrics: [DriveMetrics!]!
+    diskMetrics: [DiskMetrics!]!
+    fileSystemMetrics: [FileSystemMetrics!]!
     networkInterfaceMetrics: [NetworkInterfaceMetrics!]!
     connectivity: Connectivity!
     memoryMetrics: MemoryMetrics!

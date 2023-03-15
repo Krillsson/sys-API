@@ -19,7 +19,7 @@ fun HistorySystemLoad.asEntity(id: UUID, dateTime: OffsetDateTime): HistorySyste
         cpuLoad.asCpuLoadEntity(id),
         networkInterfaceLoads.map { it.asNetworkInterfaceLoad(id) },
         connectivity.asConnectivity(id),
-        driveLoads.map { it.asDriveLoad(id) },
+        driveLoads.map { it.asDiskLoad(id) },
         diskLoads.map { it.asDiskLoad(id) },
         fileSystemLoads.map { it.asFileSystemLoad(id) },
         memory.asMemoryLoad(id),
@@ -105,7 +105,7 @@ private fun com.krillsson.sysapi.core.domain.memory.MemoryLoad.asMemoryLoad(id: 
     )
 }
 
-private fun com.krillsson.sysapi.core.domain.drives.DriveLoad.asDriveLoad(id: UUID): DriveLoad {
+private fun com.krillsson.sysapi.core.domain.drives.DriveLoad.asDiskLoad(id: UUID): DriveLoad {
     val uuid = UUID.randomUUID()
     return DriveLoad(
         uuid,
