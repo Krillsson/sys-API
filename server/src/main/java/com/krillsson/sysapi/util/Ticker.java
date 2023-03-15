@@ -1,6 +1,8 @@
 package com.krillsson.sysapi.util;
 
 import io.dropwizard.lifecycle.Managed;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ public class Ticker implements Managed {
     private final long measurementInterval;
     private final List<TickListener> listeners = new ArrayList<>();
 
+    private final Logger LOGGER = LoggerFactory.getLogger(Ticker.class);
 
     public Ticker(ScheduledExecutorService executorService, int measurementInterval) {
         this.executorService = executorService;
@@ -39,7 +42,12 @@ public class Ticker implements Managed {
 
     private void execute() {
         for (TickListener listener : listeners) {
-            listener.onTick();
+            try {
+                listener.onTick();
+            } catch (Exception e) {
+                LOGGER.error("Error while executing ticker", e);
+                throw new RuntimeException(e);
+            }
         }
     }
 
