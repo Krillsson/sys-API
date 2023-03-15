@@ -20,6 +20,7 @@
  */
 package com.krillsson.sysapi.core.metrics.defaultimpl
 
+import com.krillsson.sysapi.core.domain.disk.Partition
 import com.krillsson.sysapi.core.domain.drives.*
 import com.krillsson.sysapi.core.metrics.DriveMetrics
 import com.krillsson.sysapi.core.metrics.Empty
@@ -182,7 +183,7 @@ open class DefaultDriveMetrics(
         partitions.asPartitions()
     )
 
-    private fun HWPartition.asPartition() = DrivePartition(
+    private fun HWPartition.asPartition() = Partition(
         identification,
         name,
         type,

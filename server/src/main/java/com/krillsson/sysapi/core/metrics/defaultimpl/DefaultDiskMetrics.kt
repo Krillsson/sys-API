@@ -1,11 +1,6 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl
 
-import com.krillsson.sysapi.core.domain.disk.Disk
-import com.krillsson.sysapi.core.domain.disk.DiskLoad
-import com.krillsson.sysapi.core.domain.disk.DiskValues
-import com.krillsson.sysapi.core.domain.disk.Partition
-import com.krillsson.sysapi.core.domain.drives.DriveHealth
-import com.krillsson.sysapi.core.domain.drives.DriveSpeed
+import com.krillsson.sysapi.core.domain.disk.*
 import com.krillsson.sysapi.core.metrics.DiskMetrics
 import com.krillsson.sysapi.core.metrics.Empty
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
@@ -64,26 +59,26 @@ open class DefaultDiskMetrics(
 
     protected open fun diskSpeedForStore(
         diskStore: HWDiskStore,
-    ): Optional<DriveSpeed?> {
+    ): Optional<DiskSpeed?> {
         val currentSpeedForName = speedMeasurementManager.getCurrentSpeedForName(
             diskStore.name
         )
         return currentSpeedForName.map { s: SpeedMeasurementManager.CurrentSpeed ->
-            DriveSpeed(
+            DiskSpeed(
                 s.readPerSeconds,
                 s.writePerSeconds
             )
         }
     }
 
-    open fun diskHealth(name: String?): DriveHealth {
-        return Empty.DRIVE_HEALTH
+    open fun diskHealth(name: String?): DiskHealth {
+        return Empty.DISK_HEALTH
     }
 
     private fun createDiskLoad(diskStore: HWDiskStore): DiskLoad {
         val health = diskHealth(diskStore.name)
         val metrics = diskMetrics(diskStore)
-        val speed = diskSpeedForStore(diskStore).orElse(Empty.DRIVE_SPEED)
+        val speed = diskSpeedForStore(diskStore).orElse(Empty.DISK_SPEED)
         return DiskLoad(diskStore.name, getSerial(diskStore), metrics, speed!!, health)
     }
 

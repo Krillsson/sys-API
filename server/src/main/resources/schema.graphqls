@@ -366,6 +366,7 @@ type Disk {
     serial: String!
     sizeBytes: Long!
     partitions: [Partition!]!
+    metrics: DiskMetrics
 }
 
 type FileSystem{
@@ -375,6 +376,11 @@ type FileSystem{
     type: String!
     volume: String!
     mount: String!
+    metrics: FileSystemMetrics!
+}
+
+type FileSystemMetrics {
+    name: String!
     freeSpaceBytes: Long!
     usableSpaceBytes: Long!
     totalSpaceBytes: Long!
@@ -423,6 +429,16 @@ type DriveMetrics {
     currentReadWriteRate: DriveReadWriteRate!
 }
 
+type DiskMetrics {
+    name: String!
+    temperature: Int!
+    reads: Int!
+    readBytes: Long!
+    writes: Int!
+    writeBytes: Long!
+    currentReadWriteRate: DiskReadWriteRate!
+}
+
 type DriveHealth{
     value: Float!
     type: DriveHealthDataType!
@@ -439,6 +455,11 @@ enum DriveHealthDataType {
 
 
 type DriveReadWriteRate {
+    readBytesPerSecond: Long!
+    writeBytesPerSecond: Long!
+}
+
+type DiskReadWriteRate {
     readBytesPerSecond: Long!
     writeBytesPerSecond: Long!
 }
