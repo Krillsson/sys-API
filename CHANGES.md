@@ -5,6 +5,7 @@
 - Docker image for arm64 architecture
 - Improved handling of build-date and version in the AP
 - Add support for mDNS on local network. Making it easier for client discover the server.
+- Fixed: not all disks and filesystems show up. This deprecates Drives and introduces separate Disks and FileSystems.
 - Fixed: CPU load and CPU core load freezing after a while
 
 ### 0.17.2
