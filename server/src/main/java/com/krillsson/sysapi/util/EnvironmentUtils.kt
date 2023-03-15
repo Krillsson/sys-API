@@ -47,6 +47,8 @@ fun JerseyEnvironment.registerJerseyResources(
         )
     )
     register(DrivesResource(provider.driveMetrics(), historyManager))
+    register(DisksResource(provider.diskMetrics(), historyManager))
+    register(FileSystemsResource(provider.fileSystemMetrics(), historyManager))
     register(GpuResource(provider.gpuMetrics(), historyManager))
     register(MemoryResource(provider.memoryMetrics(), historyManager))
     register(NetworkInterfacesResource(provider.networkMetrics(), historyManager))
