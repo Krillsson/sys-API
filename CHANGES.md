@@ -4,6 +4,7 @@
  - Enabling storage of significantly more history and circumventing storing it in memory
 - Improved handling of build-date and version in the API
 - Add support for mDNS on local network. Making it easier for client discover the server.
+- Fixed: CPU load and CPU core load freezing after a while
 
 ### 0.17.2
 
