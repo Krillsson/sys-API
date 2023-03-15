@@ -9,6 +9,7 @@ import com.krillsson.sysapi.core.domain.drives.Drive
 import com.krillsson.sysapi.core.domain.drives.DriveLoad
 import com.krillsson.sysapi.core.domain.event.OngoingEvent
 import com.krillsson.sysapi.core.domain.event.PastEvent
+import com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad
 import com.krillsson.sysapi.core.domain.gpu.Gpu
 import com.krillsson.sysapi.core.domain.history.HistorySystemLoad
 import com.krillsson.sysapi.core.domain.memory.MemoryInfo
@@ -204,6 +205,14 @@ class QueryResolver : GraphQLQueryResolver {
 
         fun getDriveMetrics(historyEntry: BasicHistorySystemLoadEntity): List<DriveLoad> {
             return historyRepository.getDriveLoadsById(historyEntry.id)
+        }
+
+        fun getDiskMetrics(historyEntry: BasicHistorySystemLoadEntity): List<DiskLoad> {
+            return historyRepository.getDiskLoadsById(historyEntry.id)
+        }
+
+        fun getFileSystemMetrics(historyEntry: BasicHistorySystemLoadEntity): List<FileSystemLoad> {
+            return historyRepository.getFileSystemLoadsById(historyEntry.id)
         }
 
         fun getNetworkInterfaceMetrics(historyEntry: BasicHistorySystemLoadEntity): List<NetworkInterfaceLoad> {

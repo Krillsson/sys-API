@@ -20,7 +20,7 @@ fun HistorySystemLoadEntity.asSystemHistoryEntry(): SystemHistoryEntry {
             networkInterfaceLoads.map { it.asNetworkInterfaceLoad() },
             connectivity.asConnectivity(),
             driveLoads.map { it.asDriveLoad() },
-            diskLoads?.map { it.asDriveLoad() }.orEmpty(),
+            diskLoads?.map { it.asDiskLoad() }.orEmpty(),
             fileSystemLoads?.map { it.asFileSystemLoad() }.orEmpty(),
             memory.asMemoryLoad(),
             gpuLoads.map { it.asGpuLoad() },
@@ -29,7 +29,7 @@ fun HistorySystemLoadEntity.asSystemHistoryEntry(): SystemHistoryEntry {
     )
 }
 
-private fun FileSystemLoad.asFileSystemLoad(): com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad {
+fun FileSystemLoad.asFileSystemLoad(): com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad {
     return com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad(
         name,
         freeSpaceBytes,
@@ -38,7 +38,7 @@ private fun FileSystemLoad.asFileSystemLoad(): com.krillsson.sysapi.core.domain.
     )
 }
 
-private fun DiskLoad.asDriveLoad(): com.krillsson.sysapi.core.domain.disk.DiskLoad {
+fun DiskLoad.asDiskLoad(): com.krillsson.sysapi.core.domain.disk.DiskLoad {
     return com.krillsson.sysapi.core.domain.disk.DiskLoad(
         name, serial, values.asValues(), speed.asSpeed()
     )

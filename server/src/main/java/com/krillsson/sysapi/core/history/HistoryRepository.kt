@@ -1,7 +1,9 @@
 package com.krillsson.sysapi.core.history
 
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad
+import com.krillsson.sysapi.core.domain.disk.DiskLoad
 import com.krillsson.sysapi.core.domain.drives.DriveLoad
+import com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad
 import com.krillsson.sysapi.core.domain.history.HistorySystemLoad
 import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.domain.memory.MemoryLoad
@@ -24,6 +26,8 @@ open class HistoryRepository constructor(
     private val memoryLoadDAO: MemoryLoadDAO,
     private val networkLoadDAO: NetworkLoadDAO,
     private val driveLoadDAO: DriveLoadDAO,
+    private val diskLoadDAO: DiskLoadDAO,
+    private val fileSystemLoadDAO: FileSystemLoadDAO,
     private val connectivityDAO: ConnectivityDAO
 ) {
 
@@ -111,6 +115,16 @@ open class HistoryRepository constructor(
     @UnitOfWork
     open fun getDriveLoadsById(id: UUID): List<DriveLoad> {
         return driveLoadDAO.findById(id).map { it.asDriveLoad() }
+    }
+
+    @UnitOfWork
+    open fun getDiskLoadsById(id: UUID): List<DiskLoad> {
+        return diskLoadDAO.findById(id).map { it.asDiskLoad() }
+    }
+
+    @UnitOfWork
+    open fun getFileSystemLoadsById(id: UUID): List<FileSystemLoad> {
+        return fileSystemLoadDAO.findById(id).map { it.asFileSystemLoad() }
     }
 
 }
