@@ -431,7 +431,6 @@ type DriveMetrics {
 
 type DiskMetrics {
     name: String!
-    temperature: Int!
     reads: Int!
     readBytes: Long!
     writes: Int!

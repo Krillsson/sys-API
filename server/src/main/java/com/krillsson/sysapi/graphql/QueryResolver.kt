@@ -240,6 +240,8 @@ class QueryResolver : GraphQLQueryResolver {
         networkInterfaceLoads,
         connectivity,
         driveLoads,
+        diskLoads,
+        fileSystemLoads,
         memory,
         emptyList(),
         gpuLoads,
@@ -334,7 +336,6 @@ class QueryResolver : GraphQLQueryResolver {
 
     inner class DiskMetricResolver : GraphQLResolver<DiskLoad> {
         fun getDiskId(driveLoad: DiskLoad) = driveLoad.serial
-        fun getTemperature(driveLoad: DiskLoad) = driveLoad.health.temperature
         fun getReads(driveLoad: DiskLoad) = driveLoad.values.reads
         fun getWrites(driveLoad: DiskLoad) = driveLoad.values.writes
         fun getReadBytes(driveLoad: DiskLoad) = driveLoad.values.readBytes

@@ -34,6 +34,8 @@ class HistoryRecorder(
             networkInterfaceLoads,
             connectivity,
             driveLoads,
+            diskLoads,
+            fileSystemLoads,
             memory,
             gpuLoads,
             motherboardHealth

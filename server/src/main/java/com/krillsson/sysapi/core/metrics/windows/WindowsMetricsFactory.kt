@@ -43,6 +43,8 @@ object WindowsMetricsFactory {
                 cpuMetrics,
                 networkMetrics,
                 driveMetrics,
+                diskMetrics,
+                fileSystemMetrics,
                 memoryMetrics,
                 processesMetrics,
                 motherboardMetrics,

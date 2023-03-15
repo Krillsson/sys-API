@@ -20,11 +20,36 @@ fun HistorySystemLoadEntity.asSystemHistoryEntry(): SystemHistoryEntry {
             networkInterfaceLoads.map { it.asNetworkInterfaceLoad() },
             connectivity.asConnectivity(),
             driveLoads.map { it.asDriveLoad() },
+            diskLoads?.map { it.asDriveLoad() }.orEmpty(),
+            fileSystemLoads?.map { it.asFileSystemLoad() }.orEmpty(),
             memory.asMemoryLoad(),
             gpuLoads.map { it.asGpuLoad() },
             motherboardHealth.map { it.asHealthData() }
         )
     )
+}
+
+private fun FileSystemLoad.asFileSystemLoad(): com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad {
+    return com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad(
+        name,
+        freeSpaceBytes,
+        usableSpaceBytes,
+        totalSpaceBytes
+    )
+}
+
+private fun DiskLoad.asDriveLoad(): com.krillsson.sysapi.core.domain.disk.DiskLoad {
+    return com.krillsson.sysapi.core.domain.disk.DiskLoad(
+        name, serial, values.asValues(), speed.asSpeed()
+    )
+}
+
+private fun DiskSpeed.asSpeed(): com.krillsson.sysapi.core.domain.disk.DiskSpeed {
+    return com.krillsson.sysapi.core.domain.disk.DiskSpeed(readBytesPerSecond, writeBytesPerSecond)
+}
+
+private fun DiskValues.asValues(): com.krillsson.sysapi.core.domain.disk.DiskValues {
+    return com.krillsson.sysapi.core.domain.disk.DiskValues(reads, readBytes, writes, writeBytes)
 }
 
 fun com.krillsson.sysapi.core.history.db.HealthData.asHealthData(): HealthData {
