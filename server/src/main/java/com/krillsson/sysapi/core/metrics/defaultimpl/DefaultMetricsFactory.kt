@@ -33,6 +33,8 @@ object DefaultMetricsFactory {
             cpuMetrics,
             networkMetrics,
             driveMetrics,
+            diskMetrics,
+            fileSystemMetrics,
             memoryMetrics,
             processesMetrics,
             motherboardMetrics,

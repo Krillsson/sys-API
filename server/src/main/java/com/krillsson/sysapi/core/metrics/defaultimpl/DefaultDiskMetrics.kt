@@ -71,15 +71,10 @@ open class DefaultDiskMetrics(
         }
     }
 
-    open fun diskHealth(name: String?): DiskHealth {
-        return Empty.DISK_HEALTH
-    }
-
     private fun createDiskLoad(diskStore: HWDiskStore): DiskLoad {
-        val health = diskHealth(diskStore.name)
         val metrics = diskMetrics(diskStore)
         val speed = diskSpeedForStore(diskStore).orElse(Empty.DISK_SPEED)
-        return DiskLoad(diskStore.name, getSerial(diskStore), metrics, speed!!, health)
+        return DiskLoad(diskStore.name, getSerial(diskStore), metrics, speed!!)
     }
 
     private fun getSerial(d: HWDiskStore): String {

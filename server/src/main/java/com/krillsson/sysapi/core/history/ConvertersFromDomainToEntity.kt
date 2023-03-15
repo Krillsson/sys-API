@@ -20,9 +20,47 @@ fun HistorySystemLoad.asEntity(id: UUID, dateTime: OffsetDateTime): HistorySyste
         networkInterfaceLoads.map { it.asNetworkInterfaceLoad(id) },
         connectivity.asConnectivity(id),
         driveLoads.map { it.asDriveLoad(id) },
+        diskLoads.map { it.asDiskLoad(id) },
+        fileSystemLoads.map { it.asFileSystemLoad(id) },
         memory.asMemoryLoad(id),
         gpuLoads.map { it.asGpuLoad(id) },
         motherboardHealth.map { it.asMotherboardHealthData(id) }
+    )
+}
+
+private fun com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad.asFileSystemLoad(id: UUID): FileSystemLoad {
+    return FileSystemLoad(
+        UUID.randomUUID(),
+        null,
+        id,
+        name,
+        freeSpaceBytes,
+        usableSpaceBytes,
+        totalSpaceBytes
+    )
+}
+
+private fun com.krillsson.sysapi.core.domain.disk.DiskLoad.asDiskLoad(id: UUID): DiskLoad {
+    return DiskLoad(
+        UUID.randomUUID(),
+        null,
+        id,
+        name,
+        serial,
+        values.asDiskValues(),
+        speed.asSpeed()
+    )
+}
+
+private fun com.krillsson.sysapi.core.domain.disk.DiskSpeed.asSpeed(): DiskSpeed {
+    return DiskSpeed(
+        readBytesPerSecond, writeBytesPerSecond
+    )
+}
+
+private fun com.krillsson.sysapi.core.domain.disk.DiskValues.asDiskValues(): DiskValues {
+    return DiskValues(
+        reads, readBytes, writes, writeBytes
     )
 }
 

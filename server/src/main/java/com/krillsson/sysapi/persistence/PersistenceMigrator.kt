@@ -44,7 +44,8 @@ open class PersistenceMigrator(
     private fun migrateSql(flyway: Flyway) {
         val result = flyway.migrate()
         if (result.migrationsExecuted > 0) {
-            logger.info("Database migration - migrated ${result.initialSchemaVersion} to ${result.targetSchemaVersion}")
+            val initialSchemaVersion = result.initialSchemaVersion ?: "0"
+            logger.info("Database migration - migrated $initialSchemaVersion to ${result.targetSchemaVersion}")
         }
     }
 

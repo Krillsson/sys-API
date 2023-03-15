@@ -34,6 +34,8 @@ object RaspbianMetricsFactory {
             cpuMetrics,
             networkMetrics,
             driveMetrics,
+            diskMetrics,
+            fileSystemMetrics,
             memoryMetrics,
             processesMetrics,
             motherboardMetrics,

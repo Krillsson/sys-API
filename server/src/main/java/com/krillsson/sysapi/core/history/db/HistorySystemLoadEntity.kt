@@ -39,6 +39,10 @@ class HistorySystemLoadEntity(
     val connectivity: Connectivity,
     @OneToMany(mappedBy = "history", cascade = [CascadeType.ALL], orphanRemoval = true)
     val driveLoads: List<DriveLoad>,
+    @OneToMany(mappedBy = "history", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val diskLoads: List<DiskLoad>?,
+    @OneToMany(mappedBy = "history", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val fileSystemLoads: List<FileSystemLoad>?,
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true)
     val memory: MemoryLoad,
     @OneToMany(mappedBy = "history", cascade = [CascadeType.ALL], orphanRemoval = true)

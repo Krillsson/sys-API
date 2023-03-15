@@ -4,6 +4,5 @@ data class DiskLoad(
     val name: String,
     val serial: String,
     val values: DiskValues,
-    val speed: DiskSpeed,
-    val health: DiskHealth
+    val speed: DiskSpeed
 )
