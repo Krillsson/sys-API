@@ -18,15 +18,11 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.domain.drives
+package com.krillsson.sysapi.core.domain.disk
 
-import com.krillsson.sysapi.core.domain.disk.Partition
+import com.krillsson.sysapi.core.domain.sensors.HealthData
 
-class Drive(
-    val model: String,
-    val name: String,
-    val serial: String,
-    val sizeBytes: Long,
-    val diskOsPartition: OsPartition,
-    val partitions: List<Partition>
+class DiskHealth(
+    val temperature: Double,
+    val healthData: List<HealthData>
 ) 

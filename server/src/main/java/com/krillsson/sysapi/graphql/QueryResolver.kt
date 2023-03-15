@@ -2,6 +2,8 @@ package com.krillsson.sysapi.graphql
 
 import com.krillsson.sysapi.core.domain.cpu.CentralProcessor
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad
+import com.krillsson.sysapi.core.domain.disk.Disk
+import com.krillsson.sysapi.core.domain.disk.DiskLoad
 import com.krillsson.sysapi.core.domain.docker.State
 import com.krillsson.sysapi.core.domain.drives.Drive
 import com.krillsson.sysapi.core.domain.drives.DriveLoad
@@ -75,6 +77,9 @@ class QueryResolver : GraphQLQueryResolver {
     val processorResolver = ProcessorResolver()
     val processorMetricsResolver = ProcessorMetricsResolver()
     val driveResolver = DriveResolver()
+    val diskResolver = DiskResolver()
+    val diskMetricResolver = DiskMetricResolver()
+    val fileSystemResolver = FileSystemResolver()
     val driveMetricResolver = DriveMetricResolver()
     val networkInterfaceResolver = NetworkInterfaceResolver()
     val memoryLoadResolver = MemoryLoadResolver()
@@ -322,9 +327,24 @@ class QueryResolver : GraphQLQueryResolver {
         fun getFirmware(motherboard: Motherboard) = motherboard.computerSystem.firmware
     }
 
-    inner class DriveResolver : GraphQLResolver<Drive> {
-        fun getId(drive: Drive) = drive.serial
-        fun getMetrics(drive: Drive) = metrics.driveMetrics().driveLoadByName(drive.name)
+    inner class DiskResolver : GraphQLResolver<Disk> {
+        fun getId(drive: Disk) = drive.serial
+        fun getMetrics(drive: Disk) = metrics.diskMetrics().diskLoadByName(drive.name)
+    }
+
+    inner class DiskMetricResolver : GraphQLResolver<DiskLoad> {
+        fun getDiskId(driveLoad: DiskLoad) = driveLoad.serial
+        fun getTemperature(driveLoad: DiskLoad) = driveLoad.health.temperature
+        fun getReads(driveLoad: DiskLoad) = driveLoad.values.reads
+        fun getWrites(driveLoad: DiskLoad) = driveLoad.values.writes
+        fun getReadBytes(driveLoad: DiskLoad) = driveLoad.values.readBytes
+        fun getWriteBytes(driveLoad: DiskLoad) = driveLoad.values.writeBytes
+        fun getCurrentReadWriteRate(driveLoad: DiskLoad) =
+            driveLoad.speed
+    }
+
+    inner class FileSystemResolver : GraphQLResolver<com.krillsson.sysapi.core.domain.filesystem.FileSystem> {
+        fun getMetrics(fileSystem: com.krillsson.sysapi.core.domain.filesystem.FileSystem) = metrics.fileSystemMetrics().fileSystemLoadByName(fileSystem.name)
     }
 
     inner class DriveMetricResolver : GraphQLResolver<DriveLoad> {
@@ -350,6 +370,11 @@ class QueryResolver : GraphQLQueryResolver {
                     it.writeBytesPerSecond
                 )
             }
+    }
+
+    inner class DriveResolver : GraphQLResolver<Drive> {
+        fun getId(drive: Drive) = drive.serial
+        fun getMetrics(drive: Drive) = metrics.driveMetrics().driveLoadByName(drive.name)
     }
 
     data class DriveHealth(
