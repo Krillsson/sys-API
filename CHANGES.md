@@ -2,7 +2,8 @@
 
 - History is now stored in a SQLite file. 
  - Enabling storage of significantly more history and circumventing storing it in memory
-- Improved handling of build-date and version in the API
+- Docker image for arm64 architecture
+- Improved handling of build-date and version in the AP
 - Add support for mDNS on local network. Making it easier for client discover the server.
 - Fixed: CPU load and CPU core load freezing after a while
 
