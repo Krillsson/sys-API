@@ -108,7 +108,7 @@ project(':server') {
             jvmFlags = jvmArgs
         }
         jib.from {
-            image = 'amazoncorretto:11'
+            image = 'azul/zulu-openjdk-debian:11-jre'
             platforms {
                 platform {
                     architecture = 'amd64'
