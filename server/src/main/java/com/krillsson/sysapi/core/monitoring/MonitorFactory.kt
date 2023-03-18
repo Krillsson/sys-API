@@ -25,6 +25,9 @@ object MonitorFactory {
             Monitor.Type.DRIVE_WRITE_RATE -> DriveWriteRateMonitor(id, config as MonitorConfig<MonitoredValue.NumericalValue>)
             Monitor.Type.NETWORK_UPLOAD_RATE -> NetworkUploadRateMonitor(id, config as MonitorConfig<MonitoredValue.NumericalValue>)
             Monitor.Type.NETWORK_DOWNLOAD_RATE -> NetworkDownloadRateMonitor(id, config as MonitorConfig<MonitoredValue.NumericalValue>)
+            Monitor.Type.FILE_SYSTEM_SPACE -> FileSystemSpaceMonitor(id, config as MonitorConfig<MonitoredValue.NumericalValue>)
+            Monitor.Type.DISK_READ_RATE -> DiskReadRateMonitor(id, config as MonitorConfig<MonitoredValue.NumericalValue>)
+            Monitor.Type.DISK_WRITE_RATE -> DiskWriteRateMonitor(id, config as MonitorConfig<MonitoredValue.NumericalValue>)
         }
     }
 }
