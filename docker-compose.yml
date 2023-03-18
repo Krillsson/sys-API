@@ -41,4 +41,11 @@ services:
       - /path/to/config:/config
       # socket for docker management API.
       - /var/run/docker.sock:/var/run/docker.sock
+      # to read device names from disks
+      - /run/udev:/run/udev:ro
+      # to allow sys-API access to read hdd's
+      # alternatively mount in each device you'd like to monitor
+      - /dev:/dev:ro
+      # same as above
+      - /srv:/srv:ro
     restart: unless-stopped
