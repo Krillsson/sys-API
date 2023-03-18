@@ -1,9 +1,11 @@
 ### Unreleased
 
+### 0.18.0
+
 - History is now stored in a SQLite file. 
  - Enabling storage of significantly more history and circumventing storing it in memory
 - Docker image for arm64 architecture
-- Improved handling of build-date and version in the AP
+- Improved handling of build-date and version in the API
 - Add support for mDNS on local network. Making it easier for client discover the server.
 - Fixed: not all disks and filesystems show up. This deprecates Drives and introduces separate Disks and FileSystems.
   - Changes to sample _docker-compose.yml_ on how to expose hdd's for monitoring

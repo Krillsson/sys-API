@@ -21,7 +21,7 @@ buildscript {
 
 allprojects {
     group = 'com.krillsson'
-    version = '0.17.2'
+    version = '0.18.0'
 }
 
 subprojects {
