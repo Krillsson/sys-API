@@ -87,6 +87,11 @@ logging:
       level: INFO
       appenders:
         - type: console
+    "oshi":
+      additive: false
+      level: WARN
+      appenders:
+        - type: console
     "io.dropwizard":
       additive: false
       level: ERROR
