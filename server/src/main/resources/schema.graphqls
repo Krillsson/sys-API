@@ -180,8 +180,7 @@ type System {
     baseboard: Board!
     usbDevices: [UsbDevices!]!
     processor: Processor!
-    @deprecated(reason: "replaced by disks and fileSystems")
-    drives: [Drive!]!
+    drives: [Drive!]! @deprecated(reason: "replaced by disks and fileSystems")
     disks: [Disk!]!
     fileSystems: [FileSystem!]!
     hostname: String!
@@ -199,8 +198,7 @@ type SystemMetricsHistoryEntry {
     date: String!
     dateTime: OffsetDateTime!
     processorMetrics: ProcessorMetrics!
-    @deprecated(reason: "Replaced by DiskMetrics and FileSystemMetrics")
-    driveMetrics: [DriveMetrics!]!
+    driveMetrics: [DriveMetrics!]! @deprecated(reason: "Replaced by DiskMetrics and FileSystemMetrics")
     diskMetrics: [DiskMetrics!]!
     fileSystemMetrics: [FileSystemMetrics!]!
     networkInterfaceMetrics: [NetworkInterfaceMetrics!]!
@@ -377,6 +375,7 @@ type Disk {
 
 type FileSystem{
     name: String!
+    id: String!
     description: String!
     label: String!
     type: String!
@@ -387,6 +386,7 @@ type FileSystem{
 
 type FileSystemMetrics {
     name: String!
+    id: String!
     freeSpaceBytes: Long!
     usableSpaceBytes: Long!
     totalSpaceBytes: Long!

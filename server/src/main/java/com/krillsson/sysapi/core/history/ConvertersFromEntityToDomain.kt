@@ -32,6 +32,7 @@ fun HistorySystemLoadEntity.asSystemHistoryEntry(): SystemHistoryEntry {
 fun FileSystemLoad.asFileSystemLoad(): com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad {
     return com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad(
         name,
+        fsId.orEmpty(),
         freeSpaceBytes,
         usableSpaceBytes,
         totalSpaceBytes

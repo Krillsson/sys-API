@@ -354,7 +354,7 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     inner class FileSystemResolver : GraphQLResolver<com.krillsson.sysapi.core.domain.filesystem.FileSystem> {
-        fun getMetrics(fileSystem: com.krillsson.sysapi.core.domain.filesystem.FileSystem) = metrics.fileSystemMetrics().fileSystemLoadByName(fileSystem.name)
+        fun getMetrics(fileSystem: com.krillsson.sysapi.core.domain.filesystem.FileSystem) = metrics.fileSystemMetrics().fileSystemLoadById(fileSystem.name)
     }
 
     inner class DriveMetricResolver : GraphQLResolver<DriveLoad> {

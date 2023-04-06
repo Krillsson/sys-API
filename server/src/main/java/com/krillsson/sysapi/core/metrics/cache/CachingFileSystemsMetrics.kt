@@ -26,7 +26,7 @@ class CachingFileSystemMetrics(fileSystemMetrics: FileSystemMetrics, cacheConfig
         .build(object : CacheLoader<String, FileSystem>() {
             @Throws(Exception::class)
             override fun load(s: String): FileSystem? {
-                return fileSystemMetrics.fileSystemByName(s)
+                return fileSystemMetrics.fileSystemById(s)
             }
         })
     private val fileSystemLoadsQueryCache: LoadingCache<String, FileSystemLoad?> =
@@ -35,7 +35,7 @@ class CachingFileSystemMetrics(fileSystemMetrics: FileSystemMetrics, cacheConfig
             .build(object : CacheLoader<String, FileSystemLoad?>() {
                 @Throws(Exception::class)
                 override fun load(s: String): FileSystemLoad? {
-                    return fileSystemMetrics.fileSystemLoadByName(s)
+                    return fileSystemMetrics.fileSystemLoadById(s)
                 }
             })
 
@@ -47,11 +47,11 @@ class CachingFileSystemMetrics(fileSystemMetrics: FileSystemMetrics, cacheConfig
         return fileSystemLoadsCache.get()
     }
 
-    override fun fileSystemByName(name: String): FileSystem? {
-        return fileSystemQueryCache.getUnchecked(name)
+    override fun fileSystemById(id: String): FileSystem? {
+        return fileSystemQueryCache.getUnchecked(id)
     }
 
-    override fun fileSystemLoadByName(name: String): FileSystemLoad? {
-        return fileSystemLoadsQueryCache.getUnchecked(name)
+    override fun fileSystemLoadById(id: String): FileSystemLoad? {
+        return fileSystemLoadsQueryCache.getUnchecked(id)
     }
 }

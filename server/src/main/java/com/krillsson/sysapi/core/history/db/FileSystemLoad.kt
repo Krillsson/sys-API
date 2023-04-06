@@ -16,6 +16,7 @@ data class FileSystemLoad(
     val history: HistorySystemLoadEntity? = null,
     val historyId: UUID,
     val name: String,
+    val fsId: String?,
     val freeSpaceBytes: Long,
     val usableSpaceBytes: Long,
     val totalSpaceBytes: Long

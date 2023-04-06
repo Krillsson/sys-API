@@ -47,23 +47,23 @@ class FileSystemsResource(
     }
 
     @GET
-    @Path("{name}")
-    fun getFileSystemByName(@PathParam("name") name: String): FileSystem {
-        return provider.fileSystemByName(name) ?: throw WebApplicationException(
+    @Path("{id}")
+    fun getFileSystemByName(@PathParam("id") id: String): FileSystem {
+        return provider.fileSystemById(id) ?: throw WebApplicationException(
             String.format(
-                "No fileSystem with name %s was found.",
-                name
+                "No fileSystem with id %s was found.",
+                id
             ), Response.Status.NOT_FOUND
         )
     }
 
     @GET
-    @Path("loads/{name}")
-    fun getFileSystemLoadByName(@PathParam("name") name: String): FileSystemLoad {
-        return provider.fileSystemLoadByName(name) ?: throw WebApplicationException(
+    @Path("loads/{id}")
+    fun getFileSystemLoadById(@PathParam("id") id: String): FileSystemLoad {
+        return provider.fileSystemLoadById(id) ?: throw WebApplicationException(
             String.format(
-                "No fileSystem with name %s was found.",
-                name
+                "No fileSystem with id %s was found.",
+                id
             ), Response.Status.NOT_FOUND
         )
     }

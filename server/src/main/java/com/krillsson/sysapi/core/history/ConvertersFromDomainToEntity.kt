@@ -28,12 +28,13 @@ fun HistorySystemLoad.asEntity(id: UUID, dateTime: OffsetDateTime): HistorySyste
     )
 }
 
-private fun com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad.asFileSystemLoad(id: UUID): FileSystemLoad {
+private fun com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad.asFileSystemLoad(uuid: UUID): FileSystemLoad {
     return FileSystemLoad(
         UUID.randomUUID(),
         null,
-        id,
+        uuid,
         name,
+        id,
         freeSpaceBytes,
         usableSpaceBytes,
         totalSpaceBytes
