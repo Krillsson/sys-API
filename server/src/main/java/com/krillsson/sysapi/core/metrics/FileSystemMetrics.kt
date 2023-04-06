@@ -5,7 +5,7 @@ import com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad
 
 interface FileSystemMetrics {
     fun fileSystems(): List<FileSystem>
-    fun fileSystemByName(name: String): FileSystem?
+    fun fileSystemById(id: String): FileSystem?
     fun fileSystemLoads(): List<FileSystemLoad>
-    fun fileSystemLoadByName(name: String): FileSystemLoad?
+    fun fileSystemLoadById(id: String): FileSystemLoad?
 }

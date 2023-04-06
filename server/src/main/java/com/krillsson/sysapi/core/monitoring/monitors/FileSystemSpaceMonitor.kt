@@ -15,7 +15,7 @@ class FileSystemSpaceMonitor(override val id: UUID, override val config: Monitor
     companion object {
         val selector: NumericalValueSelector = { load, monitoredItemId ->
             load.fileSystemLoads.firstOrNull { i: FileSystemLoad ->
-                i.name.equals(monitoredItemId, ignoreCase = true)
+                i.id.equals(monitoredItemId, ignoreCase = true)
             }?.usableSpaceBytes?.toNumericalValue()
         }
     }

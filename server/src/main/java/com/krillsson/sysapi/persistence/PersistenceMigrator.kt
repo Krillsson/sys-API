@@ -34,8 +34,8 @@ open class PersistenceMigrator(
         val items: List<HistorySystemLoadEntity> = store.read()
             .orEmpty()
             .map { it.asEntity() }
-        val itemsInserted = historyDao.insert(items).size
-        if (itemsInserted > 0) {
+        if (items.isNotEmpty()) {
+            val itemsInserted = historyDao.insert(items).size
             logger.info("Database migration - $itemsInserted entries from JSON to SQLite")
             store.deleteOnExit()
         }

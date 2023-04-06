@@ -18,10 +18,10 @@ open class DefaultFileSystemMetrics(
             }
     }
 
-    override fun fileSystemByName(name: String): FileSystem? {
+    override fun fileSystemById(id: String): FileSystem? {
         return operatingSystem.fileSystem
             .fileStores
-            .firstOrNull { it.name.equals(name, ignoreCase = true) }
+            .firstOrNull { it.uuid.equals(id, ignoreCase = true) }
             ?.asFileSystem()
     }
 
@@ -32,16 +32,17 @@ open class DefaultFileSystemMetrics(
             }
     }
 
-    override fun fileSystemLoadByName(name: String): FileSystemLoad? {
+    override fun fileSystemLoadById(id: String): FileSystemLoad? {
         return operatingSystem.fileSystem
             .fileStores
-            .firstOrNull { it.name.equals(name, ignoreCase = true) }
+            .firstOrNull { it.uuid.equals(id, ignoreCase = true) }
             ?.asFileSystemLoad()
     }
 
     private fun OSFileStore.asFileSystemLoad(): FileSystemLoad{
         return FileSystemLoad(
             name,
+            uuid,
             freeSpace,
             usableSpace,
             totalSpace
@@ -51,6 +52,7 @@ open class DefaultFileSystemMetrics(
     private fun OSFileStore.asFileSystem(): FileSystem {
         return FileSystem(
             name,
+            uuid,
             description,
             label,
             type,
