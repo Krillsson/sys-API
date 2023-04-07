@@ -6,7 +6,7 @@ import com.krillsson.sysapi.core.domain.processes.ProcessSort.*
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo
 import com.krillsson.sysapi.core.metrics.ProcessesMetrics
 import com.krillsson.sysapi.util.OSProcessComparators
-import com.krillsson.sysapi.util.Ticker
+import com.krillsson.sysapi.util.PeriodicTaskManager
 import com.krillsson.sysapi.util.measureTimeMillis
 import org.slf4j.LoggerFactory
 import oshi.hardware.HardwareAbstractionLayer
@@ -17,8 +17,8 @@ import java.util.*
 class DefaultProcessesMetrics(
     private val operatingSystem: OperatingSystem,
     private val hal: HardwareAbstractionLayer,
-    private val ticker: Ticker,
-) : ProcessesMetrics, Ticker.TickListener {
+    private val taskManager: PeriodicTaskManager,
+) : ProcessesMetrics, PeriodicTaskManager.Task {
 
     companion object {
         private val LOGGER = LoggerFactory.getLogger(ProcessesMetrics::class.java)
@@ -80,10 +80,10 @@ class DefaultProcessesMetrics(
     }
 
     fun register() {
-        ticker.register(this)
+        taskManager.register(this)
     }
 
-    override fun onTick() {
+    override fun run() {
         val processes = operatingSystem.processes
         updateCurrentLoad(processes)
         updateMap(processes)

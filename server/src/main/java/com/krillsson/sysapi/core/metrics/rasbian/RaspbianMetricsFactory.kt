@@ -3,7 +3,7 @@ package com.krillsson.sysapi.core.metrics.rasbian
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
 import com.krillsson.sysapi.core.metrics.defaultimpl.*
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
-import com.krillsson.sysapi.util.Ticker
+import com.krillsson.sysapi.util.PeriodicTaskManager
 import com.krillsson.sysapi.util.asOperatingSystem
 import com.krillsson.sysapi.util.asPlatform
 import oshi.PlatformEnum
@@ -15,19 +15,19 @@ object RaspbianMetricsFactory {
         os: OperatingSystem,
         hal: HardwareAbstractionLayer,
         platformEnum: PlatformEnum,
-        ticker: Ticker,
+        periodicTaskManager: PeriodicTaskManager,
         measurementManager: SpeedMeasurementManager,
         connectivityCheckManager: ConnectivityCheckManager,
     ): RaspbianMetrics {
-        val defaultCpuLoadMetrics = DefaultCpuLoadMetrics(hal.processor, ticker)
+        val defaultCpuLoadMetrics = DefaultCpuLoadMetrics(hal.processor, periodicTaskManager)
         val raspbianCpuSensors = RaspbianCpuSensors(hal)
         val cpuMetrics = DefaultCpuMetrics(hal, os, raspbianCpuSensors, defaultCpuLoadMetrics)
-        val networkMetrics = DefaultNetworkMetrics(ticker, hal, measurementManager, connectivityCheckManager)
+        val networkMetrics = DefaultNetworkMetrics(periodicTaskManager, hal, measurementManager, connectivityCheckManager)
         val gpuMetrics = DefaultGpuMetrics(hal)
         val driveMetrics = DefaultDriveMetrics(os, hal, measurementManager)
         val diskMetrics = DefaultDiskMetrics(hal, measurementManager)
         val fileSystemMetrics = DefaultFileSystemMetrics(os)
-        val processesMetrics = DefaultProcessesMetrics(os, hal, ticker)
+        val processesMetrics = DefaultProcessesMetrics(os, hal, periodicTaskManager)
         val motherboardMetrics = DefaultMotherboardMetrics(hal)
         val memoryMetrics = DefaultMemoryMetrics(hal, os)
         val systemMetrics = DefaultSystemMetrics(

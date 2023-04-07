@@ -26,7 +26,7 @@ import com.krillsson.sysapi.core.metrics.NetworkMetrics
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager.CurrentSpeed
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager.SpeedSource
-import com.krillsson.sysapi.util.Ticker
+import com.krillsson.sysapi.util.PeriodicTaskManager
 import org.slf4j.LoggerFactory
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.hardware.NetworkIF
@@ -34,7 +34,7 @@ import java.net.SocketException
 import java.util.*
 
 open class DefaultNetworkMetrics(
-    private val ticker: Ticker,
+    private val periodicTaskManager: PeriodicTaskManager,
     private val hal: HardwareAbstractionLayer,
     private val speedMeasurementManager: SpeedMeasurementManager,
     private val connectivityCheckManager: ConnectivityCheckManager
@@ -57,7 +57,7 @@ open class DefaultNetworkMetrics(
     }
 
     fun register() {
-        ticker.register(connectivityCheckManager)
+        periodicTaskManager.register(connectivityCheckManager)
         speedMeasurementManager.register(
             hal.networkIFs.map {
                 NetworkSpeedSource(it)
