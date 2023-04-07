@@ -87,12 +87,14 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     )
 
     val ticker = Ticker(
-        Executors.newScheduledThreadPool(
+        executorService = Executors.newScheduledThreadPool(
             1,
             ThreadFactoryBuilder()
                 .setNameFormat("tick-mgr-%d")
                 .build()
-        ), 5
+        ),
+        measurementIntervalSeconds = 5,
+        retryIntervalSeconds = 30
     )
     private val hibernate: HibernateBundle<SysAPIConfiguration> = createHibernateBundle()
     private val flyWay: FlywayBundle<SysAPIConfiguration> = createFlywayBundle()
