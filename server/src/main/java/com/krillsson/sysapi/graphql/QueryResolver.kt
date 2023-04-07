@@ -280,10 +280,9 @@ class QueryResolver : GraphQLQueryResolver {
             }
         }
 
-        fun getCurrentValue(monitor: com.krillsson.sysapi.graphql.domain.Monitor): MonitoredValue {
+        fun getCurrentValue(monitor: com.krillsson.sysapi.graphql.domain.Monitor): MonitoredValue? {
             metrics.systemMetrics().systemLoad()
-            return requireNotNull(
-                when (monitor.type.valueType) {
+            return when (monitor.type.valueType) {
                     Monitor.ValueType.Numerical -> Selectors.forNumericalMonitorType(monitor.type)(
                         metrics.systemMetrics().systemLoad(),
                         monitor.monitoredItemId
@@ -298,8 +297,7 @@ class QueryResolver : GraphQLQueryResolver {
                         metrics.systemMetrics().systemLoad(),
                         monitor.monitoredItemId
                     )
-                }
-            ) { "No value found for monitor of type ${monitor.type} with id ${monitor.id}" }.asMonitoredValue()
+                }?.asMonitoredValue()
         }
     }
 
@@ -354,7 +352,7 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     inner class FileSystemResolver : GraphQLResolver<com.krillsson.sysapi.core.domain.filesystem.FileSystem> {
-        fun getMetrics(fileSystem: com.krillsson.sysapi.core.domain.filesystem.FileSystem) = metrics.fileSystemMetrics().fileSystemLoadById(fileSystem.name)
+        fun getMetrics(fileSystem: com.krillsson.sysapi.core.domain.filesystem.FileSystem) = metrics.fileSystemMetrics().fileSystemLoadById(fileSystem.id)
     }
 
     inner class DriveMetricResolver : GraphQLResolver<DriveLoad> {
