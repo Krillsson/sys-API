@@ -1,6 +1,7 @@
 ### Unreleased
 - Fixed: CPU load and CPU core load freezing after a while for real this time.
 - Resolved issue where periodic tasks stopped executing
+- Provide ID's for FileSystems
 
 ### 0.18.0
 
