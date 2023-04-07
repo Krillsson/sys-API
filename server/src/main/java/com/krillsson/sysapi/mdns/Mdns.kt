@@ -38,7 +38,7 @@ class Mdns(
                 .sortedByDescending { it.first.length }
                 .forEach { (scheme, port) ->
                     val serviceType = "_$scheme._tcp.local"
-                    val serviceName = "SysAPI-$scheme @ ${EnvironmentUtils.hostName}"
+                    val serviceName = "${EnvironmentUtils.hostName} - sys-API $scheme"
                     logger.info("Registering mDNS: $serviceType with name: $serviceName at port $port")
                     val serviceInfo = ServiceInfo.create(serviceType, serviceName, port, "GraphQL at /graphql")
                     jmdns.registerService(serviceInfo)
