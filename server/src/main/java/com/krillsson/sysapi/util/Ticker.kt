@@ -1,58 +1,74 @@
-package com.krillsson.sysapi.util;
+package com.krillsson.sysapi.util
 
-import io.dropwizard.lifecycle.Managed;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.dropwizard.lifecycle.Managed
+import java.time.Duration
+import java.util.*
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.TimeUnit
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-public class Ticker implements Managed {
-
-    public interface TickListener {
-        void onTick();
+class Ticker(private val executorService: ScheduledExecutorService, measurementInterval: Int) : Managed {
+    interface TickListener {
+        fun onTick()
     }
 
-    private final ScheduledExecutorService executorService;
-    private final long measurementInterval;
-    private final List<TickListener> listeners = new ArrayList<>();
+    sealed interface TickContainer {
+        val tickListener: TickListener
+        val id: UUID
 
-    private final Logger LOGGER = LoggerFactory.getLogger(Ticker.class);
+        data class Active(
+            override val tickListener: TickListener,
+            override val id: UUID
+        ) : TickContainer
 
-    public Ticker(ScheduledExecutorService executorService, int measurementInterval) {
-        this.executorService = executorService;
-        this.measurementInterval = Duration.ofSeconds(measurementInterval).getSeconds();
+        data class Evicted(
+            override val tickListener: TickListener,
+            override val id: UUID,
+            val error: Throwable
+        ) : TickContainer
     }
 
-    public void register(TickListener listener) {
-        listeners.add(listener);
+    private val logger by logger()
+    private val measurementInterval: Long = Duration.ofSeconds(measurementInterval.toLong()).seconds
+    private val containers: MutableList<TickContainer> = ArrayList()
+
+
+    fun register(listener: TickListener) {
+        containers.add(TickContainer.Active(listener, UUID.randomUUID()))
     }
 
-    public void unregister(TickListener tickListener) {
-        listeners.remove(tickListener);
+    fun unregister(tickListener: TickListener) {
+        containers.removeIf { it.tickListener == tickListener }
     }
 
-    @Override
-    public void start() throws Exception {
-        executorService.scheduleAtFixedRate(this::execute, 1, measurementInterval, TimeUnit.SECONDS);
+    @Throws(Exception::class)
+    override fun start() {
+        executorService.scheduleAtFixedRate({ execute() }, 1, measurementInterval, TimeUnit.SECONDS)
     }
 
-    private void execute() {
-        for (TickListener listener : listeners) {
+    private fun execute() {
+        val evictedContainers = mutableListOf<TickContainer.Evicted>()
+        for (listener in containers) {
             try {
-                listener.onTick();
-            } catch (Exception e) {
-                LOGGER.error("Error while executing ticker", e);
-                throw new RuntimeException(e);
+                when (listener) {
+                    is TickContainer.Active -> listener.tickListener.onTick()
+                    is TickContainer.Evicted -> {
+                        logger.warn("Not executing evicted ${listener.tickListener::class.java.simpleName}/${listener.id} due to previous error ${listener.error::class.java.simpleName} ${listener.error.message}")
+                    }
+                }
+            } catch (e: Throwable) {
+                logger.error("Error while executing ticker. Evicting...", e)
+                val evicted = TickContainer.Evicted(listener.tickListener, listener.id, e)
+                evictedContainers += evicted
             }
+        }
+        evictedContainers.forEach { evicted ->
+            containers.removeIf { it.id == evicted.id }
+            containers.add(evicted)
         }
     }
 
-    @Override
-    public void stop() throws Exception {
-        executorService.shutdownNow();
+    @Throws(Exception::class)
+    override fun stop() {
+        executorService.shutdownNow()
     }
 }
