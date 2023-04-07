@@ -20,10 +20,6 @@ sealed class MonitoredValue {
     ) : MonitoredValue()
 }
 
-fun MonitoredValue?.orDefault(){
-
-}
-
 fun Long.toNumericalValue() = MonitoredValue.NumericalValue(this)
 fun Boolean.toConditionalValue() = MonitoredValue.ConditionalValue(this)
 fun Float.toFractionalValue() = MonitoredValue.FractionalValue(this)
