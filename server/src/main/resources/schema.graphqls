@@ -233,7 +233,7 @@ type Monitor {
     inertiaInSeconds: Int!
     type: MonitorType
     threshold: MonitoredValue!
-    currentValue: MonitoredValue!
+    currentValue: MonitoredValue
     monitoredItemId: String
     history: [MonitoredValueHistoryEntry!]!
 }
