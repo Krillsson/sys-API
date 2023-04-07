@@ -20,7 +20,6 @@
  */
 package com.krillsson.sysapi.core.metrics
 
-import com.google.common.annotations.VisibleForTesting
 import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
 import com.krillsson.sysapi.core.metrics.cache.Cache
@@ -28,7 +27,7 @@ import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory
 import com.krillsson.sysapi.core.metrics.rasbian.RaspbianMetricsFactory
 import com.krillsson.sysapi.core.metrics.windows.WindowsMetricsFactory
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
-import com.krillsson.sysapi.util.Ticker
+import com.krillsson.sysapi.util.PeriodicTaskManager
 import com.krillsson.sysapi.util.Utils
 import com.krillsson.sysapi.util.asOperatingSystem
 import com.krillsson.sysapi.util.asPlatform
@@ -42,12 +41,10 @@ class MetricsFactory(
     private val operatingSystem: OperatingSystem,
     private val platform: PlatformEnum,
     private val speedMeasurementManager: SpeedMeasurementManager,
-    private val ticker: Ticker,
+    private val periodicTaskManager: PeriodicTaskManager,
     private val connectivityCheckManager: ConnectivityCheckManager
 ) {
     private val utils: Utils = Utils()
-    private var cache = true
-
 
     fun get(configuration: SysAPIConfiguration): Metrics {
 
@@ -71,7 +68,7 @@ class MetricsFactory(
                     operatingSystem,
                     hal,
                     platform,
-                    ticker,
+                    periodicTaskManager,
                     utils,
                     speedMeasurementManager,
                     connectivityCheckManager
@@ -84,7 +81,7 @@ class MetricsFactory(
                         operatingSystem,
                         hal,
                         platform,
-                        ticker,
+                        periodicTaskManager,
                         speedMeasurementManager,
                         connectivityCheckManager
                     )
@@ -97,7 +94,7 @@ class MetricsFactory(
                     operatingSystem,
                     hal,
                     platform,
-                    ticker,
+                    periodicTaskManager,
                     speedMeasurementManager,
                     connectivityCheckManager
                 )
@@ -106,16 +103,11 @@ class MetricsFactory(
                 operatingSystem,
                 hal,
                 platform,
-                ticker,
+                periodicTaskManager,
                 speedMeasurementManager,
                 connectivityCheckManager
             )
         }
-    }
-
-    @VisibleForTesting
-    fun setCache(cache: Boolean) {
-        this.cache = cache
     }
 
     companion object {

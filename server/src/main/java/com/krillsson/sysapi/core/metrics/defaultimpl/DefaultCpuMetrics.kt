@@ -4,8 +4,6 @@ import com.krillsson.sysapi.core.domain.cpu.CentralProcessor
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad
 import com.krillsson.sysapi.core.metrics.CpuMetrics
-import com.krillsson.sysapi.util.Ticker
-import com.krillsson.sysapi.util.Ticker.TickListener
 import com.krillsson.sysapi.util.Utils
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.software.os.OperatingSystem

@@ -4,7 +4,7 @@ import com.krillsson.sysapi.client.ExternalIpAddressService
 import com.krillsson.sysapi.config.ConnectivityCheckConfiguration
 import com.krillsson.sysapi.core.domain.network.Connectivity
 import com.krillsson.sysapi.persistence.KeyValueRepository
-import com.krillsson.sysapi.util.Ticker
+import com.krillsson.sysapi.util.PeriodicTaskManager
 import com.krillsson.sysapi.util.logger
 import okhttp3.MediaType
 import okhttp3.ResponseBody
@@ -17,13 +17,13 @@ class ConnectivityCheckManager(
     private val externalIpAddressService: ExternalIpAddressService,
     private val repository: KeyValueRepository,
     private val connectivityCheckConfiguration: ConnectivityCheckConfiguration
-) : Ticker.TickListener {
+) : PeriodicTaskManager.Task {
 
     private val logger by logger()
 
     private var _connectivity: Connectivity = defaultConnectivity
 
-    override fun onTick() {
+    override fun run() {
         if (connectivityCheckConfiguration.enabled) {
             _connectivity = resolveConnectivity()
         }

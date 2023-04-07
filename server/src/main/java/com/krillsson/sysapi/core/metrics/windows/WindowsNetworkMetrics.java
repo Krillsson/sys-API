@@ -24,7 +24,7 @@ import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultNetworkMetrics;
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
-import com.krillsson.sysapi.util.Ticker;
+import com.krillsson.sysapi.util.PeriodicTaskManager;
 import ohmwrapper.NetworkMonitor;
 import ohmwrapper.NicInfo;
 import org.slf4j.Logger;
@@ -43,8 +43,8 @@ public class WindowsNetworkMetrics extends DefaultNetworkMetrics {
     private HardwareAbstractionLayer hal;
 
 
-    public WindowsNetworkMetrics(Ticker ticker, HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager, ConnectivityCheckManager connectivityCheckManager, DelegatingOHMManager monitorManager) {
-        super(ticker, hal, speedMeasurementManager, connectivityCheckManager);
+    public WindowsNetworkMetrics(PeriodicTaskManager taskManager, HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager, ConnectivityCheckManager connectivityCheckManager, DelegatingOHMManager monitorManager) {
+        super(taskManager, hal, speedMeasurementManager, connectivityCheckManager);
         this.hal = hal;
         this.monitorManager = monitorManager;
     }

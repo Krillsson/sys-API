@@ -4,7 +4,7 @@ import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager;
 import com.krillsson.sysapi.core.domain.network.NetworkInterface;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad;
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
-import com.krillsson.sysapi.util.Ticker;
+import com.krillsson.sysapi.util.PeriodicTaskManager;
 import org.junit.Before;
 import org.junit.Test;
 import oshi.hardware.HardwareAbstractionLayer;
@@ -25,7 +25,7 @@ public class DefaultNetworkMetricsTest {
     DefaultNetworkMetrics provider;
     HardwareAbstractionLayer hal;
     ConnectivityCheckManager connectivityCheckManager;
-    Ticker ticker;
+    PeriodicTaskManager taskManager;
     SpeedMeasurementManager speedMeasurementManager;
 
     NetworkIF nic1;
@@ -37,10 +37,10 @@ public class DefaultNetworkMetricsTest {
     public void setUp() throws SocketException {
         hal = mock(HardwareAbstractionLayer.class);
         connectivityCheckManager = mock(ConnectivityCheckManager.class);
-        ticker = mock(Ticker.class);
+        taskManager = mock(PeriodicTaskManager.class);
         speedMeasurementManager = mock(SpeedMeasurementManager.class);
         provider = new DefaultNetworkMetrics(
-                ticker,
+                taskManager,
                 hal,
                 speedMeasurementManager,
                 connectivityCheckManager

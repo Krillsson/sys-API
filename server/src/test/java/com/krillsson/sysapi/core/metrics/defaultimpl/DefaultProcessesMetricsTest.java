@@ -2,7 +2,7 @@ package com.krillsson.sysapi.core.metrics.defaultimpl;
 
 import com.krillsson.sysapi.core.domain.processes.ProcessSort;
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo;
-import com.krillsson.sysapi.util.Ticker;
+import com.krillsson.sysapi.util.PeriodicTaskManager;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -26,7 +26,7 @@ public class DefaultProcessesMetricsTest {
     VirtualMemory virtualMemory;
     OperatingSystem os;
     DefaultProcessesMetrics provider;
-    Ticker ticker;
+    PeriodicTaskManager taskManager;
 
     @Before
     public void setUp() throws Exception {
@@ -37,9 +37,9 @@ public class DefaultProcessesMetricsTest {
         when(hal.getMemory()).thenReturn(memory);
         when(memory.getVirtualMemory()).thenReturn(virtualMemory);
         os = mock(OperatingSystem.class);
-        ticker = mock(Ticker.class);
+        taskManager = mock(PeriodicTaskManager.class);
 
-        provider = new DefaultProcessesMetrics(os, hal, ticker);
+        provider = new DefaultProcessesMetrics(os, hal, taskManager);
     }
 
     @Test

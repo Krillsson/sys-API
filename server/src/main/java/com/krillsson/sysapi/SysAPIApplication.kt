@@ -86,11 +86,11 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             .build()
     )
 
-    val ticker = Ticker(
+    val taskManager = PeriodicTaskManager(
         executorService = Executors.newScheduledThreadPool(
             1,
             ThreadFactoryBuilder()
-                .setNameFormat("tick-mgr-%d")
+                .setNameFormat("task-mgr-%d")
                 .build()
         ),
         measurementIntervalSeconds = 5,
@@ -171,7 +171,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             os,
             SystemInfo.getCurrentPlatform(),
             speedMeasurementManager,
-            ticker,
+            taskManager,
             connectivityCheckManager
         )
 
@@ -245,7 +245,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             monitorManager,
             eventManager,
             speedMeasurementManager,
-            ticker,
+            taskManager,
             monitorMetricQueryManager,
             historyMetricQueryManager,
             keyValueRepository,
