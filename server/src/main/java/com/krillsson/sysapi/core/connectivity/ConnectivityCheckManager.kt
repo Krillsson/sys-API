@@ -6,6 +6,9 @@ import com.krillsson.sysapi.core.domain.network.Connectivity
 import com.krillsson.sysapi.persistence.KeyValueRepository
 import com.krillsson.sysapi.util.Ticker
 import com.krillsson.sysapi.util.logger
+import okhttp3.MediaType
+import okhttp3.ResponseBody
+import retrofit2.Response
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.Socket
@@ -27,7 +30,11 @@ class ConnectivityCheckManager(
     }
 
     private fun resolveConnectivity(): Connectivity {
-        val response = externalIpAddressService.getMyIp().execute()
+        val response: Response<String> = try {
+            externalIpAddressService.getMyIp().execute()
+        } catch (e: Exception) {
+            Response.error(503, ResponseBody.create(MediaType.get("text/plain"), ""))
+        }
         val localIp = findLocalIp()
         val storedExternalIp = repository.get(externalIpStoreKey)
         val newExternalIp = response.body()
