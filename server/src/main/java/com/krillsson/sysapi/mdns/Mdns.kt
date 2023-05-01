@@ -4,11 +4,11 @@ import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
 import com.krillsson.sysapi.util.EnvironmentUtils
 import com.krillsson.sysapi.util.logger
+import io.dropwizard.core.server.DefaultServerFactory
+import io.dropwizard.core.server.SimpleServerFactory
 import io.dropwizard.jetty.HttpConnectorFactory
 import io.dropwizard.jetty.HttpsConnectorFactory
 import io.dropwizard.lifecycle.Managed
-import io.dropwizard.server.DefaultServerFactory
-import io.dropwizard.server.SimpleServerFactory
 import javax.jmdns.JmDNS
 import javax.jmdns.ServiceInfo
 

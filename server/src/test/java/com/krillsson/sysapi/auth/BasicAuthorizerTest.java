@@ -42,16 +42,16 @@ public class BasicAuthorizerTest {
 
     @Test
     public void correctRoleAndName() throws Exception {
-        assertTrue(authorizer.authorize(new UserConfiguration(correctUser, ""), BasicAuthorizer.AUTHENTICATED_ROLE));
+        assertTrue(authorizer.authorize(new UserConfiguration(correctUser, ""), BasicAuthorizer.AUTHENTICATED_ROLE, null));
     }
 
     @Test
     public void incorrectRole() throws Exception {
-        assertFalse(authorizer.authorize(new UserConfiguration(correctUser, ""), "derp"));
+        assertFalse(authorizer.authorize(new UserConfiguration(correctUser, ""), "derp", null));
     }
 
     @Test
     public void incorrectUser() throws Exception {
-        assertFalse(authorizer.authorize(new UserConfiguration("derp", ""), BasicAuthorizer.AUTHENTICATED_ROLE));
+        assertFalse(authorizer.authorize(new UserConfiguration("derp", ""), BasicAuthorizer.AUTHENTICATED_ROLE, null));
     }
 }

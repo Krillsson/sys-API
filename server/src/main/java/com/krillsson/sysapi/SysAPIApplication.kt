@@ -50,13 +50,13 @@ import com.krillsson.sysapi.persistence.*
 import com.krillsson.sysapi.tls.CertificateNamesCreator
 import com.krillsson.sysapi.tls.SelfSignedCertificateManager
 import com.krillsson.sysapi.util.*
-import io.dropwizard.Application
+import io.dropwizard.core.Application
+import io.dropwizard.core.setup.Bootstrap
+import io.dropwizard.core.setup.Environment
+import io.dropwizard.core.sslreload.SslReloadBundle
 import io.dropwizard.flyway.FlywayBundle
 import io.dropwizard.hibernate.HibernateBundle
 import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory
-import io.dropwizard.setup.Bootstrap
-import io.dropwizard.setup.Environment
-import io.dropwizard.sslreload.SslReloadBundle
 import oshi.SystemInfo
 import java.time.Clock
 import java.util.concurrent.Executors
