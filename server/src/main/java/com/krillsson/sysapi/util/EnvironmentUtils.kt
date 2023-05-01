@@ -15,11 +15,11 @@ import com.krillsson.sysapi.rest.*
 import io.dropwizard.auth.AuthDynamicFeature
 import io.dropwizard.auth.AuthValueFactoryProvider
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter
+import io.dropwizard.core.setup.Environment
 import io.dropwizard.jersey.setup.JerseyEnvironment
 import io.dropwizard.jetty.setup.ServletEnvironment
 import io.dropwizard.lifecycle.Managed
 import io.dropwizard.lifecycle.setup.LifecycleEnvironment
-import io.dropwizard.setup.Environment
 import org.eclipse.jetty.servlet.FilterHolder
 import org.eclipse.jetty.servlet.ServletContextHandler
 import org.eclipse.jetty.servlets.CrossOriginFilter

@@ -7,9 +7,9 @@ import com.smoketurner.dropwizard.graphql.GraphQLFactory
 import graphql.execution.preparsed.PreparsedDocumentProvider
 import graphql.kickstart.execution.GraphQLQueryInvoker
 import graphql.kickstart.servlet.GraphQLHttpServlet
-import io.dropwizard.ConfiguredBundle
-import io.dropwizard.setup.Bootstrap
-import io.dropwizard.setup.Environment
+import io.dropwizard.core.ConfiguredBundle
+import io.dropwizard.core.setup.Bootstrap
+import io.dropwizard.core.setup.Environment
 
 class GraphQLBundle(private val graphQLConfiguration: GraphQLConfiguration) : ConfiguredBundle<SysAPIConfiguration>,
     com.smoketurner.dropwizard.graphql.GraphQLConfiguration<SysAPIConfiguration> {

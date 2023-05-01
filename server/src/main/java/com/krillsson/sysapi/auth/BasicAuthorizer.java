@@ -22,8 +22,10 @@ package com.krillsson.sysapi.auth;
 
 import com.krillsson.sysapi.config.UserConfiguration;
 import io.dropwizard.auth.Authorizer;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-@SuppressWarnings("deprecation")
+import javax.ws.rs.container.ContainerRequestContext;
+
 public class BasicAuthorizer implements Authorizer<UserConfiguration> {
 
     public static final String AUTHENTICATED_ROLE = "AUTHENTICATED";
@@ -35,7 +37,7 @@ public class BasicAuthorizer implements Authorizer<UserConfiguration> {
     }
 
     @Override
-    public boolean authorize(UserConfiguration userConfiguration, String s) {
-        return userConfiguration.getName().equals(this.userConfiguration.getName()) && s.equals(AUTHENTICATED_ROLE);
+    public boolean authorize(UserConfiguration principal, String role, @Nullable ContainerRequestContext requestContext) {
+        return userConfiguration.getName().equals(this.userConfiguration.getName()) && role.equals(AUTHENTICATED_ROLE);
     }
 }

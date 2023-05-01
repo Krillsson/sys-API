@@ -123,11 +123,11 @@ project(':server') {
     }
 
     dependencies {
-        implementation 'io.dropwizard:dropwizard-core:2.0.34'
-        implementation 'io.dropwizard:dropwizard-auth:2.0.34'
-        implementation 'io.dropwizard:dropwizard-assets:2.0.34'
-        implementation 'io.dropwizard:dropwizard-hibernate:2.0.34'
-        implementation 'io.dropwizard.modules:dropwizard-flyway:2.0.29-1'
+        implementation 'io.dropwizard:dropwizard-core:3.0.0'
+        implementation 'io.dropwizard:dropwizard-auth:3.0.0'
+        implementation 'io.dropwizard:dropwizard-assets:3.0.0'
+        implementation 'io.dropwizard:dropwizard-hibernate:3.0.0'
+        implementation 'io.dropwizard.modules:dropwizard-flyway:3.0.0-1'
         implementation 'org.xerial:sqlite-jdbc:3.39.3.0'
         implementation 'com.zsoltfabok:sqlite-dialect:1.0'
         implementation 'org.glassfish:jakarta.el:3.0.0'
@@ -149,7 +149,7 @@ project(':server') {
         implementation ('com.graphql-java-kickstart:graphql-java-servlet:14.0.0'){
             exclude group: "org.slf4j"
         }
-        implementation('com.smoketurner.dropwizard:graphql-core:2.0.12-1') {
+        implementation('com.smoketurner.dropwizard:graphql-core:3.0.0-1') {
             exclude group: "com.graphql-java-kickstart"
         }
         implementation 'org.jmdns:jmdns:3.5.1'

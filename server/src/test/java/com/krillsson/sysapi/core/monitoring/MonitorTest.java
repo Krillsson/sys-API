@@ -72,8 +72,8 @@ public class MonitorTest {
 
         assertNotNull(event);
 
-        assertEquals(event.getValue(), OUTSIDE, 0.0);
-        assertEquals(event.getThreshold(), OUTSIDE, 0.0);
+        assertEquals(event.getValue(), OUTSIDE);
+        assertEquals(event.getThreshold(), OUTSIDE);
         assertEquals(event.getStartTime(), clock.now());
         assertTrue(event instanceof OngoingEvent);
     }
@@ -114,8 +114,8 @@ public class MonitorTest {
         clock.useFixedClockAt(clock.now().plusSeconds(PAST_INERTIA));
         Event monitorEvent = mechanism.check(monitor, monitor.config, monitor.selectValue(load), monitor.isPastThreshold(monitor.selectValue(load)));
 
-        assertEquals(monitorEvent.getValue(), INSIDE, 0.0);
-        assertEquals(monitorEvent.getThreshold(), OUTSIDE, 0.0);
+        assertEquals(monitorEvent.getValue(), INSIDE);
+        assertEquals(monitorEvent.getThreshold(), OUTSIDE);
         assertEquals(monitorEvent.getStartTime(), clock.now());
         assertTrue(monitorEvent instanceof PastEvent);
 
@@ -139,7 +139,7 @@ public class MonitorTest {
 
         assertEquals(monitor.id, event.getMonitorId());
         assertEquals(clock.now(), event.getStartTime());
-        assertEquals(1, event.getThreshold(), 0.0);
+        assertEquals(1, event.getThreshold());
         assertEquals(Monitor.Type.CPU_LOAD, event.getMonitorType());
     }
 
