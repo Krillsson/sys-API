@@ -3,6 +3,7 @@ package com.krillsson.sysapi.core.metrics.defaultimpl
 import com.krillsson.sysapi.core.domain.filesystem.FileSystem
 import com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad
 import com.krillsson.sysapi.core.metrics.FileSystemMetrics
+import com.krillsson.sysapi.util.asHex
 import oshi.software.os.OSFileStore
 import oshi.software.os.OperatingSystem
 
@@ -16,13 +17,14 @@ open class DefaultFileSystemMetrics(
             .fileStores.map {
                 it.asFileSystem()
             }
+            .distinctBy { it.id }
     }
 
     override fun fileSystemById(id: String): FileSystem? {
         return operatingSystem.fileSystem
             .fileStores
-            .firstOrNull { it.uuid.equals(id, ignoreCase = true) }
-            ?.asFileSystem()
+            .map { it.asFileSystem() }
+            .firstOrNull { it.id.equals(id, ignoreCase = true) }
     }
 
     override fun fileSystemLoads(): List<FileSystemLoad> {
@@ -30,19 +32,21 @@ open class DefaultFileSystemMetrics(
             .fileStores.map {
                 it.asFileSystemLoad()
             }
+            .distinctBy { it.id }
     }
 
     override fun fileSystemLoadById(id: String): FileSystemLoad? {
         return operatingSystem.fileSystem
             .fileStores
-            .firstOrNull { it.uuid.equals(id, ignoreCase = true) }
-            ?.asFileSystemLoad()
+            .map { it.asFileSystemLoad() }
+            .firstOrNull { it.id.equals(id, ignoreCase = true) }
     }
 
-    private fun OSFileStore.asFileSystemLoad(): FileSystemLoad{
+    private fun OSFileStore.asFileSystemLoad(): FileSystemLoad {
+        val id = if (uuid.isNullOrEmpty()) createFallbackUrl() else uuid
         return FileSystemLoad(
             name,
-            uuid,
+            id,
             freeSpace,
             usableSpace,
             totalSpace
@@ -50,14 +54,21 @@ open class DefaultFileSystemMetrics(
     }
 
     private fun OSFileStore.asFileSystem(): FileSystem {
+        val id = if (uuid.isNullOrEmpty()) createFallbackUrl() else uuid
         return FileSystem(
             name,
-            uuid,
+            id,
             description,
             label,
             type,
             volume,
             mount
         )
+    }
+
+    private fun OSFileStore.createFallbackUrl(): String {
+        return "fallback-id-${name.hashCode().asHex()}-${type.hashCode().asHex()}-${
+            mount.hashCode().asHex()
+        }-${volume.hashCode().asHex()}-${label.hashCode().asHex()}"
     }
 }

@@ -29,7 +29,7 @@ fun PlatformEnum.asPlatform(): Platform {
 }
 
 fun ProcessSort.asOshiProcessSort(): Comparator<OSProcess> {
-    return when(this){
+    return when (this) {
         ProcessSort.CPU -> oshi.software.os.OperatingSystem.ProcessSorting.CPU_DESC
         ProcessSort.MEMORY -> oshi.software.os.OperatingSystem.ProcessSorting.RSS_DESC
         ProcessSort.OLDEST -> oshi.software.os.OperatingSystem.ProcessSorting.UPTIME_DESC
@@ -51,3 +51,5 @@ fun Any.reflectionToString(): String {
         .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
         .writerWithDefaultPrettyPrinter().writeValueAsString(this)
 }
+
+fun Int.asHex() = Integer.toHexString(this).uppercase()
