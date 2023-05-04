@@ -98,7 +98,7 @@ project(':server') {
     }
 
     jib {
-        to.image = "krillsson/sys-api"
+        to.image = "krillsson/sys-api:nightly"
         container {
             appRoot = "/"
             args = ["server", "/config/configuration.yml"]
