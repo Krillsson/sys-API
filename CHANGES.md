@@ -1,4 +1,6 @@
-### Unreleased
+### 0.18.2
+- Fix id field being empty for some Filesystems
+  - Stability and uniqueness cannot be guaranteed. Duplicates will be discarded.
 
 ### 0.18.1
 - Fixed: CPU load and CPU core load freezing after a while for real this time.
