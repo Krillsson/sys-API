@@ -21,7 +21,7 @@ buildscript {
 
 allprojects {
     group = 'com.krillsson'
-    version = '0.18.1'
+    version = '0.18.2'
 }
 
 subprojects {
@@ -98,7 +98,7 @@ project(':server') {
     }
 
     jib {
-        to.image = "krillsson/sys-api:nightly"
+        to.image = "krillsson/sys-api"
         container {
             appRoot = "/"
             args = ["server", "/config/configuration.yml"]
