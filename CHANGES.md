@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 0.18.3
 - Fixed: querying network interfaces on Windows takes too long
 - Fixed: Docker client timeout being unreasonably long (3m)
 
