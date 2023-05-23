@@ -1,4 +1,6 @@
 ### Unreleased
+- Fixed: querying network interfaces on Windows takes too long
+- Fixed: Docker client timeout being unreasonably long (3m)
 
 ### 0.18.2
 - Fix id field being empty for some Filesystems
