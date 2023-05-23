@@ -40,6 +40,8 @@ open class DefaultNetworkMetrics(
     private val connectivityCheckManager: ConnectivityCheckManager
 ) : NetworkMetrics {
 
+    private val networkInterfaces: MutableList<NetworkIF> = hal.networkIFs
+
     class NetworkSpeedSource(private val networkIF: NetworkIF) : SpeedSource {
         override fun getName(): String {
             return networkIF.name
@@ -59,7 +61,7 @@ open class DefaultNetworkMetrics(
     fun register() {
         periodicTaskManager.register(connectivityCheckManager)
         speedMeasurementManager.register(
-            hal.networkIFs.map {
+            networkInterfaces.map {
                 NetworkSpeedSource(it)
             }
         )
@@ -70,7 +72,7 @@ open class DefaultNetworkMetrics(
     }
 
     override fun networkInterfaces(): List<NetworkInterface> {
-        return hal.networkIFs
+        return networkInterfaces
             .map {
                 var isLoopback = false
                 try {
@@ -84,7 +86,7 @@ open class DefaultNetworkMetrics(
     }
 
     override fun networkInterfaceById(id: String): Optional<NetworkInterface> {
-        return Optional.ofNullable(hal.networkIFs.firstOrNull {
+        return Optional.ofNullable(networkInterfaces.firstOrNull {
             it.name.equals(
                 id,
                 ignoreCase = true
@@ -103,7 +105,7 @@ open class DefaultNetworkMetrics(
     }
 
     override fun networkInterfaceLoads(): List<NetworkInterfaceLoad> {
-        return hal.networkIFs.map {
+        return networkInterfaces.map {
             var up = false
             try {
                 up = it.queryNetworkInterface().isUp
@@ -115,7 +117,7 @@ open class DefaultNetworkMetrics(
     }
 
     override fun networkInterfaceLoadById(id: String): Optional<NetworkInterfaceLoad> {
-        return Optional.ofNullable(hal.networkIFs.firstOrNull {
+        return Optional.ofNullable(networkInterfaces.firstOrNull {
             it.name.equals(
                 id,
                 ignoreCase = true
