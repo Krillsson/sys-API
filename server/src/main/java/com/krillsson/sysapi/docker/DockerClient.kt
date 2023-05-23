@@ -18,6 +18,7 @@ import com.krillsson.sysapi.core.domain.docker.CommandType
 import com.krillsson.sysapi.core.domain.docker.Container
 import com.krillsson.sysapi.util.logger
 import com.krillsson.sysapi.util.measureTimeMillis
+import java.time.Duration
 import java.time.OffsetDateTime
 import java.util.concurrent.TimeUnit
 
@@ -46,6 +47,8 @@ class DockerClient(
     private val httpClient: DockerHttpClient = ApacheDockerHttpClient.Builder()
         .dockerHost(config.dockerHost)
         .sslConfig(config.sslConfig)
+        .connectionTimeout(Duration.ofSeconds(15))
+        .responseTimeout(Duration.ofSeconds(30))
         .maxConnections(100)
         .build()
 
