@@ -182,11 +182,14 @@ type System {
     processor: Processor!
     drives: [Drive!]! @deprecated(reason: "replaced by disks and fileSystems")
     disks: [Disk!]!
+    diskById(id: String!): Disk
     fileSystems: [FileSystem!]!
+    fileSystemById(id: String!): FileSystem
     hostname: String!
     platform: Platform!
     connectivity: Connectivity!
     networkInterfaces: [NetworkInterface!]!
+    networkInterfaceById(id: String!): NetworkInterface
     # 0 means no limitation
     processes(limit: Int = 0, sortBy: ProcessSortMethod = MEMORY): [Process!]!
     memory: Memory!
