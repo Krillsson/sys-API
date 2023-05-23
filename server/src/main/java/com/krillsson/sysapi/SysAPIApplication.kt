@@ -58,6 +58,7 @@ import io.dropwizard.flyway.FlywayBundle
 import io.dropwizard.hibernate.HibernateBundle
 import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory
 import oshi.SystemInfo
+import oshi.util.GlobalConfig
 import java.time.Clock
 import java.util.concurrent.Executors
 
@@ -115,7 +116,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     lateinit var metricsFactory: MetricsFactory
 
     override fun initialize(bootstrap: Bootstrap<SysAPIConfiguration>) {
-
+        GlobalConfig.set("oshi.os.windows.loadaverage", true)
         if (!FileSystem.data.isDirectory) {
             logger.info("Attempting to create {}", FileSystem.data)
             assert(FileSystem.data.mkdir()) { "Unable to create ${FileSystem.data}" }
