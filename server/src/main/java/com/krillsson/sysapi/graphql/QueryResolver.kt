@@ -178,7 +178,9 @@ class QueryResolver : GraphQLQueryResolver {
 
         fun getDrives(system: System) = metrics.driveMetrics().drives()
         fun getDisks(system: System) = metrics.diskMetrics().disks()
+        fun getDiskById(system: System, id: String) = metrics.diskMetrics().diskByName(id)
         fun getFileSystems(system: System) = metrics.fileSystemMetrics().fileSystems()
+        fun getFileSystemById(system: System, id: String) = metrics.fileSystemMetrics().fileSystemById(id)
 
         fun getProcesses(
             system: System,
@@ -190,6 +192,7 @@ class QueryResolver : GraphQLQueryResolver {
         }
 
         fun networkInterfaces(system: System) = metrics.networkMetrics().networkInterfaces()
+        fun getNetworkInterfaceById(system: System, id: String) = metrics.networkMetrics().networkInterfaceById(id)
         fun getMemory(system: System) = metrics.memoryMetrics().memoryInfo()
     }
 
