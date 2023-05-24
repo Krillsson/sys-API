@@ -196,10 +196,20 @@ private fun com.krillsson.sysapi.core.domain.cpu.CpuLoad.asCpuLoadEntity(id: UUI
         id,
         usagePercentage,
         systemLoadAverage,
+        loadAverages.asLoadAverage(id),
         coreLoads.map { it.asCoreLoad(id) },
         cpuHealth.asCpuHealth(id),
         processCount,
         threadCount
+    )
+}
+
+private fun com.krillsson.sysapi.core.domain.cpu.LoadAverages.asLoadAverage(id: UUID): LoadAverages {
+    return LoadAverages(
+        id,
+        oneMinutes,
+        fiveMinutes,
+        fifteenMinutes
     )
 }
 

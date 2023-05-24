@@ -11,6 +11,8 @@ class CpuLoad(
     val id: UUID,
     val usagePercentage: Double,
     val systemLoadAverage: Double,
+    @Embedded
+    val loadAverages: LoadAverages,
     @OneToMany(mappedBy = "cpuLoad", cascade = [CascadeType.ALL], orphanRemoval = true)
     val coreLoads: List<CoreLoad>,
     @Embedded
