@@ -21,6 +21,7 @@ fun createHibernateBundle() = object : HibernateBundle<SysAPIConfiguration>(
     HealthData::class.java,
     CpuHealth::class.java,
     CoreLoad::class.java,
+    LoadAverages::class.java,
     DriveHealthData::class.java
 ) {
 

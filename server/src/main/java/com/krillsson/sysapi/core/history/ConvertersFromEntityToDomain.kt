@@ -153,11 +153,16 @@ fun com.krillsson.sysapi.core.history.db.CpuLoad.asCpuLoad(): CpuLoad {
     return CpuLoad(
         usagePercentage,
         systemLoadAverage,
+        loadAverages.asLoadAverages(),
         coreLoads.map { it.asCoreLoad() },
         cpuHealth.asCpuHealth(),
         processCount,
         threadCount
     )
+}
+
+private fun LoadAverages.asLoadAverages(): com.krillsson.sysapi.core.domain.cpu.LoadAverages {
+    return com.krillsson.sysapi.core.domain.cpu.LoadAverages(oneMinutes, fiveMinutes, fifteenMinutes)
 }
 
 fun com.krillsson.sysapi.core.history.db.CpuHealth.asCpuHealth(): CpuHealth {
