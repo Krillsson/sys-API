@@ -74,6 +74,9 @@ object Selectors {
     fun forFractionalMonitorType(type: com.krillsson.sysapi.core.monitoring.Monitor.Type): FractionalValueSelector = when (type) {
         com.krillsson.sysapi.core.monitoring.Monitor.Type.CPU_LOAD -> CpuMonitor.selector
         com.krillsson.sysapi.core.monitoring.Monitor.Type.PROCESS_CPU_LOAD -> ProcessCpuMonitor.selector
+        com.krillsson.sysapi.core.monitoring.Monitor.Type.LOAD_AVERAGE_ONE_MINUTE -> LoadAverageMonitorOneMinute.selector
+        com.krillsson.sysapi.core.monitoring.Monitor.Type.LOAD_AVERAGE_FIVE_MINUTES -> LoadAverageMonitorFiveMinutes.selector
+        com.krillsson.sysapi.core.monitoring.Monitor.Type.LOAD_AVERAGE_FIFTEEN_MINUTES -> LoadAverageMonitorFifteenMinutes.selector
         else -> throw IllegalArgumentException("$type is a ${type.valueType} type")
     }
 

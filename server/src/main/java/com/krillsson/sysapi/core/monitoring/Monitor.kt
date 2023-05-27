@@ -11,6 +11,9 @@ abstract class Monitor<out T : MonitoredValue> {
 
     enum class Type(val valueType: ValueType) {
         CPU_LOAD(ValueType.Fractional),
+        LOAD_AVERAGE_ONE_MINUTE(ValueType.Fractional),
+        LOAD_AVERAGE_FIVE_MINUTES(ValueType.Fractional),
+        LOAD_AVERAGE_FIFTEEN_MINUTES(ValueType.Fractional),
         CPU_TEMP(ValueType.Numerical),
         DRIVE_SPACE(ValueType.Numerical),
         FILE_SYSTEM_SPACE(ValueType.Numerical),
@@ -30,7 +33,7 @@ abstract class Monitor<out T : MonitoredValue> {
         EXTERNAL_IP_CHANGED(ValueType.Conditional)
     }
 
-    enum class ValueType{
+    enum class ValueType {
         Numerical,
         Fractional,
         Conditional

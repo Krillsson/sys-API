@@ -28,6 +28,9 @@ object MonitorFactory {
             Monitor.Type.FILE_SYSTEM_SPACE -> FileSystemSpaceMonitor(id, config as MonitorConfig<MonitoredValue.NumericalValue>)
             Monitor.Type.DISK_READ_RATE -> DiskReadRateMonitor(id, config as MonitorConfig<MonitoredValue.NumericalValue>)
             Monitor.Type.DISK_WRITE_RATE -> DiskWriteRateMonitor(id, config as MonitorConfig<MonitoredValue.NumericalValue>)
+            Monitor.Type.LOAD_AVERAGE_ONE_MINUTE -> LoadAverageMonitorOneMinute(id, config as MonitorConfig<MonitoredValue.FractionalValue>)
+            Monitor.Type.LOAD_AVERAGE_FIVE_MINUTES -> LoadAverageMonitorFiveMinutes(id, config as MonitorConfig<MonitoredValue.FractionalValue>)
+            Monitor.Type.LOAD_AVERAGE_FIFTEEN_MINUTES -> LoadAverageMonitorFifteenMinutes(id, config as MonitorConfig<MonitoredValue.FractionalValue>)
         }
     }
 }

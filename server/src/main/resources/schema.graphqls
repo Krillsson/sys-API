@@ -86,6 +86,9 @@ enum NumericalValueMonitorType {
 enum FractionalValueMonitorType {
     CPU_LOAD,
     PROCESS_CPU_LOAD,
+    LOAD_AVERAGE_ONE_MINUTE,
+    LOAD_AVERAGE_FIVE_MINUTES,
+    LOAD_AVERAGE_FIFTEEN_MINUTES,
 }
 
 enum ConditionalValueMonitorType {
@@ -341,7 +344,9 @@ type Processor {
 
 type ProcessorMetrics {
     usagePercentage: Float!
+    @deprecated(reason: "Replaced by much more detailed loadAverages field")
     systemLoadAverage: Float!
+    loadAverages: LoadAverages!
     processCount: Int!
     threadCount: Int!
     voltage: Int!
@@ -349,6 +354,12 @@ type ProcessorMetrics {
     fanPercent: Int!
     temperatures: [Float!]!
     coreLoads: [ProcessorCoreMetrics!]!
+}
+
+type LoadAverages {
+    oneMinute: Float!
+    fiveMinutes: Float!
+    fifteenMinutes: Float!
 }
 
 type ProcessorCoreMetrics {
