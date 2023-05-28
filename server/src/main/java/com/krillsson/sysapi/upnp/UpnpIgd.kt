@@ -2,15 +2,14 @@ package com.krillsson.sysapi.upnp
 
 import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.util.logger
+import io.dropwizard.core.server.DefaultServerFactory
+import io.dropwizard.core.server.SimpleServerFactory
 import io.dropwizard.jetty.HttpsConnectorFactory
 import io.dropwizard.lifecycle.Managed
-import io.dropwizard.server.DefaultServerFactory
-import io.dropwizard.server.SimpleServerFactory
 import org.bitlet.weupnp.GatewayDevice
 import org.bitlet.weupnp.GatewayDiscover
 import org.bitlet.weupnp.PortMappingEntry
 import java.net.InetAddress
-
 
 class UpnpIgd(
     private val configuration: SysAPIConfiguration
