@@ -2,6 +2,7 @@
 - Add networkInterfaceById and fileSystemById to GraphQL-API
 - Add one, five and fifteen LoadAverages to GraphQL-API.
 - Add monitors for load averages
+- More fine-grained control over periodic tasks
 
 ### 0.18.3
 - Fixed: querying network interfaces on Windows takes too long
