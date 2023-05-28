@@ -4,8 +4,8 @@ import com.krillsson.sysapi.core.domain.docker.State
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.domain.monitor.toConditionalValue
+import com.krillsson.sysapi.core.monitoring.MetricQueryEvent
 import com.krillsson.sysapi.core.monitoring.Monitor
-import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
 import java.util.*
 
 class DockerContainerRunningMonitor(override val id: UUID, override val config: MonitorConfig<MonitoredValue.ConditionalValue>) : Monitor<MonitoredValue.ConditionalValue>() {
@@ -25,7 +25,7 @@ class DockerContainerRunningMonitor(override val id: UUID, override val config: 
         }
     }
 
-    override fun selectValue(event: MonitorMetricQueryEvent): MonitoredValue.ConditionalValue? {
+    override fun selectValue(event: MetricQueryEvent): MonitoredValue.ConditionalValue? {
         return selector(event.containers, config.monitoredItemId)
     }
 

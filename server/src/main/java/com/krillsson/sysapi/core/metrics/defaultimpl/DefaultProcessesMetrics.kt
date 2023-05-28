@@ -5,8 +5,10 @@ import com.krillsson.sysapi.core.domain.processes.ProcessSort
 import com.krillsson.sysapi.core.domain.processes.ProcessSort.*
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo
 import com.krillsson.sysapi.core.metrics.ProcessesMetrics
+import com.krillsson.sysapi.periodictasks.Task
+import com.krillsson.sysapi.periodictasks.TaskInterval
+import com.krillsson.sysapi.periodictasks.TaskManager
 import com.krillsson.sysapi.util.OSProcessComparators
-import com.krillsson.sysapi.util.PeriodicTaskManager
 import com.krillsson.sysapi.util.measureTimeMillis
 import org.slf4j.LoggerFactory
 import oshi.hardware.HardwareAbstractionLayer
@@ -17,8 +19,11 @@ import java.util.*
 class DefaultProcessesMetrics(
     private val operatingSystem: OperatingSystem,
     private val hal: HardwareAbstractionLayer,
-    private val taskManager: PeriodicTaskManager,
-) : ProcessesMetrics, PeriodicTaskManager.Task {
+    private val taskManager: TaskManager,
+) : ProcessesMetrics, Task {
+
+    override val defaultInterval: TaskInterval = TaskInterval.LessOften
+    override val key: Task.Key = Task.Key.UpdateProcessesList
 
     companion object {
         private val LOGGER = LoggerFactory.getLogger(ProcessesMetrics::class.java)
@@ -29,6 +34,16 @@ class DefaultProcessesMetrics(
 
     init {
         updateMap(operatingSystem.processes)
+    }
+
+    fun register() {
+        taskManager.registerTask(this)
+    }
+
+    override fun run() {
+        val processes = operatingSystem.processes
+        updateCurrentLoad(processes)
+        updateMap(processes)
     }
 
     override fun getProcessByPid(pid: Int): Optional<Process> {
@@ -60,7 +75,7 @@ class DefaultProcessesMetrics(
     }
 
     override fun processesInfo(sortBy: ProcessSort, limit: Int): ProcessesInfo {
-        val tracedValue = measureTimeMillis {  sortAndLimit(priorSnapshotMap.values.toMutableList(), sortBy, limit) }
+        val tracedValue = measureTimeMillis { sortAndLimit(priorSnapshotMap.values.toMutableList(), sortBy, limit) }
         LOGGER.trace(
             "Took {} to sort and limit {} processes",
             "${tracedValue.first.toInt()}ms",
@@ -77,16 +92,6 @@ class DefaultProcessesMetrics(
                 )
             }
         )
-    }
-
-    fun register() {
-        taskManager.register(this)
-    }
-
-    override fun run() {
-        val processes = operatingSystem.processes
-        updateCurrentLoad(processes)
-        updateMap(processes)
     }
 
     private fun updateCurrentLoad(processes: List<OSProcess>) {

@@ -24,9 +24,6 @@ import com.krillsson.sysapi.core.domain.disk.Partition
 import com.krillsson.sysapi.core.domain.drives.*
 import com.krillsson.sysapi.core.metrics.DriveMetrics
 import com.krillsson.sysapi.core.metrics.Empty
-import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
-import com.krillsson.sysapi.core.speed.SpeedMeasurementManager.CurrentSpeed
-import com.krillsson.sysapi.core.speed.SpeedMeasurementManager.SpeedSource
 import org.apache.commons.lang3.StringUtils
 import oshi.hardware.HWDiskStore
 import oshi.hardware.HWPartition
@@ -38,14 +35,11 @@ import java.util.stream.Collectors
 
 open class DefaultDriveMetrics(
     private val operatingSystem: OperatingSystem,
-    private val hal: HardwareAbstractionLayer,
-    private val speedMeasurementManager: SpeedMeasurementManager
+    private val hal: HardwareAbstractionLayer
 ) : DriveMetrics {
 
     fun register() {
-        for (store in hal.diskStores) {
-            speedMeasurementManager.register(DiskSpeedSource(store.name, store))
-        }
+
     }
 
     override fun drives(): List<Drive> {
@@ -94,16 +88,8 @@ open class DefaultDriveMetrics(
     protected open fun diskSpeedForStore(
         diskStore: HWDiskStore,
         osFileStore: OsPartition?
-    ): Optional<DriveSpeed?> {
-        val currentSpeedForName = speedMeasurementManager.getCurrentSpeedForName(
-            diskStore.name
-        )
-        return currentSpeedForName.map { s: CurrentSpeed ->
-            DriveSpeed(
-                s.readPerSeconds,
-                s.writePerSeconds
-            )
-        }
+    ): Optional<DriveSpeed> {
+        return Optional.empty()
     }
 
     open fun diskHealth(name: String?): DriveHealth {
@@ -153,25 +139,6 @@ open class DefaultDriveMetrics(
 
     private fun getSerial(d: HWDiskStore): String {
         return if (StringUtils.isEmpty(d.serial)) "n/a" else d.serial
-    }
-
-    private class DiskSpeedSource constructor(
-        private val name: String,
-        private val hwDiskStore: HWDiskStore
-    ) : SpeedSource {
-        override fun getName(): String {
-            return name
-        }
-
-        override fun getCurrentRead(): Long {
-            hwDiskStore.updateAttributes()
-            return hwDiskStore.readBytes
-        }
-
-        override fun getCurrentWrite(): Long {
-            hwDiskStore.updateAttributes()
-            return hwDiskStore.writeBytes
-        }
     }
 
     private fun HWDiskStore.asDrive() = Drive(

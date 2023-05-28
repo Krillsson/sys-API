@@ -20,11 +20,12 @@
  */
 package com.krillsson.sysapi.config
 
+import com.krillsson.sysapi.periodictasks.TaskInterval
 import com.krillsson.sysapi.util.FileSystem
 import com.smoketurner.dropwizard.graphql.GraphQLFactory
-import io.dropwizard.core.Configuration
 import io.dropwizard.core.server.DefaultServerFactory
 import io.dropwizard.db.DataSourceFactory
+import io.dropwizard.jobs.JobConfiguration
 
 class SysAPIConfiguration(
     val user: UserConfiguration,
@@ -37,6 +38,7 @@ class SysAPIConfiguration(
     val forwardHttpToHttps: Boolean,
     val selfSignedCertificates: SelfSignedCertificateConfiguration,
     val mDNS: MdnsConfiguration = MdnsConfiguration(false),
+    val tasks: Map<TaskInterval, TasksConfiguration> = defaultTasksValue,
     val database: DataSourceFactory = DataSourceFactory()
         .apply {
             driverClass = "org.sqlite.JDBC"
@@ -53,9 +55,15 @@ class SysAPIConfiguration(
                  **/
             )
         }
-) : Configuration() {
+) : JobConfiguration() {
     init {
         //disable admin interface
         (serverFactory as DefaultServerFactory).adminConnectors = emptyList()
+    }
+
+    override fun getJobs(): MutableMap<String, String> {
+        return tasks.entries.associate {
+            it.key.name to it.value.interval
+        }.toMutableMap()
     }
 }

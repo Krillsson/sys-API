@@ -1,20 +1,15 @@
-package com.krillsson.sysapi.util
+package com.krillsson.sysapi.periodictasks
 
-import io.dropwizard.lifecycle.Managed
+import com.krillsson.sysapi.util.logger
+import io.dropwizard.jobs.Job
+import org.quartz.JobExecutionContext
 import java.time.Duration
 import java.time.Instant
 import java.util.*
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.TimeUnit
 
-class PeriodicTaskManager(
-    private val executorService: ScheduledExecutorService,
-    private val measurementIntervalSeconds: Long,
-    private val retryIntervalSeconds: Long
-) : Managed {
-    interface Task {
-        fun run()
-    }
+abstract class TaskExecutorJob : Job() {
+
+    abstract val retryIntervalSeconds: Long
 
     sealed interface TaskContainer {
         val task: Task
@@ -39,6 +34,7 @@ class PeriodicTaskManager(
 
 
     fun register(listener: Task) {
+        logger.debug("Register ${listener::class.simpleName} to ${this::class.simpleName} job")
         activeContainers.add(TaskContainer.Active(listener, UUID.randomUUID()))
     }
 
@@ -46,16 +42,13 @@ class PeriodicTaskManager(
         activeContainers.removeIf { it.task == task }
     }
 
-    @Throws(Exception::class)
-    override fun start() {
-        executorService.scheduleAtFixedRate({ execute() }, 1, measurementIntervalSeconds, TimeUnit.SECONDS)
-    }
-
-    private fun execute() {
+    override fun doJob(context: JobExecutionContext?) {
+        logger.trace("Execute ${this::class.simpleName} tasks")
         retryEvicted()
         val evictedContainers = mutableListOf<TaskContainer.Evicted>()
         for (container in activeContainers) {
             try {
+                logger.trace("Perform ${container.task.key.name}")
                 container.task.run()
             } catch (e: Throwable) {
                 logger.error(
@@ -88,10 +81,5 @@ class PeriodicTaskManager(
             activeContainers.removeIf { it.id == evicted.id }
             evictedContainers.add(evicted)
         }
-    }
-
-    @Throws(Exception::class)
-    override fun stop() {
-        executorService.shutdownNow()
     }
 }

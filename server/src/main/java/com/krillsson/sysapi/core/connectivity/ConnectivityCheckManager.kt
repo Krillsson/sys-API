@@ -3,8 +3,10 @@ package com.krillsson.sysapi.core.connectivity
 import com.krillsson.sysapi.client.ExternalIpAddressService
 import com.krillsson.sysapi.config.ConnectivityCheckConfiguration
 import com.krillsson.sysapi.core.domain.network.Connectivity
+import com.krillsson.sysapi.periodictasks.Task
+import com.krillsson.sysapi.periodictasks.TaskInterval
+import com.krillsson.sysapi.periodictasks.TaskManager
 import com.krillsson.sysapi.persistence.KeyValueRepository
-import com.krillsson.sysapi.util.PeriodicTaskManager
 import com.krillsson.sysapi.util.logger
 import okhttp3.MediaType
 import okhttp3.ResponseBody
@@ -16,13 +18,20 @@ import java.net.Socket
 class ConnectivityCheckManager(
     private val externalIpAddressService: ExternalIpAddressService,
     private val repository: KeyValueRepository,
-    private val connectivityCheckConfiguration: ConnectivityCheckConfiguration
-) : PeriodicTaskManager.Task {
+    private val connectivityCheckConfiguration: ConnectivityCheckConfiguration,
+    taskManager: TaskManager
+) : Task {
 
     private val logger by logger()
 
     private var _connectivity: Connectivity = defaultConnectivity
 
+    init {
+        taskManager.registerTask(this)
+    }
+
+    override val defaultInterval: TaskInterval = TaskInterval.Seldom
+    override val key: Task.Key = Task.Key.CheckConnectivity
     override fun run() {
         if (connectivityCheckConfiguration.enabled) {
             _connectivity = resolveConnectivity()

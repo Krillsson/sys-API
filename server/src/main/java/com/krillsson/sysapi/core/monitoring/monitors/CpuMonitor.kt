@@ -2,8 +2,8 @@ package com.krillsson.sysapi.core.monitoring.monitors
 
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
+import com.krillsson.sysapi.core.monitoring.MetricQueryEvent
 import com.krillsson.sysapi.core.monitoring.Monitor
-import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
 import java.util.*
 
 class CpuMonitor(override val id: UUID, override val config: MonitorConfig<MonitoredValue.FractionalValue>) :
@@ -17,7 +17,7 @@ class CpuMonitor(override val id: UUID, override val config: MonitorConfig<Monit
 
     override val type: Type = Type.CPU_LOAD
 
-    override fun selectValue(event: MonitorMetricQueryEvent): MonitoredValue.FractionalValue? =
+    override fun selectValue(event: MetricQueryEvent): MonitoredValue.FractionalValue? =
         selector(event.load, null)
 
     override fun isPastThreshold(value: MonitoredValue.FractionalValue): Boolean {

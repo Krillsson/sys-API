@@ -127,6 +127,7 @@ project(':server') {
         implementation 'io.dropwizard:dropwizard-auth:3.0.0'
         implementation 'io.dropwizard:dropwizard-assets:3.0.0'
         implementation 'io.dropwizard:dropwizard-hibernate:3.0.0'
+        implementation 'io.github.dropwizard-jobs:dropwizard-jobs-core:5.0.1'
         implementation 'io.dropwizard.modules:dropwizard-flyway:3.0.0-1'
         implementation 'org.xerial:sqlite-jdbc:3.39.3.0'
         implementation 'com.zsoltfabok:sqlite-dialect:1.0'

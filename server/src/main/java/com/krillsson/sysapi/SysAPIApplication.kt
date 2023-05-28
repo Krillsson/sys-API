@@ -27,25 +27,24 @@ import com.krillsson.server.BuildConfig
 import com.krillsson.sysapi.client.Clients
 import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
-import com.krillsson.sysapi.core.domain.system.SystemLoad
 import com.krillsson.sysapi.core.history.*
 import com.krillsson.sysapi.core.history.db.*
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.metrics.MetricsFactory
+import com.krillsson.sysapi.core.metrics.defaultimpl.DiskReadWriteRateMeasurementManager
+import com.krillsson.sysapi.core.metrics.defaultimpl.NetworkUploadDownloadRateMeasurementManager
 import com.krillsson.sysapi.core.monitoring.MonitorManager
-import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
 import com.krillsson.sysapi.core.monitoring.MonitorRepository
 import com.krillsson.sysapi.core.monitoring.MonitorStore
 import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.core.monitoring.event.EventRepository
 import com.krillsson.sysapi.core.monitoring.event.EventStore
-import com.krillsson.sysapi.core.query.MetricQueryManager
-import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
 import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.GraphQLBundle
 import com.krillsson.sysapi.graphql.GraphQLConfiguration
 import com.krillsson.sysapi.graphql.domain.Meta
 import com.krillsson.sysapi.mdns.Mdns
+import com.krillsson.sysapi.periodictasks.*
 import com.krillsson.sysapi.persistence.*
 import com.krillsson.sysapi.tls.CertificateNamesCreator
 import com.krillsson.sysapi.tls.SelfSignedCertificateManager
@@ -57,9 +56,9 @@ import io.dropwizard.core.sslreload.SslReloadBundle
 import io.dropwizard.flyway.FlywayBundle
 import io.dropwizard.hibernate.HibernateBundle
 import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory
+import io.dropwizard.jobs.JobsBundle
 import oshi.SystemInfo
 import oshi.util.GlobalConfig
-import java.time.Clock
 import java.util.concurrent.Executors
 
 
@@ -71,15 +70,6 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
 
     val logger by logger()
 
-    val speedMeasurementManager = SpeedMeasurementManager(
-        Executors.newScheduledThreadPool(
-            1,
-            ThreadFactoryBuilder()
-                .setNameFormat("speed-mgr-%d")
-                .build()
-        ), Clock.systemUTC(), 5
-    )
-
     val queryScheduledExecutor = Executors.newScheduledThreadPool(
         2,
         ThreadFactoryBuilder()
@@ -87,16 +77,6 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             .build()
     )
 
-    val taskManager = PeriodicTaskManager(
-        executorService = Executors.newScheduledThreadPool(
-            1,
-            ThreadFactoryBuilder()
-                .setNameFormat("task-mgr-%d")
-                .build()
-        ),
-        measurementIntervalSeconds = 5,
-        retryIntervalSeconds = 30
-    )
     private val hibernate: HibernateBundle<SysAPIConfiguration> = createHibernateBundle()
     private val flyWay: FlywayBundle<SysAPIConfiguration> = createFlywayBundle()
 
@@ -106,6 +86,12 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     val eventBus = EventBus()
     val graphqlConfiguration = GraphQLConfiguration()
     val graphqlBundle = GraphQLBundle(graphqlConfiguration)
+    val jobs: Map<TaskInterval, TaskExecutorJob> = mapOf(
+        TaskInterval.VerySeldom to VerySeldomTasksJob(),
+        TaskInterval.Seldom to SeldomTasksJob(),
+        TaskInterval.LessOften to LessOftenTasksJob(),
+        TaskInterval.Often to OftenTasksJob()
+    )
 
     lateinit var eventStore: EventStore
     lateinit var monitorStore: MonitorStore
@@ -114,6 +100,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     lateinit var eventManager: EventManager
     lateinit var dockerClient: DockerClient
     lateinit var metricsFactory: MetricsFactory
+    lateinit var taskManager: TaskManager
 
     override fun initialize(bootstrap: Bootstrap<SysAPIConfiguration>) {
         GlobalConfig.set("oshi.os.windows.loadaverage", true)
@@ -122,6 +109,11 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             assert(FileSystem.data.mkdir()) { "Unable to create ${FileSystem.data}" }
         }
 
+        bootstrap.addBundle(
+            JobsBundle(
+                *jobs.values.toTypedArray()
+            )
+        )
         val mapper = bootstrap.objectMapper
         mapper.configure()
         bootstrap.addBundle(hibernate)
@@ -164,14 +156,29 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             )
         migrator.migrate()
 
+        taskManager = TaskManager(
+            config.tasks,
+            jobs
+        )
+        val diskReadWriteRateMeasurementManager =
+            DiskReadWriteRateMeasurementManager(java.time.Clock.systemUTC(), taskManager)
+        val networkUploadDownloadRateMeasurementManager =
+            NetworkUploadDownloadRateMeasurementManager(java.time.Clock.systemUTC(), taskManager)
+
+
         dockerClient = DockerClient(config.metricsConfig.cache, config.docker, environment.objectMapper)
-        val connectivityCheckManager =
-            ConnectivityCheckManager(clients.externalIpService, keyValueRepository, config.connectivityCheck)
+        val connectivityCheckManager = ConnectivityCheckManager(
+            clients.externalIpService,
+            keyValueRepository,
+            config.connectivityCheck,
+            taskManager
+        )
         metricsFactory = MetricsFactory(
             hal,
             os,
             SystemInfo.getCurrentPlatform(),
-            speedMeasurementManager,
+            diskReadWriteRateMeasurementManager,
+            networkUploadDownloadRateMeasurementManager,
             taskManager,
             connectivityCheckManager
         )
@@ -182,29 +189,6 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         if (selfSignedCertificates.enabled) {
             val certificateNamesCreator = CertificateNamesCreator(metrics.networkMetrics(), clients.externalIpService)
             SelfSignedCertificateManager().start(certificateNamesCreator, selfSignedCertificates)
-        }
-
-        val historyMetricQueryManager = object : MetricQueryManager<HistoryMetricQueryEvent>(
-            queryScheduledExecutor,
-            config.metricsConfig.history.interval,
-            config.metricsConfig.history.unit,
-            metrics,
-            eventBus
-        ) {
-            override fun event(load: SystemLoad): HistoryMetricQueryEvent {
-                return HistoryMetricQueryEvent(load)
-            }
-        }
-        val monitorMetricQueryManager = object : MetricQueryManager<MonitorMetricQueryEvent>(
-            queryScheduledExecutor,
-            config.metricsConfig.monitor.interval,
-            config.metricsConfig.monitor.unit,
-            metrics,
-            eventBus
-        ) {
-            override fun event(load: SystemLoad): MonitorMetricQueryEvent {
-                return MonitorMetricQueryEvent(load, dockerClient.listContainers())
-            }
         }
         val historyRepository = proxyFactory.create(
             /* clazz = */ HistoryRepository::class.java,
@@ -235,22 +219,20 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         )
         val historyManager = LegacyHistoryManager(historyRepository)
         val monitorManager = MonitorManager(
+            taskManager,
+            metrics,
+            dockerClient,
             eventManager,
-            eventBus,
             MonitorRepository(monitorStore),
             metrics,
             com.krillsson.sysapi.util.Clock()
         )
-        val historyRecorder = HistoryRecorder(config.metricsConfig.history, eventBus, historyRepository)
+        val historyRecorder = HistoryRecorder(taskManager, config.metricsConfig.history, metrics, historyRepository)
         environment.lifecycle().registerManagedObjects(
             monitorManager,
             eventManager,
-            speedMeasurementManager,
-            taskManager,
-            monitorMetricQueryManager,
-            historyMetricQueryManager,
-            keyValueRepository,
             historyRecorder,
+            keyValueRepository,
             Mdns(config, connectivityCheckManager)
         )
         registerEndpoints(

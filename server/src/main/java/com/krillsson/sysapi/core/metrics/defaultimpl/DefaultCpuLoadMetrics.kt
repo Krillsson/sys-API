@@ -1,13 +1,14 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl
 
 import com.krillsson.sysapi.core.domain.cpu.CoreLoad
-import com.krillsson.sysapi.util.PeriodicTaskManager
-import com.krillsson.sysapi.util.PeriodicTaskManager.Task
+import com.krillsson.sysapi.periodictasks.Task
+import com.krillsson.sysapi.periodictasks.TaskInterval
+import com.krillsson.sysapi.periodictasks.TaskManager
 import com.krillsson.sysapi.util.Utils
 import oshi.hardware.CentralProcessor
 import oshi.hardware.CentralProcessor.TickType
 
-class DefaultCpuLoadMetrics(private val processor: CentralProcessor, private val taskManager: PeriodicTaskManager) : Task {
+class DefaultCpuLoadMetrics(private val processor: CentralProcessor, private val taskManager: TaskManager) : Task {
 
     private var oldTicks: LongArray = LongArray(TickType.values().size)
     private var oldProcTicks: Array<LongArray> = Array(processor.logicalProcessorCount) {
@@ -20,8 +21,11 @@ class DefaultCpuLoadMetrics(private val processor: CentralProcessor, private val
     var systemUsage = updateSystemUsagePercent()
 
     fun register() {
-        taskManager.register(this)
+        taskManager.registerTask(this)
     }
+
+    override val defaultInterval: TaskInterval = TaskInterval.Often
+    override val key: Task.Key = Task.Key.RecordCpuLoad
 
     override fun run() {
         coreLoads = updateCoreLoads()
