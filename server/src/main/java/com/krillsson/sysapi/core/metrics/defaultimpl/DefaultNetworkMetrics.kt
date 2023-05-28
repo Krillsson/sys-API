@@ -23,10 +23,8 @@ package com.krillsson.sysapi.core.metrics.defaultimpl
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
 import com.krillsson.sysapi.core.domain.network.*
 import com.krillsson.sysapi.core.metrics.NetworkMetrics
-import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager.CurrentSpeed
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager.SpeedSource
-import com.krillsson.sysapi.util.PeriodicTaskManager
 import org.slf4j.LoggerFactory
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.hardware.NetworkIF
@@ -34,32 +32,30 @@ import java.net.SocketException
 import java.util.*
 
 open class DefaultNetworkMetrics(
-    private val periodicTaskManager: PeriodicTaskManager,
     private val hal: HardwareAbstractionLayer,
-    private val speedMeasurementManager: SpeedMeasurementManager,
+    private val speedMeasurementManager: NetworkUploadDownloadRateMeasurementManager,
     private val connectivityCheckManager: ConnectivityCheckManager
 ) : NetworkMetrics {
 
     private val networkInterfaces: MutableList<NetworkIF> = hal.networkIFs
 
     class NetworkSpeedSource(private val networkIF: NetworkIF) : SpeedSource {
-        override fun getName(): String {
-            return networkIF.name
-        }
 
-        override fun getCurrentRead(): Long {
+        override fun currentRead(): Long {
             networkIF.updateAttributes()
             return networkIF.bytesRecv
         }
 
-        override fun getCurrentWrite(): Long {
+        override fun currentWrite(): Long {
             networkIF.updateAttributes()
             return networkIF.bytesSent
         }
+
+        override val name: String
+            get() = networkIF.name
     }
 
     fun register() {
-        periodicTaskManager.register(connectivityCheckManager)
         speedMeasurementManager.register(
             networkInterfaces.map {
                 NetworkSpeedSource(it)
@@ -134,7 +130,7 @@ open class DefaultNetworkMetrics(
             })
     }
 
-    protected open fun speedForInterfaceWithName(name: String?): NetworkInterfaceSpeed {
+    protected open fun speedForInterfaceWithName(name: String): NetworkInterfaceSpeed {
         val currentSpeedForName = speedMeasurementManager.getCurrentSpeedForName(
             name
         )

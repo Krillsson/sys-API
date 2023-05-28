@@ -2,12 +2,7 @@
 ### System-Api configuration          ###
 #########################################
 metricsConfig:
-  monitor:
-    interval: 45
-    unit: SECONDS
   history:
-    interval: 30
-    unit: MINUTES
     purging:
       olderThan: 14
       unit: DAYS
@@ -105,38 +100,8 @@ logging:
       level: WARN
       appenders:
         - type: console
-    "io.dropwizard":
-      additive: false
-      level: ERROR
-      appenders:
-        - type: console
     "io.dropwizard.core.server.ServerFactory":
       additive: false
       level: INFO
-      appenders:
-        - type: console
-    "org.hibernate.SQL":
-      additive: false
-      level: ERROR
-      appenders:
-        - type: console
-    "org.hibernate.type":
-      additive: false
-      level: ERROR
-      appenders:
-        - type: console
-    "org.hibernate.stat":
-      additive: false
-      level: ERROR
-      appenders:
-        - type: console
-    "org.hibernate.engine":
-      additive: false
-      level: ERROR
-      appenders:
-        - type: console
-    "graphql.kickstart":
-      additive: false
-      level: ERROR
       appenders:
         - type: console

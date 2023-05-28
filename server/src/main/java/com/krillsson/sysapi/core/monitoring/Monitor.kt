@@ -39,6 +39,6 @@ abstract class Monitor<out T : MonitoredValue> {
         Conditional
     }
 
-    abstract fun selectValue(event: MonitorMetricQueryEvent): T?
+    abstract fun selectValue(event: MetricQueryEvent): T?
     abstract fun isPastThreshold(value: @UnsafeVariance T): Boolean
 }

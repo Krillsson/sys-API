@@ -2,9 +2,7 @@ package com.krillsson.sysapi.core.metrics.windows
 
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
 import com.krillsson.sysapi.core.metrics.defaultimpl.*
-import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
-import com.krillsson.sysapi.util.PeriodicTaskManager
-import com.krillsson.sysapi.util.Utils
+import com.krillsson.sysapi.periodictasks.TaskManager
 import com.krillsson.sysapi.util.asOperatingSystem
 import com.krillsson.sysapi.util.asPlatform
 import oshi.PlatformEnum
@@ -16,9 +14,9 @@ object WindowsMetricsFactory {
         os: OperatingSystem,
         hal: HardwareAbstractionLayer,
         platformEnum: PlatformEnum,
-        taskManager: PeriodicTaskManager,
-        utils: Utils,
-        measurementManager: SpeedMeasurementManager,
+        taskManager: TaskManager,
+        diskReadWriteRateMeasurementManager: DiskReadWriteRateMeasurementManager,
+        networkUploadDownloadRateMeasurementManager: NetworkUploadDownloadRateMeasurementManager,
         connectivityCheckManager: ConnectivityCheckManager
     ): WindowsMetrics? {
         val ohmFactory = OHMManagerFactory()
@@ -30,11 +28,11 @@ object WindowsMetricsFactory {
             val cpuMetrics =
                 WindowsCpuMetrics(hal, os, defaultCpuLoadMetrics, monitorManager)
             val networkMetrics =
-                WindowsNetworkMetrics(taskManager, hal, measurementManager, connectivityCheckManager, monitorManager)
+                WindowsNetworkMetrics(taskManager, hal, networkUploadDownloadRateMeasurementManager, connectivityCheckManager, monitorManager)
             val gpuMetrics = WindowsGpuMetrics(hal, monitorManager)
             val driveMetrics =
-                WindowsDriveMetrics(os, hal, measurementManager)
-            val diskMetrics = DefaultDiskMetrics(hal, measurementManager)
+                WindowsDriveMetrics(os, hal)
+            val diskMetrics = DefaultDiskMetrics(hal, diskReadWriteRateMeasurementManager)
             val fileSystemMetrics = DefaultFileSystemMetrics(os)
             val processesMetrics = DefaultProcessesMetrics(os, hal, taskManager)
             val motherboardMetrics = WindowsMotherboardMetrics(hal, monitorManager)

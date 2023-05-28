@@ -1,29 +1,25 @@
 package com.krillsson.sysapi.core;
 
+import com.krillsson.sysapi.core.metrics.defaultimpl.NetworkUploadDownloadRateMeasurementManager;
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class SpeedMeasurementManagerTest {
 
     static final String EN_0 = "en0";
     static final String EN_1 = "en1";
     SpeedMeasurementManager measurementManager;
-    ScheduledExecutorService executorService;
     Clock clock;
     SpeedMeasurementManager.SpeedSource speedSource;
     SpeedMeasurementManager.SpeedSource secondSpeedSource;
@@ -36,157 +32,97 @@ public class SpeedMeasurementManagerTest {
         secondSpeedSource = mock(SpeedMeasurementManager.SpeedSource.class);
         when(secondSpeedSource.getName()).thenReturn(EN_1);
 
-        executorService = mock(ScheduledExecutorService.class);
         clock = mock(Clock.class);
 
-        measurementManager = new SpeedMeasurementManager(executorService, clock, 5);
+        measurementManager = new NetworkUploadDownloadRateMeasurementManager(clock);
     }
 
     @Test
     public void shouldMeasureSpeedForRegisteredSources() throws Exception {
         setupClockMock();
-        when(speedSource.getCurrentRead()).thenReturn(1000L, 2000L);
-        when(speedSource.getCurrentWrite()).thenReturn(2000L, 4000L);
-
-        ArgumentCaptor<Runnable> argumentCaptor = ArgumentCaptor.forClass(Runnable.class);
-        when(executorService.scheduleAtFixedRate(
-                argumentCaptor.capture(),
-                anyLong(),
-                anyLong(),
-                any(TimeUnit.class)
-        )).thenReturn(null);
+        when(speedSource.currentRead()).thenReturn(1000L, 2000L);
+        when(speedSource.currentWrite()).thenReturn(2000L, 4000L);
 
         measurementManager.register(speedSource);
-        measurementManager.start();
-
-        Runnable value = argumentCaptor.getValue();
 
         //first run will only initialize
-        value.run();
+        measurementManager.run();
 
         // second run will give you a value
-        value.run();
+        measurementManager.run();
 
         Optional<SpeedMeasurementManager.CurrentSpeed> en0 = measurementManager.getCurrentSpeedForName(EN_0);
 
         assertNotNull(en0);
-        assertEquals(200L, en0.get().getReadPerSeconds());
-        assertEquals(400L, en0.get().getWritePerSeconds());
+        assertEquals(200L, en0.get().readPerSeconds);
+        assertEquals(400L, en0.get().writePerSeconds);
     }
 
     @Test
     public void speedSourceReturningZeroShouldNotCauseIssues() throws Exception {
         setupClockMock();
-        when(speedSource.getCurrentRead()).thenReturn(0L, 0L);
-        when(speedSource.getCurrentWrite()).thenReturn(0L, 0L);
-
-        ArgumentCaptor<Runnable> argumentCaptor = ArgumentCaptor.forClass(Runnable.class);
-        when(executorService.scheduleAtFixedRate(
-                argumentCaptor.capture(),
-                anyLong(),
-                anyLong(),
-                any(TimeUnit.class)
-        )).thenReturn(null);
+        when(speedSource.currentRead()).thenReturn(0L, 0L);
+        when(speedSource.currentWrite()).thenReturn(0L, 0L);
 
         measurementManager.register(speedSource);
-        measurementManager.start();
-
-        Runnable value = argumentCaptor.getValue();
 
         //first run will only initialize
-        value.run();
+        measurementManager.run();
 
         // second run will give you a value
-        value.run();
+        measurementManager.run();
 
         Optional<SpeedMeasurementManager.CurrentSpeed> en0 = measurementManager.getCurrentSpeedForName(EN_0);
 
         assertTrue(en0.isPresent());
-        assertEquals(0L, en0.get().getReadPerSeconds());
-        assertEquals(0L, en0.get().getWritePerSeconds());
+        assertEquals(0L, en0.get().readPerSeconds);
+        assertEquals(0L, en0.get().writePerSeconds);
     }
 
     @Test
     public void multipleSources() throws Exception {
         setupClockMockForTwoSources();
-        when(speedSource.getCurrentRead()).thenReturn(1000L, 2000L);
-        when(speedSource.getCurrentWrite()).thenReturn(2000L, 4000L);
+        when(speedSource.currentRead()).thenReturn(1000L, 2000L);
+        when(speedSource.currentWrite()).thenReturn(2000L, 4000L);
 
-        when(secondSpeedSource.getCurrentRead()).thenReturn(3000L, 12000L);
-        when(secondSpeedSource.getCurrentWrite()).thenReturn(8000L, 16000L);
-
-        ArgumentCaptor<Runnable> argumentCaptor = ArgumentCaptor.forClass(Runnable.class);
-        when(executorService.scheduleAtFixedRate(
-                argumentCaptor.capture(),
-                anyLong(),
-                anyLong(),
-                any(TimeUnit.class)
-        )).thenReturn(null);
+        when(secondSpeedSource.currentRead()).thenReturn(3000L, 12000L);
+        when(secondSpeedSource.currentWrite()).thenReturn(8000L, 16000L);
 
         measurementManager.register(Arrays.asList(speedSource, secondSpeedSource));
-        measurementManager.start();
-
-        Runnable value = argumentCaptor.getValue();
 
         //first run will only initialize
-        value.run();
+        measurementManager.run();
 
         // second run will give you a value
-        value.run();
+        measurementManager.run();
 
         Optional<SpeedMeasurementManager.CurrentSpeed> en0 = measurementManager.getCurrentSpeedForName(EN_0);
         Optional<SpeedMeasurementManager.CurrentSpeed> en1 = measurementManager.getCurrentSpeedForName(EN_1);
 
         assertNotNull(en0);
-        assertEquals(200L, en0.get().getReadPerSeconds());
-        assertEquals(400L, en0.get().getWritePerSeconds());
+        assertEquals(200L, en0.get().readPerSeconds);
+        assertEquals(400L, en0.get().writePerSeconds);
 
         assertNotNull(en1);
-        assertEquals(1800L, en1.get().getReadPerSeconds());
-        assertEquals(1600L, en1.get().getWritePerSeconds());
+        assertEquals(1800L, en1.get().readPerSeconds);
+        assertEquals(1600L, en1.get().writePerSeconds);
     }
 
     @Test
     public void unregisterShouldQuitMeasuring() throws Exception {
         setupClockMock();
 
-        when(speedSource.getCurrentRead()).thenReturn(1000L, 2000L);
-        when(speedSource.getCurrentWrite()).thenReturn(2000L, 4000L);
-
-        ArgumentCaptor<Runnable> argumentCaptor = ArgumentCaptor.forClass(Runnable.class);
-        when(executorService.scheduleAtFixedRate(
-                argumentCaptor.capture(),
-                anyLong(),
-                anyLong(),
-                any(TimeUnit.class)
-        )).thenReturn(null);
+        when(speedSource.currentRead()).thenReturn(1000L, 2000L);
+        when(speedSource.currentWrite()).thenReturn(2000L, 4000L);
 
         measurementManager.register(speedSource);
-        measurementManager.start();
         measurementManager.unregister(speedSource);
 
-        Runnable value = argumentCaptor.getValue();
-
-        value.run();
-        value.run();
+        measurementManager.run();
+        measurementManager.run();
 
         Optional<SpeedMeasurementManager.CurrentSpeed> en0Optional = measurementManager.getCurrentSpeedForName(EN_0);
         assertFalse(en0Optional.isPresent());
-    }
-
-    @Test
-    public void stoppingManagerShutsDownExecutorService() throws Exception {
-        when(executorService.scheduleAtFixedRate(
-                any(Runnable.class),
-                anyLong(),
-                anyLong(),
-                any(TimeUnit.class)
-        )).thenReturn(null);
-
-        measurementManager.start();
-        measurementManager.stop();
-
-        verify(executorService).shutdownNow();
     }
 
     void setupClockMock() {

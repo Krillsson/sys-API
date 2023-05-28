@@ -1,134 +1,100 @@
-package com.krillsson.sysapi.core.speed;
+package com.krillsson.sysapi.core.speed
 
-import com.google.common.annotations.VisibleForTesting;
-import io.dropwizard.lifecycle.Managed;
-import org.slf4j.Logger;
+import com.google.common.annotations.VisibleForTesting
+import com.krillsson.sysapi.periodictasks.Task
+import com.krillsson.sysapi.periodictasks.TaskInterval
+import org.slf4j.LoggerFactory
+import java.time.Clock
+import java.time.Duration
+import java.time.LocalDateTime
+import java.util.*
 
-import java.time.Clock;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
-public class SpeedMeasurementManager implements Managed {
-
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SpeedMeasurementManager.class);
-    private final long measurementInterval;
-    private final ScheduledExecutorService executorService;
-    private final Clock clock;
-    private final HashMap<String, SpeedMeasurement> speedMeasurementStore = new HashMap<>();
-    private final HashMap<String, CurrentSpeed> currentSpeedStore = new HashMap<>();
-    private final List<SpeedSource> speedSources = new ArrayList<>();
-
-    public SpeedMeasurementManager(ScheduledExecutorService executorService, Clock clock, int measurementInterval) {
-        this.executorService = executorService;
-        this.clock = clock;
-        this.measurementInterval = Duration.ofSeconds(measurementInterval).getSeconds();
-    }
-
-    public void register(Collection<SpeedSource> sources) {
-        LOGGER.debug("Registering {}", sources.stream().map(SpeedSource::getName).toArray());
-        speedSources.addAll(sources);
-    }
-
-    public void register(SpeedSource speedSource) {
-        LOGGER.debug("Registering {}", speedSource.getName());
-        speedSources.add(speedSource);
-    }
-
-    public void unregister(SpeedSource speedSource) {
-        speedSources.remove(speedSource);
-    }
-
-    public Optional<CurrentSpeed> getCurrentSpeedForName(String name) {
-        return Optional.ofNullable(currentSpeedStore.get(name));
-    }
-
-    private void execute() {
-        for (SpeedSource speedSource : speedSources) {
-            SpeedMeasurement start = speedMeasurementStore.get(speedSource.getName());
-            SpeedMeasurement end = new SpeedMeasurement(
-                    speedSource.getCurrentRead(),
-                    speedSource.getCurrentWrite(),
-                    LocalDateTime.now(clock)
-            );
+abstract class SpeedMeasurementManager(
+    private val clock: Clock,
+    override val key: Task.Key,
+) : Task {
+    private val speedMeasurementStore = mutableMapOf<String, SpeedMeasurement>()
+    private val currentSpeedStore = mutableMapOf<String, CurrentSpeed>()
+    private val speedSources = mutableListOf<SpeedSource>()
+    override val defaultInterval: TaskInterval = TaskInterval.Often
+    override fun run() {
+        for (speedSource in speedSources) {
+            val start = speedMeasurementStore[speedSource.name]
+            val end = SpeedMeasurement(
+                speedSource.currentRead(),
+                speedSource.currentWrite(),
+                LocalDateTime.now(clock)
+            )
             if (start != null) {
-                final long readPerSecond = measureSpeed(
-                        start.getSampledAt(),
-                        end.getSampledAt(),
-                        start.getRead(),
-                        end.getRead()
-                );
-                final long writePerSecond = measureSpeed(
-                        start.getSampledAt(),
-                        end.getSampledAt(),
-                        start.getWrite(),
-                        end.getWrite()
-                );
-
+                val readPerSecond = measureSpeed(
+                    start.sampledAt,
+                    end.sampledAt,
+                    start.read,
+                    end.read
+                )
+                val writePerSecond = measureSpeed(
+                    start.sampledAt,
+                    end.sampledAt,
+                    start.write,
+                    end.write
+                )
                 LOGGER.trace(
-                        "Current speed for {}: read: {}/s write: {}/s",
-                        speedSource.getName(),
-                        readPerSecond,
-                        writePerSecond
-                );
-
-                currentSpeedStore.put(speedSource.getName(), new CurrentSpeed(readPerSecond, writePerSecond));
-                speedMeasurementStore.put(speedSource.getName(), end);
+                    "Current speed for {}: read: {}/s write: {}/s",
+                    speedSource.name,
+                    readPerSecond,
+                    writePerSecond
+                )
+                currentSpeedStore[speedSource.name] = CurrentSpeed(readPerSecond, writePerSecond)
+                speedMeasurementStore[speedSource.name] = end
             } else {
-                LOGGER.debug("Initializing measurement for {}", speedSource.getName());
-                speedMeasurementStore.put(speedSource.getName(), end);
+                LOGGER.debug("Initializing measurement for {}", speedSource.name)
+                speedMeasurementStore[speedSource.name] = end
             }
-
         }
     }
 
-    private long measureSpeed(LocalDateTime start, LocalDateTime end, long valueStart, long valueEnd) {
-        double duration = Duration.between(start, end).getSeconds();
-        double deltaValue = (valueEnd - valueStart);
+    fun register(sources: Collection<SpeedSource>) {
+        LOGGER.debug("Registering {}", *sources.stream().map { obj: SpeedSource -> obj.name }
+            .toArray())
+        speedSources.addAll(sources)
+    }
+
+    fun register(speedSource: SpeedSource) {
+        LOGGER.debug("Registering {}", speedSource.name)
+        speedSources.add(speedSource)
+    }
+
+    fun unregister(speedSource: SpeedSource) {
+        speedSources.remove(speedSource)
+    }
+
+    fun getCurrentSpeedForName(name: String): Optional<CurrentSpeed> {
+        return Optional.ofNullable(currentSpeedStore[name])
+    }
+
+    private fun measureSpeed(start: LocalDateTime, end: LocalDateTime, valueStart: Long, valueEnd: Long): Long {
+        val duration = Duration.between(start, end).seconds.toDouble()
+        val deltaValue = (valueEnd - valueStart).toDouble()
         if (deltaValue <= 0 || duration <= 0) {
-            return 0L;
+            return 0L
         }
-        double valuePerSecond = deltaValue / duration;
-        return (long) valuePerSecond;
+        val valuePerSecond = deltaValue / duration
+        return valuePerSecond.toLong()
     }
 
-    @Override
-    public void start() throws Exception {
-        executorService.scheduleAtFixedRate(this::execute, 1, measurementInterval, TimeUnit.SECONDS);
+    interface SpeedSource {
+        val name: String
+        fun currentRead(): Long
+        fun currentWrite(): Long
     }
 
-    @Override
-    public void stop() throws Exception {
-        speedSources.clear();
-        executorService.shutdownNow();
-    }
+    class CurrentSpeed @VisibleForTesting constructor(
+        @JvmField val readPerSeconds: Long,
+        @JvmField val writePerSeconds: Long
+    )
 
-    public interface SpeedSource {
-        String getName();
-
-        long getCurrentRead();
-
-        long getCurrentWrite();
-    }
-
-    public static class CurrentSpeed {
-        private final long readPerSeconds;
-        private final long writePerSeconds;
-
-        @VisibleForTesting
-        public CurrentSpeed(long readPerSeconds, long writePerSeconds) {
-            this.readPerSeconds = readPerSeconds;
-            this.writePerSeconds = writePerSeconds;
-        }
-
-        public long getReadPerSeconds() {
-            return readPerSeconds;
-        }
-
-        public long getWritePerSeconds() {
-            return writePerSeconds;
-        }
+    companion object {
+        private val LOGGER = LoggerFactory.getLogger(SpeedMeasurementManager::class.java)
     }
 }

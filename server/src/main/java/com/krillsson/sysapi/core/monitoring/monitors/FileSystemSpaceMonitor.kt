@@ -4,8 +4,8 @@ import com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.domain.monitor.toNumericalValue
+import com.krillsson.sysapi.core.monitoring.MetricQueryEvent
 import com.krillsson.sysapi.core.monitoring.Monitor
-import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
 import java.util.*
 
 class FileSystemSpaceMonitor(override val id: UUID, override val config: MonitorConfig<MonitoredValue.NumericalValue>) :
@@ -20,7 +20,7 @@ class FileSystemSpaceMonitor(override val id: UUID, override val config: Monitor
         }
     }
 
-    override fun selectValue(event: MonitorMetricQueryEvent): MonitoredValue.NumericalValue? =
+    override fun selectValue(event: MetricQueryEvent): MonitoredValue.NumericalValue? =
         selector(event.load, config.monitoredItemId)
 
     override fun isPastThreshold(value: MonitoredValue.NumericalValue): Boolean {

@@ -2,8 +2,8 @@ package com.krillsson.sysapi.core.monitoring.monitors
 
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
+import com.krillsson.sysapi.core.monitoring.MetricQueryEvent
 import com.krillsson.sysapi.core.monitoring.Monitor
-import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
 import java.util.*
 
 class LoadAverageMonitorOneMinute(override val id: UUID, override val config: MonitorConfig<MonitoredValue.FractionalValue>) :
@@ -17,7 +17,7 @@ class LoadAverageMonitorOneMinute(override val id: UUID, override val config: Mo
 
     override val type: Type = Type.LOAD_AVERAGE_ONE_MINUTE
 
-    override fun selectValue(event: MonitorMetricQueryEvent): MonitoredValue.FractionalValue? =
+    override fun selectValue(event: MetricQueryEvent): MonitoredValue.FractionalValue? =
         selector(event.load, null)
 
     override fun isPastThreshold(value: MonitoredValue.FractionalValue): Boolean {
@@ -36,7 +36,7 @@ class LoadAverageMonitorFiveMinutes(override val id: UUID, override val config: 
 
     override val type: Type = Type.LOAD_AVERAGE_FIVE_MINUTES
 
-    override fun selectValue(event: MonitorMetricQueryEvent): MonitoredValue.FractionalValue? =
+    override fun selectValue(event: MetricQueryEvent): MonitoredValue.FractionalValue? =
         selector(event.load, null)
 
     override fun isPastThreshold(value: MonitoredValue.FractionalValue): Boolean {
@@ -55,7 +55,7 @@ class LoadAverageMonitorFifteenMinutes(override val id: UUID, override val confi
 
     override val type: Type = Type.LOAD_AVERAGE_FIFTEEN_MINUTES
 
-    override fun selectValue(event: MonitorMetricQueryEvent): MonitoredValue.FractionalValue? =
+    override fun selectValue(event: MetricQueryEvent): MonitoredValue.FractionalValue? =
         selector(event.load, null)
 
     override fun isPastThreshold(value: MonitoredValue.FractionalValue): Boolean {

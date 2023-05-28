@@ -24,11 +24,11 @@ import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
 import com.krillsson.sysapi.core.metrics.cache.Cache
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory
+import com.krillsson.sysapi.core.metrics.defaultimpl.DiskReadWriteRateMeasurementManager
+import com.krillsson.sysapi.core.metrics.defaultimpl.NetworkUploadDownloadRateMeasurementManager
 import com.krillsson.sysapi.core.metrics.rasbian.RaspbianMetricsFactory
 import com.krillsson.sysapi.core.metrics.windows.WindowsMetricsFactory
-import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
-import com.krillsson.sysapi.util.PeriodicTaskManager
-import com.krillsson.sysapi.util.Utils
+import com.krillsson.sysapi.periodictasks.TaskManager
 import com.krillsson.sysapi.util.asOperatingSystem
 import com.krillsson.sysapi.util.asPlatform
 import org.slf4j.LoggerFactory
@@ -40,12 +40,11 @@ class MetricsFactory(
     private val hal: HardwareAbstractionLayer,
     private val operatingSystem: OperatingSystem,
     private val platform: PlatformEnum,
-    private val speedMeasurementManager: SpeedMeasurementManager,
-    private val periodicTaskManager: PeriodicTaskManager,
+    private val diskReadWriteRateMeasurementManager: DiskReadWriteRateMeasurementManager,
+    private val networkUploadDownloadRateMeasurementManager: NetworkUploadDownloadRateMeasurementManager,
+    private val periodicTaskManager: TaskManager,
     private val connectivityCheckManager: ConnectivityCheckManager
 ) {
-    private val utils: Utils = Utils()
-
     fun get(configuration: SysAPIConfiguration): Metrics {
 
         val platformSpecific: Metrics = createPlatformSpecific(configuration)
@@ -69,8 +68,8 @@ class MetricsFactory(
                     hal,
                     platform,
                     periodicTaskManager,
-                    utils,
-                    speedMeasurementManager,
+                    diskReadWriteRateMeasurementManager,
+                    networkUploadDownloadRateMeasurementManager,
                     connectivityCheckManager
                 )
                 if (metrics != null) {
@@ -82,11 +81,13 @@ class MetricsFactory(
                         hal,
                         platform,
                         periodicTaskManager,
-                        speedMeasurementManager,
+                        diskReadWriteRateMeasurementManager,
+                        networkUploadDownloadRateMeasurementManager,
                         connectivityCheckManager
                     )
                 }
             }
+
             platform == PlatformEnum.LINUX && (operatingSystem.family.toLowerCase()
                 .contains(RASPBIAN_QUALIFIER)) -> {
                 LOGGER.info("Raspberry Pi detected")
@@ -95,16 +96,19 @@ class MetricsFactory(
                     hal,
                     platform,
                     periodicTaskManager,
-                    speedMeasurementManager,
+                    diskReadWriteRateMeasurementManager,
+                    networkUploadDownloadRateMeasurementManager,
                     connectivityCheckManager
                 )
             }
+
             else -> DefaultMetricsFactory.create(
                 operatingSystem,
                 hal,
                 platform,
                 periodicTaskManager,
-                speedMeasurementManager,
+                diskReadWriteRateMeasurementManager,
+                networkUploadDownloadRateMeasurementManager,
                 connectivityCheckManager
             )
         }

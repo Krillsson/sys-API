@@ -20,13 +20,12 @@
  */
 package com.krillsson.sysapi.core.metrics.windows;
 
-import com.krillsson.sysapi.core.metrics.Empty;
-import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
 import com.krillsson.sysapi.core.domain.drives.DriveHealth;
 import com.krillsson.sysapi.core.domain.drives.DriveSpeed;
 import com.krillsson.sysapi.core.domain.drives.OsPartition;
 import com.krillsson.sysapi.core.domain.sensors.DataType;
 import com.krillsson.sysapi.core.domain.sensors.HealthData;
+import com.krillsson.sysapi.core.metrics.Empty;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDriveMetrics;
 import com.krillsson.sysapi.util.Streams;
 import ohmwrapper.DriveMonitor;
@@ -47,8 +46,8 @@ public class WindowsDriveMetrics extends DefaultDriveMetrics {
 
     private DelegatingOHMManager monitorManager;
 
-    public WindowsDriveMetrics(OperatingSystem operatingSystem, HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager) {
-        super(operatingSystem, hal, speedMeasurementManager);
+    public WindowsDriveMetrics(OperatingSystem operatingSystem, HardwareAbstractionLayer hal) {
+        super(operatingSystem, hal);
     }
 
     public void setMonitorManager(DelegatingOHMManager monitorManager) {

@@ -23,10 +23,11 @@ package com.krillsson.sysapi.core.metrics.windows;
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultNetworkMetrics;
-import com.krillsson.sysapi.core.speed.SpeedMeasurementManager;
-import com.krillsson.sysapi.util.PeriodicTaskManager;
+import com.krillsson.sysapi.core.metrics.defaultimpl.NetworkUploadDownloadRateMeasurementManager;
+import com.krillsson.sysapi.periodictasks.TaskManager;
 import ohmwrapper.NetworkMonitor;
 import ohmwrapper.NicInfo;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
@@ -43,14 +44,15 @@ public class WindowsNetworkMetrics extends DefaultNetworkMetrics {
     private HardwareAbstractionLayer hal;
 
 
-    public WindowsNetworkMetrics(PeriodicTaskManager taskManager, HardwareAbstractionLayer hal, SpeedMeasurementManager speedMeasurementManager, ConnectivityCheckManager connectivityCheckManager, DelegatingOHMManager monitorManager) {
-        super(taskManager, hal, speedMeasurementManager, connectivityCheckManager);
+    public WindowsNetworkMetrics(TaskManager taskManager, HardwareAbstractionLayer hal, NetworkUploadDownloadRateMeasurementManager speedMeasurementManager, ConnectivityCheckManager connectivityCheckManager, DelegatingOHMManager monitorManager) {
+        super(hal, speedMeasurementManager, connectivityCheckManager);
         this.hal = hal;
         this.monitorManager = monitorManager;
     }
 
+    @NotNull
     @Override
-    protected NetworkInterfaceSpeed speedForInterfaceWithName(String name) {
+    protected NetworkInterfaceSpeed speedForInterfaceWithName(@NotNull String name) {
         Optional<NetworkIF> networkOptional = hal.getNetworkIFs().stream()
                 .filter(n -> name.equals(n.getName()))
                 .findAny();

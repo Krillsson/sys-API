@@ -12,7 +12,7 @@ import java.util.*
 
 open class DefaultDiskMetrics(
     private val hal: HardwareAbstractionLayer,
-    private val speedMeasurementManager: SpeedMeasurementManager
+    private val speedMeasurementManager: DiskReadWriteRateMeasurementManager
 ): DiskMetrics {
 
     fun register() {
@@ -82,19 +82,15 @@ open class DefaultDiskMetrics(
     }
 
     private class DiskSpeedSource constructor(
-        private val name: String,
+        override val name: String,
         private val hwDiskStore: HWDiskStore
     ) : SpeedMeasurementManager.SpeedSource {
-        override fun getName(): String {
-            return name
-        }
-
-        override fun getCurrentRead(): Long {
+        override fun currentRead(): Long {
             hwDiskStore.updateAttributes()
             return hwDiskStore.readBytes
         }
 
-        override fun getCurrentWrite(): Long {
+        override fun currentWrite(): Long {
             hwDiskStore.updateAttributes()
             return hwDiskStore.writeBytes
         }

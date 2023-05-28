@@ -3,8 +3,8 @@ package com.krillsson.sysapi.core.monitoring.monitors
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.domain.monitor.toConditionalValue
+import com.krillsson.sysapi.core.monitoring.MetricQueryEvent
 import com.krillsson.sysapi.core.monitoring.Monitor
-import com.krillsson.sysapi.core.monitoring.MonitorMetricQueryEvent
 import java.util.*
 
 class ConnectivityMonitor(
@@ -20,7 +20,7 @@ class ConnectivityMonitor(
 
     override val type: Type = Type.CONNECTIVITY
 
-    override fun selectValue(event: MonitorMetricQueryEvent): MonitoredValue.ConditionalValue? =
+    override fun selectValue(event: MetricQueryEvent): MonitoredValue.ConditionalValue? =
         selector(event.load, null)
 
     override fun isPastThreshold(value: MonitoredValue.ConditionalValue): Boolean {

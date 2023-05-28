@@ -1,12 +1,14 @@
 package com.krillsson.sysapi.core.monitoring
 
-import com.google.common.eventbus.EventBus
-import com.google.common.eventbus.Subscribe
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.MonitorFactory.createMonitor
 import com.krillsson.sysapi.core.monitoring.event.EventManager
+import com.krillsson.sysapi.docker.DockerClient
+import com.krillsson.sysapi.periodictasks.Task
+import com.krillsson.sysapi.periodictasks.TaskInterval
+import com.krillsson.sysapi.periodictasks.TaskManager
 import com.krillsson.sysapi.util.Clock
 import com.krillsson.sysapi.util.logger
 import io.dropwizard.lifecycle.Managed
@@ -14,12 +16,24 @@ import java.time.Duration
 import java.util.*
 
 class MonitorManager(
+    private val taskManager: TaskManager,
+    private val metrics: Metrics,
+    private val dockerClient: DockerClient,
     private val eventManager: EventManager,
-    private val eventBus: EventBus,
     private val repository: MonitorRepository,
     private val provider: Metrics,
     private val clock: Clock
-) : Managed {
+) : Managed, Task {
+
+    override val defaultInterval: TaskInterval = TaskInterval.LessOften
+    override val key: Task.Key = Task.Key.CheckMonitors
+    override fun run() {
+        checkMonitors(
+            MetricQueryEvent(
+                metrics.systemMetrics().systemLoad(), dockerClient.listContainers()
+            )
+        )
+    }
 
     companion object {
         val logger by logger()
@@ -27,8 +41,7 @@ class MonitorManager(
 
     private lateinit var activeMonitors: MutableMap<UUID, Pair<MonitorMechanism, Monitor<MonitoredValue>>>
 
-    @Subscribe
-    fun onEvent(metricQueryEvent: MonitorMetricQueryEvent) {
+    private fun checkMonitors(metricQueryEvent: MetricQueryEvent) {
         activeMonitors.values.forEach { (mechanism, monitor) ->
             val value = monitor.selectValue(metricQueryEvent)
             if (value != null) {
@@ -50,11 +63,10 @@ class MonitorManager(
 
     override fun start() {
         restore()
-        eventBus.register(this)
+        taskManager.registerTask(this)
     }
 
     override fun stop() {
-        eventBus.unregister(this)
         persist()
     }
 
@@ -123,7 +135,7 @@ class MonitorManager(
     }
 
     private fun validate(monitor: Monitor<MonitoredValue>): Boolean {
-        return monitor.selectValue(MonitorMetricQueryEvent(provider.systemMetrics().systemLoad(), emptyList())) != null
+        return monitor.selectValue(MetricQueryEvent(provider.systemMetrics().systemLoad(), emptyList())) != null
     }
 }
 

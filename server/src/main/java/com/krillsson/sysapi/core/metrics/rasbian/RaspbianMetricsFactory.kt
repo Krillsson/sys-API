@@ -2,8 +2,7 @@ package com.krillsson.sysapi.core.metrics.rasbian
 
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
 import com.krillsson.sysapi.core.metrics.defaultimpl.*
-import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
-import com.krillsson.sysapi.util.PeriodicTaskManager
+import com.krillsson.sysapi.periodictasks.TaskManager
 import com.krillsson.sysapi.util.asOperatingSystem
 import com.krillsson.sysapi.util.asPlatform
 import oshi.PlatformEnum
@@ -15,17 +14,22 @@ object RaspbianMetricsFactory {
         os: OperatingSystem,
         hal: HardwareAbstractionLayer,
         platformEnum: PlatformEnum,
-        periodicTaskManager: PeriodicTaskManager,
-        measurementManager: SpeedMeasurementManager,
+        periodicTaskManager: TaskManager,
+        diskReadWriteRateMeasurementManager: DiskReadWriteRateMeasurementManager,
+        networkUploadDownloadRateMeasurementManager: NetworkUploadDownloadRateMeasurementManager,
         connectivityCheckManager: ConnectivityCheckManager,
     ): RaspbianMetrics {
         val defaultCpuLoadMetrics = DefaultCpuLoadMetrics(hal.processor, periodicTaskManager)
         val raspbianCpuSensors = RaspbianCpuSensors(hal)
         val cpuMetrics = DefaultCpuMetrics(hal, os, raspbianCpuSensors, defaultCpuLoadMetrics)
-        val networkMetrics = DefaultNetworkMetrics(periodicTaskManager, hal, measurementManager, connectivityCheckManager)
+        val networkMetrics = DefaultNetworkMetrics(
+            hal,
+            networkUploadDownloadRateMeasurementManager,
+            connectivityCheckManager
+        )
         val gpuMetrics = DefaultGpuMetrics(hal)
-        val driveMetrics = DefaultDriveMetrics(os, hal, measurementManager)
-        val diskMetrics = DefaultDiskMetrics(hal, measurementManager)
+        val driveMetrics = DefaultDriveMetrics(os, hal)
+        val diskMetrics = DefaultDiskMetrics(hal, diskReadWriteRateMeasurementManager)
         val fileSystemMetrics = DefaultFileSystemMetrics(os)
         val processesMetrics = DefaultProcessesMetrics(os, hal, periodicTaskManager)
         val motherboardMetrics = DefaultMotherboardMetrics(hal)
