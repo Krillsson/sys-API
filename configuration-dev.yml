@@ -30,6 +30,8 @@ connectivityCheck:
 # advertise service in local network for easier client setup
 mDNS:
   enabled: true
+upnp:
+  enabled: true
 forwardHttpToHttps: false
 selfSignedCertificates:
   enabled: true
