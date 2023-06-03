@@ -10,7 +10,5 @@ class ApiResponse : ArrayList<ApiResponse.Release>() {
         val tag_name: String,
         val url: String,
         val zipball_url: String
-    ) {
-
-    }
+    )
 }
