@@ -79,7 +79,7 @@ class UpnpIgd(
             }
 
             alreadyMapped -> {
-                logger.info("Port $port is already mapped to another device")
+                logger.info("Port $port is already mapped to another device: ${portMapping.internalClient} / ${portMapping.portMappingDescription}")
                 PortMappingAvailability.AlreadyMappedToAnotherDevice
             }
 

@@ -21,7 +21,7 @@ class MonitorManager(
     private val dockerClient: DockerClient,
     private val eventManager: EventManager,
     private val repository: MonitorRepository,
-    private val provider: Metrics,
+    private val monitoredItemMissingChecker: MonitoredItemMissingChecker,
     private val clock: Clock
 ) : Managed, Task {
 
@@ -55,9 +55,8 @@ class MonitorManager(
                 event?.let {
                     eventManager.add(it)
                 }
-            } else {
-                logger.warn("${monitor.type.name} monitoring ${monitor.config.monitoredItemId} is no longer valid")
             }
+            reportItemMissingForMonitor(monitor, value)
         }
     }
 
@@ -65,6 +64,7 @@ class MonitorManager(
         restore()
         taskManager.registerTask(this)
     }
+
 
     override fun stop() {
         persist()
@@ -117,6 +117,14 @@ class MonitorManager(
         return removed != null
     }
 
+    private fun reportItemMissingForMonitor(monitor: Monitor<MonitoredValue>, value: MonitoredValue?) {
+        if (value == null) {
+            monitoredItemMissingChecker.reportItemMissing(monitor)
+        } else {
+            monitoredItemMissingChecker.removeItemMissingEvent(monitor)
+        }
+    }
+
     private fun persist() {
         val monitors = activeMonitors.map { it.value.second }.toList()
         repository.write(monitors)
@@ -135,7 +143,7 @@ class MonitorManager(
     }
 
     private fun validate(monitor: Monitor<MonitoredValue>): Boolean {
-        return monitor.selectValue(MetricQueryEvent(provider.systemMetrics().systemLoad(), emptyList())) != null
+        return monitor.selectValue(MetricQueryEvent(metrics.systemMetrics().systemLoad(), emptyList())) != null
     }
 }
 

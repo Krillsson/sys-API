@@ -13,6 +13,7 @@ type Query {
     historyBetweenDates(from: OffsetDateTime!, to: OffsetDateTime!): [SystemMetricsHistoryEntry!]!
     monitors: [Monitor!]!
     events: [Event!]!
+    genericEvents: [GenericEvent!]!
     pastEvents: [PastEvent!]!
     ongoingEvents: [OngoingEvent!]!
     docker: Docker!
@@ -37,6 +38,7 @@ type Mutation {
     deleteEvent(input: DeleteEventInput) : DeleteEventOutput
     deleteEventsForMonitor(input: DeleteEventsForMonitorInput) : DeleteEventOutput
     performDockerContainerCommand(input: PerformDockerContainerCommandInput) : PerformDockerContainerCommandOutput
+    deleteGenericEvent(input: DeleteGenericEventInput): DeleteGenericEventOutput
 }
 
 input CreateNumericalMonitorInput {
@@ -149,6 +151,14 @@ input DeleteEventsForMonitorInput {
 
 type DeleteEventOutput {
     removed: Boolean!
+}
+
+type DeleteGenericEventOutput {
+    removed: Boolean!
+}
+
+input DeleteGenericEventInput{
+    eventId: UUID!
 }
 
 input PerformDockerContainerCommandInput{
@@ -284,6 +294,25 @@ type PastEvent implements Event {
     startTime: String!
     endTime: String!
     endValue: MonitoredValue!
+}
+
+interface GenericEvent {
+    id: UUID!
+    dateTime: OffsetDateTime!
+    title: String!
+    description: String!
+}
+
+type UpdateAvailable implements GenericEvent {
+    id: UUID!
+    dateTime: OffsetDateTime!
+    title: String!
+    description: String!
+    currentVersion: String!
+    newVersion: String!
+    changeLogMarkdown: String!
+    downloadUrl: String!
+    publishDate: String!
 }
 
 ## Operating system

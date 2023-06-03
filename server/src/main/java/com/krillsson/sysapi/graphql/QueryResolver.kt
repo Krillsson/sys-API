@@ -24,6 +24,8 @@ import com.krillsson.sysapi.core.domain.sensors.DataType
 import com.krillsson.sysapi.core.domain.system.OperatingSystem
 import com.krillsson.sysapi.core.domain.system.Platform
 import com.krillsson.sysapi.core.domain.system.SystemLoad
+import com.krillsson.sysapi.core.genericevents.GenericEvent
+import com.krillsson.sysapi.core.genericevents.GenericEventRepository
 import com.krillsson.sysapi.core.history.HistoryRepository
 import com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity
 import com.krillsson.sysapi.core.metrics.Metrics
@@ -44,6 +46,7 @@ class QueryResolver : GraphQLQueryResolver {
     lateinit var monitorManager: MonitorManager
     lateinit var eventManager: EventManager
     lateinit var historyRepository: HistoryRepository
+    lateinit var genericEventRepository: GenericEventRepository
     lateinit var operatingSystem: OperatingSystem
     lateinit var platform: Platform
     lateinit var dockerClient: DockerClient
@@ -54,6 +57,7 @@ class QueryResolver : GraphQLQueryResolver {
         monitorManager: MonitorManager,
         eventManager: EventManager,
         historyManager: HistoryRepository,
+        genericEventRepository: GenericEventRepository,
         dockerClient: DockerClient,
         operatingSystem: OperatingSystem,
         platform: Platform,
@@ -62,6 +66,7 @@ class QueryResolver : GraphQLQueryResolver {
         this.metrics = metrics
         this.monitorManager = monitorManager
         this.eventManager = eventManager
+        this.genericEventRepository = genericEventRepository
         this.historyRepository = historyManager
         this.operatingSystem = operatingSystem
         this.platform = platform
@@ -87,6 +92,7 @@ class QueryResolver : GraphQLQueryResolver {
     val memoryInfoResolver = MemoryInfoResolver()
     val networkInterfaceMetricResolver = NetworkInterfaceMetricResolver()
     val monitorResolver = MonitorResolver()
+    val genericEventResolver = GenericEventResolver()
 
     fun system(): System = System(EnvironmentUtils.hostName, operatingSystem, platform)
 
@@ -103,6 +109,7 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     fun events() = eventManager.getAll().toList()
+    fun genericEvents() = genericEventRepository.read()
     fun pastEvents() = eventManager.getAll().filterIsInstance(PastEvent::class.java)
     fun ongoingEvents() = eventManager.getAll().filterIsInstance(OngoingEvent::class.java)
 
@@ -260,6 +267,15 @@ class QueryResolver : GraphQLQueryResolver {
         motherboardHealth
     )
 
+    inner class GenericEventResolver : GraphQLResolver<GenericEvent.UpdateAvailable> {
+        fun getTitle(event: GenericEvent.UpdateAvailable): String {
+            return "sys-API update available"
+        }
+        fun getDescription(event: GenericEvent.UpdateAvailable): String {
+            return "New version ${event.newVersion} published at ${event.publishDate}. Server is running ${event.currentVersion}"
+        }
+    }
+
     inner class MonitorResolver : GraphQLResolver<com.krillsson.sysapi.graphql.domain.Monitor> {
         fun getHistory(monitor: com.krillsson.sysapi.graphql.domain.Monitor): List<MonitoredValueHistoryEntry> {
             return historyRepository.getExtended().mapNotNull {
@@ -286,21 +302,21 @@ class QueryResolver : GraphQLQueryResolver {
         fun getCurrentValue(monitor: com.krillsson.sysapi.graphql.domain.Monitor): MonitoredValue? {
             metrics.systemMetrics().systemLoad()
             return when (monitor.type.valueType) {
-                    Monitor.ValueType.Numerical -> Selectors.forNumericalMonitorType(monitor.type)(
-                        metrics.systemMetrics().systemLoad(),
-                        monitor.monitoredItemId
-                    )
+                Monitor.ValueType.Numerical -> Selectors.forNumericalMonitorType(monitor.type)(
+                    metrics.systemMetrics().systemLoad(),
+                    monitor.monitoredItemId
+                )
 
-                    Monitor.ValueType.Fractional -> Selectors.forFractionalMonitorType(monitor.type)(
-                        metrics.systemMetrics().systemLoad(),
-                        monitor.monitoredItemId
-                    )
+                Monitor.ValueType.Fractional -> Selectors.forFractionalMonitorType(monitor.type)(
+                    metrics.systemMetrics().systemLoad(),
+                    monitor.monitoredItemId
+                )
 
-                    Monitor.ValueType.Conditional -> Selectors.forConditionalMonitorType(monitor.type)(
-                        metrics.systemMetrics().systemLoad(),
-                        monitor.monitoredItemId
-                    )
-                }?.asMonitoredValue()
+                Monitor.ValueType.Conditional -> Selectors.forConditionalMonitorType(monitor.type)(
+                    metrics.systemMetrics().systemLoad(),
+                    monitor.monitoredItemId
+                )
+            }?.asMonitoredValue()
         }
     }
 
@@ -355,7 +371,8 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     inner class FileSystemResolver : GraphQLResolver<com.krillsson.sysapi.core.domain.filesystem.FileSystem> {
-        fun getMetrics(fileSystem: com.krillsson.sysapi.core.domain.filesystem.FileSystem) = metrics.fileSystemMetrics().fileSystemLoadById(fileSystem.id)
+        fun getMetrics(fileSystem: com.krillsson.sysapi.core.domain.filesystem.FileSystem) =
+            metrics.fileSystemMetrics().fileSystemLoadById(fileSystem.id)
     }
 
     inner class DriveMetricResolver : GraphQLResolver<DriveLoad> {

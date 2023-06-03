@@ -2,6 +2,8 @@ package com.krillsson.sysapi.graphql
 
 import com.krillsson.sysapi.core.domain.system.OperatingSystem
 import com.krillsson.sysapi.core.domain.system.Platform
+import com.krillsson.sysapi.core.genericevents.GenericEvent
+import com.krillsson.sysapi.core.genericevents.GenericEventRepository
 import com.krillsson.sysapi.core.history.HistoryRepository
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.MonitorManager
@@ -32,6 +34,7 @@ class GraphQLConfiguration {
                 queryResolver.historyResolver,
                 queryResolver.pastEventEventResolver,
                 queryResolver.ongoingEventResolver,
+                queryResolver.genericEventResolver,
                 queryResolver.motherboardResolver,
                 queryResolver.processorResolver,
                 queryResolver.driveResolver,
@@ -53,6 +56,7 @@ class GraphQLConfiguration {
                 UpdateMonitorOutputFailed::class,
                 DockerUnavailable::class,
                 DockerAvailable::class,
+                GenericEvent.UpdateAvailable::class,
                 ReadLogsForContainerOutputSucceeded::class,
                 ReadLogsForContainerOutputFailed::class,
                 NumericalValue::class,
@@ -69,6 +73,7 @@ class GraphQLConfiguration {
         monitorManager: MonitorManager,
         eventManager: EventManager,
         historyManager: HistoryRepository,
+        genericEventRepository: GenericEventRepository,
         dockerClient: DockerClient,
         operatingSystem: OperatingSystem,
         platform: Platform,
@@ -79,11 +84,12 @@ class GraphQLConfiguration {
             monitorManager,
             eventManager,
             historyManager,
+            genericEventRepository,
             dockerClient,
             operatingSystem,
             platform,
             meta
         )
-        mutationResolver.initialize(metrics, monitorManager, eventManager, dockerClient)
+        mutationResolver.initialize(metrics, monitorManager, genericEventRepository, eventManager, dockerClient)
     }
 }

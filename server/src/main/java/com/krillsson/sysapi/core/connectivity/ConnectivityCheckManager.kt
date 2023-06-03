@@ -1,6 +1,5 @@
 package com.krillsson.sysapi.core.connectivity
 
-import com.krillsson.sysapi.client.ExternalIpAddressService
 import com.krillsson.sysapi.config.ConnectivityCheckConfiguration
 import com.krillsson.sysapi.core.domain.network.Connectivity
 import com.krillsson.sysapi.periodictasks.Task

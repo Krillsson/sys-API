@@ -4,6 +4,7 @@ import com.krillsson.sysapi.core.domain.docker.Command
 import com.krillsson.sysapi.core.domain.monitor.toConditionalValue
 import com.krillsson.sysapi.core.domain.monitor.toFractionalValue
 import com.krillsson.sysapi.core.domain.monitor.toNumericalValue
+import com.krillsson.sysapi.core.genericevents.GenericEventRepository
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.event.EventManager
@@ -17,11 +18,13 @@ class MutationResolver : GraphQLMutationResolver {
     lateinit var metrics: Metrics
     lateinit var monitorManager: MonitorManager
     lateinit var eventManager: EventManager
+    lateinit var genericEventRepository: GenericEventRepository
     lateinit var dockerClient: DockerClient
 
     fun initialize(
         metrics: Metrics,
         monitorManager: MonitorManager,
+        genericEventRepository: GenericEventRepository,
         eventManager: EventManager,
         dockerClient: DockerClient
     ) {
@@ -29,6 +32,7 @@ class MutationResolver : GraphQLMutationResolver {
         this.monitorManager = monitorManager
         this.eventManager = eventManager
         this.dockerClient = dockerClient
+        this.genericEventRepository = genericEventRepository
     }
 
     fun performDockerContainerCommand(input: PerformDockerContainerCommandInput): PerformDockerContainerCommandOutput {
@@ -123,6 +127,11 @@ class MutationResolver : GraphQLMutationResolver {
     fun deleteEvent(input: DeleteEventInput): DeleteEventOutput {
         val removed = eventManager.remove(input.eventId)
         return DeleteEventOutput(removed)
+    }
+
+    fun deleteGenericEvent(input: DeleteGenericEventInput): DeleteGenericEventOutput {
+        val removed = genericEventRepository.removeById(input.eventId)
+        return DeleteGenericEventOutput(removed)
     }
 
     fun deleteEventsForMonitor(input: DeleteEventsForMonitorInput): DeleteEventOutput {
