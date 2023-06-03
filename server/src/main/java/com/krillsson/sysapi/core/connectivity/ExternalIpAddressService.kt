@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.client
+package com.krillsson.sysapi.core.connectivity
 
 import retrofit2.Call
 import retrofit2.http.GET

@@ -8,6 +8,7 @@ interface Task {
         RecordDiskReadWriteRate,
         RecordNetworkUploadDownloadRate,
         StoreMetricHistoryEntry,
+        CheckUpdate,
         CheckMonitors
     }
     

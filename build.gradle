@@ -157,6 +157,7 @@ project(':server') {
         implementation 'org.jmdns:jmdns:3.5.1'
         implementation 'com.squareup.retrofit2:retrofit:2.9.0'
         implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+        implementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
         implementation 'javax.xml.bind:jaxb-api:2.2.11'
         implementation 'com.github.docker-java:docker-java-core:3.2.13'
         implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.2.13'

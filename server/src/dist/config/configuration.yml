@@ -32,6 +32,11 @@ docker:
 connectivityCheck:
   enabled: true
   address: https://ifconfig.me
+updateCheck:
+  enabled: true
+  address: https://api.github.com
+  user: krillsson
+  repo: sys-api
 # advertise service in local network for easier client setup
 mDNS:
   enabled: true

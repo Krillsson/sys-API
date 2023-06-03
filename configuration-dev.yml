@@ -27,6 +27,11 @@ docker:
 connectivityCheck:
   enabled: true
   address: https://ifconfig.me
+updateCheck:
+  enabled: true
+  address: https://api.github.com
+  user: krillsson
+  repo: sys-api
 # advertise service in local network for easier client setup
 mDNS:
   enabled: true
@@ -74,7 +79,8 @@ server:
   adminContextPath: /admin
   applicationContextPath: /
   requestLog:
-    appenders: [ ]
+    appenders:
+      - type: console
   applicationConnectors:
     - type: http
       port: 8080
@@ -88,7 +94,7 @@ server:
 logging:
 
   # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
-  level: ERROR
+  level: INFO
 
   # Logger-specific levels.
   loggers:

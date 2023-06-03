@@ -32,6 +32,7 @@ class SysAPIConfiguration(
     val metricsConfig: MetricsConfiguration,
     val windows: WindowsConfiguration,
     val connectivityCheck: ConnectivityCheckConfiguration,
+    val updateCheck: UpdateCheckConfiguration = UpdateCheckConfiguration(),
     val graphQLPlayGround: GraphQLPlayGroundConfiguration,
     val graphql: GraphQLFactory,
     val docker: DockerConfiguration,

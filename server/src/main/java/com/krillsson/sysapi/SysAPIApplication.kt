@@ -21,12 +21,13 @@
 package com.krillsson.sysapi
 
 import com.codahale.metrics.MetricRegistry
-import com.google.common.eventbus.EventBus
-import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.krillsson.server.BuildConfig
 import com.krillsson.sysapi.client.Clients
 import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
+import com.krillsson.sysapi.core.genericevents.GenericEvent
+import com.krillsson.sysapi.core.genericevents.GenericEventRepository
+import com.krillsson.sysapi.core.genericevents.GenericEventStore
 import com.krillsson.sysapi.core.history.*
 import com.krillsson.sysapi.core.history.db.*
 import com.krillsson.sysapi.core.metrics.Metrics
@@ -36,6 +37,7 @@ import com.krillsson.sysapi.core.metrics.defaultimpl.NetworkUploadDownloadRateMe
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.MonitorRepository
 import com.krillsson.sysapi.core.monitoring.MonitorStore
+import com.krillsson.sysapi.core.monitoring.MonitoredItemMissingChecker
 import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.core.monitoring.event.EventRepository
 import com.krillsson.sysapi.core.monitoring.event.EventStore
@@ -48,6 +50,7 @@ import com.krillsson.sysapi.periodictasks.*
 import com.krillsson.sysapi.persistence.*
 import com.krillsson.sysapi.tls.CertificateNamesCreator
 import com.krillsson.sysapi.tls.SelfSignedCertificateManager
+import com.krillsson.sysapi.updatechecker.UpdateChecker
 import com.krillsson.sysapi.upnp.UpnpIgd
 import com.krillsson.sysapi.util.*
 import io.dropwizard.core.Application
@@ -60,7 +63,6 @@ import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory
 import io.dropwizard.jobs.JobsBundle
 import oshi.SystemInfo
 import oshi.util.GlobalConfig
-import java.util.concurrent.Executors
 
 
 class SysAPIApplication : Application<SysAPIConfiguration>() {
@@ -71,20 +73,12 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
 
     val logger by logger()
 
-    val queryScheduledExecutor = Executors.newScheduledThreadPool(
-        2,
-        ThreadFactoryBuilder()
-            .setNameFormat("query-mgr-%d")
-            .build()
-    )
-
     private val hibernate: HibernateBundle<SysAPIConfiguration> = createHibernateBundle()
     private val flyWay: FlywayBundle<SysAPIConfiguration> = createFlywayBundle()
 
     val systemInfo = SystemInfo()
     val hal = systemInfo.hardware
     val os = systemInfo.operatingSystem
-    val eventBus = EventBus()
     val graphqlConfiguration = GraphQLConfiguration()
     val graphqlBundle = GraphQLBundle(graphqlConfiguration)
     val jobs: Map<TaskInterval, TaskExecutorJob> = mapOf(
@@ -96,6 +90,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
 
     lateinit var eventStore: EventStore
     lateinit var monitorStore: MonitorStore
+    lateinit var genericEventRepository: GenericEventRepository
+    lateinit var genericEventStore: MemoryBackedStore<List<GenericEvent>>
     lateinit var keyValueRepository: KeyValueRepository
     lateinit var historyStore: Store<List<StoredSystemHistoryEntry>>
     lateinit var eventManager: EventManager
@@ -122,6 +118,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
 
         eventStore = EventStore(mapper)
         monitorStore = MonitorStore(mapper)
+        genericEventStore = GenericEventStore(mapper).memoryBacked()
+        genericEventRepository = GenericEventRepository(genericEventStore)
         historyStore = HistoryStore(mapper)
         eventManager = EventManager(EventRepository(eventStore), Clock())
         keyValueRepository = KeyValueRepository(KeyValueStore(mapper))
@@ -139,7 +137,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         if (config.forwardHttpToHttps) {
             EnvironmentUtils.addHttpsForward(environment.applicationContext)
         }
-        val clients = Clients(config.connectivityCheck.address)
+        val clients = Clients(environment.objectMapper, config.connectivityCheck.address, config.updateCheck.address)
         val historyDao = HistorySystemLoadDAO(hibernate.sessionFactory)
         val basicHistoryDao = BasicHistorySystemLoadDAO(hibernate.sessionFactory)
         val proxyFactory = UnitOfWorkAwareProxyFactory(hibernate)
@@ -166,7 +164,6 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         val networkUploadDownloadRateMeasurementManager =
             NetworkUploadDownloadRateMeasurementManager(java.time.Clock.systemUTC(), taskManager)
 
-
         dockerClient = DockerClient(config.metricsConfig.cache, config.docker, environment.objectMapper)
         val connectivityCheckManager = ConnectivityCheckManager(
             clients.externalIpService,
@@ -191,6 +188,12 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             val certificateNamesCreator = CertificateNamesCreator(metrics.networkMetrics(), clients.externalIpService)
             SelfSignedCertificateManager().start(certificateNamesCreator, selfSignedCertificates)
         }
+        UpdateChecker(
+            config.updateCheck,
+            genericEventRepository,
+            clients.githubApiService,
+            taskManager
+        )
         val historyRepository = proxyFactory.create(
             /* clazz = */ HistoryRepository::class.java,
             /* constructorParamTypes = */ arrayOf(
@@ -225,7 +228,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             dockerClient,
             eventManager,
             MonitorRepository(monitorStore),
-            metrics,
+            MonitoredItemMissingChecker(genericEventRepository),
             com.krillsson.sysapi.util.Clock()
         )
         val historyRecorder = HistoryRecorder(taskManager, config.metricsConfig.history, metrics, historyRepository)
@@ -234,6 +237,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             eventManager,
             historyRecorder,
             keyValueRepository,
+            genericEventStore,
             Mdns(config, connectivityCheckManager),
             UpnpIgd(config)
         )
@@ -259,6 +263,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             monitorManager,
             eventManager,
             historyRepository,
+            genericEventRepository,
             dockerClient,
             os.asOperatingSystem(),
             SystemInfo.getCurrentPlatform().asPlatform(),

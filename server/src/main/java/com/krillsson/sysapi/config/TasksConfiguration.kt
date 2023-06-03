@@ -23,7 +23,7 @@ val defaultTasksValue = mapOf(
     ),
     TaskInterval.VerySeldom to TasksConfiguration(
         "30min",
-        listOf(Task.Key.StoreMetricHistoryEntry)
+        listOf(Task.Key.StoreMetricHistoryEntry, Task.Key.CheckUpdate)
     )
 )
 
