@@ -1,11 +1,14 @@
 package com.krillsson.sysapi.graphql
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.krillsson.sysapi.auth.BasicAuthSecurityHandlerFactory
 import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.smoketurner.dropwizard.graphql.CachingPreparsedDocumentProvider
 import com.smoketurner.dropwizard.graphql.GraphQLFactory
 import graphql.execution.preparsed.PreparsedDocumentProvider
+import graphql.kickstart.execution.GraphQLObjectMapper
 import graphql.kickstart.execution.GraphQLQueryInvoker
+import graphql.kickstart.execution.config.GraphQLServletObjectMapperConfigurer
 import graphql.kickstart.servlet.GraphQLHttpServlet
 import io.dropwizard.core.ConfiguredBundle
 import io.dropwizard.core.setup.Bootstrap
@@ -34,9 +37,14 @@ class GraphQLBundle(private val graphQLConfiguration: GraphQLConfiguration) : Co
             .withPreparsedDocumentProvider(provider)
             .withInstrumentation(factory.instrumentations)
             .build()
+
+        val objectMapperConfigurer =
+            GraphQLServletObjectMapperConfigurer { mapper -> mapper?.registerModule(JavaTimeModule()) }
+        val objectMapper = GraphQLObjectMapper.newBuilder().withObjectMapperConfigurer(objectMapperConfigurer).build()
         val config = graphql.kickstart.servlet.GraphQLConfiguration
             .with(schema)
             .with(queryInvoker)
+            .with(objectMapper)
             .build()
         val servlet = GraphQLHttpServlet
             .with(config)

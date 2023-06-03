@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.graphql
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.krillsson.sysapi.core.domain.system.OperatingSystem
 import com.krillsson.sysapi.core.domain.system.Platform
 import com.krillsson.sysapi.core.genericevents.GenericEvent
@@ -16,6 +17,7 @@ import com.krillsson.sysapi.graphql.mutations.UpdateMonitorOutputFailed
 import com.krillsson.sysapi.graphql.mutations.UpdateMonitorOutputSucceeded
 import com.krillsson.sysapi.graphql.scalars.ScalarTypes
 import graphql.kickstart.tools.SchemaParser
+import graphql.kickstart.tools.SchemaParserOptions
 import graphql.schema.GraphQLSchema
 
 class GraphQLConfiguration {
@@ -25,6 +27,13 @@ class GraphQLConfiguration {
 
     fun createExecutableSchema(schemaFileName: String): GraphQLSchema {
         return SchemaParser.newParser()
+            .options(
+                SchemaParserOptions.Builder()
+                    .objectMapperConfigurer { objectMapper, _ ->
+                        objectMapper.registerModule(JavaTimeModule())
+                    }
+                    .build()
+            )
             .file(schemaFileName)
             .resolvers(
                 queryResolver,
@@ -34,7 +43,8 @@ class GraphQLConfiguration {
                 queryResolver.historyResolver,
                 queryResolver.pastEventEventResolver,
                 queryResolver.ongoingEventResolver,
-                queryResolver.genericEventResolver,
+                queryResolver.monitoredItemMissingGenericEventResolver,
+                queryResolver.updateAvailableGenericEventResolver,
                 queryResolver.motherboardResolver,
                 queryResolver.processorResolver,
                 queryResolver.driveResolver,
@@ -57,6 +67,7 @@ class GraphQLConfiguration {
                 DockerUnavailable::class,
                 DockerAvailable::class,
                 GenericEvent.UpdateAvailable::class,
+                GenericEvent.MonitoredItemMissing::class,
                 ReadLogsForContainerOutputSucceeded::class,
                 ReadLogsForContainerOutputFailed::class,
                 NumericalValue::class,
