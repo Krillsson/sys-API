@@ -92,7 +92,8 @@ class QueryResolver : GraphQLQueryResolver {
     val memoryInfoResolver = MemoryInfoResolver()
     val networkInterfaceMetricResolver = NetworkInterfaceMetricResolver()
     val monitorResolver = MonitorResolver()
-    val genericEventResolver = GenericEventResolver()
+    val updateAvailableGenericEventResolver = UpdateAvailableGenericEventResolver()
+    val monitoredItemMissingGenericEventResolver = MonitoredItemMissingGenericEventResolver()
 
     fun system(): System = System(EnvironmentUtils.hostName, operatingSystem, platform)
 
@@ -267,12 +268,21 @@ class QueryResolver : GraphQLQueryResolver {
         motherboardHealth
     )
 
-    inner class GenericEventResolver : GraphQLResolver<GenericEvent.UpdateAvailable> {
+    inner class UpdateAvailableGenericEventResolver : GraphQLResolver<GenericEvent.UpdateAvailable> {
         fun getTitle(event: GenericEvent.UpdateAvailable): String {
             return "sys-API update available"
         }
         fun getDescription(event: GenericEvent.UpdateAvailable): String {
             return "New version ${event.newVersion} published at ${event.publishDate}. Server is running ${event.currentVersion}"
+        }
+    }
+
+    inner class MonitoredItemMissingGenericEventResolver : GraphQLResolver<GenericEvent.MonitoredItemMissing> {
+        fun getTitle(event: GenericEvent.MonitoredItemMissing): String {
+            return "Monitored item is missing"
+        }
+        fun getDescription(event: GenericEvent.MonitoredItemMissing): String {
+            return "${event.monitorType.name} monitor's item ${event.monitoredItemId} is no longer present in the system"
         }
     }
 

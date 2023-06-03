@@ -3,14 +3,14 @@ package com.krillsson.sysapi.core.genericevents
 import com.krillsson.sysapi.persistence.Store
 import java.util.*
 
-class GenericEventRepository(private val store: Store<List<GenericEvent>>) {
+class GenericEventRepository(private val store: Store<List<GenericEventStore.StoredGenericEvent>>) {
 
     fun read(): List<GenericEvent> {
-        return store.read().orEmpty()
+        return store.read().orEmpty().map { it.asDomain() }
     }
 
     fun write(value: List<GenericEvent>) {
-        store.write(value)
+        store.write(value.map { it.asStored() })
     }
 
     fun add(event: GenericEvent) {
@@ -46,5 +46,47 @@ class GenericEventRepository(private val store: Store<List<GenericEvent>>) {
         write(newValue)
     }
 
+    private fun GenericEvent.asStored(): GenericEventStore.StoredGenericEvent {
+        return when (this) {
+            is GenericEvent.MonitoredItemMissing -> GenericEventStore.StoredGenericEvent.MonitoredItemMissing(
+                id = id,
+                dateTime = dateTime,
+                monitorType = monitorType,
+                monitorId = monitorId,
+                monitoredItemId = monitoredItemId
+            )
 
+            is GenericEvent.UpdateAvailable -> GenericEventStore.StoredGenericEvent.UpdateAvailable(
+                id = id,
+                dateTime = dateTime,
+                currentVersion = currentVersion,
+                newVersion = newVersion,
+                changeLogMarkdown = changeLogMarkdown,
+                downloadUrl = downloadUrl,
+                publishDate = publishDate
+            )
+        }
+    }
+
+    private fun GenericEventStore.StoredGenericEvent.asDomain(): GenericEvent {
+        return when (this) {
+            is GenericEventStore.StoredGenericEvent.MonitoredItemMissing -> GenericEvent.MonitoredItemMissing(
+                id = id,
+                dateTime = dateTime,
+                monitorType = monitorType,
+                monitorId = monitorId,
+                monitoredItemId = monitoredItemId
+            )
+
+            is GenericEventStore.StoredGenericEvent.UpdateAvailable -> GenericEvent.UpdateAvailable(
+                id = id,
+                dateTime = dateTime,
+                currentVersion = currentVersion,
+                newVersion = newVersion,
+                changeLogMarkdown = changeLogMarkdown,
+                downloadUrl = downloadUrl,
+                publishDate = publishDate
+            )
+        }
+    }
 }

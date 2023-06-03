@@ -28,14 +28,14 @@ class UpdateChecker(
 
     override fun run() {
         if (updateCheckConfiguration.enabled) {
-            logger.info("Checking for new release")
+            logger.debug("Checking for new release")
             getLatestRelease()?.let { release ->
                 val remoteVersion = Version(release.tag_name)
                 val currentVersion = Version(BuildConfig.APP_VERSION)
                 when {
                     remoteVersion > currentVersion -> createEventForRelease(release, currentVersion, remoteVersion)
                     remoteVersion <= currentVersion -> removeOutdatedEvents()
-                    else -> logger.info("Already at latest version currentVersion: $currentVersion, remote: $remoteVersion")
+                    else -> logger.debug("Already at latest version currentVersion: $currentVersion, remote: $remoteVersion")
                 }
             }
         }
@@ -60,7 +60,7 @@ class UpdateChecker(
             )
             repository.add(newEvent)
         } else {
-            logger.info("Event already exists: new update available current: $currentVersion, remote: $remoteVersion")
+            logger.debug("Event already exists: new update available current: $currentVersion, remote: $remoteVersion")
         }
     }
 

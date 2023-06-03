@@ -315,6 +315,16 @@ type UpdateAvailable implements GenericEvent {
     publishDate: String!
 }
 
+type MonitoredItemMissing implements GenericEvent {
+    id: UUID!
+    dateTime: OffsetDateTime!
+    title: String!
+    description: String!
+    monitorType: MonitorType!
+    monitorId: UUID!
+    monitoredItemId: String
+}
+
 ## Operating system
 
 type OperatingSystem {

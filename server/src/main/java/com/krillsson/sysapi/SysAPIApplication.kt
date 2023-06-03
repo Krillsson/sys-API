@@ -25,7 +25,6 @@ import com.krillsson.server.BuildConfig
 import com.krillsson.sysapi.client.Clients
 import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
-import com.krillsson.sysapi.core.genericevents.GenericEvent
 import com.krillsson.sysapi.core.genericevents.GenericEventRepository
 import com.krillsson.sysapi.core.genericevents.GenericEventStore
 import com.krillsson.sysapi.core.history.*
@@ -91,7 +90,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     lateinit var eventStore: EventStore
     lateinit var monitorStore: MonitorStore
     lateinit var genericEventRepository: GenericEventRepository
-    lateinit var genericEventStore: MemoryBackedStore<List<GenericEvent>>
+    lateinit var genericEventStore: MemoryBackedStore<List<GenericEventStore.StoredGenericEvent>>
     lateinit var keyValueRepository: KeyValueRepository
     lateinit var historyStore: Store<List<StoredSystemHistoryEntry>>
     lateinit var eventManager: EventManager

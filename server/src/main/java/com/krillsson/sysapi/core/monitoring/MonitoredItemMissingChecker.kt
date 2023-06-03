@@ -25,7 +25,7 @@ class MonitoredItemMissingChecker(
                 )
             )
         } else {
-            logger.info("Event about missing item already exists for monitor ${monitor.type.name} / ${monitor.config.monitoredItemId} (${monitor.id})")
+            logger.debug("Event about missing item already exists for monitor ${monitor.type.name} / ${monitor.config.monitoredItemId} (${monitor.id})")
         }
     }
 

@@ -109,7 +109,7 @@ class MonitorMechanism @VisibleForTesting constructor(private val clock: Clock) 
             State.OUTSIDE_BEFORE_INERTIA -> {
                 if (outsideThreshold) {
                     if (pastInertia) { //Outside before inertia -> outside
-                        LOGGER.debug(
+                        LOGGER.info(
                             "{} have now been outside threshold of {} for more than {}, triggering event...",
                             config.monitoredItemId ?: monitor.type.name,
                             config.threshold,
