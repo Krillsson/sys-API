@@ -2,8 +2,11 @@
 - Add networkInterfaceById and fileSystemById to GraphQL-API
 - Add one, five and fifteen LoadAverages to GraphQL-API.
 - Add monitors for load averages
-- More fine-grained control over periodic tasks
+- Under the hood: More fine-grained control over periodic tasks
 - Add support for automatic port forwarding using UPnP-IGD.
+- Add generic events concept
+  - Update available on GitHub
+  - Monitored item disappeared
 
 ### 0.18.3
 - Fixed: querying network interfaces on Windows takes too long
