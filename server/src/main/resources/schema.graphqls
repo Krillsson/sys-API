@@ -18,6 +18,19 @@ type Query {
     ongoingEvents: [OngoingEvent!]!
     docker: Docker!
     meta: Meta
+    logs: LogAccess!
+}
+
+type LogAccess {
+    files: [LogFile!]!
+    openLog(id: String): [String!]!
+}
+
+type LogFile{
+    name: String!
+    path: String!
+    sizeBytes: Long!
+    count: Int!
 }
 
 type Meta {

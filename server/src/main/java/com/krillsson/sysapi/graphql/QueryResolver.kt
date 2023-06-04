@@ -34,6 +34,7 @@ import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.domain.*
+import com.krillsson.sysapi.logreader.LogFileManager
 import com.krillsson.sysapi.util.EnvironmentUtils
 import graphql.kickstart.tools.GraphQLQueryResolver
 import graphql.kickstart.tools.GraphQLResolver
@@ -51,6 +52,7 @@ class QueryResolver : GraphQLQueryResolver {
     lateinit var platform: Platform
     lateinit var dockerClient: DockerClient
     lateinit var meta: Meta
+    lateinit var logFileManager: LogFileManager
 
     fun initialize(
         metrics: Metrics,
@@ -61,7 +63,8 @@ class QueryResolver : GraphQLQueryResolver {
         dockerClient: DockerClient,
         operatingSystem: OperatingSystem,
         platform: Platform,
-        meta: Meta
+        meta: Meta,
+        logFileManager: LogFileManager
     ) {
         this.metrics = metrics
         this.monitorManager = monitorManager
@@ -72,6 +75,7 @@ class QueryResolver : GraphQLQueryResolver {
         this.platform = platform
         this.dockerClient = dockerClient
         this.meta = meta
+        this.logFileManager = logFileManager
     }
 
     val systemInfoResolver = SystemResolver()
@@ -129,6 +133,8 @@ class QueryResolver : GraphQLQueryResolver {
             )
         }
     }
+
+    fun logs() = logFileManager
 
     inner class DockerResolver : GraphQLResolver<DockerAvailable> {
         fun containers(docker: DockerAvailable) = dockerClient.listContainers()
