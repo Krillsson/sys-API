@@ -37,6 +37,7 @@ class SysAPIConfiguration(
     val graphql: GraphQLFactory,
     val docker: DockerConfiguration,
     val forwardHttpToHttps: Boolean,
+    val logReader: LogReaderConfiguration = LogReaderConfiguration(),
     val selfSignedCertificates: SelfSignedCertificateConfiguration,
     val mDNS: MdnsConfiguration = MdnsConfiguration(false),
     val tasks: Map<TaskInterval, TasksConfiguration> = defaultTasksValue,

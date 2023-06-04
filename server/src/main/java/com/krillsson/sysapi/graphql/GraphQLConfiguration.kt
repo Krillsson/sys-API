@@ -16,6 +16,7 @@ import com.krillsson.sysapi.graphql.mutations.PerformDockerContainerCommandOutpu
 import com.krillsson.sysapi.graphql.mutations.UpdateMonitorOutputFailed
 import com.krillsson.sysapi.graphql.mutations.UpdateMonitorOutputSucceeded
 import com.krillsson.sysapi.graphql.scalars.ScalarTypes
+import com.krillsson.sysapi.logreader.LogFileManager
 import graphql.kickstart.tools.SchemaParser
 import graphql.kickstart.tools.SchemaParserOptions
 import graphql.schema.GraphQLSchema
@@ -88,7 +89,8 @@ class GraphQLConfiguration {
         dockerClient: DockerClient,
         operatingSystem: OperatingSystem,
         platform: Platform,
-        meta: Meta
+        meta: Meta,
+        logFileManager: LogFileManager
     ) {
         queryResolver.initialize(
             metrics,
@@ -99,7 +101,8 @@ class GraphQLConfiguration {
             dockerClient,
             operatingSystem,
             platform,
-            meta
+            meta,
+            logFileManager
         )
         mutationResolver.initialize(metrics, monitorManager, genericEventRepository, eventManager, dockerClient)
     }
