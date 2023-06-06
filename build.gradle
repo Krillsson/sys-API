@@ -157,7 +157,7 @@ project(':server') {
         implementation 'com.sun.xml.bind:jaxb-impl:2.2.11'
         implementation 'javax.activation:activation:1.1.1'
         implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-        implementation name: 'jni4net.j-0.8.8.0'
+        implementation name: 'jni4net.j-0.8.9.0'
         implementation name: 'OhmJniWrapper.j4n'
 
         testImplementation 'junit:junit:4.13.1'
