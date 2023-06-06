@@ -34,7 +34,7 @@ import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.domain.*
-import com.krillsson.sysapi.logreader.LogFileManager
+import com.krillsson.sysapi.logaccess.LogAccessManager
 import com.krillsson.sysapi.util.EnvironmentUtils
 import graphql.kickstart.tools.GraphQLQueryResolver
 import graphql.kickstart.tools.GraphQLResolver
@@ -52,7 +52,7 @@ class QueryResolver : GraphQLQueryResolver {
     lateinit var platform: Platform
     lateinit var dockerClient: DockerClient
     lateinit var meta: Meta
-    lateinit var logFileManager: LogFileManager
+    lateinit var logFileManager: LogAccessManager
 
     fun initialize(
         metrics: Metrics,
@@ -64,7 +64,7 @@ class QueryResolver : GraphQLQueryResolver {
         operatingSystem: OperatingSystem,
         platform: Platform,
         meta: Meta,
-        logFileManager: LogFileManager
+        logFileManager: LogAccessManager
     ) {
         this.metrics = metrics
         this.monitorManager = monitorManager

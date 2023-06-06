@@ -134,6 +134,7 @@ project(':server') {
         implementation 'org.glassfish:jakarta.el:3.0.0'
         implementation 'javax.el:javax.el-api:3.0.0'
         implementation 'org.bitlet:weupnp:0.1.4'
+        implementation 'org.metabit.platform.interfacing:jjournal:0.3.6'
         implementation ('com.github.oshi:oshi-core:6.4.0'){
             exclude group: "org.slf4j"
         }

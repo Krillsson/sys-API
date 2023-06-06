@@ -19,7 +19,13 @@ class GraphQLBundle(private val graphQLConfiguration: GraphQLConfiguration) : Co
 
     override fun getGraphQLFactory(configuration: SysAPIConfiguration): GraphQLFactory {
         val factory = configuration.graphql
-        factory.setGraphQLSchema(graphQLConfiguration.createExecutableSchema(factory.schemaFiles.first()))
+        factory.setGraphQLSchema(graphQLConfiguration.createExecutableSchema(
+            "base.graphqls",
+            "docker.graphqls",
+            "logaccess.graphqls",
+            "monitoring.graphqls",
+            "system.graphqls",
+        ))
         return factory
     }
 
