@@ -16,7 +16,7 @@ import com.krillsson.sysapi.graphql.mutations.PerformDockerContainerCommandOutpu
 import com.krillsson.sysapi.graphql.mutations.UpdateMonitorOutputFailed
 import com.krillsson.sysapi.graphql.mutations.UpdateMonitorOutputSucceeded
 import com.krillsson.sysapi.graphql.scalars.ScalarTypes
-import com.krillsson.sysapi.logreader.LogFileManager
+import com.krillsson.sysapi.logaccess.LogAccessManager
 import graphql.kickstart.tools.SchemaParser
 import graphql.kickstart.tools.SchemaParserOptions
 import graphql.schema.GraphQLSchema
@@ -26,7 +26,9 @@ class GraphQLConfiguration {
     private val queryResolver = QueryResolver()
     private val mutationResolver = MutationResolver()
 
-    fun createExecutableSchema(schemaFileName: String): GraphQLSchema {
+    fun createExecutableSchema(
+        vararg schemaFileNames: String
+    ): GraphQLSchema {
         return SchemaParser.newParser()
             .options(
                 SchemaParserOptions.Builder()
@@ -35,7 +37,7 @@ class GraphQLConfiguration {
                     }
                     .build()
             )
-            .file(schemaFileName)
+            .files(*schemaFileNames)
             .resolvers(
                 queryResolver,
                 mutationResolver,
@@ -90,7 +92,7 @@ class GraphQLConfiguration {
         operatingSystem: OperatingSystem,
         platform: Platform,
         meta: Meta,
-        logFileManager: LogFileManager
+        logFileManager: LogAccessManager
     ) {
         queryResolver.initialize(
             metrics,

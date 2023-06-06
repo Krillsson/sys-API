@@ -1,10 +1,10 @@
-package com.krillsson.sysapi.logreader
+package com.krillsson.sysapi.logaccess.file
 
 import com.krillsson.sysapi.config.LogReaderConfiguration
 import com.krillsson.sysapi.util.logger
 import java.io.File
 
-class LogFileManager(private val configuration: LogReaderConfiguration) {
+class LogFilesManager(private val configuration: LogReaderConfiguration.Files) {
 
     val logger by logger()
 
@@ -14,7 +14,7 @@ class LogFileManager(private val configuration: LogReaderConfiguration) {
     }
 
     fun files(): List<LogFileReader> {
-        return configuration.files.paths.mapNotNull { path ->
+        return configuration.paths.mapNotNull { path ->
             val file = File(path)
             when {
                 file.exists() && file.isFile && file.canRead() -> LogFileReader(file)

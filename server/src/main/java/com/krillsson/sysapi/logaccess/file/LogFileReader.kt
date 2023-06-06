@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.logreader
+package com.krillsson.sysapi.logaccess.file
 
 import org.apache.commons.io.input.ReversedLinesFileReader
 import java.io.File
