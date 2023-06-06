@@ -7,6 +7,7 @@
 - Add generic events concept
   - Update available on GitHub
   - Monitored item disappeared
+- Updates to OpenHardwareMonitor integration to fix CPU metrics
 
 ### 0.18.3
 - Fixed: querying network interfaces on Windows takes too long
