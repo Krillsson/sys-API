@@ -2,16 +2,13 @@ package com.krillsson.sysapi.core.metrics.windows
 
 import com.krillsson.sysapi.core.metrics.MemoryMetrics
 import com.krillsson.sysapi.core.metrics.SystemMetrics
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDiskMetrics
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultFileSystemMetrics
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetrics
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultProcessesMetrics
+import com.krillsson.sysapi.core.metrics.defaultimpl.*
 
 class WindowsMetrics(
     cpuMetrics: WindowsCpuMetrics,
-    networkMetrics: WindowsNetworkMetrics,
+    networkMetrics: DefaultNetworkMetrics,
     gpuMetrics: WindowsGpuMetrics,
-    driveMetrics: WindowsDriveMetrics,
+    driveMetrics: DefaultDriveMetrics,
     diskMetrics: DefaultDiskMetrics,
     fileSystemMetrics: DefaultFileSystemMetrics,
     processesMetrics: DefaultProcessesMetrics,
@@ -29,8 +26,4 @@ class WindowsMetrics(
     motherboardMetrics,
     memoryMetrics,
     systemMetrics
-) {
-    override fun initialize() {
-        /* OHM has its own manager impl */
-    }
-}
+)

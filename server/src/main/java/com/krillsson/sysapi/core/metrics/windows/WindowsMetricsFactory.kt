@@ -24,14 +24,14 @@ object WindowsMetricsFactory {
 
             val monitorManager = ohmFactory.monitorManager
             val defaultCpuLoadMetrics = DefaultCpuLoadMetrics(hal.processor, taskManager)
-
-            val cpuMetrics =
-                WindowsCpuMetrics(hal, os, defaultCpuLoadMetrics, monitorManager)
-            val networkMetrics =
-                WindowsNetworkMetrics(taskManager, hal, networkUploadDownloadRateMeasurementManager, connectivityCheckManager, monitorManager)
+            val cpuMetrics = WindowsCpuMetrics(hal, os, defaultCpuLoadMetrics, monitorManager)
+            val networkMetrics = DefaultNetworkMetrics(
+                    hal,
+                    networkUploadDownloadRateMeasurementManager,
+                    connectivityCheckManager
+            )
             val gpuMetrics = WindowsGpuMetrics(hal, monitorManager)
-            val driveMetrics =
-                WindowsDriveMetrics(os, hal)
+            val driveMetrics = DefaultDriveMetrics(os, hal)
             val diskMetrics = DefaultDiskMetrics(hal, diskReadWriteRateMeasurementManager)
             val fileSystemMetrics = DefaultFileSystemMetrics(os)
             val processesMetrics = DefaultProcessesMetrics(os, hal, taskManager)
