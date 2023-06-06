@@ -1,0 +1,53 @@
+extend type Query {
+    logAccess: LogAccess!
+}
+
+type LogAccess {
+    logFiles: LogFilesAccess!
+    systemDaemonJournal: SystemDaemonJournalAccess!
+    windowsEventLog: WindowsEventLogAccess!
+}
+
+type LogFilesAccess {
+    files: [LogFile!]!
+    openLogFile(name: String): [String!]!
+}
+
+union SystemDaemonJournalAccess = SystemDaemonJournalAccessAvailable | SystemDaemonJournalAccessUnavailable
+
+type SystemDaemonJournalAccessAvailable{
+    journals: [SystemDaemonJournal!]!
+    openSystemDaemonJournal(name: String): [String!]!
+}
+
+type SystemDaemonJournal {
+    name: String!
+    sizeBytes: Long!
+}
+
+union WindowsEventLogAccess = WindowsEventLogAccessAvailable | WindowsEventLogAccessUnavailable
+
+type WindowsEventLogAccessAvailable {
+    logs: [SystemDaemonJournal!]!
+    openEventLog(name: String): [String!]!
+}
+
+type WindowsEventLog {
+    name: String!
+    records: [String!]!
+}
+
+type WindowsEventLogAccessUnavailable {
+    reason: String!
+}
+
+type SystemDaemonJournalAccessUnavailable {
+    reason: String!
+}
+
+type LogFile{
+    name: String!
+    path: String!
+    sizeBytes: Long!
+    count: Int!
+}
