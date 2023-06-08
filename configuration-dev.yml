@@ -68,7 +68,7 @@ tasks:
 logReader:
   files:
     paths:
-      - /Users/krillsson/IdeaProjects/sys-API/sys-api.log
+      - logpath
 #########################################
 ### Dropwizard specific configuration ###
 #########################################

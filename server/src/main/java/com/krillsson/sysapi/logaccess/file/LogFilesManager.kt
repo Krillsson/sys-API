@@ -8,7 +8,7 @@ class LogFilesManager(private val configuration: LogReaderConfiguration.Files) {
 
     val logger by logger()
 
-    fun openLog(id: String): List<String> {
+    fun openLogFile(id: String): List<String> {
         val file = files().firstOrNull() { it.name() == id }
         return file?.lines().orEmpty()
     }

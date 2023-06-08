@@ -28,13 +28,12 @@ type SystemDaemonJournal {
 union WindowsEventLogAccess = WindowsEventLogAccessAvailable | WindowsEventLogAccessUnavailable
 
 type WindowsEventLogAccessAvailable {
-    logs: [SystemDaemonJournal!]!
+    eventLogs: [WindowsEventLog!]!
     openEventLog(name: String): [String!]!
 }
 
 type WindowsEventLog {
     name: String!
-    records: [String!]!
 }
 
 type WindowsEventLogAccessUnavailable {
