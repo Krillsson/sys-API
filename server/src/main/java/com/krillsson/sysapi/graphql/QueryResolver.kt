@@ -35,6 +35,7 @@ import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.domain.*
 import com.krillsson.sysapi.logaccess.LogAccessManager
+import com.krillsson.sysapi.logaccess.file.LogFilesManager
 import com.krillsson.sysapi.util.EnvironmentUtils
 import graphql.kickstart.tools.GraphQLQueryResolver
 import graphql.kickstart.tools.GraphQLResolver
@@ -52,7 +53,7 @@ class QueryResolver : GraphQLQueryResolver {
     lateinit var platform: Platform
     lateinit var dockerClient: DockerClient
     lateinit var meta: Meta
-    lateinit var logFileManager: LogAccessManager
+    lateinit var logAccessManager: LogAccessManager
 
     fun initialize(
         metrics: Metrics,
@@ -64,7 +65,7 @@ class QueryResolver : GraphQLQueryResolver {
         operatingSystem: OperatingSystem,
         platform: Platform,
         meta: Meta,
-        logFileManager: LogAccessManager
+        logAccessManager: LogAccessManager
     ) {
         this.metrics = metrics
         this.monitorManager = monitorManager
@@ -75,7 +76,7 @@ class QueryResolver : GraphQLQueryResolver {
         this.platform = platform
         this.dockerClient = dockerClient
         this.meta = meta
-        this.logFileManager = logFileManager
+        this.logAccessManager = logAccessManager
     }
 
     val systemInfoResolver = SystemResolver()
@@ -98,6 +99,7 @@ class QueryResolver : GraphQLQueryResolver {
     val monitorResolver = MonitorResolver()
     val updateAvailableGenericEventResolver = UpdateAvailableGenericEventResolver()
     val monitoredItemMissingGenericEventResolver = MonitoredItemMissingGenericEventResolver()
+    val logAccessResolver = LogAccessResolver()
 
     fun system(): System = System(EnvironmentUtils.hostName, operatingSystem, platform)
 
@@ -134,7 +136,31 @@ class QueryResolver : GraphQLQueryResolver {
         }
     }
 
-    fun logs() = logFileManager
+    fun logAccess() = LogAccess
+
+    inner class LogAccessResolver : GraphQLResolver<LogAccess> {
+        fun logFiles(logAccess: LogAccess): LogFilesManager = logAccessManager.logFilesManager
+
+        fun systemDaemonJournal(logAccess: LogAccess): SystemDaemonJournalAccess {
+            return if(logAccessManager.systemDaemonJournalManager.supportedBySystem()){
+                logAccessManager.systemDaemonJournalManager
+            } else {
+                SystemDaemonJournalAccessUnavailable(
+                    "Not supported by system"
+                )
+            }
+        }
+
+        fun windowsEventLog(logAccess: LogAccess): WindowsEventLogAccess {
+            return if(logAccessManager.windowsEventLogManager.supportedBySystem()){
+                logAccessManager.windowsEventLogManager
+            } else {
+                WindowsEventLogAccessUnavailable(
+                    "Not supported by system"
+                )
+            }
+        }
+    }
 
     inner class DockerResolver : GraphQLResolver<DockerAvailable> {
         fun containers(docker: DockerAvailable) = dockerClient.listContainers()
@@ -278,6 +304,7 @@ class QueryResolver : GraphQLQueryResolver {
         fun getTitle(event: GenericEvent.UpdateAvailable): String {
             return "sys-API update available"
         }
+
         fun getDescription(event: GenericEvent.UpdateAvailable): String {
             return "New version ${event.newVersion} published at ${event.publishDate}. Server is running ${event.currentVersion}"
         }
@@ -287,6 +314,7 @@ class QueryResolver : GraphQLQueryResolver {
         fun getTitle(event: GenericEvent.MonitoredItemMissing): String {
             return "Monitored item is missing"
         }
+
         fun getDescription(event: GenericEvent.MonitoredItemMissing): String {
             return "${event.monitorType.name} monitor's item ${event.monitoredItemId} is no longer present in the system"
         }

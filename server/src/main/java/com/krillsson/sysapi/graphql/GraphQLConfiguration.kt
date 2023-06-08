@@ -60,7 +60,8 @@ class GraphQLConfiguration {
                 queryResolver.processorMetricsResolver,
                 queryResolver.driveMetricResolver,
                 queryResolver.networkInterfaceMetricResolver,
-                queryResolver.monitorResolver
+                queryResolver.monitorResolver,
+                queryResolver.logAccessResolver
             )
             .dictionary(
                 PerformDockerContainerCommandOutputSucceeded::class,
@@ -69,6 +70,10 @@ class GraphQLConfiguration {
                 UpdateMonitorOutputFailed::class,
                 DockerUnavailable::class,
                 DockerAvailable::class,
+                SystemDaemonJournalAccessAvailable::class,
+                SystemDaemonJournalAccessUnavailable::class,
+                WindowsEventLogAccessAvailable::class,
+                WindowsEventLogAccessUnavailable::class,
                 GenericEvent.UpdateAvailable::class,
                 GenericEvent.MonitoredItemMissing::class,
                 ReadLogsForContainerOutputSucceeded::class,
