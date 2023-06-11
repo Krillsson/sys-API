@@ -68,7 +68,15 @@ tasks:
 logReader:
   files:
     paths:
-      - logpath
+      - /var/log/daemon.log
+  journal:
+    services:
+      - docker.service
+      - containerd.service
+      - fail2ban.service
+      - ssh.service
+      - smbd.service
+      - docker.service
 #########################################
 ### Dropwizard specific configuration ###
 #########################################

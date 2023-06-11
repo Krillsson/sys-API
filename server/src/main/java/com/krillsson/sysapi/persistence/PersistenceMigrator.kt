@@ -31,13 +31,15 @@ open class PersistenceMigrator(
 
     @UnitOfWork
     open fun migrateJsonToSql() {
-        val items: List<HistorySystemLoadEntity> = store.read()
-            .orEmpty()
-            .map { it.asEntity() }
-        if (items.isNotEmpty()) {
-            val itemsInserted = historyDao.insert(items).size
-            logger.info("Database migration - $itemsInserted entries from JSON to SQLite")
-            store.deleteOnExit()
+        if (store.existsWithContent()) {
+            val items: List<HistorySystemLoadEntity> = store.read()
+                .orEmpty()
+                .map { it.asEntity() }
+            if (items.isNotEmpty()) {
+                val itemsInserted = historyDao.insert(items).size
+                logger.info("Database migration - $itemsInserted entries from JSON to SQLite")
+                store.deleteOnExit()
+            }
         }
     }
 
