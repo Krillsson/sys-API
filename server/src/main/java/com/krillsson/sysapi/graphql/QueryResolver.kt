@@ -146,7 +146,7 @@ class QueryResolver : GraphQLQueryResolver {
                 logAccessManager.systemDaemonJournalManager
             } else {
                 SystemDaemonJournalAccessUnavailable(
-                    "Not supported by system"
+                    "Not supported by system. This functionality requires libsystemd-dev package to be installed"
                 )
             }
         }

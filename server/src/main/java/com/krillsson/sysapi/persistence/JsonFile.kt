@@ -10,6 +10,8 @@ import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
 import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.Paths
 
 abstract class JsonFile<T>(
     private val fileName: String,
@@ -24,6 +26,11 @@ abstract class JsonFile<T>(
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             dateFormat = StdDateFormat()
         }
+
+    fun existsWithContent(): Boolean{
+        val file = File(filePath)
+        return file.exists() && Files.size(Paths.get(file.path)) > 0
+    }
 
     override fun update(action: (T?) -> T) {
         val previousValue = read()
@@ -96,7 +103,6 @@ abstract class JsonFile<T>(
     }
 
     companion object {
-        private const val deletionIdentifier = "TO_BE_DELETED_"
         private val LOGGER = LoggerFactory.getLogger(JsonFile::class.java)
     }
 }
