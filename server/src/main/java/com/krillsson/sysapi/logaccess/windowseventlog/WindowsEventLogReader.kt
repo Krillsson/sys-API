@@ -8,12 +8,13 @@ import java.time.format.DateTimeFormatter
 class WindowsEventLogReader(val name: String) {
 
     companion object {
-        val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+        private val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
     }
 
     fun readAll(): List<String> {
         val lines = mutableListOf<String>()
         val iter = EventLogIterator(name)
+
         while (iter.hasNext()) {
             val record = iter.next()
             val timestamp = Instant.ofEpochSecond(record.record.TimeGenerated.toLong())

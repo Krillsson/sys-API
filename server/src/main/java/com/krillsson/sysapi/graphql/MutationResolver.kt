@@ -10,6 +10,7 @@ import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.mutations.*
+import com.krillsson.sysapi.systemd.CommandResult
 import com.krillsson.sysapi.systemd.SystemDaemonJournalManager
 import graphql.kickstart.tools.GraphQLMutationResolver
 import java.time.Duration
@@ -60,12 +61,12 @@ class MutationResolver : GraphQLMutationResolver {
         )
 
         return when (result) {
-            is SystemDaemonJournalManager.CommandResult.Failed -> PerformSystemDaemonCommandOutputFailed(
+            is CommandResult.Failed -> PerformSystemDaemonCommandOutputFailed(
                 "Message: ${result.error.message ?: "Unknown reason"} Type: ${requireNotNull(result.error::class.simpleName)}",
             )
 
-            SystemDaemonJournalManager.CommandResult.Success -> PerformSystemDaemonCommandOutputSucceeded(input.serviceName)
-            SystemDaemonJournalManager.CommandResult.Unavailable -> PerformSystemDaemonCommandOutputFailed("SystemDaemon is unavailable")
+            CommandResult.Success -> PerformSystemDaemonCommandOutputSucceeded(input.serviceName)
+            CommandResult.Unavailable -> PerformSystemDaemonCommandOutputFailed("SystemDaemon is unavailable")
         }
     }
 

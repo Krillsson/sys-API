@@ -1,7 +1,7 @@
 package com.krillsson.sysapi.systemd
 
-class Services : ArrayList<Services.ServicesItem>(){
-    data class ServicesItem(
+class SystemCtlServicesOutput : ArrayList<SystemCtlServicesOutput.Item>(){
+    data class Item(
         val active: String,
         val description: String,
         val load: String,

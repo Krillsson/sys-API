@@ -12,20 +12,22 @@ class SystemDaemonJournalManager(
 
     val logger by logger()
 
+    companion object {
+        private const val LIST_SERVICES_COMMAND = "systemctl --output=json --type=service"
+    }
+
     fun supportedBySystem(): Boolean {
         return ExecuteCommand.checkIfCommandExistsUsingBash("journalctl").getOrNull() ?: false
     }
 
-    sealed class CommandResult {
-        object Success : CommandResult()
-        object Unavailable : CommandResult()
-        data class Failed(val error: Throwable) : CommandResult()
-    }
+    override fun openJournal(name: String) =
+        createUnit(name)?.lines()
+            .orEmpty()
 
-    private fun queryJournalCtl(): List<Services.ServicesItem> {
-        val services = mutableListOf<Services.ServicesItem>()
-        ExecuteCommand.asBufferedReader("systemctl --output=json --type=service")?.use { reader ->
-            val data = mapper.readValue(reader, Services::class.java)
+    override fun services(): List<SystemCtlServicesOutput.Item> {
+        val services = mutableListOf<SystemCtlServicesOutput.Item>()
+        ExecuteCommand.asBufferedReader(LIST_SERVICES_COMMAND)?.use { reader ->
+            val data = mapper.readValue(reader, SystemCtlServicesOutput::class.java)
             data.forEach {
                 services.add(it)
             }
@@ -33,27 +35,24 @@ class SystemDaemonJournalManager(
         return services
     }
 
-    override fun openJournal(name: String) =
-        createUnit(name)?.lines()
-            .orEmpty()
-
-    private fun createUnit(name: String): SystemDaemonUnit? {
-        return services().firstOrNull { it.unit == name }?.let { SystemDaemonUnit(it.unit, mapper) }
-    }
-
-    override fun services(): List<Services.ServicesItem> = queryJournalCtl()
     fun performCommandWithService(serviceName: String, command: SystemDaemonCommand): CommandResult {
         return if (!supportedBySystem()) {
             CommandResult.Unavailable
         } else {
             val unit = createUnit(serviceName)
-            if (unit != null) {
-                unit.performCommand(command)
-            } else {
+            when {
+                unit != null -> {
+                    unit.performCommand(command)
+                }
 
-                CommandResult.Failed(java.lang.RuntimeException())
+                else -> {
+                    CommandResult.Failed(java.lang.RuntimeException())
+                }
             }
         }
     }
 
+    private fun createUnit(name: String): SystemDaemonUnit? {
+        return services().firstOrNull { it.unit == name }?.let { SystemDaemonUnit(it.unit, mapper) }
+    }
 }
