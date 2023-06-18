@@ -4,7 +4,7 @@ import com.krillsson.sysapi.graphql.domain.WindowsEventLogAccessAvailable
 import oshi.PlatformEnum
 import oshi.SystemInfo
 
-class WindowsEventLogManager(private val eventLogs: List<String> = listOf("ssh.service", "fail2ban.service")) : WindowsEventLogAccessAvailable {
+class WindowsEventLogManager(private val eventLogs: List<String> = emptyList()) : WindowsEventLogAccessAvailable {
     fun supportedBySystem(): Boolean {
         return SystemInfo.getCurrentPlatform() == PlatformEnum.WINDOWS || SystemInfo.getCurrentPlatform() == PlatformEnum.WINDOWSCE
     }

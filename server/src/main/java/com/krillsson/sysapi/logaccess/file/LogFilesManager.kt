@@ -14,7 +14,21 @@ class LogFilesManager(private val configuration: LogReaderConfiguration.Files) {
     }
 
     fun files(): List<LogFileReader> {
-        return configuration.paths.mapNotNull { path ->
+        val list = mutableListOf<LogFileReader>()
+        configuration.directories.map { path ->
+            val directory = File(path)
+            if (directory.isDirectory) {
+                directory.listFiles { dir -> dir.extension == "log" }
+                    .forEach { file ->
+                        if (file.canRead()) {
+                            list.add(LogFileReader(file))
+                        }
+                    }
+            }
+        }
+
+
+        configuration.paths.mapNotNull { path ->
             val file = File(path)
             when {
                 file.exists() && file.isFile && file.canRead() -> LogFileReader(file)
@@ -35,6 +49,9 @@ class LogFilesManager(private val configuration: LogReaderConfiguration.Files) {
 
                 else -> null
             }
+        }.forEach {
+            list += it
         }
+        return list
     }
 }
