@@ -274,7 +274,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
                 processId = os.processId,
                 endpoints = endpoints.toList(),
             ),
-            logFileManager
+            logFileManager,
+            logFileManager.systemDaemonJournalManager
         )
         environment.jersey().registerJerseyResources(
             os,

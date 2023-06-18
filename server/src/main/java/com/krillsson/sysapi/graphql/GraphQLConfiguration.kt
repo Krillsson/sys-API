@@ -11,12 +11,10 @@ import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.domain.*
-import com.krillsson.sysapi.graphql.mutations.PerformDockerContainerCommandOutputFailed
-import com.krillsson.sysapi.graphql.mutations.PerformDockerContainerCommandOutputSucceeded
-import com.krillsson.sysapi.graphql.mutations.UpdateMonitorOutputFailed
-import com.krillsson.sysapi.graphql.mutations.UpdateMonitorOutputSucceeded
+import com.krillsson.sysapi.graphql.mutations.*
 import com.krillsson.sysapi.graphql.scalars.ScalarTypes
 import com.krillsson.sysapi.logaccess.LogAccessManager
+import com.krillsson.sysapi.systemd.SystemDaemonJournalManager
 import graphql.kickstart.tools.SchemaParser
 import graphql.kickstart.tools.SchemaParserOptions
 import graphql.schema.GraphQLSchema
@@ -61,7 +59,6 @@ class GraphQLConfiguration {
                 queryResolver.driveMetricResolver,
                 queryResolver.networkInterfaceMetricResolver,
                 queryResolver.monitorResolver,
-                queryResolver.logAccessResolver
             )
             .dictionary(
                 PerformDockerContainerCommandOutputSucceeded::class,
@@ -70,8 +67,10 @@ class GraphQLConfiguration {
                 UpdateMonitorOutputFailed::class,
                 DockerUnavailable::class,
                 DockerAvailable::class,
-                SystemDaemonJournalAccessAvailable::class,
-                SystemDaemonJournalAccessUnavailable::class,
+                SystemDaemonAccessAvailable::class,
+                SystemDaemonAccessUnavailable::class,
+                PerformSystemDaemonCommandOutputSucceeded::class,
+                PerformSystemDaemonCommandOutputFailed::class,
                 WindowsEventLogAccessAvailable::class,
                 WindowsEventLogAccessUnavailable::class,
                 GenericEvent.UpdateAvailable::class,
@@ -97,7 +96,8 @@ class GraphQLConfiguration {
         operatingSystem: OperatingSystem,
         platform: Platform,
         meta: Meta,
-        logFileManager: LogAccessManager
+        logFileManager: LogAccessManager,
+        systemDaemonJournalManager: SystemDaemonJournalManager
     ) {
         queryResolver.initialize(
             metrics,
@@ -111,6 +111,13 @@ class GraphQLConfiguration {
             meta,
             logFileManager
         )
-        mutationResolver.initialize(metrics, monitorManager, genericEventRepository, eventManager, dockerClient)
+        mutationResolver.initialize(
+            metrics,
+            monitorManager,
+            genericEventRepository,
+            eventManager,
+            dockerClient,
+            systemDaemonJournalManager
+        )
     }
 }

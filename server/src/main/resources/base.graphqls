@@ -10,6 +10,7 @@ type Mutation {}
 
 scalar UUID
 scalar OffsetDateTime
+scalar Instant
 scalar Long
 
 type Meta {

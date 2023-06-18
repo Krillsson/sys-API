@@ -23,6 +23,12 @@ interface ScalarTypes {
             .coercing(OffsetDateTimeCoercing())
             .build()
 
+        val instant = GraphQLScalarType.newScalar()
+            .name("Instant")
+            .description("JDK8 Instant GraphQL ScalarType")
+            .coercing(InstantCoercing())
+            .build()
+
         val duration = GraphQLScalarType.newScalar()
             .name("Duration")
             .description("JDK8 Duration GraphQL ScalarType")
@@ -41,7 +47,7 @@ interface ScalarTypes {
             .coercing(LongCoercing())
             .build()
 
-        val scalars = listOf(uuid, zonedDateTime, offsetDateTime, duration, period, long)
+        val scalars = listOf(uuid, zonedDateTime, offsetDateTime, duration, period, long, instant)
     }
 
 

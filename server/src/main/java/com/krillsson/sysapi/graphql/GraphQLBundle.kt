@@ -23,6 +23,7 @@ class GraphQLBundle(private val graphQLConfiguration: GraphQLConfiguration) : Co
             "base.graphqls",
             "docker.graphqls",
             "logaccess.graphqls",
+            "systemdaemon.graphqls",
             "monitoring.graphqls",
             "system.graphqls",
         ))

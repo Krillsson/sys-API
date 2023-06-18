@@ -1,18 +1,17 @@
 package com.krillsson.sysapi.graphql.domain
 
-import com.krillsson.sysapi.logaccess.systemd.SystemDaemonJournalReader
 import com.krillsson.sysapi.logaccess.windowseventlog.WindowsEventLogReader
+import com.krillsson.sysapi.systemd.Services
+import com.krillsson.sysapi.systemd.SystemDaemonUnit
 
-
-object LogAccess
 interface SystemDaemonJournalAccess
 
-interface SystemDaemonJournalAccessAvailable : SystemDaemonJournalAccess{
-    fun journals(): List<SystemDaemonJournalReader>
-    fun openSystemDaemonJournal(name: String): List<String>
+interface SystemDaemonAccessAvailable : SystemDaemonJournalAccess{
+    fun services(): List<Services.ServicesItem>
+    fun openJournal(name: String): List<SystemDaemonUnit.SystemDaemonJournalEntry>
 }
 
-data class SystemDaemonJournalAccessUnavailable(
+data class SystemDaemonAccessUnavailable(
     val reason: String
 ) : SystemDaemonJournalAccess
 
