@@ -1,0 +1,53 @@
+extend type Query {
+    systemDaemon: SystemDaemonAccess!
+}
+
+extend type Mutation {
+    performSystemDaemonCommand(input: PerformSystemDaemonCommandInput) : PerformSystemDaemonCommandOutput
+}
+
+union SystemDaemonAccess = SystemDaemonAccessAvailable | SystemDaemonAccessUnavailable
+
+type SystemDaemonAccessAvailable {
+    services: [SystemDaemonService!]!
+    openJournal(serviceName: String): [SystemDaemonJournalEntry!]!
+}
+
+type SystemDaemonAccessUnavailable {
+    reason: String!
+}
+
+type SystemDaemonService {
+    active: String!
+    description: String!
+    load: String!
+    sub: String!
+    unit: String!
+}
+
+type SystemDaemonJournalEntry {
+    timestamp: Instant!
+    message: String!
+}
+
+enum SystemDaemonCommand {
+    START,
+    STOP,
+    RELOAD,
+    RESTART,
+}
+
+input PerformSystemDaemonCommandInput {
+    serviceName: String!
+    command: SystemDaemonCommand
+}
+
+type PerformSystemDaemonCommandOutputFailed {
+    reason: String!
+}
+
+type PerformSystemDaemonCommandOutputSucceeded {
+    serviceName: String!
+}
+
+union PerformSystemDaemonCommandOutput = PerformSystemDaemonCommandOutputSucceeded | PerformSystemDaemonCommandOutputFailed

@@ -35,7 +35,6 @@ import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.domain.*
 import com.krillsson.sysapi.logaccess.LogAccessManager
-import com.krillsson.sysapi.logaccess.file.LogFilesManager
 import com.krillsson.sysapi.util.EnvironmentUtils
 import graphql.kickstart.tools.GraphQLQueryResolver
 import graphql.kickstart.tools.GraphQLResolver
@@ -99,7 +98,6 @@ class QueryResolver : GraphQLQueryResolver {
     val monitorResolver = MonitorResolver()
     val updateAvailableGenericEventResolver = UpdateAvailableGenericEventResolver()
     val monitoredItemMissingGenericEventResolver = MonitoredItemMissingGenericEventResolver()
-    val logAccessResolver = LogAccessResolver()
 
     fun system(): System = System(EnvironmentUtils.hostName, operatingSystem, platform)
 
@@ -136,29 +134,25 @@ class QueryResolver : GraphQLQueryResolver {
         }
     }
 
-    fun logAccess() = LogAccess
+    fun logFiles() = logAccessManager.logFilesManager
 
-    inner class LogAccessResolver : GraphQLResolver<LogAccess> {
-        fun logFiles(logAccess: LogAccess): LogFilesManager = logAccessManager.logFilesManager
-
-        fun systemDaemonJournal(logAccess: LogAccess): SystemDaemonJournalAccess {
-            return if(logAccessManager.systemDaemonJournalManager.supportedBySystem()){
-                logAccessManager.systemDaemonJournalManager
-            } else {
-                SystemDaemonJournalAccessUnavailable(
-                    "Not supported by system. This functionality requires libsystemd-dev package to be installed"
-                )
-            }
+    fun windowsEventLog(): WindowsEventLogAccess {
+        return if(logAccessManager.windowsEventLogManager.supportedBySystem()){
+            logAccessManager.windowsEventLogManager
+        } else {
+            WindowsEventLogAccessUnavailable(
+                "Not supported by system"
+            )
         }
+    }
 
-        fun windowsEventLog(logAccess: LogAccess): WindowsEventLogAccess {
-            return if(logAccessManager.windowsEventLogManager.supportedBySystem()){
-                logAccessManager.windowsEventLogManager
-            } else {
-                WindowsEventLogAccessUnavailable(
-                    "Not supported by system"
-                )
-            }
+    fun systemDaemon(): SystemDaemonJournalAccess {
+        return if(logAccessManager.systemDaemonJournalManager.supportedBySystem()){
+            logAccessManager.systemDaemonJournalManager
+        } else {
+            SystemDaemonAccessUnavailable(
+                "Not supported by system"
+            )
         }
     }
 

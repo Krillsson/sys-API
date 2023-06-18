@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.logaccess.systemd
+package com.krillsson.sysapi.systemd
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -6,14 +6,13 @@ import com.fasterxml.jackson.databind.MappingIterator
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.krillsson.sysapi.util.ExecuteCommand
 import com.krillsson.sysapi.util.logger
-import java.time.Clock
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 
-class SystemDaemonJournalReader(
+class SystemDaemonUnit(
     private val serviceUnitName: String,
     private val mapper: ObjectMapper
 ) {
@@ -26,7 +25,7 @@ class SystemDaemonJournalReader(
 
     fun name() = serviceUnitName
 
-    fun lines(): List<String> {
+    fun lines(): List<SystemDaemonJournalEntry> {
         return queryJournalCtl()
     }
 
@@ -40,23 +39,39 @@ class SystemDaemonJournalReader(
         )
     }
 
-    private fun queryJournalCtl(): List<String> {
-        val messages = mutableListOf<String>()
+    data class SystemDaemonJournalEntry(
+        val timestamp: Instant,
+        val message: String
+    )
+
+
+    private fun queryJournalCtl(): List<SystemDaemonJournalEntry> {
+        val messages = mutableListOf<SystemDaemonJournalEntry>()
         ExecuteCommand.asBufferedReader("journalctl --output=json UNIT=$serviceUnitName")?.use { reader ->
             val iterator: MappingIterator<JournalCtlOutput.Line> =
                 mapper.readerFor(JournalCtlOutput.Line::class.java).readValues(reader)
             val lines = iterator.readAll()
             lines.forEach {
                 val instant = Instant.ofEpochSecond(TimeUnit.MICROSECONDS.toSeconds(it.timestamp))
-                    .atZone(Clock.systemDefaultZone().zone).toLocalDateTime()
-                messages += "[${formatter.format(instant)}] ${it.message}"
+                messages += SystemDaemonJournalEntry(instant, it.message)
             }
         }
         return messages
     }
 
-
-    fun sizeBytes(): Long {
-        return 0
+    fun performCommand(command: SystemDaemonCommand): SystemDaemonJournalManager.CommandResult {
+        val exitStatus = ExecuteCommand.asExitStatus("systemctl ${command.name.lowercase()} $serviceUnitName")
+        return exitStatus.fold(
+            onSuccess = {
+                if (it == 0) {
+                    SystemDaemonJournalManager.CommandResult.Success
+                } else {
+                    SystemDaemonJournalManager.CommandResult.Failed(RuntimeException("Failed with $it"))
+                }
+            },
+            onFailure = {
+                SystemDaemonJournalManager.CommandResult.Failed(it)
+            }
+        )
     }
 }
