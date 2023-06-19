@@ -13,8 +13,9 @@ import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.domain.*
 import com.krillsson.sysapi.graphql.mutations.*
 import com.krillsson.sysapi.graphql.scalars.ScalarTypes
-import com.krillsson.sysapi.logaccess.LogAccessManager
-import com.krillsson.sysapi.systemd.SystemDaemonJournalManager
+import com.krillsson.sysapi.logaccess.file.LogFilesManager
+import com.krillsson.sysapi.logaccess.windowseventlog.WindowsEventLogManager
+import com.krillsson.sysapi.systemd.SystemDaemonManager
 import graphql.kickstart.tools.SchemaParser
 import graphql.kickstart.tools.SchemaParserOptions
 import graphql.schema.GraphQLSchema
@@ -96,8 +97,9 @@ class GraphQLConfiguration {
         operatingSystem: OperatingSystem,
         platform: Platform,
         meta: Meta,
-        logFileManager: LogAccessManager,
-        systemDaemonJournalManager: SystemDaemonJournalManager
+        logFileManager: LogFilesManager,
+        systemDaemonManager: SystemDaemonManager,
+        windowsEventLogManager: WindowsEventLogManager
     ) {
         queryResolver.initialize(
             metrics,
@@ -109,7 +111,9 @@ class GraphQLConfiguration {
             operatingSystem,
             platform,
             meta,
-            logFileManager
+            systemDaemonManager,
+            logFileManager,
+            windowsEventLogManager
         )
         mutationResolver.initialize(
             metrics,
@@ -117,7 +121,7 @@ class GraphQLConfiguration {
             genericEventRepository,
             eventManager,
             dockerClient,
-            systemDaemonJournalManager
+            systemDaemonManager
         )
     }
 }

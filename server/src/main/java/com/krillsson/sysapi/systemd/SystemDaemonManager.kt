@@ -1,13 +1,15 @@
 package com.krillsson.sysapi.systemd
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.krillsson.sysapi.config.SystemDaemonConfiguration
 import com.krillsson.sysapi.graphql.domain.SystemDaemonAccessAvailable
 import com.krillsson.sysapi.util.ExecuteCommand
 import com.krillsson.sysapi.util.logger
 
 
-class SystemDaemonJournalManager(
-    private val mapper: ObjectMapper
+class SystemDaemonManager(
+    private val mapper: ObjectMapper,
+    private val config: SystemDaemonConfiguration
 ) : SystemDaemonAccessAvailable {
 
     val logger by logger()

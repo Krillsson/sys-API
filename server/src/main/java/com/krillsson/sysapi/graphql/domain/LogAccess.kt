@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.graphql.domain
 
 import com.krillsson.sysapi.logaccess.windowseventlog.WindowsEventLogReader
+import com.krillsson.sysapi.logaccess.windowseventlog.WindowsEventLogRecord
 import com.krillsson.sysapi.systemd.SystemCtlServicesOutput
 import com.krillsson.sysapi.systemd.SystemDaemonJournalEntry
 
@@ -18,7 +19,7 @@ data class SystemDaemonAccessUnavailable(
 interface WindowsEventLogAccess
 
 interface WindowsEventLogAccessAvailable : WindowsEventLogAccess {
-    fun openEventLog(name: String): List<String>
+    fun openEventLog(name: String): List<WindowsEventLogRecord>
     fun eventLogs(): List<WindowsEventLogReader>
 }
 
