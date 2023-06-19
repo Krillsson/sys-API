@@ -11,7 +11,7 @@ import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.mutations.*
 import com.krillsson.sysapi.systemd.CommandResult
-import com.krillsson.sysapi.systemd.SystemDaemonJournalManager
+import com.krillsson.sysapi.systemd.SystemDaemonManager
 import graphql.kickstart.tools.GraphQLMutationResolver
 import java.time.Duration
 
@@ -22,7 +22,7 @@ class MutationResolver : GraphQLMutationResolver {
     lateinit var eventManager: EventManager
     lateinit var genericEventRepository: GenericEventRepository
     lateinit var dockerClient: DockerClient
-    lateinit var systemDaemonJournalManager: SystemDaemonJournalManager
+    lateinit var systemDaemonManager: SystemDaemonManager
 
     fun initialize(
         metrics: Metrics,
@@ -30,14 +30,14 @@ class MutationResolver : GraphQLMutationResolver {
         genericEventRepository: GenericEventRepository,
         eventManager: EventManager,
         dockerClient: DockerClient,
-        systemDaemonJournalManager: SystemDaemonJournalManager
+        systemDaemonManager: SystemDaemonManager
     ) {
         this.metrics = metrics
         this.monitorManager = monitorManager
         this.eventManager = eventManager
         this.dockerClient = dockerClient
         this.genericEventRepository = genericEventRepository
-        this.systemDaemonJournalManager = systemDaemonJournalManager
+        this.systemDaemonManager = systemDaemonManager
     }
 
     fun performDockerContainerCommand(input: PerformDockerContainerCommandInput): PerformDockerContainerCommandOutput {
@@ -56,7 +56,7 @@ class MutationResolver : GraphQLMutationResolver {
     }
 
     fun performSystemDaemonCommand(input: PerformSystemDaemonCommandInput): PerformSystemDaemonCommandOutput {
-        val result = systemDaemonJournalManager.performCommandWithService(
+        val result = systemDaemonManager.performCommandWithService(
             input.serviceName, input.command
         )
 

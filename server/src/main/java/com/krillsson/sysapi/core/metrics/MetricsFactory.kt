@@ -61,7 +61,7 @@ class MetricsFactory(
     private fun createPlatformSpecific(configuration: SysAPIConfiguration): Metrics {
         return when {
             platform == PlatformEnum.WINDOWS && (configuration.windows
-                .enableOhmJniWrapper()) -> {
+                .enableOhmJniWrapper) -> {
                 LOGGER.info("Windows detected")
                 val metrics = WindowsMetricsFactory.create(
                     operatingSystem,

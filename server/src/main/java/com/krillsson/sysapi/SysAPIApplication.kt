@@ -44,10 +44,12 @@ import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.GraphQLBundle
 import com.krillsson.sysapi.graphql.GraphQLConfiguration
 import com.krillsson.sysapi.graphql.domain.Meta
-import com.krillsson.sysapi.logaccess.LogAccessManager
+import com.krillsson.sysapi.logaccess.file.LogFilesManager
+import com.krillsson.sysapi.logaccess.windowseventlog.WindowsEventLogManager
 import com.krillsson.sysapi.mdns.Mdns
 import com.krillsson.sysapi.periodictasks.*
 import com.krillsson.sysapi.persistence.*
+import com.krillsson.sysapi.systemd.SystemDaemonManager
 import com.krillsson.sysapi.tls.CertificateNamesCreator
 import com.krillsson.sysapi.tls.SelfSignedCertificateManager
 import com.krillsson.sysapi.updatechecker.UpdateChecker
@@ -64,7 +66,6 @@ import io.dropwizard.jobs.JobsBundle
 import oshi.SystemInfo
 import oshi.util.GlobalConfig
 
-
 class SysAPIApplication : Application<SysAPIConfiguration>() {
 
     override fun getName(): String {
@@ -76,29 +77,31 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     private val hibernate: HibernateBundle<SysAPIConfiguration> = createHibernateBundle()
     private val flyWay: FlywayBundle<SysAPIConfiguration> = createFlywayBundle()
 
-    val systemInfo = SystemInfo()
-    val hal = systemInfo.hardware
-    val os = systemInfo.operatingSystem
-    val graphqlConfiguration = GraphQLConfiguration()
-    val graphqlBundle = GraphQLBundle(graphqlConfiguration)
-    val jobs: Map<TaskInterval, TaskExecutorJob> = mapOf(
+    private val systemInfo = SystemInfo()
+    private val hal = systemInfo.hardware
+    private val os = systemInfo.operatingSystem
+    private val graphqlConfiguration = GraphQLConfiguration()
+    private val graphqlBundle = GraphQLBundle(graphqlConfiguration)
+    private val jobs: Map<TaskInterval, TaskExecutorJob> = mapOf(
         TaskInterval.VerySeldom to VerySeldomTasksJob(),
         TaskInterval.Seldom to SeldomTasksJob(),
         TaskInterval.LessOften to LessOftenTasksJob(),
         TaskInterval.Often to OftenTasksJob()
     )
 
-    lateinit var eventStore: EventStore
-    lateinit var monitorStore: MonitorStore
-    lateinit var genericEventRepository: GenericEventRepository
-    lateinit var genericEventStore: MemoryBackedStore<List<GenericEventStore.StoredGenericEvent>>
-    lateinit var keyValueRepository: KeyValueRepository
-    lateinit var historyStore: Store<List<StoredSystemHistoryEntry>>
-    lateinit var eventManager: EventManager
-    lateinit var dockerClient: DockerClient
-    lateinit var metricsFactory: MetricsFactory
-    lateinit var taskManager: TaskManager
-    lateinit var logFileManager: LogAccessManager
+    private lateinit var eventStore: EventStore
+    private lateinit var monitorStore: MonitorStore
+    private lateinit var genericEventRepository: GenericEventRepository
+    private lateinit var genericEventStore: MemoryBackedStore<List<GenericEventStore.StoredGenericEvent>>
+    private lateinit var keyValueRepository: KeyValueRepository
+    private lateinit var historyStore: Store<List<StoredSystemHistoryEntry>>
+    private lateinit var eventManager: EventManager
+    private lateinit var dockerClient: DockerClient
+    private lateinit var metricsFactory: MetricsFactory
+    private lateinit var taskManager: TaskManager
+    private lateinit var logFileManager: LogFilesManager
+    private lateinit var systemDaemonManager: SystemDaemonManager
+    private lateinit var windowsEventLogManager: WindowsEventLogManager
 
     override fun initialize(bootstrap: Bootstrap<SysAPIConfiguration>) {
         GlobalConfig.set("oshi.os.windows.loadaverage", true)
@@ -164,8 +167,10 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             DiskReadWriteRateMeasurementManager(java.time.Clock.systemUTC(), taskManager)
         val networkUploadDownloadRateMeasurementManager =
             NetworkUploadDownloadRateMeasurementManager(java.time.Clock.systemUTC(), taskManager)
-        logFileManager = LogAccessManager(config.logReader, environment.objectMapper)
         dockerClient = DockerClient(config.metricsConfig.cache, config.docker, environment.objectMapper)
+        logFileManager = LogFilesManager(config.logReader)
+        windowsEventLogManager = WindowsEventLogManager(config.windows.eventLog)
+        systemDaemonManager = SystemDaemonManager(environment.objectMapper, config.linux.systemDaemon)
         val connectivityCheckManager = ConnectivityCheckManager(
             clients.externalIpService,
             keyValueRepository,
@@ -275,7 +280,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
                 endpoints = endpoints.toList(),
             ),
             logFileManager,
-            logFileManager.systemDaemonJournalManager
+            systemDaemonManager,
+            windowsEventLogManager
         )
         environment.jersey().registerJerseyResources(
             os,

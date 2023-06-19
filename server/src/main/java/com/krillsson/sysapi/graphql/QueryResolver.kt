@@ -34,7 +34,9 @@ import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.domain.*
-import com.krillsson.sysapi.logaccess.LogAccessManager
+import com.krillsson.sysapi.logaccess.file.LogFilesManager
+import com.krillsson.sysapi.logaccess.windowseventlog.WindowsEventLogManager
+import com.krillsson.sysapi.systemd.SystemDaemonManager
 import com.krillsson.sysapi.util.EnvironmentUtils
 import graphql.kickstart.tools.GraphQLQueryResolver
 import graphql.kickstart.tools.GraphQLResolver
@@ -52,7 +54,9 @@ class QueryResolver : GraphQLQueryResolver {
     lateinit var platform: Platform
     lateinit var dockerClient: DockerClient
     lateinit var meta: Meta
-    lateinit var logAccessManager: LogAccessManager
+    lateinit var logFilesManager: LogFilesManager
+    lateinit var windowsEventLogManager: WindowsEventLogManager
+    lateinit var systemDaemonManager: SystemDaemonManager
 
     fun initialize(
         metrics: Metrics,
@@ -64,7 +68,9 @@ class QueryResolver : GraphQLQueryResolver {
         operatingSystem: OperatingSystem,
         platform: Platform,
         meta: Meta,
-        logAccessManager: LogAccessManager
+        systemDaemonManager: SystemDaemonManager,
+        logFilesManager: LogFilesManager,
+        windowsEventLogManager: WindowsEventLogManager
     ) {
         this.metrics = metrics
         this.monitorManager = monitorManager
@@ -75,7 +81,9 @@ class QueryResolver : GraphQLQueryResolver {
         this.platform = platform
         this.dockerClient = dockerClient
         this.meta = meta
-        this.logAccessManager = logAccessManager
+        this.systemDaemonManager = systemDaemonManager
+        this.windowsEventLogManager = windowsEventLogManager
+        this.logFilesManager = logFilesManager
     }
 
     val systemInfoResolver = SystemResolver()
@@ -134,11 +142,11 @@ class QueryResolver : GraphQLQueryResolver {
         }
     }
 
-    fun logFiles() = logAccessManager.logFilesManager
+    fun logFiles() = logFilesManager
 
     fun windowsEventLog(): WindowsEventLogAccess {
-        return if(logAccessManager.windowsEventLogManager.supportedBySystem()){
-            logAccessManager.windowsEventLogManager
+        return if(windowsEventLogManager.supportedBySystem()){
+            windowsEventLogManager
         } else {
             WindowsEventLogAccessUnavailable(
                 "Not supported by system"
@@ -147,8 +155,8 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     fun systemDaemon(): SystemDaemonJournalAccess {
-        return if(logAccessManager.systemDaemonJournalManager.supportedBySystem()){
-            logAccessManager.systemDaemonJournalManager
+        return if(systemDaemonManager.supportedBySystem()){
+            systemDaemonManager
         } else {
             SystemDaemonAccessUnavailable(
                 "Not supported by system"

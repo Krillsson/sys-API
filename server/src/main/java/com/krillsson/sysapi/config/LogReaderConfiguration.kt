@@ -1,10 +1,6 @@
 package com.krillsson.sysapi.config
 
 data class LogReaderConfiguration(
-    val files: Files = Files(),
-) {
-    data class Files(
-        val paths: List<String> = emptyList(),
-        val directories: List<String> = listOf("/var/log")
-    )
-}
+    val files: List<String> = emptyList(),
+    val directories: List<String> = emptyList()
+)

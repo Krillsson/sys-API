@@ -4,12 +4,12 @@ import com.krillsson.sysapi.config.LogReaderConfiguration
 import com.krillsson.sysapi.util.logger
 import java.io.File
 
-class LogFilesManager(private val configuration: LogReaderConfiguration.Files) {
+class LogFilesManager(private val configuration: LogReaderConfiguration) {
 
     val logger by logger()
 
-    fun openLogFile(id: String): List<String> {
-        val file = files().firstOrNull() { it.name() == id }
+    fun openLogFile(path: String): List<String> {
+        val file = files().firstOrNull() { it.path() == path }
         return file?.lines().orEmpty()
     }
 
@@ -28,7 +28,7 @@ class LogFilesManager(private val configuration: LogReaderConfiguration.Files) {
         }
 
 
-        configuration.paths.mapNotNull { path ->
+        configuration.files.mapNotNull { path ->
             val file = File(path)
             when {
                 file.exists() && file.isFile && file.canRead() -> LogFileReader(file)

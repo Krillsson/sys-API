@@ -20,19 +20,12 @@
  */
 package com.krillsson.sysapi.config
 
-import com.fasterxml.jackson.annotation.JsonProperty
+data class WindowsConfiguration(
+    val enableOhmJniWrapper: Boolean = false,
+    val eventLog: WindowsEventLogConfiguration = WindowsEventLogConfiguration(),
+)
 
-class WindowsConfiguration {
-    @JsonProperty
-    private var enableOhmJniWrapper = false
-
-    constructor(enableOhmJniWrapper: Boolean) {
-        this.enableOhmJniWrapper = enableOhmJniWrapper
-    }
-
-    constructor() {}
-
-    fun enableOhmJniWrapper(): Boolean {
-        return enableOhmJniWrapper
-    }
-}
+data class WindowsEventLogConfiguration(
+    val names: List<String> = emptyList(),
+    val enabled: Boolean = false
+)

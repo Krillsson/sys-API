@@ -5,18 +5,31 @@ extend type Query {
 
 type LogFilesAccess {
     files: [LogFile!]!
-    openLogFile(name: String): [String!]!
+    openLogFile(path: String): [String!]!
 }
 
 union WindowsEventLogAccess = WindowsEventLogAccessAvailable | WindowsEventLogAccessUnavailable
 
 type WindowsEventLogAccessAvailable {
     eventLogs: [WindowsEventLog!]!
-    openEventLog(name: String): [String!]!
+    openEventLog(name: String): [WindowsEventLogRecord!]!
 }
 
 type WindowsEventLog {
     name: String!
+}
+
+type WindowsEventLogRecord {
+    timestamp: Instant!
+    message: String!
+    eventType: WindowsEventLogRecordType!
+    source: String!
+    category: String!
+}
+
+
+enum WindowsEventLogRecordType {
+    Error, Warning, Informational, AuditSuccess, AuditFailure
 }
 
 type WindowsEventLogAccessUnavailable {
