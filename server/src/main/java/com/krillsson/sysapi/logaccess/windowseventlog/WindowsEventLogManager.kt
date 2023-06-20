@@ -9,6 +9,20 @@ class WindowsEventLogManager(private val config: WindowsEventLogConfiguration) :
     fun supportedBySystem(): Boolean {
         return SystemInfo.getCurrentPlatform() == PlatformEnum.WINDOWS || SystemInfo.getCurrentPlatform() == PlatformEnum.WINDOWSCE
     }
-    override fun openEventLog(name: String) = eventLogs().firstOrNull { it.name == name }?.readAll().orEmpty()
-    override fun eventLogs() = config.names.map { WindowsEventLogReader(it) }
+
+    private val reader = WindowsEventLogReader()
+    override fun openEventLogBySource(source: String) = reader.readAllBySource(source)
+    override fun openApplicationEventLog(): List<WindowsEventLogRecord> {
+        return reader.readAllApplication()
+    }
+
+    override fun openSystemEventLog(): List<WindowsEventLogRecord> {
+        return reader.readAllSystem()
+    }
+
+    override fun openSecurityEventLog(): List<WindowsEventLogRecord> {
+        return reader.readAllSecurity()
+    }
+
+    override fun eventLogs() = reader.allSources()
 }

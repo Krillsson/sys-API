@@ -12,11 +12,15 @@ union WindowsEventLogAccess = WindowsEventLogAccessAvailable | WindowsEventLogAc
 
 type WindowsEventLogAccessAvailable {
     eventLogs: [WindowsEventLog!]!
-    openEventLog(name: String): [WindowsEventLogRecord!]!
+    openEventLogBySource(name: String): [WindowsEventLogRecord!]!
+    openApplicationEventLog: [WindowsEventLogRecord!]!
+    openSystemEventLog: [WindowsEventLogRecord!]!
+    openSecurityEventLog: [WindowsEventLogRecord!]!
 }
 
 type WindowsEventLog {
     name: String!
+    recordCount: Int!
 }
 
 type WindowsEventLogRecord {
