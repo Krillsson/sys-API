@@ -5,12 +5,37 @@ import com.sun.jna.platform.win32.Advapi32Util.EventLogIterator
 import java.time.Instant
 
 
-class WindowsEventLogReader(val name: String) {
+// https://learn.microsoft.com/en-us/windows/win32/eventlog/event-sources
+// https://learn.microsoft.com/en-us/previous-versions/aa363673(v=vs.85)
+class WindowsEventLogReader() {
 
     fun readAll(): List<WindowsEventLogRecord> {
-        val lines = mutableListOf<WindowsEventLogRecord>()
-        val iter = EventLogIterator(name)
+        val iter = EventLogIterator("Application")
+        return readRecords(iter)
+    }
 
+    fun readAllApplication(): List<WindowsEventLogRecord> {
+        val iter = EventLogIterator("Application")
+        return readRecords(iter)
+    }
+
+    fun readAllSystem(): List<WindowsEventLogRecord> {
+        val iter = EventLogIterator("System")
+        return readRecords(iter)
+    }
+
+    fun readAllSecurity(): List<WindowsEventLogRecord> {
+        val iter = EventLogIterator("Security")
+        return readRecords(iter)
+    }
+
+    fun readAllBySource(source: String): List<WindowsEventLogRecord> {
+        val iter = EventLogIterator(source)
+        return readRecords(iter)
+    }
+
+    private fun readRecords(iter: EventLogIterator): MutableList<WindowsEventLogRecord> {
+        val lines = mutableListOf<WindowsEventLogRecord>()
         while (iter.hasNext()) {
             val record = iter.next()
             val timestamp = Instant.ofEpochSecond(record.record.TimeGenerated.toLong())
@@ -30,6 +55,19 @@ class WindowsEventLogReader(val name: String) {
             )
         }
         return lines
+    }
+
+    fun allSources(): List<WindowsEventLogSourceInfo> {
+        val iter = EventLogIterator("Application")
+        val lines = mutableListOf<Pair<String, Int>>()
+
+        while (iter.hasNext()) {
+            val record = iter.next()
+            lines += record.source to record.recordNumber
+        }
+        return lines.groupBy { it.first }
+            .map { WindowsEventLogSourceInfo(it.key, it.value.size) }
+            .sortedBy { it.count }
     }
 }
 
