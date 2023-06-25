@@ -45,7 +45,7 @@ import com.krillsson.sysapi.graphql.GraphQLBundle
 import com.krillsson.sysapi.graphql.GraphQLConfiguration
 import com.krillsson.sysapi.graphql.domain.Meta
 import com.krillsson.sysapi.logaccess.file.LogFilesManager
-import com.krillsson.sysapi.logaccess.windowseventlog.WindowsEventLogManager
+import com.krillsson.sysapi.logaccess.windowseventlog.WindowsManager
 import com.krillsson.sysapi.mdns.Mdns
 import com.krillsson.sysapi.periodictasks.*
 import com.krillsson.sysapi.persistence.*
@@ -101,7 +101,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     private lateinit var taskManager: TaskManager
     private lateinit var logFileManager: LogFilesManager
     private lateinit var systemDaemonManager: SystemDaemonManager
-    private lateinit var windowsEventLogManager: WindowsEventLogManager
+    private lateinit var windowsEventLogManager: WindowsManager
 
     override fun initialize(bootstrap: Bootstrap<SysAPIConfiguration>) {
         GlobalConfig.set("oshi.os.windows.loadaverage", true)
@@ -169,7 +169,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             NetworkUploadDownloadRateMeasurementManager(java.time.Clock.systemUTC(), taskManager)
         dockerClient = DockerClient(config.metricsConfig.cache, config.docker, environment.objectMapper)
         logFileManager = LogFilesManager(config.logReader)
-        windowsEventLogManager = WindowsEventLogManager(config.windows.eventLog)
+        windowsEventLogManager = WindowsManager(config.windows.eventLog)
         systemDaemonManager = SystemDaemonManager(environment.objectMapper, config.linux.systemDaemon)
         val connectivityCheckManager = ConnectivityCheckManager(
             clients.externalIpService,

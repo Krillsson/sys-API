@@ -14,7 +14,7 @@ import com.krillsson.sysapi.graphql.domain.*
 import com.krillsson.sysapi.graphql.mutations.*
 import com.krillsson.sysapi.graphql.scalars.ScalarTypes
 import com.krillsson.sysapi.logaccess.file.LogFilesManager
-import com.krillsson.sysapi.logaccess.windowseventlog.WindowsEventLogManager
+import com.krillsson.sysapi.logaccess.windowseventlog.WindowsManager
 import com.krillsson.sysapi.systemd.SystemDaemonManager
 import graphql.kickstart.tools.SchemaParser
 import graphql.kickstart.tools.SchemaParserOptions
@@ -72,8 +72,10 @@ class GraphQLConfiguration {
                 SystemDaemonAccessUnavailable::class,
                 PerformSystemDaemonCommandOutputSucceeded::class,
                 PerformSystemDaemonCommandOutputFailed::class,
-                WindowsEventLogAccessAvailable::class,
-                WindowsEventLogAccessUnavailable::class,
+                PerformWindowsServiceCommandOutputSucceeded::class,
+                PerformWindowsServiceCommandOutputFailed::class,
+                WindowsManagementAccessAvailable::class,
+                WindowsManagementAccessUnavailable::class,
                 GenericEvent.UpdateAvailable::class,
                 GenericEvent.MonitoredItemMissing::class,
                 ReadLogsForContainerOutputSucceeded::class,
@@ -99,7 +101,7 @@ class GraphQLConfiguration {
         meta: Meta,
         logFileManager: LogFilesManager,
         systemDaemonManager: SystemDaemonManager,
-        windowsEventLogManager: WindowsEventLogManager
+        windowsManager: WindowsManager
     ) {
         queryResolver.initialize(
             metrics,
@@ -113,7 +115,7 @@ class GraphQLConfiguration {
             meta,
             systemDaemonManager,
             logFileManager,
-            windowsEventLogManager
+            windowsManager
         )
         mutationResolver.initialize(
             metrics,
@@ -121,7 +123,8 @@ class GraphQLConfiguration {
             genericEventRepository,
             eventManager,
             dockerClient,
-            systemDaemonManager
+            systemDaemonManager,
+            windowsManager
         )
     }
 }

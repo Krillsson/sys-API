@@ -10,6 +10,8 @@ import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.mutations.*
+import com.krillsson.sysapi.logaccess.windowseventlog.WindowsManager
+import com.krillsson.sysapi.logaccess.windowseventlog.WindowsServiceCommandResult
 import com.krillsson.sysapi.systemd.CommandResult
 import com.krillsson.sysapi.systemd.SystemDaemonManager
 import graphql.kickstart.tools.GraphQLMutationResolver
@@ -23,6 +25,7 @@ class MutationResolver : GraphQLMutationResolver {
     lateinit var genericEventRepository: GenericEventRepository
     lateinit var dockerClient: DockerClient
     lateinit var systemDaemonManager: SystemDaemonManager
+    lateinit var windowsManager: WindowsManager
 
     fun initialize(
         metrics: Metrics,
@@ -30,7 +33,8 @@ class MutationResolver : GraphQLMutationResolver {
         genericEventRepository: GenericEventRepository,
         eventManager: EventManager,
         dockerClient: DockerClient,
-        systemDaemonManager: SystemDaemonManager
+        systemDaemonManager: SystemDaemonManager,
+        windowsManager: WindowsManager
     ) {
         this.metrics = metrics
         this.monitorManager = monitorManager
@@ -38,6 +42,7 @@ class MutationResolver : GraphQLMutationResolver {
         this.dockerClient = dockerClient
         this.genericEventRepository = genericEventRepository
         this.systemDaemonManager = systemDaemonManager
+        this.windowsManager = windowsManager
     }
 
     fun performDockerContainerCommand(input: PerformDockerContainerCommandInput): PerformDockerContainerCommandOutput {
@@ -52,6 +57,19 @@ class MutationResolver : GraphQLMutationResolver {
 
             DockerClient.CommandResult.Success -> PerformDockerContainerCommandOutputSucceeded(input.containerId)
             DockerClient.CommandResult.Unavailable -> PerformDockerContainerCommandOutputFailed("Docker client is unavailable")
+        }
+    }
+
+    fun performWindowsServiceCommand(input: PerformWindowsServiceCommandInput): PerformWindowsServiceCommandOutput {
+        val result = windowsManager.performWindowsServiceCommand(input.serviceName, input.command)
+
+        return when (result) {
+            is WindowsServiceCommandResult.Failed -> PerformWindowsServiceCommandOutputFailed(
+                "Message: ${result.error.message ?: "Unknown reason"} Type: ${requireNotNull(result.error::class.simpleName)}",
+            )
+
+            WindowsServiceCommandResult.Success -> PerformWindowsServiceCommandOutputSucceeded(input.serviceName)
+            WindowsServiceCommandResult.Unavailable -> PerformWindowsServiceCommandOutputFailed("Docker client is unavailable")
         }
     }
 

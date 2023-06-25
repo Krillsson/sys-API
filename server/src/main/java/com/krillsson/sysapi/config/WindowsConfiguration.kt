@@ -26,6 +26,5 @@ data class WindowsConfiguration(
 )
 
 data class WindowsEventLogConfiguration(
-    val names: List<String> = emptyList(),
     val enabled: Boolean = false
 )

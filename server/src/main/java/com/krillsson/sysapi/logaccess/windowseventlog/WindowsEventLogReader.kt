@@ -67,7 +67,7 @@ class WindowsEventLogReader() {
         }
         return lines.groupBy { it.first }
             .map { WindowsEventLogSourceInfo(it.key, it.value.size) }
-            .sortedBy { it.count }
+            .sortedBy { it.recordCount }
     }
 }
 
