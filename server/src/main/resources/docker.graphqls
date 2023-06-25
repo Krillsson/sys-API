@@ -34,6 +34,7 @@ union ReadLogsForContainerOutput = ReadLogsForContainerOutputSucceeded | ReadLog
 union Docker = DockerAvailable | DockerUnavailable
 
 type DockerAvailable{
+    container(id: String!): DockerContainer
     containers: [DockerContainer!]!
     runningContainers: [DockerContainer!]!
     readLogsForContainer(containerId: String!, from: OffsetDateTime, to: OffsetDateTime): ReadLogsForContainerOutput

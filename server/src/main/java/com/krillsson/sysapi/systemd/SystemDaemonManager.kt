@@ -37,6 +37,10 @@ class SystemDaemonManager(
         return services
     }
 
+    fun service(name: String): SystemCtlServicesOutput.Item? {
+        return services().firstOrNull { it.unit == name }
+    }
+
     fun performCommandWithService(serviceName: String, command: SystemDaemonCommand): CommandResult {
         return if (!supportedBySystem()) {
             CommandResult.Unavailable

@@ -82,6 +82,10 @@ class DockerClient(
 
     fun listContainers() = containersCache.get()
 
+    fun container(id: String): Container? {
+        return containersCache.get().firstOrNull { it.id == id }
+    }
+
     fun performCommandWithContainer(command: Command): CommandResult {
         if (status == Status.Available) {
             return try {
@@ -182,6 +186,7 @@ class DockerClient(
             !dockerConfiguration.enabled -> {
                 Status.Disabled
             }
+
             else -> try {
                 client.pingCmd().exec()
                 Status.Available
