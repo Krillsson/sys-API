@@ -26,6 +26,7 @@ class GraphQLBundle(private val graphQLConfiguration: GraphQLConfiguration) : Co
             "systemdaemon.graphqls",
             "monitoring.graphqls",
             "system.graphqls",
+            "windows.graphqls",
         ))
         return factory
     }

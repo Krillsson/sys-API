@@ -22,10 +22,6 @@ user:
   password: password
 windows:
   enableOhmJniWrapper: true
-  eventLog:
-    names:
-      - name1
-      - name2
 linux:
   systemDaemon:
     enabled: true

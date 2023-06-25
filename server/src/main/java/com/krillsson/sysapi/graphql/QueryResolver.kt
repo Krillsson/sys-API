@@ -35,7 +35,7 @@ import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.docker.DockerClient
 import com.krillsson.sysapi.graphql.domain.*
 import com.krillsson.sysapi.logaccess.file.LogFilesManager
-import com.krillsson.sysapi.logaccess.windowseventlog.WindowsEventLogManager
+import com.krillsson.sysapi.logaccess.windowseventlog.WindowsManager
 import com.krillsson.sysapi.systemd.SystemDaemonManager
 import com.krillsson.sysapi.util.EnvironmentUtils
 import graphql.kickstart.tools.GraphQLQueryResolver
@@ -55,7 +55,7 @@ class QueryResolver : GraphQLQueryResolver {
     lateinit var dockerClient: DockerClient
     lateinit var meta: Meta
     lateinit var logFilesManager: LogFilesManager
-    lateinit var windowsEventLogManager: WindowsEventLogManager
+    lateinit var windowsEventLogManager: WindowsManager
     lateinit var systemDaemonManager: SystemDaemonManager
 
     fun initialize(
@@ -70,7 +70,7 @@ class QueryResolver : GraphQLQueryResolver {
         meta: Meta,
         systemDaemonManager: SystemDaemonManager,
         logFilesManager: LogFilesManager,
-        windowsEventLogManager: WindowsEventLogManager
+        windowsManager: WindowsManager
     ) {
         this.metrics = metrics
         this.monitorManager = monitorManager
@@ -82,7 +82,7 @@ class QueryResolver : GraphQLQueryResolver {
         this.dockerClient = dockerClient
         this.meta = meta
         this.systemDaemonManager = systemDaemonManager
-        this.windowsEventLogManager = windowsEventLogManager
+        this.windowsEventLogManager = windowsManager
         this.logFilesManager = logFilesManager
     }
 
@@ -144,11 +144,11 @@ class QueryResolver : GraphQLQueryResolver {
 
     fun logFiles() = logFilesManager
 
-    fun windowsEventLog(): WindowsEventLogAccess {
+    fun windowsManagement(): WindowsManagementAccess {
         return if(windowsEventLogManager.supportedBySystem()){
             windowsEventLogManager
         } else {
-            WindowsEventLogAccessUnavailable(
+            WindowsManagementAccessUnavailable(
                 "Not supported by system"
             )
         }
