@@ -1,4 +1,9 @@
 ### Unreleased
+- Linux: list and manage system daemon services (start, stop, reload etc.)
+- Linux: read system daemon journal logs
+- Windows: list and manage services (start, stop, pause etc.)
+- Windows: read event logs
+- Read log files from a directory (see sample in configuration.yml)
 - Add networkInterfaceById and fileSystemById to GraphQL-API
 - Add one, five and fifteen LoadAverages to GraphQL-API.
 - Add monitors for load averages
