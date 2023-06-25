@@ -30,8 +30,7 @@ class WindowsEventLogReader() {
     }
 
     fun readAllBySource(source: String): List<WindowsEventLogRecord> {
-        val iter = EventLogIterator(source)
-        return readRecords(iter)
+        return readAllApplication().filter { it.source == source }
     }
 
     private fun readRecords(iter: EventLogIterator): MutableList<WindowsEventLogRecord> {
@@ -43,8 +42,11 @@ class WindowsEventLogReader() {
             val source = record.source
             val category = record.record.EventCategory.toString()
             val message = StringBuilder()
-            for (i in 0 until record.strings.size) {
-                message.append(record.strings[i].trim())
+            val strings = record.strings
+            if (strings != null) {
+                for (element in strings) {
+                    message.append(element.trim())
+                }
             }
             lines += WindowsEventLogRecord(
                 timestamp = timestamp,

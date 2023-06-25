@@ -62,6 +62,7 @@ union WindowsManagementAccess = WindowsManagementAccessAvailable | WindowsManage
 
 type WindowsManagementAccessAvailable {
     services: [WindowsService!]!
+    service(name: String!): WindowsService
     eventLogs: [WindowsEventLog!]!
     openEventLogBySource(name: String): [WindowsEventLogRecord!]!
     openApplicationEventLog: [WindowsEventLogRecord!]!
