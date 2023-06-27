@@ -169,8 +169,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             NetworkUploadDownloadRateMeasurementManager(java.time.Clock.systemUTC(), taskManager)
         dockerClient = DockerClient(config.metricsConfig.cache, config.docker, environment.objectMapper)
         logFileManager = LogFilesManager(config.logReader)
-        windowsEventLogManager = WindowsManager(config.windows.eventLog)
-        systemDaemonManager = SystemDaemonManager(environment.objectMapper, config.linux.systemDaemon)
+        windowsEventLogManager = WindowsManager(config.windows)
+        systemDaemonManager = SystemDaemonManager(environment.objectMapper, config.linux)
         val connectivityCheckManager = ConnectivityCheckManager(
             clients.externalIpService,
             keyValueRepository,

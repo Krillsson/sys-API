@@ -3,13 +3,14 @@ package com.krillsson.sysapi.graphql.domain
 import com.krillsson.sysapi.logaccess.windowseventlog.WindowsEventLogRecord
 import com.krillsson.sysapi.logaccess.windowseventlog.WindowsEventLogSourceInfo
 import com.krillsson.sysapi.logaccess.windowseventlog.WindowsService
-import com.krillsson.sysapi.systemd.SystemCtlServicesOutput
+import com.krillsson.sysapi.systemd.SystemCtl
 import com.krillsson.sysapi.systemd.SystemDaemonJournalEntry
 
 interface SystemDaemonJournalAccess
 
 interface SystemDaemonAccessAvailable : SystemDaemonJournalAccess {
-    fun services(): List<SystemCtlServicesOutput.Item>
+    fun services(): List<SystemCtl.ListServicesOutput.Item>
+    fun service(serviceName: String): SystemCtl.ListServicesOutput.Item?
     fun openJournal(name: String): List<SystemDaemonJournalEntry>
 }
 
@@ -26,6 +27,7 @@ interface WindowsManagementAccessAvailable : WindowsManagementAccess {
     fun openSecurityEventLog(): List<WindowsEventLogRecord>
     fun eventLogs(): List<WindowsEventLogSourceInfo>
     fun services(): List<WindowsService>
+    fun service(name: String): WindowsService?
 }
 
 data class WindowsManagementAccessUnavailable(

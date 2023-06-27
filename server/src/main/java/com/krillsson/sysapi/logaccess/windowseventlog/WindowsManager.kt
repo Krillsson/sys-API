@@ -1,18 +1,17 @@
 package com.krillsson.sysapi.logaccess.windowseventlog
 
-import com.krillsson.sysapi.config.WindowsEventLogConfiguration
+import com.krillsson.sysapi.config.WindowsConfiguration
 import com.krillsson.sysapi.graphql.domain.WindowsManagementAccessAvailable
 import oshi.PlatformEnum
 import oshi.SystemInfo
 
-class WindowsManager(private val config: WindowsEventLogConfiguration) : WindowsManagementAccessAvailable {
+class WindowsManager(private val config: WindowsConfiguration) : WindowsManagementAccessAvailable {
     fun supportedBySystem(): Boolean {
         return SystemInfo.getCurrentPlatform() == PlatformEnum.WINDOWS || SystemInfo.getCurrentPlatform() == PlatformEnum.WINDOWSCE
     }
 
-    private val reader = WindowsEventLogReader()
-
-    private val serviceManager = WindowsServiceManager()
+    private val reader = WindowsEventLogReader(config.eventLog)
+    private val serviceManager = WindowsServiceManager(config.serviceManagement)
     override fun openEventLogBySource(source: String) = reader.readAllBySource(source)
     override fun openApplicationEventLog(): List<WindowsEventLogRecord> {
         return reader.readAllApplication()
@@ -29,6 +28,10 @@ class WindowsManager(private val config: WindowsEventLogConfiguration) : Windows
     override fun eventLogs() = reader.allSources()
     override fun services(): List<WindowsService> {
         return serviceManager.services()
+    }
+
+    override fun service(name: String): WindowsService? {
+        return serviceManager.service(name)
     }
 
     fun performWindowsServiceCommand(serviceName: String, command: WindowsServiceCommand): WindowsServiceCommandResult {

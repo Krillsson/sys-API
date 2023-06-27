@@ -166,6 +166,7 @@ class QueryResolver : GraphQLQueryResolver {
 
     inner class DockerResolver : GraphQLResolver<DockerAvailable> {
         fun containers(docker: DockerAvailable) = dockerClient.listContainers()
+        fun container(docker: DockerAvailable, id: String) = dockerClient.container(id)
         fun runningContainers(docker: DockerAvailable) =
             dockerClient.listContainers().filter { it.state == State.RUNNING }
 

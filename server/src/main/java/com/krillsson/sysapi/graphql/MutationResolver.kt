@@ -69,7 +69,8 @@ class MutationResolver : GraphQLMutationResolver {
             )
 
             WindowsServiceCommandResult.Success -> PerformWindowsServiceCommandOutputSucceeded(input.serviceName)
-            WindowsServiceCommandResult.Unavailable -> PerformWindowsServiceCommandOutputFailed("Docker client is unavailable")
+            WindowsServiceCommandResult.Unavailable -> PerformWindowsServiceCommandOutputFailed("Windows service management is unavailable")
+            WindowsServiceCommandResult.Disabled -> PerformWindowsServiceCommandOutputFailed("Windows service management is disabled in configuration.yml")
         }
     }
 
@@ -85,6 +86,7 @@ class MutationResolver : GraphQLMutationResolver {
 
             CommandResult.Success -> PerformSystemDaemonCommandOutputSucceeded(input.serviceName)
             CommandResult.Unavailable -> PerformSystemDaemonCommandOutputFailed("SystemDaemon is unavailable")
+            CommandResult.Disabled -> PerformSystemDaemonCommandOutputFailed("SystemDaemon service management is disabled in configuration.yml")
         }
     }
 

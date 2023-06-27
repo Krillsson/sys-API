@@ -22,8 +22,14 @@ user:
   password: password
 windows:
   enableOhmJniWrapper: true
+  eventLog:
+    enabled: true
+  serviceManagement:
+    enabled: true
 linux:
-  systemDaemon:
+  journalLogs:
+    enabled: true
+  systemDaemonServiceManagement:
     enabled: true
 # web interface for running queries
 graphQLPlayGround:
