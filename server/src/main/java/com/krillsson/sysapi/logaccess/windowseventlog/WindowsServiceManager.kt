@@ -1,12 +1,13 @@
 package com.krillsson.sysapi.logaccess.windowseventlog
 
+import com.krillsson.sysapi.config.ServiceManagement
 import com.krillsson.sysapi.util.logger
 import com.sun.jna.platform.win32.W32ServiceManager
-import com.sun.jna.platform.win32.WinNT.SERVICE_TYPE_ALL
+import com.sun.jna.platform.win32.WinNT.SERVICE_WIN32
 import com.sun.jna.platform.win32.Winsvc.*
 
 
-class WindowsServiceManager {
+class WindowsServiceManager(private val configuration: ServiceManagement) {
 
     private val logger by logger()
     fun services(): List<WindowsService> {
@@ -15,7 +16,7 @@ class WindowsServiceManager {
             val manager = W32ServiceManager()
             manager.open(SC_MANAGER_ENUMERATE_SERVICE or SC_MANAGER_CONNECT)
             manager.use { manager ->
-                for (essp in manager.enumServicesStatusExProcess(SERVICE_TYPE_ALL, SERVICE_STATE_ALL, null)) {
+                for (essp in manager.enumServicesStatusExProcess(SERVICE_WIN32, SERVICE_STATE_ALL, null)) {
                     val type = WindowsServiceType.fromIntegerConstant(essp.ServiceStatusProcess.dwServiceType)
                     val state: WindowsServiceState =
                         WindowsServiceState.fromIntegerConstant(essp.ServiceStatusProcess.dwCurrentState)
@@ -37,21 +38,25 @@ class WindowsServiceManager {
     }
 
     fun performWindowsServiceCommand(serviceName: String, command: WindowsServiceCommand): WindowsServiceCommandResult {
-        return try {
-            val manager = W32ServiceManager()
-            manager.open(SC_MANAGER_ENUMERATE_SERVICE or SC_MANAGER_CONNECT)
-            manager.openService(serviceName, SERVICE_ALL_ACCESS).use { service ->
-                when (command) {
-                    WindowsServiceCommand.START -> service.startService()
-                    WindowsServiceCommand.STOP -> service.stopService()
-                    WindowsServiceCommand.PAUSE -> service.pauseService()
-                    WindowsServiceCommand.CONTINUE -> service.continueService()
+        return if (configuration.enabled) {
+            try {
+                val manager = W32ServiceManager()
+                manager.open(SC_MANAGER_ENUMERATE_SERVICE or SC_MANAGER_CONNECT)
+                manager.openService(serviceName, SERVICE_ALL_ACCESS).use { service ->
+                    when (command) {
+                        WindowsServiceCommand.START -> service.startService()
+                        WindowsServiceCommand.STOP -> service.stopService()
+                        WindowsServiceCommand.PAUSE -> service.pauseService()
+                        WindowsServiceCommand.CONTINUE -> service.continueService()
+                    }
+                    WindowsServiceCommandResult.Success
                 }
-                WindowsServiceCommandResult.Success
+            } catch (throwable: Throwable) {
+                logger.error("${command.name} on $serviceName failed with: ${throwable.message}", throwable)
+                WindowsServiceCommandResult.Failed(throwable)
             }
-        } catch (throwable: Throwable) {
-            logger.error("${command.name} on $serviceName failed with: ${throwable.message}", throwable)
-            WindowsServiceCommandResult.Failed(throwable)
+        } else {
+            WindowsServiceCommandResult.Disabled
         }
     }
 }

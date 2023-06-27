@@ -4,7 +4,8 @@
 - Windows: list and manage services (start, stop, pause etc.)
 - Windows: read event logs
 - Read log files from a directory (see sample in configuration.yml)
-- Add networkInterfaceById and fileSystemById to GraphQL-API
+- Query networkInterface and fileSystem by ID
+- Query container, system daemon service and windows service by name  
 - Add one, five and fifteen LoadAverages to GraphQL-API.
 - Add monitors for load averages
 - Under the hood: More fine-grained control over periodic tasks

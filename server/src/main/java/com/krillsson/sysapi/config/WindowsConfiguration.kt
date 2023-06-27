@@ -23,8 +23,13 @@ package com.krillsson.sysapi.config
 data class WindowsConfiguration(
     val enableOhmJniWrapper: Boolean = false,
     val eventLog: WindowsEventLogConfiguration = WindowsEventLogConfiguration(),
+    val serviceManagement: ServiceManagement = ServiceManagement()
+)
+
+data class ServiceManagement(
+    val enabled: Boolean = true
 )
 
 data class WindowsEventLogConfiguration(
-    val enabled: Boolean = false
+    val enabled: Boolean = true
 )
