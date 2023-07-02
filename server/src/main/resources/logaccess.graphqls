@@ -11,5 +11,7 @@ type LogFile{
     name: String!
     path: String!
     sizeBytes: Long!
+    createdAt: Instant
+    updatedAt: Instant
     count: Int!
 }
