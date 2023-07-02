@@ -8,12 +8,12 @@ services:
     entrypoint:
       - java
       - -server
-      - -Xms100m
-      - -Xmx512m
+      # - -Xms100m
+      # - -Xmx512m
       - -Djava.awt.headless=true
-      - -XX:+UseG1GC
-      - -XX:MaxGCPauseMillis=100
-      - -XX:+UseStringDeduplication
+      # - -XX:+UseG1GC
+      # - -XX:MaxGCPauseMillis=100
+      # - -XX:+UseStringDeduplication
       - -cp
       - /resources:/classes:/libs/*
       - com.krillsson.sysapi.SysAPIApplication
@@ -43,6 +43,12 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       # to read device names from disks
       - /run/udev:/run/udev:ro
+      # to control systemd
+      - /run/systemd:/run/systemd
+      # to read journal logs
+      - /etc/machine-id:/etc/machine-id:ro
+      - /run/systemd/journal/socket:/run/systemd/journal/socket:ro
+      - /run/log/journal:/run/log/journal:ro
       # to allow sys-API access to read hdd's
       # alternatively mount in each device you'd like to monitor
       - /dev:/dev:ro
