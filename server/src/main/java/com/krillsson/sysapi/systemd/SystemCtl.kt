@@ -2,7 +2,7 @@ package com.krillsson.sysapi.systemd
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.krillsson.sysapi.config.SystemDaemonServiceManagementConfiguration
-import com.krillsson.sysapi.util.ExecuteCommand
+import com.krillsson.sysapi.util.Bash
 import javax.ws.rs.NotFoundException
 
 class SystemCtl(
@@ -14,7 +14,7 @@ class SystemCtl(
         private const val LIST_SERVICES_COMMAND = "systemctl --output=json --type=service"
     }
 
-    class ListServicesOutput : ArrayList<ListServicesOutput.Item>(){
+    class ListServicesOutput : ArrayList<ListServicesOutput.Item>() {
         data class Item(
             val active: String,
             val description: String,
@@ -25,13 +25,14 @@ class SystemCtl(
     }
 
     fun supportedBySystem(): Boolean {
-        return ExecuteCommand.checkIfCommandExistsUsingBash("systemctl").getOrNull() ?: false
+        return Bash.checkIfCommandExists("systemctl").getOrNull() ?: false
     }
 
     fun services(): List<ListServicesOutput.Item> {
         val services = mutableListOf<ListServicesOutput.Item>()
-        ExecuteCommand.asBufferedReader(LIST_SERVICES_COMMAND)?.use { reader ->
-            val data = mapper.readValue(reader, ListServicesOutput::class.java)
+        val result = Bash.executeToText(LIST_SERVICES_COMMAND)
+        result.map { json ->
+            val data = mapper.readValue(json, ListServicesOutput::class.java)
             data.forEach {
                 services.add(it)
             }
@@ -55,7 +56,7 @@ class SystemCtl(
     }
 
     private fun performCommand(serviceUnitName: String, command: SystemDaemonCommand): CommandResult {
-        val exitStatus = ExecuteCommand.asExitStatus("systemctl ${command.name.lowercase()} $serviceUnitName")
+        val exitStatus = Bash.executeToExitStatus("systemctl ${command.name.lowercase()} $serviceUnitName")
         return exitStatus.fold(
             onSuccess = {
                 if (it == 0) {

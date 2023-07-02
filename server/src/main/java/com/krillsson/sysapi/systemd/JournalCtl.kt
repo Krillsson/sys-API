@@ -5,7 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.MappingIterator
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.krillsson.sysapi.config.JournalLogsConfiguration
-import com.krillsson.sysapi.util.ExecuteCommand
+import com.krillsson.sysapi.util.Bash
+import com.krillsson.sysapi.util.logger
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 
@@ -16,6 +17,8 @@ class JournalCtl(
     companion object {
         private const val GET_LOG_ENTRIES_COMMAND = "journalctl --output=json UNIT=%s"
     }
+
+    val logger by logger()
 
     class JournalForServiceOutput : ArrayList<JournalForServiceOutput.Line>() {
         @JsonIgnoreProperties(ignoreUnknown = true)
@@ -28,15 +31,16 @@ class JournalCtl(
     }
 
     fun supportedBySystem(): Boolean {
-        return ExecuteCommand.checkIfCommandExistsUsingBash("journalctl").getOrNull() ?: false
+        return Bash.checkIfCommandExists("journalctl").getOrNull() ?: false
     }
 
     fun lines(serviceUnitName: String): List<SystemDaemonJournalEntry> {
         return if (journalLogsConfiguration.enabled) {
             val messages = mutableListOf<SystemDaemonJournalEntry>()
-            ExecuteCommand.asBufferedReader(String.format(GET_LOG_ENTRIES_COMMAND, serviceUnitName))?.use { reader ->
+            val result = Bash.executeToText(String.format(GET_LOG_ENTRIES_COMMAND, serviceUnitName))
+            result.map { json ->
                 val iterator: MappingIterator<JournalForServiceOutput.Line> =
-                    mapper.readerFor(JournalForServiceOutput.Line::class.java).readValues(reader)
+                    mapper.readerFor(JournalForServiceOutput.Line::class.java).readValues(json)
                 val lines = iterator.readAll()
                 lines.forEach {
                     val instant = Instant.ofEpochSecond(TimeUnit.MICROSECONDS.toSeconds(it.timestamp))
