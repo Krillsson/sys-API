@@ -16,8 +16,10 @@ class SystemDaemonManager(
     private val journalCtl = JournalCtl(mapper, config.journalLogs)
     private val systemCtl = SystemCtl(mapper, config.systemDaemonServiceManagement)
 
+    private val supportedBySystem = journalCtl.supportedBySystem() && systemCtl.supportedBySystem()
+
     fun supportedBySystem(): Boolean {
-        return journalCtl.supportedBySystem() && systemCtl.supportedBySystem()
+        return supportedBySystem
     }
 
     override fun openJournal(name: String) =
