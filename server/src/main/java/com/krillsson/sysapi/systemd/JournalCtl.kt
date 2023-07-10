@@ -34,7 +34,7 @@ class JournalCtl(
         return Bash.checkIfCommandExists("journalctl").getOrNull() ?: false
     }
 
-    fun lines(serviceUnitName: String): List<SystemDaemonJournalEntry> {
+    fun lines(serviceUnitName: String, limit: Int): List<SystemDaemonJournalEntry> {
         return if (journalLogsConfiguration.enabled) {
             val messages = mutableListOf<SystemDaemonJournalEntry>()
             val result = Bash.executeToText(String.format(GET_LOG_ENTRIES_COMMAND, serviceUnitName))
@@ -47,7 +47,7 @@ class JournalCtl(
                     messages += SystemDaemonJournalEntry(instant, it.message)
                 }
             }
-            messages
+            if(limit > 0) messages.takeLast(limit) else messages
         } else {
             emptyList()
         }

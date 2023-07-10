@@ -10,8 +10,8 @@ interface SystemDaemonJournalAccess
 
 interface SystemDaemonAccessAvailable : SystemDaemonJournalAccess {
     fun services(): List<SystemCtl.ListServicesOutput.Item>
-    fun service(serviceName: String): SystemCtl.ListServicesOutput.Item?
-    fun openJournal(name: String): List<SystemDaemonJournalEntry>
+    fun openJournal(name: String, limit: Int): List<SystemDaemonJournalEntry>
+    fun serviceDetails(name: String): SystemCtl.ServiceDetailsOutput?
 }
 
 data class SystemDaemonAccessUnavailable(
