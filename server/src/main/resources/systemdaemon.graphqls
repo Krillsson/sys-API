@@ -10,8 +10,8 @@ union SystemDaemonAccess = SystemDaemonAccessAvailable | SystemDaemonAccessUnava
 
 type SystemDaemonAccessAvailable {
     services: [SystemDaemonService!]!
-    service(serviceName: String!): SystemDaemonService
-    openJournal(serviceName: String): [SystemDaemonJournalEntry!]!
+    openJournal(serviceName: String, limit: Int = -1): [SystemDaemonJournalEntry!]!
+    serviceDetails(serviceName: String!): SystemDaemonServiceDetails
 }
 
 type SystemDaemonAccessUnavailable {
@@ -24,6 +24,32 @@ type SystemDaemonService {
     load: String!
     sub: String!
     unit: String!
+}
+
+type SystemDaemonServiceDetails {
+    active: String!
+    description: String!
+    load: String!
+    sub: String!
+    unit: String!
+    activeEnterPreformattedTimeStamp: String
+    activeExitPreformattedTimeStamp: String
+    names: [String!]
+    before: [String!]
+    after: [String!]
+    capabilities: [String!]
+    fragmentPath: String
+    statusText: String
+    startedAt: String
+    metrics: SystemDaemonServiceMetrics
+    mainPid: Long
+}
+
+type SystemDaemonServiceMetrics {
+    memoryCurrentBytes: Long
+    cpuUsageNanoSeconds: Long
+    ioReadBytes: Long
+    ioWriteBytes: Long
 }
 
 type SystemDaemonJournalEntry {

@@ -22,15 +22,15 @@ class SystemDaemonManager(
         return supportedBySystem
     }
 
-    override fun openJournal(name: String) =
-        journalCtl.lines(name)
+    override fun openJournal(name: String, limit: Int) =
+        journalCtl.lines(name, limit)
 
     override fun services(): List<SystemCtl.ListServicesOutput.Item> {
         return systemCtl.services()
     }
 
-    override fun service(name: String): SystemCtl.ListServicesOutput.Item? {
-        return systemCtl.service(name)
+    override fun serviceDetails(name: String): SystemCtl.ServiceDetailsOutput? {
+        return systemCtl.serviceDetails(name)
     }
 
     fun performCommandWithService(serviceName: String, command: SystemDaemonCommand): CommandResult {

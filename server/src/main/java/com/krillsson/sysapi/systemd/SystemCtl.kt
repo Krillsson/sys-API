@@ -12,6 +12,7 @@ class SystemCtl(
 
     companion object {
         private const val LIST_SERVICES_COMMAND = "systemctl --output=json --type=service"
+        private const val SERVICE_DETAILS_COMMAND = "systemctl show --no-pager"
     }
 
     class ListServicesOutput : ArrayList<ListServicesOutput.Item>() {
@@ -21,6 +22,32 @@ class SystemCtl(
             val load: String,
             val sub: String,
             val unit: String
+        )
+    }
+
+    data class ServiceDetailsOutput(
+        val active: String,
+        val description: String,
+        val load: String,
+        val sub: String,
+        val unit: String,
+        val activeEnterPreformattedTimeStamp: String?,
+        val activeExitPreformattedTimeStamp: String?,
+        val names: List<String>?,
+        val before: List<String>?,
+        val after: List<String>?,
+        val capabilities: List<String>?,
+        val fragmentPath: String?,
+        val statusText: String?,
+        val startedAt: String?,
+        val metrics: Metrics,
+        val mainPid: Long?
+    ) {
+        data class Metrics(
+            val memoryCurrentBytes: Long?,
+            val cpuUsageNanoSeconds: Long?,
+            val ioReadBytes: Long?,
+            val ioWriteBytes: Long?,
         )
     }
 
@@ -40,9 +67,47 @@ class SystemCtl(
         return services
     }
 
-    fun service(name: String): ListServicesOutput.Item? {
+    private fun service(name: String): ListServicesOutput.Item? {
         return services().firstOrNull { it.unit == name }
     }
+
+    fun serviceDetails(name: String): ServiceDetailsOutput? {
+        return service(name)?.let {
+            val result = Bash.executeToText("$SERVICE_DETAILS_COMMAND $name")
+            result.mapCatching { data ->
+                val values = parseDelimitedString(data)
+                ServiceDetailsOutput(
+                    active = it.active,
+                    description = it.description,
+                    load = it.load,
+                    sub = it.sub,
+                    unit = it.unit,
+                    activeEnterPreformattedTimeStamp = values["ActiveEnterTimestamp"],
+                    activeExitPreformattedTimeStamp = values["ActiveExitTimestamp"],
+                    names = values["Names"]?.split(" "),
+                    before = values["Before"]?.split(" "),
+                    after = values["After"]?.split(" "),
+                    capabilities = values["CapabilityBoundingSet"]?.split(" "),
+                    fragmentPath = values["FragmentPath"],
+                    statusText = values["StatusText"],
+                    startedAt = values["ExecMainStartTimestampMonotonic"],
+                    mainPid = values["ExecMainPID"]?.toLongOrNull(),
+                    metrics = ServiceDetailsOutput.Metrics(
+                        memoryCurrentBytes = values["MemoryCurrent"]?.toLongOrNull(),
+                        cpuUsageNanoSeconds = values["CPUUsageNSec"]?.toLongOrNull(),
+                        ioReadBytes = values["IOReadBytes"]?.toLongOrNull(),
+                        ioWriteBytes = values["IOWriteBytes"]?.toLongOrNull(),
+                    )
+                )
+            }.getOrNull()
+        }
+    }
+
+    private fun parseDelimitedString(data: String) = data
+        .lines()
+        .map { line -> line.split("=") }
+        .mapNotNull { if (it.size == 2) it[0] to it[1] else null }
+        .toMap()
 
     fun performCommandWithService(serviceName: String, command: SystemDaemonCommand): CommandResult {
         return when {
