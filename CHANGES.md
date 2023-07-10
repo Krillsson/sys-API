@@ -1,8 +1,13 @@
 ### Unreleased
+
 - Linux: list and manage system daemon services (start, stop, reload etc.)
+  - From docker: requires new volume mounts. See docker-compose.yml 
 - Linux: read system daemon journal logs
+  - Same as above
 - Windows: list and manage services (start, stop, pause etc.)
+  - Not supported from within Docker
 - Windows: read event logs
+  - Same as above
 - Read log files from a directory (see sample in configuration.yml)
 - Query networkInterface and fileSystem by ID
 - Query container, system daemon service and windows service by name  
