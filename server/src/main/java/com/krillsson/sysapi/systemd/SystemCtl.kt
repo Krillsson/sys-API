@@ -11,7 +11,7 @@ class SystemCtl(
 ) {
 
     companion object {
-        private const val LIST_SERVICES_COMMAND = "systemctl --output=json --type=service"
+        private const val LIST_SERVICES_COMMAND = "systemctl --output=json --type=service --all"
         private const val SERVICE_DETAILS_COMMAND = "systemctl show --no-pager"
     }
 
