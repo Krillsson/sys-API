@@ -78,6 +78,7 @@ logReader:
   files:
     - /var/log/nginx/access.log
   directories:
+    - data
     - /var/log
 #########################################
 ### Dropwizard specific configuration ###
@@ -98,7 +99,13 @@ server:
   applicationContextPath: /
   requestLog:
     appenders:
-      - type: console
+      - type: file
+        threshold: INFO
+        currentLogFilename: data/request.log
+        archivedLogFilenamePattern: data/request-%d{yyyy-MM-dd}-%i.log
+        archivedFileCount: 3
+        timeZone: UTC
+        maxFileSize: 2MiB
   applicationConnectors:
     - type: http
       port: 8080
@@ -110,24 +117,23 @@ server:
       validateCerts: false
       validatePeers: false
 logging:
-
-  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
-  level: INFO
-
+  # The default level of all loggers.
+  # Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
+  level: WARN
   # Logger-specific levels.
   loggers:
-    "com.krillsson.sysapi":
-      additive: false
-      level: INFO
-      appenders:
-        - type: console
-    "oshi":
-      additive: false
-      level: WARN
-      appenders:
-        - type: console
-    "io.dropwizard.core.server.ServerFactory":
-      additive: false
-      level: INFO
-      appenders:
-        - type: console
+    # Sets the level for 'com.example.app' to DEBUG.
+    com.krillsson.sysapi: DEBUG
+    oshi: INFO
+    io.dropwizard.core.server.ServerFactory: INFO
+    io.dropwizard.core.setup.AdminEnvironment: OFF
+  appenders:
+    - type: console
+    - type: file
+      threshold: INFO
+      logFormat: '%-6level [%d{HH:mm:ss.SSS}] [%t] %logger{5} - %X{code} %msg%n'
+      currentLogFilename: data/application.log
+      archivedLogFilenamePattern: data/application-%d{yyyy-MM-dd}-%i.log
+      archivedFileCount: 7
+      timeZone: UTC
+      maxFileSize: 2MiB
