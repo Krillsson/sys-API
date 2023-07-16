@@ -8,12 +8,7 @@ services:
     entrypoint:
       - java
       - -server
-      # - -Xms100m
-      # - -Xmx512m
       - -Djava.awt.headless=true
-      # - -XX:+UseG1GC
-      # - -XX:MaxGCPauseMillis=100
-      # - -XX:+UseStringDeduplication
       - -cp
       - /resources:/classes:/libs/*
       - com.krillsson.sysapi.SysAPIApplication
