@@ -1,25 +1,34 @@
 ### Unreleased
 
-- Linux: list and manage system daemon services (start, stop, reload etc.)
+### 0.19.0
+
+#### Linux
+- List and manage system daemon services (start, stop, reload etc.)
   - From docker: requires new volume mounts. See docker-compose.yml 
   - From docker: only works on host systems with systemd 
-- Linux: read system daemon journal logs
+- Read system daemon journal logs
   - Same notices as above
-- Windows: list and manage services (start, stop, pause etc.)
+
+#### Windows
+- List and manage services (start, stop, pause etc.)
   - Not supported from within Docker
-- Windows: read event logs
+- Read event logs
   - Same notice as above
+- Updates to OpenHardwareMonitor integration to fix CPU metrics
+
+#### Other features
 - Read log files from a directory (see sample in configuration.yml)
-- Query networkInterface and fileSystem by ID
-- Query container, system daemon service and windows service by name  
 - Add one, five and fifteen LoadAverages to GraphQL-API.
 - Add monitors for load averages
-- Under the hood: More fine-grained control over periodic tasks
 - Add support for automatic port forwarding using UPnP-IGD.
-- Add generic events concept
+- Generic events concept
   - Update available on GitHub
   - Monitored item disappeared
-- Updates to OpenHardwareMonitor integration to fix CPU metrics
+
+#### Under the hood
+- Query networkInterface and fileSystem by ID
+- Query container, system daemon service and windows service by name  
+- More fine-grained control over periodic tasks
 
 ### 0.18.3
 - Fixed: querying network interfaces on Windows takes too long
