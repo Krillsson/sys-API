@@ -33,22 +33,34 @@ open class HistoryRepository constructor(
 
     val logger by logger()
 
-    @UnitOfWork
+    @UnitOfWork(readOnly = true)
     open fun get(): List<BasicHistorySystemLoadEntity> {
         return basicDao.findAll()
     }
 
-    @UnitOfWork
+    @UnitOfWork(readOnly = true)
     open fun getExtended(): List<SystemHistoryEntry> {
-        return dao.findAll().map { it.asSystemHistoryEntry() }
+        return getExtendedHistoryLimitedToDates(null, null)
     }
 
-    @UnitOfWork
+    @UnitOfWork(readOnly = true)
     open fun getExtendedHistoryLimitedToDates(
-        fromDate: OffsetDateTime,
-        toDate: OffsetDateTime
+        fromDate: OffsetDateTime?,
+        toDate: OffsetDateTime?
     ): List<SystemHistoryEntry> {
-        return dao.findAllBetween(fromDate, toDate).map { it.asSystemHistoryEntry() }
+        val result = measureTimeMillis {
+            if (fromDate == null || toDate == null) {
+                dao.findAll()
+            } else {
+                dao.findAllBetween(fromDate, toDate)
+            }
+        }
+        logger.info(
+            "Took {} to fetch {} history entries",
+            "${result.first.toInt()}ms",
+            result.second.size
+        )
+        return result.second.map { it.asSystemHistoryEntry() }
     }
 
     @UnitOfWork
@@ -65,13 +77,11 @@ open class HistoryRepository constructor(
         dao.purge(maxAge)
     }
 
-    @UnitOfWork
+    @UnitOfWork(readOnly = true)
     open fun getHistoryLimitedToDates(
         fromDate: OffsetDateTime?,
         toDate: OffsetDateTime?
     ): List<BasicHistorySystemLoadEntity> {
-
-
         val result = measureTimeMillis {
             if (fromDate == null || toDate == null) {
                 basicDao.findAll()
@@ -87,42 +97,42 @@ open class HistoryRepository constructor(
         return result.second
     }
 
-    @UnitOfWork
+    @UnitOfWork(readOnly = true)
     open fun getBasic(): List<BasicHistorySystemLoadEntity> {
         return getHistoryLimitedToDates(null, null)
     }
 
-    @UnitOfWork
+    @UnitOfWork(readOnly = true)
     open fun getCpuLoadById(id: UUID): CpuLoad {
         return cpuLoadDAO.findById(id).asCpuLoad()
     }
 
-    @UnitOfWork
+    @UnitOfWork(readOnly = true)
     open fun getMemoryLoadById(id: UUID): MemoryLoad {
         return memoryLoadDAO.findById(id).asMemoryLoad()
     }
 
-    @UnitOfWork
+    @UnitOfWork(readOnly = true)
     open fun getConnectivityById(id: UUID): Connectivity {
         return connectivityDAO.findById(id).asConnectivity()
     }
 
-    @UnitOfWork
+    @UnitOfWork(readOnly = true)
     open fun getNetworkInterfaceLoadsById(id: UUID): List<NetworkInterfaceLoad> {
         return networkLoadDAO.findById(id).map { it.asNetworkInterfaceLoad() }
     }
 
-    @UnitOfWork
+    @UnitOfWork(readOnly = true)
     open fun getDriveLoadsById(id: UUID): List<DriveLoad> {
         return driveLoadDAO.findById(id).map { it.asDriveLoad() }
     }
 
-    @UnitOfWork
+    @UnitOfWork(readOnly = true)
     open fun getDiskLoadsById(id: UUID): List<DiskLoad> {
         return diskLoadDAO.findById(id).map { it.asDiskLoad() }
     }
 
-    @UnitOfWork
+    @UnitOfWork(readOnly = true)
     open fun getFileSystemLoadsById(id: UUID): List<FileSystemLoad> {
         return fileSystemLoadDAO.findById(id).map { it.asFileSystemLoad() }
     }

@@ -10,6 +10,7 @@ import org.hibernate.cfg.Configuration
 
 fun createHibernateBundle() = object : HibernateBundle<SysAPIConfiguration>(
     HistorySystemLoadEntity::class.java,
+    BasicHistorySystemLoadEntity::class.java,
     Connectivity::class.java,
     CpuLoad::class.java,
     NetworkInterfaceLoad::class.java,
