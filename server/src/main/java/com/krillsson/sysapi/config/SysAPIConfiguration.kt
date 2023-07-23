@@ -47,6 +47,8 @@ class SysAPIConfiguration(
         .apply {
             driverClass = "org.sqlite.JDBC"
             url = "jdbc:sqlite:${FileSystem.data.absolutePath}/database.sqlite"
+            maxSize = 1
+            initialSize = 1
             properties = mapOf(
                 "charSet" to "UTF-8",
                 "hibernate.dialect" to "org.hibernate.dialect.SQLiteDialect"
