@@ -65,6 +65,6 @@ open class PersistenceMigrator(
     }
 
     private fun StoredSystemHistoryEntry.asEntity(): HistorySystemLoadEntity {
-        return value.asEntity(UUID.randomUUID(), date)
+        return value.asEntity(UUID.randomUUID(), date.toInstant())
     }
 }

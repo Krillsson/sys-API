@@ -2,7 +2,7 @@ package com.krillsson.sysapi.core.domain.event
 
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.monitoring.Monitor
-import java.time.OffsetDateTime
+import java.time.Instant
 import java.util.*
 
 abstract class Event(
@@ -10,7 +10,7 @@ abstract class Event(
     val monitorId: UUID,
     val monitoredItemId: String? = null,
     val monitorType: Monitor.Type,
-    val startTime: OffsetDateTime,
+    val startTime: Instant,
     val threshold: MonitoredValue,
     val value: MonitoredValue
 )

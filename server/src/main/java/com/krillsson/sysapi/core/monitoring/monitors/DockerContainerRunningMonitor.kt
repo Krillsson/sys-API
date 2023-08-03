@@ -8,7 +8,10 @@ import com.krillsson.sysapi.core.monitoring.MetricQueryEvent
 import com.krillsson.sysapi.core.monitoring.Monitor
 import java.util.*
 
-class DockerContainerRunningMonitor(override val id: UUID, override val config: MonitorConfig<MonitoredValue.ConditionalValue>) : Monitor<MonitoredValue.ConditionalValue>() {
+class DockerContainerRunningMonitor(
+    override val id: UUID,
+    override val config: MonitorConfig<MonitoredValue.ConditionalValue>
+) : Monitor<MonitoredValue.ConditionalValue>() {
     override val type: Type = Type.CONTAINER_RUNNING
 
     companion object {

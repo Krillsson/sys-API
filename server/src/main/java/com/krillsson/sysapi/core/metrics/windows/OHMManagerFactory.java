@@ -4,9 +4,6 @@ import net.sf.jni4net.Bridge;
 import org.slf4j.Logger;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.CodeSource;
 
 import static com.krillsson.sysapi.util.JarLocation.*;
 

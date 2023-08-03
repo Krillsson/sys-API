@@ -1,7 +1,8 @@
 extend type Query {
     system: System!
     history: [SystemMetricsHistoryEntry!]!
-    historyBetweenDates(from: OffsetDateTime!, to: OffsetDateTime!): [SystemMetricsHistoryEntry!]!
+    historyBetweenDates(from: OffsetDateTime!, to: OffsetDateTime!): [SystemMetricsHistoryEntry!]! @deprecated(reason: "Replaced by historyBetweenTimestamps")
+    historyBetweenTimestamps(from: Instant!, to: Instant!): [SystemMetricsHistoryEntry!]!
 }
 
 type System {
@@ -43,7 +44,8 @@ enum Platform {
 
 type SystemMetricsHistoryEntry {
     date: String!
-    dateTime: OffsetDateTime!
+    dateTime: OffsetDateTime! @deprecated(reason: "Replaced by timestamp")
+    timestamp: Instant!
     processorMetrics: ProcessorMetrics!
     driveMetrics: [DriveMetrics!]! @deprecated(reason: "Replaced by DiskMetrics and FileSystemMetrics")
     diskMetrics: [DiskMetrics!]!
@@ -109,8 +111,7 @@ type Processor {
 
 type ProcessorMetrics {
     usagePercentage: Float!
-    @deprecated(reason: "Replaced by much more detailed loadAverages field")
-    systemLoadAverage: Float!
+    systemLoadAverage: Float! @deprecated(reason: "Replaced by much more detailed loadAverages field")
     loadAverages: LoadAverages!
     processCount: Int!
     threadCount: Int!

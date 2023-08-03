@@ -13,7 +13,7 @@ import java.util.*
 open class DefaultDiskMetrics(
     private val hal: HardwareAbstractionLayer,
     private val speedMeasurementManager: DiskReadWriteRateMeasurementManager
-): DiskMetrics {
+) : DiskMetrics {
 
     fun register() {
         for (store in hal.diskStores) {

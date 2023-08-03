@@ -2,6 +2,7 @@ package com.krillsson.sysapi.core.history.db
 
 import io.dropwizard.hibernate.AbstractDAO
 import org.hibernate.SessionFactory
+import java.time.Instant
 import java.time.OffsetDateTime
 import java.util.*
 import javax.persistence.criteria.CriteriaQuery
@@ -19,7 +20,7 @@ class HistorySystemLoadDAO(sessionFactory: SessionFactory) : AbstractDAO<History
         }
     }
 
-    fun findAllBetween(from: OffsetDateTime, to: OffsetDateTime): List<HistorySystemLoadEntity> {
+    fun findAllBetween(from: Instant, to: Instant): List<HistorySystemLoadEntity> {
         val builder = currentSession().criteriaBuilder
         val query: CriteriaQuery<HistorySystemLoadEntity> = builder.createQuery(HistorySystemLoadEntity::class.java)
         val root: Root<HistorySystemLoadEntity> = query.from(HistorySystemLoadEntity::class.java)
@@ -27,7 +28,7 @@ class HistorySystemLoadDAO(sessionFactory: SessionFactory) : AbstractDAO<History
         return list(query.where(between))
     }
 
-    fun purge(maxAge: OffsetDateTime): Int {
+    fun purge(maxAge: Instant): Int {
         val builder = currentSession().criteriaBuilder
         val delete = builder.createCriteriaDelete(HistorySystemLoadEntity::class.java)
         val table = delete.from(HistorySystemLoadEntity::class.java)
@@ -46,10 +47,12 @@ class HistorySystemLoadDAO(sessionFactory: SessionFactory) : AbstractDAO<History
     }
 }
 
-class BasicHistorySystemLoadDAO(sessionFactory: SessionFactory) : AbstractDAO<BasicHistorySystemLoadEntity>(sessionFactory) {
-    fun findAllBetween(from: OffsetDateTime, to: OffsetDateTime): List<BasicHistorySystemLoadEntity> {
+class BasicHistorySystemLoadDAO(sessionFactory: SessionFactory) :
+    AbstractDAO<BasicHistorySystemLoadEntity>(sessionFactory) {
+    fun findAllBetween(from: Instant, to: Instant): List<BasicHistorySystemLoadEntity> {
         val builder = currentSession().criteriaBuilder
-        val query: CriteriaQuery<BasicHistorySystemLoadEntity> = builder.createQuery(BasicHistorySystemLoadEntity::class.java)
+        val query: CriteriaQuery<BasicHistorySystemLoadEntity> =
+            builder.createQuery(BasicHistorySystemLoadEntity::class.java)
         val root: Root<BasicHistorySystemLoadEntity> = query.from(BasicHistorySystemLoadEntity::class.java)
         val between = builder.between(root.get("date"), from, to)
         return list(query.where(between))

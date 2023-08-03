@@ -142,7 +142,7 @@ class LegacyHistoryManager(
             if (fromDate == null || toDate == null) {
                 history.getExtended()
             } else {
-                history.getExtendedHistoryLimitedToDates(fromDate, toDate)
+                history.getExtendedHistoryLimitedToDates(fromDate?.toInstant(), toDate?.toInstant())
             }
         }
         logger.info(

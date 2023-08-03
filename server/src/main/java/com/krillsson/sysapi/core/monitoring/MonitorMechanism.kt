@@ -9,11 +9,11 @@ import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.util.Clock
 import org.slf4j.LoggerFactory
 import java.time.Duration
-import java.time.OffsetDateTime
+import java.time.Instant
 import java.util.*
 
 class MonitorMechanism @VisibleForTesting constructor(private val clock: Clock) {
-    private var stateChangedAt: OffsetDateTime? = null
+    private var stateChangedAt: Instant? = null
 
     var state = State.INSIDE
     private var eventId: UUID? = null
@@ -81,7 +81,7 @@ class MonitorMechanism @VisibleForTesting constructor(private val clock: Clock) 
         value: MonitoredValue,
         outsideThreshold: Boolean
     ): Event? {
-        val now = clock.now()
+        val now = clock.instant()
         val pastInertia =
             stateChangedAt != null && Duration.between(stateChangedAt,  /* and */now).compareTo(config.inertia) > 0
         var event: Event? = null
@@ -106,6 +106,7 @@ class MonitorMechanism @VisibleForTesting constructor(private val clock: Clock) 
                     )
                 }
             }
+
             State.OUTSIDE_BEFORE_INERTIA -> {
                 if (outsideThreshold) {
                     if (pastInertia) { //Outside before inertia -> outside
@@ -147,6 +148,7 @@ class MonitorMechanism @VisibleForTesting constructor(private val clock: Clock) 
                     state = State.INSIDE
                 }
             }
+
             State.OUTSIDE -> {
                 if (outsideThreshold) { //Outside -> outside
                     LOGGER.trace(
@@ -161,6 +163,7 @@ class MonitorMechanism @VisibleForTesting constructor(private val clock: Clock) 
                     LOGGER.trace("{} went inside threshold of {} at {}", config.monitoredItemId, config.threshold, now)
                 }
             }
+
             State.INSIDE_BEFORE_INERTIA -> {
                 if (!outsideThreshold) {
                     if (pastInertia) { //Inside before inertia -> inside

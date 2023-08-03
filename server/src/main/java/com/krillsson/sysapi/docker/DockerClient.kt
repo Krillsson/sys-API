@@ -19,7 +19,7 @@ import com.krillsson.sysapi.core.domain.docker.Container
 import com.krillsson.sysapi.util.logger
 import com.krillsson.sysapi.util.measureTimeMillis
 import java.time.Duration
-import java.time.OffsetDateTime
+import java.time.Instant
 import java.util.concurrent.TimeUnit
 
 class DockerClient(
@@ -112,7 +112,7 @@ class DockerClient(
         return CommandResult.Unavailable
     }
 
-    fun readLogsForContainer(containerId: String, from: OffsetDateTime?, to: OffsetDateTime?): ReadLogsCommandResult {
+    fun readLogsForContainer(containerId: String, from: Instant?, to: Instant?): ReadLogsCommandResult {
         if (status == Status.Available) {
             return try {
                 ReadLogsCommandResult.Success(readLogsForContainerInternal(containerId, from, to))
@@ -150,8 +150,8 @@ class DockerClient(
 
     private fun readLogsForContainerInternal(
         containerId: String,
-        from: OffsetDateTime?,
-        to: OffsetDateTime?
+        from: Instant?,
+        to: Instant?
     ): List<String> {
         return if (status == Status.Available) {
             val timedResult = measureTimeMillis {
@@ -161,8 +161,8 @@ class DockerClient(
                     .withStdErr(true)
                     .withStdOut(true)
                     .withTimestamps(true)
-                    .apply { from?.let { withSince(from.toEpochSecond().toInt()) } }
-                    .apply { to?.let { withUntil(to.toEpochSecond().toInt()) } }
+                    .apply { from?.let { withSince(from.toEpochMilli().div(1000).toInt()) } }
+                    .apply { to?.let { withUntil(to.toEpochMilli().div(1000).toInt()) } }
                     .exec(object : ResultCallback.Adapter<Frame>() {
                         override fun onNext(frame: Frame?) {
                             result.add(frame.toString())

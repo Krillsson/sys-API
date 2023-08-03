@@ -18,16 +18,16 @@ class CachingNetworkMetrics(
 ) : NetworkMetrics {
     private val networkInterfacesCache: Supplier<List<NetworkInterface>> =
         Suppliers.memoizeWithExpiration(
-            Suppliers.synchronizedSupplier{ networkMetrics.networkInterfaces() },
+            Suppliers.synchronizedSupplier { networkMetrics.networkInterfaces() },
             cacheConfiguration.duration, cacheConfiguration.unit
         )
     private val networkInterfaceLoadsCache: Supplier<List<NetworkInterfaceLoad>> =
         Suppliers.memoizeWithExpiration(
-            Suppliers.synchronizedSupplier{ networkMetrics.networkInterfaceLoads() },
+            Suppliers.synchronizedSupplier { networkMetrics.networkInterfaceLoads() },
             cacheConfiguration.duration, cacheConfiguration.unit
         )
     private val connectivityCache: Supplier<Connectivity> = Suppliers.memoizeWithExpiration(
-        Suppliers.synchronizedSupplier{ networkMetrics.connectivity() },
+        Suppliers.synchronizedSupplier { networkMetrics.connectivity() },
         cacheConfiguration.duration, cacheConfiguration.unit
     )
     private val networkInterfaceQueryCache: LoadingCache<String, Optional<NetworkInterface>> =

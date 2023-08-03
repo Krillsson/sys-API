@@ -6,7 +6,10 @@ import com.krillsson.sysapi.core.monitoring.MetricQueryEvent
 import com.krillsson.sysapi.core.monitoring.Monitor
 import java.util.*
 
-class LoadAverageMonitorOneMinute(override val id: UUID, override val config: MonitorConfig<MonitoredValue.FractionalValue>) :
+class LoadAverageMonitorOneMinute(
+    override val id: UUID,
+    override val config: MonitorConfig<MonitoredValue.FractionalValue>
+) :
     Monitor<MonitoredValue.FractionalValue>() {
 
     companion object {
@@ -25,7 +28,10 @@ class LoadAverageMonitorOneMinute(override val id: UUID, override val config: Mo
     }
 }
 
-class LoadAverageMonitorFiveMinutes(override val id: UUID, override val config: MonitorConfig<MonitoredValue.FractionalValue>) :
+class LoadAverageMonitorFiveMinutes(
+    override val id: UUID,
+    override val config: MonitorConfig<MonitoredValue.FractionalValue>
+) :
     Monitor<MonitoredValue.FractionalValue>() {
 
     companion object {
@@ -44,7 +50,10 @@ class LoadAverageMonitorFiveMinutes(override val id: UUID, override val config: 
     }
 }
 
-class LoadAverageMonitorFifteenMinutes(override val id: UUID, override val config: MonitorConfig<MonitoredValue.FractionalValue>) :
+class LoadAverageMonitorFifteenMinutes(
+    override val id: UUID,
+    override val config: MonitorConfig<MonitoredValue.FractionalValue>
+) :
     Monitor<MonitoredValue.FractionalValue>() {
 
     companion object {

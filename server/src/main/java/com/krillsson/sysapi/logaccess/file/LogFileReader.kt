@@ -32,6 +32,7 @@ class LogFileReader(val file: File) {
         }
         return lines
     }
+
     private fun countLines(file: File): Int {
         var lines = 0
         val fis = FileInputStream(file)

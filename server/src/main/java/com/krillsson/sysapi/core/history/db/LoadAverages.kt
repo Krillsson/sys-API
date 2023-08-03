@@ -3,6 +3,7 @@ package com.krillsson.sysapi.core.history.db
 import java.util.*
 import javax.persistence.Embeddable
 import javax.persistence.Id
+
 @Embeddable
 data class LoadAverages(
     @Id

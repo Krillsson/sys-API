@@ -4,24 +4,27 @@ import com.krillsson.sysapi.core.domain.cpu.CpuHealth
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuLoadMetrics
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuMetrics
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuSensors
-import com.krillsson.sysapi.core.metrics.windows.util.NullSafeOhmMonitor
-import com.krillsson.sysapi.util.Streams
-import ohmwrapper.CpuMonitor
-import ohmwrapper.OHMSensor
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.software.os.OperatingSystem
-import java.util.stream.Collectors
-import java.util.stream.DoubleStream
 
-class WindowsCpuMetrics(hal: HardwareAbstractionLayer?, operatingSystem: OperatingSystem?, defaultCpuLoadMetrics: DefaultCpuLoadMetrics?, monitorManager: DelegatingOHMManager) : DefaultCpuMetrics(hal!!, operatingSystem!!, WindowsCpuSensors(hal, monitorManager), defaultCpuLoadMetrics!!) {
-    private class WindowsCpuSensors internal constructor(hal: HardwareAbstractionLayer?, private val monitorManager: DelegatingOHMManager) : DefaultCpuSensors(hal!!) {
+class WindowsCpuMetrics(
+    hal: HardwareAbstractionLayer?,
+    operatingSystem: OperatingSystem?,
+    defaultCpuLoadMetrics: DefaultCpuLoadMetrics?,
+    monitorManager: DelegatingOHMManager
+) : DefaultCpuMetrics(hal!!, operatingSystem!!, WindowsCpuSensors(hal, monitorManager), defaultCpuLoadMetrics!!) {
+    private class WindowsCpuSensors internal constructor(
+        hal: HardwareAbstractionLayer?,
+        private val monitorManager: DelegatingOHMManager
+    ) : DefaultCpuSensors(hal!!) {
         override fun cpuHealth(): CpuHealth {
             monitorManager.update()
             return super.cpuHealth()
         }
 
         override fun cpuTemperatures(): List<Double> {
-            return monitorManager.CpuMonitors().firstOrNull()?.temperatures?.map { it.value } ?: listOf(monitorManager.CpuMonitors().firstOrNull()?.packageTemperature?.value ?: -1.0)
+            return monitorManager.CpuMonitors().firstOrNull()?.temperatures?.map { it.value }
+                ?: listOf(monitorManager.CpuMonitors().firstOrNull()?.packageTemperature?.value ?: -1.0)
         }
 
         override fun cpuFanRpm(): Double {

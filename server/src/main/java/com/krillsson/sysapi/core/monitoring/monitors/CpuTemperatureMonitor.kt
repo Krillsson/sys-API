@@ -6,7 +6,8 @@ import com.krillsson.sysapi.core.monitoring.MetricQueryEvent
 import com.krillsson.sysapi.core.monitoring.Monitor
 import java.util.*
 
-class CpuTemperatureMonitor(override val id: UUID, override val config: MonitorConfig<MonitoredValue.NumericalValue>) : Monitor<MonitoredValue.NumericalValue>() {
+class CpuTemperatureMonitor(override val id: UUID, override val config: MonitorConfig<MonitoredValue.NumericalValue>) :
+    Monitor<MonitoredValue.NumericalValue>() {
 
     companion object {
         val selector: NumericalValueSelector = { load, _ ->

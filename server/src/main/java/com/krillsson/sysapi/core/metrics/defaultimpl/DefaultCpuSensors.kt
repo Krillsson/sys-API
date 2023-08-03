@@ -2,7 +2,6 @@ package com.krillsson.sysapi.core.metrics.defaultimpl
 
 import com.krillsson.sysapi.core.domain.cpu.CpuHealth
 import oshi.hardware.HardwareAbstractionLayer
-import java.util.Arrays
 
 open class DefaultCpuSensors(private val hal: HardwareAbstractionLayer) {
     open fun cpuHealth(): CpuHealth {

@@ -2,7 +2,8 @@ package com.krillsson.sysapi.graphql.domain
 
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.monitoring.monitors.*
-import java.time.OffsetDateTime
+import com.krillsson.sysapi.util.toOffsetDateTime
+import java.time.Instant
 import java.util.*
 
 interface MonitoredValue
@@ -12,10 +13,12 @@ data class FractionalValue(val fraction: Float) : com.krillsson.sysapi.graphql.d
 data class ConditionalValue(val condition: Boolean) : com.krillsson.sysapi.graphql.domain.MonitoredValue
 
 data class MonitoredValueHistoryEntry(
-    val date: OffsetDateTime,
+    val timestamp: Instant,
     val value: com.krillsson.sysapi.graphql.domain.MonitoredValue
 ) {
-    fun getDateTime() = date
+    fun getDateTime() = timestamp.toOffsetDateTime()
+    fun getDate() = timestamp.toOffsetDateTime()
+
 }
 
 data class Monitor(
@@ -37,7 +40,7 @@ fun com.krillsson.sysapi.core.monitoring.Monitor<MonitoredValue>.asMonitor(): Mo
 }
 
 fun MonitoredValue.asMonitoredValue(): com.krillsson.sysapi.graphql.domain.MonitoredValue {
-    return when(this) {
+    return when (this) {
         is MonitoredValue.ConditionalValue -> ConditionalValue(value)
         is MonitoredValue.FractionalValue -> FractionalValue(value)
         is MonitoredValue.NumericalValue -> NumericalValue(value)
@@ -47,38 +50,41 @@ fun MonitoredValue.asMonitoredValue(): com.krillsson.sysapi.graphql.domain.Monit
 object Selectors {
 
 
-    fun forConditionalMonitorType(type: com.krillsson.sysapi.core.monitoring.Monitor.Type): ConditionalValueSelector = when (type) {
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.NETWORK_UP -> NetworkUpMonitor.selector
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.PROCESS_EXISTS -> ProcessExistsMonitor.selector
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.CONNECTIVITY -> ConnectivityMonitor.selector
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.EXTERNAL_IP_CHANGED -> ExternalIpChangedMonitor.selector
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.CONTAINER_RUNNING -> throw IllegalArgumentException("Use forContainerConditionalMonitor() method")
-        else -> throw IllegalArgumentException("$type is a ${type.valueType} type")
-    }
+    fun forConditionalMonitorType(type: com.krillsson.sysapi.core.monitoring.Monitor.Type): ConditionalValueSelector =
+        when (type) {
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.NETWORK_UP -> NetworkUpMonitor.selector
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.PROCESS_EXISTS -> ProcessExistsMonitor.selector
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.CONNECTIVITY -> ConnectivityMonitor.selector
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.EXTERNAL_IP_CHANGED -> ExternalIpChangedMonitor.selector
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.CONTAINER_RUNNING -> throw IllegalArgumentException("Use forContainerConditionalMonitor() method")
+            else -> throw IllegalArgumentException("$type is a ${type.valueType} type")
+        }
 
-    fun forNumericalMonitorType(type: com.krillsson.sysapi.core.monitoring.Monitor.Type): NumericalValueSelector = when (type) {
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.CPU_TEMP -> CpuTemperatureMonitor.selector
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.DRIVE_SPACE -> DriveSpaceMonitor.selector
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.DRIVE_READ_RATE -> DriveReadRateMonitor.selector
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.DISK_READ_RATE -> DiskReadRateMonitor.selector
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.DRIVE_WRITE_RATE -> DriveWriteRateMonitor.selector
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.DISK_WRITE_RATE -> DiskWriteRateMonitor.selector
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.FILE_SYSTEM_SPACE -> FileSystemSpaceMonitor.selector
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.MEMORY_SPACE -> MemorySpaceMonitor.selector
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.NETWORK_UPLOAD_RATE -> NetworkUploadRateMonitor.selector
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.NETWORK_DOWNLOAD_RATE -> NetworkDownloadRateMonitor.selector
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.PROCESS_MEMORY_SPACE -> ProcessMemoryMonitor.selector
-        else -> throw IllegalArgumentException("$type is a ${type.valueType} type")
-    }
+    fun forNumericalMonitorType(type: com.krillsson.sysapi.core.monitoring.Monitor.Type): NumericalValueSelector =
+        when (type) {
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.CPU_TEMP -> CpuTemperatureMonitor.selector
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.DRIVE_SPACE -> DriveSpaceMonitor.selector
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.DRIVE_READ_RATE -> DriveReadRateMonitor.selector
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.DISK_READ_RATE -> DiskReadRateMonitor.selector
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.DRIVE_WRITE_RATE -> DriveWriteRateMonitor.selector
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.DISK_WRITE_RATE -> DiskWriteRateMonitor.selector
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.FILE_SYSTEM_SPACE -> FileSystemSpaceMonitor.selector
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.MEMORY_SPACE -> MemorySpaceMonitor.selector
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.NETWORK_UPLOAD_RATE -> NetworkUploadRateMonitor.selector
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.NETWORK_DOWNLOAD_RATE -> NetworkDownloadRateMonitor.selector
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.PROCESS_MEMORY_SPACE -> ProcessMemoryMonitor.selector
+            else -> throw IllegalArgumentException("$type is a ${type.valueType} type")
+        }
 
-    fun forFractionalMonitorType(type: com.krillsson.sysapi.core.monitoring.Monitor.Type): FractionalValueSelector = when (type) {
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.CPU_LOAD -> CpuMonitor.selector
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.PROCESS_CPU_LOAD -> ProcessCpuMonitor.selector
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.LOAD_AVERAGE_ONE_MINUTE -> LoadAverageMonitorOneMinute.selector
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.LOAD_AVERAGE_FIVE_MINUTES -> LoadAverageMonitorFiveMinutes.selector
-        com.krillsson.sysapi.core.monitoring.Monitor.Type.LOAD_AVERAGE_FIFTEEN_MINUTES -> LoadAverageMonitorFifteenMinutes.selector
-        else -> throw IllegalArgumentException("$type is a ${type.valueType} type")
-    }
+    fun forFractionalMonitorType(type: com.krillsson.sysapi.core.monitoring.Monitor.Type): FractionalValueSelector =
+        when (type) {
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.CPU_LOAD -> CpuMonitor.selector
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.PROCESS_CPU_LOAD -> ProcessCpuMonitor.selector
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.LOAD_AVERAGE_ONE_MINUTE -> LoadAverageMonitorOneMinute.selector
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.LOAD_AVERAGE_FIVE_MINUTES -> LoadAverageMonitorFiveMinutes.selector
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.LOAD_AVERAGE_FIFTEEN_MINUTES -> LoadAverageMonitorFifteenMinutes.selector
+            else -> throw IllegalArgumentException("$type is a ${type.valueType} type")
+        }
 
     fun forContainerConditionalMonitor(type: com.krillsson.sysapi.core.monitoring.Monitor.Type): ContainerConditionalValueSelector =
         when (type) {

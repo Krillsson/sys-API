@@ -41,10 +41,10 @@ public class JarLocation {
     private static File jarLocation() {
         try {
             return new File(SysAPIApplication.class.getProtectionDomain()
-                                    .getCodeSource()
-                                    .getLocation()
-                                    .toURI()
-                                    .getPath());
+                    .getCodeSource()
+                    .getLocation()
+                    .toURI()
+                    .getPath());
         } catch (URISyntaxException e) {
             return new File(SysAPIApplication.class.getProtectionDomain().getCodeSource().getLocation().getPath());
         }

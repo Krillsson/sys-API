@@ -27,7 +27,7 @@ abstract class JsonFile<T>(
             dateFormat = StdDateFormat()
         }
 
-    fun existsWithContent(): Boolean{
+    fun existsWithContent(): Boolean {
         val file = File(filePath)
         return file.exists() && Files.size(Paths.get(file.path)) > 0
     }

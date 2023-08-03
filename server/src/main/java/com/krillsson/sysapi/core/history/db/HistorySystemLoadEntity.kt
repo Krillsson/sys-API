@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.core.history.db
 
-import java.time.OffsetDateTime
+import java.time.Instant
 import java.util.*
 import javax.persistence.*
 
@@ -15,7 +15,7 @@ import javax.persistence.*
 class BasicHistorySystemLoadEntity(
     @Id
     val id: UUID,
-    val date: OffsetDateTime,
+    val date: Instant,
     val uptime: Long,
     val systemLoadAverage: Double,
 )
@@ -28,7 +28,7 @@ class BasicHistorySystemLoadEntity(
 class HistorySystemLoadEntity(
     @Id
     val id: UUID,
-    val date: OffsetDateTime,
+    val date: Instant,
     val uptime: Long,
     val systemLoadAverage: Double,
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true)

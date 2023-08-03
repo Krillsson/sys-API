@@ -1,15 +1,11 @@
 package com.krillsson.sysapi.auth
 
-import org.eclipse.jetty.security.ConstraintMapping
-import org.eclipse.jetty.security.ConstraintSecurityHandler
-import org.eclipse.jetty.security.HashLoginService
-import org.eclipse.jetty.security.SecurityHandler
-import org.eclipse.jetty.security.UserStore
+import org.eclipse.jetty.security.*
 import org.eclipse.jetty.util.security.Constraint
 import org.eclipse.jetty.util.security.Credential
 
 class BasicAuthSecurityHandlerFactory(private val username: String, private val password: String) {
-    fun create() : SecurityHandler {
+    fun create(): SecurityHandler {
         val loginService = HashLoginService()
         val userStore = UserStore()
         userStore.addUser(username, Credential.getCredential(password), arrayOf("AUTHENTICATED"))

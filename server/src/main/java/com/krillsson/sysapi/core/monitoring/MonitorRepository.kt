@@ -30,7 +30,7 @@ class MonitorRepository(private val store: Store<List<MonitorStore.StoredMonitor
     }
 
     private fun MonitorStore.StoredMonitor.Config.asConfig(type: Monitor.Type): MonitorConfig<MonitoredValue> {
-        val convertedValue = when(type.valueType) {
+        val convertedValue = when (type.valueType) {
             Monitor.ValueType.Conditional -> threshold.toConditionalValue()
             Monitor.ValueType.Fractional -> threshold.toFractionalValue()
             Monitor.ValueType.Numerical -> threshold.toNumericalValue()

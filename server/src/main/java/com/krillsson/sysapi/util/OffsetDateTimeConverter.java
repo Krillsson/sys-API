@@ -13,7 +13,8 @@ import java.time.format.DateTimeFormatter;
 @Singleton
 public class OffsetDateTimeConverter implements ParamConverterProvider {
 
-    @Override public <T> ParamConverter<T> getConverter(Class<T> rawType, Type genericType, Annotation[] annotations) {
+    @Override
+    public <T> ParamConverter<T> getConverter(Class<T> rawType, Type genericType, Annotation[] annotations) {
 
         if (!rawType.isAssignableFrom(OffsetDateTime.class)) {
             return null;

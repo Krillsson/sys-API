@@ -23,7 +23,8 @@ class DiskReadRateMonitor(override val id: UUID, override val config: MonitorCon
         }
     }
 
-    override fun selectValue(event: MetricQueryEvent): MonitoredValue.NumericalValue? = selector(event.load, config.monitoredItemId)
+    override fun selectValue(event: MetricQueryEvent): MonitoredValue.NumericalValue? =
+        selector(event.load, config.monitoredItemId)
 
     override fun isPastThreshold(value: MonitoredValue.NumericalValue): Boolean {
         return value > config.threshold

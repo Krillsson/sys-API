@@ -50,11 +50,11 @@ class DisksResource(
     @Path("{name}")
     fun getDiskByName(@PathParam("name") name: String): Disk {
         return provider.diskByName(name) ?: throw WebApplicationException(
-                    String.format(
-                        "No disk with name %s was found.",
-                        name
-                    ), Response.Status.NOT_FOUND
-                )
+            String.format(
+                "No disk with name %s was found.",
+                name
+            ), Response.Status.NOT_FOUND
+        )
     }
 
     @GET

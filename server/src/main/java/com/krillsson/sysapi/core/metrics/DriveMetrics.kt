@@ -2,7 +2,7 @@ package com.krillsson.sysapi.core.metrics
 
 import com.krillsson.sysapi.core.domain.drives.Drive
 import com.krillsson.sysapi.core.domain.drives.DriveLoad
-import java.util.Optional
+import java.util.*
 
 interface DriveMetrics {
     fun drives(): List<Drive>

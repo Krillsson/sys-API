@@ -8,7 +8,7 @@ import com.krillsson.sysapi.periodictasks.Task
 import com.krillsson.sysapi.periodictasks.TaskInterval
 import com.krillsson.sysapi.periodictasks.TaskManager
 import com.krillsson.sysapi.util.logger
-import java.time.OffsetDateTime
+import java.time.Instant
 import java.util.*
 
 class UpdateChecker(
@@ -51,7 +51,7 @@ class UpdateChecker(
             logger.info("Creating event: new update available current: $currentVersion, remote: $remoteVersion")
             val newEvent = GenericEvent.UpdateAvailable(
                 id = UUID.randomUUID(),
-                dateTime = OffsetDateTime.now(),
+                timestamp = Instant.now(),
                 currentVersion = BuildConfig.APP_VERSION,
                 newVersion = release.tag_name,
                 changeLogMarkdown = release.body,

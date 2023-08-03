@@ -25,14 +25,14 @@ public class WindowsMotherboardMetrics extends DefaultMotherboardMetrics {
         return Optional.ofNullable(monitorManager.getMainboardMonitor()).map(mm -> {
             List<HealthData> healthData = new ArrayList<>();
             healthData.addAll(Streams.ofNullable(mm.getBoardTemperatures())
-                                      .map(s -> new HealthData(s.getLabel(), s.getValue(), DataType.CELCIUS))
-                                      .collect(Collectors.toList()));
+                    .map(s -> new HealthData(s.getLabel(), s.getValue(), DataType.CELCIUS))
+                    .collect(Collectors.toList()));
             healthData.addAll(Streams.ofNullable(mm.getBoardFanPercent())
-                                      .map(s -> new HealthData(s.getLabel(), s.getValue(), DataType.PERCENT))
-                                      .collect(Collectors.toList()));
+                    .map(s -> new HealthData(s.getLabel(), s.getValue(), DataType.PERCENT))
+                    .collect(Collectors.toList()));
             healthData.addAll(Streams.ofNullable(mm.getBoardFanRPM())
-                                      .map(s -> new HealthData(s.getLabel(), s.getValue(), DataType.RPM))
-                                      .collect(Collectors.toList()));
+                    .map(s -> new HealthData(s.getLabel(), s.getValue(), DataType.RPM))
+                    .collect(Collectors.toList()));
             return healthData;
         }).orElse(Collections.emptyList());
     }

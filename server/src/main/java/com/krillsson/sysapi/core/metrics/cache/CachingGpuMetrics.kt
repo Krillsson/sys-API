@@ -13,15 +13,15 @@ class CachingGpuMetrics(
     cacheConfiguration: CacheConfiguration
 ) : GpuMetrics {
     private val gpusCache: Supplier<List<Gpu>> = Suppliers.memoizeWithExpiration(
-        Suppliers.synchronizedSupplier{ gpuMetrics.gpus() },
+        Suppliers.synchronizedSupplier { gpuMetrics.gpus() },
         cacheConfiguration.duration, cacheConfiguration.unit
     )
     private val displaysCache: Supplier<List<Display>> = Suppliers.memoizeWithExpiration(
-        Suppliers.synchronizedSupplier{ gpuMetrics.displays() },
+        Suppliers.synchronizedSupplier { gpuMetrics.displays() },
         cacheConfiguration.duration, cacheConfiguration.unit
     )
     private val gpuLoadsCache: Supplier<List<GpuLoad>> = Suppliers.memoizeWithExpiration(
-        Suppliers.synchronizedSupplier{ gpuMetrics.gpuLoads() },
+        Suppliers.synchronizedSupplier { gpuMetrics.gpuLoads() },
         cacheConfiguration.duration, cacheConfiguration.unit
     )
 
