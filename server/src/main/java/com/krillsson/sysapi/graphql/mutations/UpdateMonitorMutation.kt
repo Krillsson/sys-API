@@ -2,19 +2,19 @@ package com.krillsson.sysapi.graphql.mutations
 
 import java.util.*
 
-data class UpdateNumericalMonitorInput (
+data class UpdateNumericalMonitorInput(
     val monitorId: UUID,
     val inertiaInSeconds: Int?,
     val threshold: Long?,
 )
 
-data class UpdateFractionMonitorInput (
+data class UpdateFractionMonitorInput(
     val monitorId: UUID,
     val inertiaInSeconds: Int?,
     val threshold: Float?,
 )
 
-data class UpdateConditionalMonitorInput (
+data class UpdateConditionalMonitorInput(
     val monitorId: UUID,
     val inertiaInSeconds: Int?,
     val threshold: Boolean?,

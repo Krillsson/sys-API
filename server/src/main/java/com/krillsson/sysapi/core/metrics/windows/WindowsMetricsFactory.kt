@@ -26,9 +26,9 @@ object WindowsMetricsFactory {
             val defaultCpuLoadMetrics = DefaultCpuLoadMetrics(hal.processor, taskManager)
             val cpuMetrics = WindowsCpuMetrics(hal, os, defaultCpuLoadMetrics, monitorManager)
             val networkMetrics = DefaultNetworkMetrics(
-                    hal,
-                    networkUploadDownloadRateMeasurementManager,
-                    connectivityCheckManager
+                hal,
+                networkUploadDownloadRateMeasurementManager,
+                connectivityCheckManager
             )
             val gpuMetrics = WindowsGpuMetrics(hal, monitorManager)
             val driveMetrics = DefaultDriveMetrics(os, hal)

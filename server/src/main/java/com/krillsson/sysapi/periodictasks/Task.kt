@@ -11,9 +11,9 @@ interface Task {
         CheckUpdate,
         CheckMonitors
     }
-    
+
     val key: Key
-    
+
     val defaultInterval: TaskInterval
     fun run()
 }

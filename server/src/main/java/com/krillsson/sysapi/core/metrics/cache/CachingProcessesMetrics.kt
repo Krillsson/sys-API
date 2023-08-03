@@ -9,7 +9,7 @@ import com.krillsson.sysapi.core.domain.processes.Process
 import com.krillsson.sysapi.core.domain.processes.ProcessSort
 import com.krillsson.sysapi.core.domain.processes.ProcessesInfo
 import com.krillsson.sysapi.core.metrics.ProcessesMetrics
-import java.util.Optional
+import java.util.*
 import java.util.concurrent.ExecutionException
 
 /**

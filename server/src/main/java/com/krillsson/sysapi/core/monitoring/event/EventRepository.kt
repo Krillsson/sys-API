@@ -9,6 +9,7 @@ import com.krillsson.sysapi.core.domain.monitor.toFractionalValue
 import com.krillsson.sysapi.core.domain.monitor.toNumericalValue
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.persistence.Store
+import com.krillsson.sysapi.util.toOffsetDateTime
 
 class EventRepository(private val store: Store<List<EventStore.StoredEvent>>) {
 
@@ -27,16 +28,17 @@ class EventRepository(private val store: Store<List<EventStore.StoredEvent>>) {
                 monitorId = monitorId,
                 monitoredItemId = monitoredItemId,
                 monitorType = monitorType,
-                startTime = startTime,
+                startTime = startTime.toInstant(),
                 threshold = mapValueToMonitorValue { it.threshold },
                 value = mapValueToMonitorValue { it.value }
             )
+
             EventStore.StoredEvent.Type.PAST -> PastEvent(
                 id = id,
                 monitorId = monitorId,
                 monitoredItemId = monitoredItemId,
-                startTime = startTime,
-                endTime = requireNotNull(endTime) { "endTime is required for past events" },
+                startTime = startTime.toInstant(),
+                endTime = requireNotNull(endTime) { "endTime is required for past events" }.toInstant(),
                 type = monitorType,
                 threshold = mapValueToMonitorValue { it.threshold },
                 value = mapValueToMonitorValue { it.value }
@@ -45,7 +47,7 @@ class EventRepository(private val store: Store<List<EventStore.StoredEvent>>) {
     }
 
     private fun EventStore.StoredEvent.mapValueToMonitorValue(mapper: (EventStore.StoredEvent) -> Double): MonitoredValue {
-        return when(monitorType.valueType) {
+        return when (monitorType.valueType) {
             Monitor.ValueType.Numerical -> mapper(this).toNumericalValue()
             Monitor.ValueType.Fractional -> mapper(this).toFractionalValue()
             Monitor.ValueType.Conditional -> mapper(this).toConditionalValue()
@@ -58,29 +60,31 @@ class EventRepository(private val store: Store<List<EventStore.StoredEvent>>) {
                 id,
                 monitorId,
                 monitoredItemId,
-                startTime,
-                endTime,
+                startTime.toOffsetDateTime(),
+                endTime.toOffsetDateTime(),
                 monitorType,
                 threshold.asDouble(),
                 value.asDouble(),
                 EventStore.StoredEvent.Type.PAST
             )
+
             is OngoingEvent -> EventStore.StoredEvent(
                 id,
                 monitorId,
                 monitoredItemId,
-                startTime,
+                startTime.toOffsetDateTime(),
                 null,
                 monitorType,
                 threshold.asDouble(),
                 value.asDouble(),
                 EventStore.StoredEvent.Type.ONGOING
             )
+
             else -> throw IllegalArgumentException("Unknown event type encountered $this")
         }
     }
 
-    private fun MonitoredValue.asDouble() : Double {
+    private fun MonitoredValue.asDouble(): Double {
         return when (this) {
             is MonitoredValue.ConditionalValue -> if (value) 1.0 else 0.0
             is MonitoredValue.FractionalValue -> value.toDouble()

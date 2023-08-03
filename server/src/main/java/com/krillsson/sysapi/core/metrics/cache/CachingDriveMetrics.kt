@@ -14,11 +14,11 @@ import java.util.*
 class CachingDriveMetrics(driveMetrics: DriveMetrics, cacheConfiguration: CacheConfiguration) :
     DriveMetrics {
     private val drivesCache: Supplier<List<Drive>> = Suppliers.memoizeWithExpiration(
-        Suppliers.synchronizedSupplier{ driveMetrics.drives() },
+        Suppliers.synchronizedSupplier { driveMetrics.drives() },
         cacheConfiguration.duration, cacheConfiguration.unit
     )
     private val driveLoadsCache: Supplier<List<DriveLoad>> = Suppliers.memoizeWithExpiration(
-        Suppliers.synchronizedSupplier{ driveMetrics.driveLoads() },
+        Suppliers.synchronizedSupplier { driveMetrics.driveLoads() },
         cacheConfiguration.duration, cacheConfiguration.unit
     )
     private val driveQueryCache: LoadingCache<String, Optional<Drive>> = CacheBuilder.newBuilder()

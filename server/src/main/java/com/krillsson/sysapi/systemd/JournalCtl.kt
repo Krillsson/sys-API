@@ -47,7 +47,7 @@ class JournalCtl(
                     messages += SystemDaemonJournalEntry(instant, it.message)
                 }
             }
-            if(limit > 0) messages.takeLast(limit) else messages
+            if (limit > 0) messages.takeLast(limit) else messages
         } else {
             emptyList()
         }

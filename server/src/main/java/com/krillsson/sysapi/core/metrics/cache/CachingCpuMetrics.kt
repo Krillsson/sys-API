@@ -13,17 +13,17 @@ class CachingCpuMetrics internal constructor(
 ) : CpuMetrics {
 
     private val cpuInfoCache: Supplier<CpuInfo> = Suppliers.memoizeWithExpiration(
-        Suppliers.synchronizedSupplier{ cpuMetrics.cpuInfo() },
+        Suppliers.synchronizedSupplier { cpuMetrics.cpuInfo() },
         cacheConfiguration.duration,
         cacheConfiguration.unit
     )
     private val cpuLoadCache: Supplier<CpuLoad> = Suppliers.memoizeWithExpiration(
-        Suppliers.synchronizedSupplier{ cpuMetrics.cpuLoad() },
+        Suppliers.synchronizedSupplier { cpuMetrics.cpuLoad() },
         cacheConfiguration.duration,
         cacheConfiguration.unit
     )
     private val uptimeCache: Supplier<Long> = Suppliers.memoizeWithExpiration(
-        Suppliers.synchronizedSupplier{ cpuMetrics.uptime() },
+        Suppliers.synchronizedSupplier { cpuMetrics.uptime() },
         cacheConfiguration.duration,
         cacheConfiguration.unit
     )

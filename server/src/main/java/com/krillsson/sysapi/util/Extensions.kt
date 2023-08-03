@@ -9,7 +9,9 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import oshi.PlatformEnum
 import oshi.software.os.OSProcess
+import java.time.Instant
 import java.time.OffsetDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 fun oshi.software.os.OperatingSystem.asOperatingSystem(): OperatingSystem {
@@ -23,6 +25,8 @@ fun oshi.software.os.OperatingSystem.asOperatingSystem(): OperatingSystem {
         )
     )
 }
+
+fun Instant.toOffsetDateTime() = atZone(ZoneId.systemDefault()).toOffsetDateTime()
 
 fun PlatformEnum.asPlatform(): Platform {
     return Platform.values().first { this.name == it.name }

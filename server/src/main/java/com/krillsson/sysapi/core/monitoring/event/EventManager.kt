@@ -65,7 +65,7 @@ class EventManager(private val repository: EventRepository, private val clock: C
                     event.monitorId,
                     event.monitoredItemId,
                     event.startTime,
-                    clock.now(),
+                    clock.instant(),
                     event.monitorType,
                     event.threshold,
                     event.value

@@ -8,7 +8,7 @@ data class WindowsEventLogRecord(
     val eventType: Type,
     val source: String,
     val category: String
-){
+) {
     enum class Type {
         Error, Warning, Informational, AuditSuccess, AuditFailure
     }

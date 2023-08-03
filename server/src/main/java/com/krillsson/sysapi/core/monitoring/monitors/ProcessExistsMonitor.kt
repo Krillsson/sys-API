@@ -21,7 +21,8 @@ class ProcessExistsMonitor(
 
     override val type: Type = Type.PROCESS_EXISTS
 
-    override fun selectValue(event: MetricQueryEvent): MonitoredValue.ConditionalValue? = selector(event.load, config.monitoredItemId)
+    override fun selectValue(event: MetricQueryEvent): MonitoredValue.ConditionalValue? =
+        selector(event.load, config.monitoredItemId)
 
     override fun isPastThreshold(value: MonitoredValue.ConditionalValue): Boolean {
         return !value.value

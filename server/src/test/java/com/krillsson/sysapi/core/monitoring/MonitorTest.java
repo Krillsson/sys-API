@@ -34,7 +34,7 @@ public class MonitorTest {
     @Before
     public void setUp() throws Exception {
         clock = new Clock();
-        clock.useFixedClockAt(clock.now());
+        clock.useFixedClockAt(clock.offsetDateTime());
         monitor = new TestableMonitor();
 
         mechanism = new MonitorMechanism(clock);
@@ -66,7 +66,7 @@ public class MonitorTest {
         assertNull(event);
 
         //time goes past inertia
-        clock.useFixedClockAt(clock.now().plusSeconds(PAST_INERTIA));
+        clock.useFixedClockAt(clock.offsetDateTime().plusSeconds(PAST_INERTIA));
         //going to outside
         event = mechanism.check(monitor, monitor.config, monitor.selectValue(load), monitor.isPastThreshold(monitor.selectValue(load)));
 
@@ -74,7 +74,7 @@ public class MonitorTest {
 
         assertEquals(event.getValue(), OUTSIDE);
         assertEquals(event.getThreshold(), OUTSIDE);
-        assertEquals(event.getStartTime(), clock.now());
+        assertEquals(event.getStartTime(), clock.offsetDateTime());
         assertTrue(event instanceof OngoingEvent);
     }
 
@@ -85,7 +85,7 @@ public class MonitorTest {
         monitor.value = OUTSIDE;
         mechanism.check(monitor, monitor.config, monitor.selectValue(load), monitor.isPastThreshold(monitor.selectValue(load)));
         //time goes past inertia
-        clock.useFixedClockAt(clock.now().plusSeconds(PAST_INERTIA));
+        clock.useFixedClockAt(clock.offsetDateTime().plusSeconds(PAST_INERTIA));
         //going to outside
         mechanism.check(monitor, monitor.config, monitor.selectValue(load), monitor.isPastThreshold(monitor.selectValue(load)));
 
@@ -102,7 +102,7 @@ public class MonitorTest {
         monitor.value = OUTSIDE;
         mechanism.check(monitor, monitor.config, monitor.selectValue(load), monitor.isPastThreshold(monitor.selectValue(load)));
         //time goes past inertia
-        clock.useFixedClockAt(clock.now().plusSeconds(PAST_INERTIA));
+        clock.useFixedClockAt(clock.offsetDateTime().plusSeconds(PAST_INERTIA));
         //going to outside
         mechanism.check(monitor, monitor.config, monitor.selectValue(load), monitor.isPastThreshold(monitor.selectValue(load)));
 
@@ -111,12 +111,12 @@ public class MonitorTest {
         mechanism.check(monitor, monitor.config, monitor.selectValue(load), monitor.isPastThreshold(monitor.selectValue(load)));
 
         //time goes past inertia
-        clock.useFixedClockAt(clock.now().plusSeconds(PAST_INERTIA));
+        clock.useFixedClockAt(clock.offsetDateTime().plusSeconds(PAST_INERTIA));
         Event monitorEvent = mechanism.check(monitor, monitor.config, monitor.selectValue(load), monitor.isPastThreshold(monitor.selectValue(load)));
 
         assertEquals(monitorEvent.getValue(), INSIDE);
         assertEquals(monitorEvent.getThreshold(), OUTSIDE);
-        assertEquals(monitorEvent.getStartTime(), clock.now());
+        assertEquals(monitorEvent.getStartTime(), clock.offsetDateTime());
         assertTrue(monitorEvent instanceof PastEvent);
 
     }
@@ -128,7 +128,7 @@ public class MonitorTest {
         mechanism.check(monitor, monitor.config, monitor.selectValue(load), monitor.isPastThreshold(monitor.selectValue(load)));
 
         //time goes past inertia
-        clock.useFixedClockAt(clock.now().plusSeconds(PAST_INERTIA));
+        clock.useFixedClockAt(clock.offsetDateTime().plusSeconds(PAST_INERTIA));
 
         //going to outside
         Event event = mechanism.check(monitor, monitor.config, monitor.selectValue(load), monitor.isPastThreshold(monitor.selectValue(load)));
@@ -138,7 +138,7 @@ public class MonitorTest {
         //should have outside event
 
         assertEquals(monitor.id, event.getMonitorId());
-        assertEquals(clock.now(), event.getStartTime());
+        assertEquals(clock.offsetDateTime(), event.getStartTime());
         assertEquals(1, event.getThreshold());
         assertEquals(Monitor.Type.CPU_LOAD, event.getMonitorType());
     }
@@ -150,7 +150,7 @@ public class MonitorTest {
         mechanism.check(monitor, monitor.config, monitor.selectValue(load), monitor.isPastThreshold(monitor.selectValue(load)));
 
         //time does not go past inertia
-        clock.useFixedClockAt(clock.now().plusSeconds(NOT_PAST_INERTIA));
+        clock.useFixedClockAt(clock.offsetDateTime().plusSeconds(NOT_PAST_INERTIA));
 
         //going back to inside
         monitor.value = INSIDE;
@@ -165,7 +165,7 @@ public class MonitorTest {
         monitor.value = OUTSIDE;
         mechanism.check(monitor, monitor.config, monitor.selectValue(load), monitor.isPastThreshold(monitor.selectValue(load)));
         //time goes past inertia
-        clock.useFixedClockAt(clock.now().plusSeconds(PAST_INERTIA));
+        clock.useFixedClockAt(clock.offsetDateTime().plusSeconds(PAST_INERTIA));
         //going to outside
         mechanism.check(monitor, monitor.config, monitor.selectValue(load), monitor.isPastThreshold(monitor.selectValue(load)));
 
@@ -174,7 +174,7 @@ public class MonitorTest {
         mechanism.check(monitor, monitor.config, monitor.selectValue(load), monitor.isPastThreshold(monitor.selectValue(load)));
 
         //time does not go past inertia
-        clock.useFixedClockAt(clock.now().plusSeconds(NOT_PAST_INERTIA));
+        clock.useFixedClockAt(clock.offsetDateTime().plusSeconds(NOT_PAST_INERTIA));
 
         //going to outside again
         monitor.value = OUTSIDE;

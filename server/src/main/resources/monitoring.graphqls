@@ -157,6 +157,7 @@ type ConditionalValue {
 type MonitoredValueHistoryEntry {
     date: String!
     dateTime: OffsetDateTime!
+    timestamp: Instant!
     value: MonitoredValue!
 }
 
@@ -195,12 +196,14 @@ interface Event {
     id: UUID!
     monitor: Monitor!
     startTime: String!
+    startTimestamp: Instant!
 }
 
 type OngoingEvent implements Event {
     id: UUID!
     monitor: Monitor!
     startTime: String!
+    startTimestamp: Instant!
     startValue: MonitoredValue!
 }
 
@@ -208,20 +211,24 @@ type PastEvent implements Event {
     id: UUID!
     monitor: Monitor!
     startTime: String!
+    startTimestamp: Instant!
+    endTimestamp: Instant!
     endTime: String!
     endValue: MonitoredValue!
 }
 
 interface GenericEvent {
     id: UUID!
-    dateTime: OffsetDateTime!
+    dateTime: OffsetDateTime! @deprecated(reason: "Replaced by timestamp")
+    timestamp: Instant!
     title: String!
     description: String!
 }
 
 type UpdateAvailable implements GenericEvent {
     id: UUID!
-    dateTime: OffsetDateTime!
+    dateTime: OffsetDateTime! @deprecated(reason: "Replaced by timestamp")
+    timestamp: Instant!
     title: String!
     description: String!
     currentVersion: String!
@@ -233,7 +240,8 @@ type UpdateAvailable implements GenericEvent {
 
 type MonitoredItemMissing implements GenericEvent {
     id: UUID!
-    dateTime: OffsetDateTime!
+    dateTime: OffsetDateTime! @deprecated(reason: "Replaced by timestamp")
+    timestamp: Instant!
     title: String!
     description: String!
     monitorType: MonitorType!

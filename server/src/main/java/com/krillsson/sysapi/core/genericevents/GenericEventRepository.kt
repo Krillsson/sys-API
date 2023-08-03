@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.core.genericevents
 
 import com.krillsson.sysapi.persistence.Store
+import com.krillsson.sysapi.util.toOffsetDateTime
 import java.util.*
 
 class GenericEventRepository(private val store: Store<List<GenericEventStore.StoredGenericEvent>>) {
@@ -50,7 +51,7 @@ class GenericEventRepository(private val store: Store<List<GenericEventStore.Sto
         return when (this) {
             is GenericEvent.MonitoredItemMissing -> GenericEventStore.StoredGenericEvent.MonitoredItemMissing(
                 id = id,
-                dateTime = dateTime,
+                dateTime = timestamp.toOffsetDateTime(),
                 monitorType = monitorType,
                 monitorId = monitorId,
                 monitoredItemId = monitoredItemId
@@ -58,7 +59,7 @@ class GenericEventRepository(private val store: Store<List<GenericEventStore.Sto
 
             is GenericEvent.UpdateAvailable -> GenericEventStore.StoredGenericEvent.UpdateAvailable(
                 id = id,
-                dateTime = dateTime,
+                dateTime = timestamp.toOffsetDateTime(),
                 currentVersion = currentVersion,
                 newVersion = newVersion,
                 changeLogMarkdown = changeLogMarkdown,
@@ -72,7 +73,7 @@ class GenericEventRepository(private val store: Store<List<GenericEventStore.Sto
         return when (this) {
             is GenericEventStore.StoredGenericEvent.MonitoredItemMissing -> GenericEvent.MonitoredItemMissing(
                 id = id,
-                dateTime = dateTime,
+                timestamp = dateTime.toInstant(),
                 monitorType = monitorType,
                 monitorId = monitorId,
                 monitoredItemId = monitoredItemId
@@ -80,7 +81,7 @@ class GenericEventRepository(private val store: Store<List<GenericEventStore.Sto
 
             is GenericEventStore.StoredGenericEvent.UpdateAvailable -> GenericEvent.UpdateAvailable(
                 id = id,
-                dateTime = dateTime,
+                timestamp = dateTime.toInstant(),
                 currentVersion = currentVersion,
                 newVersion = newVersion,
                 changeLogMarkdown = changeLogMarkdown,

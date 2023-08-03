@@ -81,22 +81,22 @@ public class WindowsDriveMetrics extends DefaultDriveMetrics {
         return Streams.ofNullable(monitorManager.DriveMonitors())
                 .filter(d -> name.equalsIgnoreCase(d.getLogicalName()))
                 .map(dm -> {
-                         HealthData healthData = new HealthData(
-                                 "Remaining life",
-                                 nullSafeGetValue(dm.getRemainingLife()),
-                                 DataType.PERCENT
-                         );
-                         List<HealthData> healthDatas = Streams.ofNullable(dm.getLifecycleData())
-                                 .map(h -> new HealthData(
-                                         h.getLabel(),
-                                         h.getValue(),
-                                         DataType.valueOf(h.getDataType().toString().toUpperCase())
-                                 ))
-                                 .collect(Collectors.toList());
-                         healthDatas.add(healthData);
-                         return new DriveHealth(nullSafeGetValue(dm.getTemperature()), healthDatas);
+                            HealthData healthData = new HealthData(
+                                    "Remaining life",
+                                    nullSafeGetValue(dm.getRemainingLife()),
+                                    DataType.PERCENT
+                            );
+                            List<HealthData> healthDatas = Streams.ofNullable(dm.getLifecycleData())
+                                    .map(h -> new HealthData(
+                                            h.getLabel(),
+                                            h.getValue(),
+                                            DataType.valueOf(h.getDataType().toString().toUpperCase())
+                                    ))
+                                    .collect(Collectors.toList());
+                            healthDatas.add(healthData);
+                            return new DriveHealth(nullSafeGetValue(dm.getTemperature()), healthDatas);
 
-                     }
+                        }
                 ).findAny().orElse(Empty.DRIVE_HEALTH);
     }
 }

@@ -3,14 +3,14 @@ package com.krillsson.sysapi.core.history
 import com.krillsson.sysapi.core.domain.history.HistorySystemLoad
 import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.history.db.*
-import java.time.OffsetDateTime
+import java.time.Instant
 import java.util.*
 
 fun SystemHistoryEntry.asEntity(): HistorySystemLoadEntity {
     return value.asEntity(id, date)
 }
 
-fun HistorySystemLoad.asEntity(id: UUID, dateTime: OffsetDateTime): HistorySystemLoadEntity {
+fun HistorySystemLoad.asEntity(id: UUID, dateTime: Instant): HistorySystemLoadEntity {
     return HistorySystemLoadEntity(
         id,
         dateTime,

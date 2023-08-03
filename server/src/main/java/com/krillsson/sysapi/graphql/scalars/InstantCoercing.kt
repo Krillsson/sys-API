@@ -18,7 +18,11 @@ class InstantCoercing : Coercing<Instant?, String> {
     override fun serialize(input: Any): String {
         val instant: Optional<Instant>
         instant = if (input is String) {
-            Optional.ofNullable(parseInstant(input.toString(), Function { message: String? -> CoercingSerializeException(message) }))
+            Optional.ofNullable(
+                parseInstant(
+                    input.toString(),
+                    Function { message: String? -> CoercingSerializeException(message) })
+            )
         } else {
             toInstant(input, Function { message: String? -> CoercingSerializeException(message) })
         }
@@ -44,7 +48,9 @@ class InstantCoercing : Coercing<Instant?, String> {
             return parseInstant(input.value, Function { message: String? -> CoercingParseLiteralException(message) })
         }
         if (input is IntValue) {
-            return parseInstant(input.value.longValueExact(), Function { message: String? -> CoercingParseLiteralException(message) })
+            return parseInstant(
+                input.value.longValueExact(),
+                Function { message: String? -> CoercingParseLiteralException(message) })
         }
         throw CoercingParseLiteralException("Expected AST type 'StringValue' or 'IntValue' but was '" + input::class.java.simpleName.toString() + "'.")
     }

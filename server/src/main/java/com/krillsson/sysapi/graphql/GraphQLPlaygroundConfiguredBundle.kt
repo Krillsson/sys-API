@@ -7,7 +7,7 @@ import io.dropwizard.core.setup.Environment
 
 class GraphQLPlaygroundConfiguredBundle : AssetsBundle("/assets", "/", "index.htm", "graphql-playground") {
     override fun run(configuration: Configuration?, environment: Environment?) {
-        if(configuration is SysAPIConfiguration && configuration.graphQLPlayGround.enabled) {
+        if (configuration is SysAPIConfiguration && configuration.graphQLPlayGround.enabled) {
             super.run(configuration, environment)
         }
     }

@@ -1,16 +1,16 @@
 package com.krillsson.sysapi.core.genericevents
 
 import com.krillsson.sysapi.core.monitoring.Monitor
-import java.time.OffsetDateTime
+import java.time.Instant
 import java.util.*
 
 sealed interface GenericEvent {
     val id: UUID
-    val dateTime: OffsetDateTime
+    val timestamp: Instant
 
     data class UpdateAvailable(
         override val id: UUID,
-        override val dateTime: OffsetDateTime,
+        override val timestamp: Instant,
         val currentVersion: String,
         val newVersion: String,
         val changeLogMarkdown: String,
@@ -20,7 +20,7 @@ sealed interface GenericEvent {
 
     data class MonitoredItemMissing(
         override val id: UUID,
-        override val dateTime: OffsetDateTime,
+        override val timestamp: Instant,
         val monitorType: Monitor.Type,
         val monitorId: UUID,
         val monitoredItemId: String?

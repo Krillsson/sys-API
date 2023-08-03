@@ -32,8 +32,8 @@ class MonitorResource(private val monitorManager: MonitorManager, private val ev
     @GET
     @Path("{id}")
     fun monitorById(@PathParam("id") id: String): Monitor<MonitoredValue> {
-       return monitorManager.getById(UUID.fromString(id))
-                ?: throw WebApplicationException("No monitor with id $id was found", Response.Status.NOT_FOUND)
+        return monitorManager.getById(UUID.fromString(id))
+            ?: throw WebApplicationException("No monitor with id $id was found", Response.Status.NOT_FOUND)
     }
 
     @GET

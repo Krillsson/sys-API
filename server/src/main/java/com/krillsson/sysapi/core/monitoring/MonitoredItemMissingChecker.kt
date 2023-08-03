@@ -3,7 +3,7 @@ package com.krillsson.sysapi.core.monitoring
 import com.krillsson.sysapi.core.genericevents.GenericEvent
 import com.krillsson.sysapi.core.genericevents.GenericEventRepository
 import com.krillsson.sysapi.util.logger
-import java.time.OffsetDateTime
+import java.time.Instant
 import java.util.*
 
 class MonitoredItemMissingChecker(
@@ -18,7 +18,7 @@ class MonitoredItemMissingChecker(
             repository.add(
                 GenericEvent.MonitoredItemMissing(
                     UUID.randomUUID(),
-                    OffsetDateTime.now(),
+                    Instant.now(),
                     monitor.type,
                     monitor.id,
                     monitor.config.monitoredItemId

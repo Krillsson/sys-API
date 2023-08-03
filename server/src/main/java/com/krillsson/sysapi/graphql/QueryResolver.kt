@@ -38,9 +38,11 @@ import com.krillsson.sysapi.logaccess.file.LogFilesManager
 import com.krillsson.sysapi.logaccess.windowseventlog.WindowsManager
 import com.krillsson.sysapi.systemd.SystemDaemonManager
 import com.krillsson.sysapi.util.EnvironmentUtils
+import com.krillsson.sysapi.util.toOffsetDateTime
 import graphql.kickstart.tools.GraphQLQueryResolver
 import graphql.kickstart.tools.GraphQLResolver
 import oshi.hardware.UsbDevice
+import java.time.Instant
 import java.time.OffsetDateTime
 
 class QueryResolver : GraphQLQueryResolver {
@@ -114,6 +116,10 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     fun historyBetweenDates(from: OffsetDateTime, to: OffsetDateTime): List<BasicHistorySystemLoadEntity> {
+        return historyRepository.getHistoryLimitedToDates(from?.toInstant(), to?.toInstant())
+    }
+
+    fun getHistoryBetweenTimestamps(from: Instant, to: Instant): List<BasicHistorySystemLoadEntity> {
         return historyRepository.getHistoryLimitedToDates(from, to)
     }
 
@@ -145,7 +151,7 @@ class QueryResolver : GraphQLQueryResolver {
     fun logFiles() = logFilesManager
 
     fun windowsManagement(): WindowsManagementAccess {
-        return if(windowsEventLogManager.supportedBySystem()){
+        return if (windowsEventLogManager.supportedBySystem()) {
             windowsEventLogManager
         } else {
             WindowsManagementAccessUnavailable(
@@ -155,7 +161,7 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     fun systemDaemon(): SystemDaemonJournalAccess {
-        return if(systemDaemonManager.supportedBySystem()){
+        return if (systemDaemonManager.supportedBySystem()) {
             systemDaemonManager
         } else {
             SystemDaemonAccessUnavailable(
@@ -175,6 +181,23 @@ class QueryResolver : GraphQLQueryResolver {
             containerId: String,
             from: OffsetDateTime?,
             to: OffsetDateTime?
+        ): ReadLogsForContainerOutput {
+            return when (val result = dockerClient.readLogsForContainer(containerId, from?.toInstant(), to?.toInstant())) {
+                is DockerClient.ReadLogsCommandResult.Success -> ReadLogsForContainerOutputSucceeded(result.lines)
+                is DockerClient.ReadLogsCommandResult.Failed -> ReadLogsForContainerOutputFailed(
+                    result.error.message ?: result.error.toString()
+                )
+
+                is DockerClient.ReadLogsCommandResult.TimedOut -> ReadLogsForContainerOutputFailed("Operation timed out after ${result.timeoutSeconds} seconds")
+                DockerClient.ReadLogsCommandResult.Unavailable -> ReadLogsForContainerOutputFailed("Docker is not available")
+            }
+        }
+
+        fun readLogsForContainerBetweenTimestamps(
+            docker: DockerAvailable,
+            containerId: String,
+            from: Instant?,
+            to: Instant?
         ): ReadLogsForContainerOutput {
             return when (val result = dockerClient.readLogsForContainer(containerId, from, to)) {
                 is DockerClient.ReadLogsCommandResult.Success -> ReadLogsForContainerOutputSucceeded(result.lines)
@@ -242,6 +265,10 @@ class QueryResolver : GraphQLQueryResolver {
     inner class HistoryResolver : GraphQLResolver<BasicHistorySystemLoadEntity> {
 
         fun getDateTime(historyEntry: BasicHistorySystemLoadEntity): OffsetDateTime {
+            return historyEntry.date.toOffsetDateTime()
+        }
+
+        fun getTimestamp(historyEntry: BasicHistorySystemLoadEntity): Instant {
             return historyEntry.date
         }
 
@@ -311,6 +338,8 @@ class QueryResolver : GraphQLQueryResolver {
         fun getDescription(event: GenericEvent.UpdateAvailable): String {
             return "New version ${event.newVersion} published at ${event.publishDate}. Server is running ${event.currentVersion}"
         }
+
+        fun dateTime(event: GenericEvent.UpdateAvailable) = event.timestamp.toOffsetDateTime()
     }
 
     inner class MonitoredItemMissingGenericEventResolver : GraphQLResolver<GenericEvent.MonitoredItemMissing> {
@@ -321,6 +350,8 @@ class QueryResolver : GraphQLQueryResolver {
         fun getDescription(event: GenericEvent.MonitoredItemMissing): String {
             return "${event.monitorType.name} monitor's item ${event.monitoredItemId} is no longer present in the system"
         }
+
+        fun dateTime(event: GenericEvent.MonitoredItemMissing) = event.timestamp.toOffsetDateTime()
     }
 
     inner class MonitorResolver : GraphQLResolver<com.krillsson.sysapi.graphql.domain.Monitor> {
@@ -381,6 +412,10 @@ class QueryResolver : GraphQLQueryResolver {
         fun getStartValue(event: OngoingEvent): MonitoredValue {
             return event.value.asMonitoredValue()
         }
+
+        fun startTimestamp(event: OngoingEvent): Instant {
+            return event.startTime
+        }
     }
 
     inner class PastEventEventResolver : GraphQLResolver<PastEvent> {
@@ -392,6 +427,14 @@ class QueryResolver : GraphQLQueryResolver {
 
         fun getEndValue(event: PastEvent): MonitoredValue {
             return event.value.asMonitoredValue()
+        }
+
+        fun startTimestamp(event: PastEvent): Instant {
+            return event.startTime
+        }
+
+        fun endTimestamp(event: PastEvent): Instant {
+            return event.endTime
         }
     }
 

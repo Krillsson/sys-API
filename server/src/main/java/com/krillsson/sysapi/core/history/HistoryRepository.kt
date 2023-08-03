@@ -14,7 +14,7 @@ import com.krillsson.sysapi.util.Clock
 import com.krillsson.sysapi.util.logger
 import com.krillsson.sysapi.util.measureTimeMillis
 import io.dropwizard.hibernate.UnitOfWork
-import java.time.OffsetDateTime
+import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
 
@@ -45,8 +45,8 @@ open class HistoryRepository constructor(
 
     @UnitOfWork(readOnly = true)
     open fun getExtendedHistoryLimitedToDates(
-        fromDate: OffsetDateTime?,
-        toDate: OffsetDateTime?
+        fromDate: Instant?,
+        toDate: Instant?
     ): List<SystemHistoryEntry> {
         val result = measureTimeMillis {
             if (fromDate == null || toDate == null) {
@@ -65,22 +65,22 @@ open class HistoryRepository constructor(
 
     @UnitOfWork
     open fun record(load: HistorySystemLoad) {
-        val entry = SystemHistoryEntry(UUID.randomUUID(), clock.now(), load)
+        val entry = SystemHistoryEntry(UUID.randomUUID(), clock.instant(), load)
         logger.trace("Recording history for {}", entry)
         dao.insert(entry.asEntity())
     }
 
     @UnitOfWork
     open fun purge(olderThan: Long, unit: ChronoUnit) {
-        val maxAge = clock.now().minus(olderThan, unit)
+        val maxAge = clock.instant().minus(olderThan, unit)
         logger.info("Purging history older than {}", maxAge)
         dao.purge(maxAge)
     }
 
     @UnitOfWork(readOnly = true)
     open fun getHistoryLimitedToDates(
-        fromDate: OffsetDateTime?,
-        toDate: OffsetDateTime?
+        fromDate: Instant?,
+        toDate: Instant?
     ): List<BasicHistorySystemLoadEntity> {
         val result = measureTimeMillis {
             if (fromDate == null || toDate == null) {

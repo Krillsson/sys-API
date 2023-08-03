@@ -22,6 +22,7 @@ data class DiskLoad(
     @Embedded
     val speed: DiskSpeed,
 )
+
 @Embeddable
 data class DiskValues(
     val reads: Long,
@@ -29,6 +30,7 @@ data class DiskValues(
     val writes: Long,
     val writeBytes: Long
 )
+
 @Embeddable
 class DiskSpeed(
     val readBytesPerSecond: Long,

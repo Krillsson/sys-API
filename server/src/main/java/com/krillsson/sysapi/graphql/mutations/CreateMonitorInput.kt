@@ -2,21 +2,21 @@ package com.krillsson.sysapi.graphql.mutations
 
 import com.krillsson.sysapi.core.monitoring.Monitor
 
-data class CreateNumericalMonitorInput (
+data class CreateNumericalMonitorInput(
     val inertiaInSeconds: Int,
     val type: Monitor.Type,
     val threshold: Long,
     val monitoredItemId: String?
 )
 
-data class CreateFractionMonitorInput (
+data class CreateFractionMonitorInput(
     val inertiaInSeconds: Int,
     val type: Monitor.Type,
     val threshold: Float,
     val monitoredItemId: String?
 )
 
-data class CreateConditionalMonitorInput (
+data class CreateConditionalMonitorInput(
     val inertiaInSeconds: Int,
     val type: Monitor.Type,
     val threshold: Boolean,

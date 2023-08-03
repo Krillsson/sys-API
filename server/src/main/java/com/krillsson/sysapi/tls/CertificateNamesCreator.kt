@@ -4,7 +4,10 @@ import com.krillsson.sysapi.config.SelfSignedCertificateConfiguration
 import com.krillsson.sysapi.core.connectivity.ExternalIpAddressService
 import com.krillsson.sysapi.core.metrics.NetworkMetrics
 
-class CertificateNamesCreator(private val networkMetrics: NetworkMetrics, private val service: ExternalIpAddressService) {
+class CertificateNamesCreator(
+    private val networkMetrics: NetworkMetrics,
+    private val service: ExternalIpAddressService
+) {
 
     data class Names(
         val commonName: String,
