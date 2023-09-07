@@ -1,3 +1,6 @@
+### Unreleased
+- Disabled admin interface in configuration.yml
+
 ### 0.19.1
 - Fixed: historyBetweenDates query throwing error
 - Fixed: db locking issue due to SQLite only allowing one simultaneous connection
