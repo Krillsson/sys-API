@@ -95,7 +95,7 @@ server:
   maxQueuedRequests: 100
   idleThreadTimeout: 1 minute
   rootPath: /api/
-  adminContextPath: /admin
+  adminConnectors: []
   applicationContextPath: /
   requestLog:
     appenders:
@@ -126,6 +126,7 @@ logging:
     com.krillsson.sysapi: DEBUG
     oshi: INFO
     io.dropwizard.core.server.ServerFactory: INFO
+    org.eclipse.jetty.server.Server: INFO
     io.dropwizard.core.setup.AdminEnvironment: OFF
   appenders:
     - type: console
