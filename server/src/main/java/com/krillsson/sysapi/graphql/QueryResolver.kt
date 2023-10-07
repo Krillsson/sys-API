@@ -161,12 +161,10 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     fun systemDaemon(): SystemDaemonJournalAccess {
-        return if (systemDaemonManager.supportedBySystem()) {
-            systemDaemonManager
-        } else {
-            SystemDaemonAccessUnavailable(
-                "Not supported by system"
-            )
+        return when (val status = systemDaemonManager.status()) {
+            SystemDaemonManager.Status.Available -> systemDaemonManager
+            SystemDaemonManager.Status.Disabled -> SystemDaemonAccessUnavailable("Disabled")
+            is SystemDaemonManager.Status.Unavailable -> SystemDaemonAccessUnavailable(status.error.message.orEmpty())
         }
     }
 
@@ -182,7 +180,8 @@ class QueryResolver : GraphQLQueryResolver {
             from: OffsetDateTime?,
             to: OffsetDateTime?
         ): ReadLogsForContainerOutput {
-            return when (val result = dockerClient.readLogsForContainer(containerId, from?.toInstant(), to?.toInstant())) {
+            return when (val result =
+                dockerClient.readLogsForContainer(containerId, from?.toInstant(), to?.toInstant())) {
                 is DockerClient.ReadLogsCommandResult.Success -> ReadLogsForContainerOutputSucceeded(result.lines)
                 is DockerClient.ReadLogsCommandResult.Failed -> ReadLogsForContainerOutputFailed(
                     result.error.message ?: result.error.toString()
