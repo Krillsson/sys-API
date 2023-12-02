@@ -146,7 +146,7 @@ fun HealthState.asHealth(): Health {
     return Health(
         status,
         failingStreak,
-        log.asHealthLogEntries()
+        log?.asHealthLogEntries().orEmpty()
     )
 }
 
