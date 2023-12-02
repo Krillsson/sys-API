@@ -34,6 +34,11 @@ class DockerClient(
     }
 
     private val defaultConfig = DefaultDockerClientConfig.createDefaultConfigBuilder()
+        .apply {
+            dockerConfiguration.host?.let { host ->
+                withDockerHost(host)
+            }
+        }
         .withDockerTlsVerify(false)
         .build()
     private val config: DockerClientConfig = object : DockerClientConfigDelegate(
