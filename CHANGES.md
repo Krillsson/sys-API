@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 0.19.2
 - Disabled admin interface in configuration.yml
 - Support specifying custom docker host (such as podman). See docker section in configuration.yml
 - Fixed: "System has not been booted with systemd as init system"...
