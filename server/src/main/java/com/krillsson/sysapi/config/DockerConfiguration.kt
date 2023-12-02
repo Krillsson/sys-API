@@ -23,5 +23,6 @@ package com.krillsson.sysapi.config
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class DockerConfiguration(
-    @JsonProperty val enabled: Boolean
+    @JsonProperty val enabled: Boolean,
+    @JsonProperty val host: String? = null
 )

@@ -37,6 +37,8 @@ graphQLPlayGround:
 # docker management and metrics support
 docker:
   enabled: true
+  # uncomment if you'd like to manually specify docker host
+  # host: unix:///var/run/docker.sock or unix:///run/podman/podman.sock
 # resolve external IP and monitor internet connectivity
 connectivityCheck:
   enabled: true
