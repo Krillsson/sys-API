@@ -10,7 +10,7 @@ It publishes and monitors values from [OSHI](https://github.com/oshi/oshi) with 
 
 >This is the server backend for the Android app Monitee.
 >
->:warning: Latest compatible version is [0.18.3](https://github.com/Krillsson/sys-API/releases/tag/0.18.3) :warning:
+>:warning: Latest compatible version is [0.19.2](https://github.com/Krillsson/sys-API/releases/tag/0.19.2) :warning:
 >
 ><a href="https://play.google.com/store/apps/details?id=com.krillsson.monitee"><img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" alt="Get it on Play Store" height="80"></a>
 
