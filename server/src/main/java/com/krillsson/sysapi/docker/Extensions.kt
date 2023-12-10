@@ -68,7 +68,7 @@ fun ContainerPort.asPort(): PortBinding {
 }
 
 fun ContainerNetworkSettings.asNetworkSettings(): List<NetworkSetting> {
-    return networks.map {
+    return networks.orEmpty().map {
         NetworkSetting(it.key, it.value.asNetwork())
     }
 }
