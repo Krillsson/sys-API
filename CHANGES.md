@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 0.19.3
 - fix NPE when querying ContainerNetworkSettings while using podman in rootless mode
 
 ### 0.19.2
