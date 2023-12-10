@@ -1,4 +1,5 @@
 ### Unreleased
+- fix NPE when querying ContainerNetworkSettings while using podman in rootless mode
 
 ### 0.19.2
 - Disabled admin interface in configuration.yml
