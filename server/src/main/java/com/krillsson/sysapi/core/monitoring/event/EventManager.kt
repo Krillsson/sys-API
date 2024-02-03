@@ -68,6 +68,7 @@ class EventManager(private val repository: EventRepository, private val clock: C
                     clock.instant(),
                     event.monitorType,
                     event.threshold,
+                    event.value,
                     event.value
                 )
             } else {

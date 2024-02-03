@@ -111,8 +111,9 @@ class MonitorMechanism @VisibleForTesting constructor(private val clock: Clock) 
                 if (outsideThreshold) {
                     if (pastInertia) { //Outside before inertia -> outside
                         LOGGER.info(
-                            "{} have now been outside threshold of {} for more than {}, triggering event...",
-                            config.monitoredItemId ?: monitor.type.name,
+                            "{}:{} have now been outside threshold of {} for more than {}, triggering event...",
+                            monitor.type.name,
+                            monitor.config.monitoredItemId,
                             config.threshold,
                             config.inertia
                         )
@@ -176,14 +177,15 @@ class MonitorMechanism @VisibleForTesting constructor(private val clock: Clock) 
                         state = State.INSIDE
                         stateChangedAt = null
                         event = PastEvent(
-                            eventId!!,
-                            monitor.id,
-                            config.monitoredItemId,
-                            now,
-                            ongoingEvent!!.startTime,
-                            monitor.type,
-                            config.threshold,
-                            value
+                            id = eventId!!,
+                            monitorId = monitor.id,
+                            monitoredItemId = config.monitoredItemId,
+                            startTime = now,
+                            endTime = ongoingEvent!!.startTime,
+                            type = monitor.type,
+                            threshold = config.threshold,
+                            endValue = value,
+                            startValue = ongoingEvent!!.value
                         )
                     } else { //Inside before inertia -> Inside before inertia
                         LOGGER.trace(

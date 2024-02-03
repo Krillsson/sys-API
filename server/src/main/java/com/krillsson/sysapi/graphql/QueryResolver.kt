@@ -7,11 +7,13 @@ import com.krillsson.sysapi.core.domain.disk.DiskLoad
 import com.krillsson.sysapi.core.domain.docker.State
 import com.krillsson.sysapi.core.domain.drives.Drive
 import com.krillsson.sysapi.core.domain.drives.DriveLoad
+import com.krillsson.sysapi.core.domain.event.Event
 import com.krillsson.sysapi.core.domain.event.OngoingEvent
 import com.krillsson.sysapi.core.domain.event.PastEvent
 import com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad
 import com.krillsson.sysapi.core.domain.gpu.Gpu
 import com.krillsson.sysapi.core.domain.history.HistorySystemLoad
+import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.domain.memory.MemoryInfo
 import com.krillsson.sysapi.core.domain.memory.MemoryLoad
 import com.krillsson.sysapi.core.domain.motherboard.Motherboard
@@ -44,6 +46,7 @@ import graphql.kickstart.tools.GraphQLResolver
 import oshi.hardware.UsbDevice
 import java.time.Instant
 import java.time.OffsetDateTime
+import java.util.*
 
 class QueryResolver : GraphQLQueryResolver {
 
@@ -127,7 +130,17 @@ class QueryResolver : GraphQLQueryResolver {
         return monitorManager.getAll().map { it.asMonitor() }
     }
 
+    fun monitorById(id: String): com.krillsson.sysapi.graphql.domain.Monitor? {
+        return monitorManager.getById(UUID.fromString(id))?.asMonitor()
+    }
+
+
     fun events() = eventManager.getAll().toList()
+
+    fun eventById(id: String): Event? {
+        return eventManager.getAll().firstOrNull { it.id == UUID.fromString(id) }
+    }
+
     fun genericEvents() = genericEventRepository.read()
     fun pastEvents() = eventManager.getAll().filterIsInstance(PastEvent::class.java)
     fun ongoingEvents() = eventManager.getAll().filterIsInstance(OngoingEvent::class.java)
@@ -354,30 +367,64 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     inner class MonitorResolver : GraphQLResolver<com.krillsson.sysapi.graphql.domain.Monitor> {
+
+        private fun SystemHistoryEntry.asMonitoredValueHistoryEntry(monitor: com.krillsson.sysapi.graphql.domain.Monitor): MonitoredValueHistoryEntry? {
+            val monitoredValue = when (monitor.type.valueType) {
+                Monitor.ValueType.Numerical -> Selectors.forNumericalMonitorType(monitor.type)(
+                    value.toSystemLoad(),
+                    monitor.monitoredItemId
+                )
+
+                Monitor.ValueType.Fractional -> Selectors.forFractionalMonitorType(monitor.type)(
+                    value.toSystemLoad(),
+                    monitor.monitoredItemId
+                )
+
+                Monitor.ValueType.Conditional -> Selectors.forConditionalMonitorType(monitor.type)(
+                    value.toSystemLoad(),
+                    monitor.monitoredItemId
+                )
+            }
+            return monitoredValue?.let { value -> MonitoredValueHistoryEntry(date, value.asMonitoredValue()) }
+        }
         fun getHistory(monitor: com.krillsson.sysapi.graphql.domain.Monitor): List<MonitoredValueHistoryEntry> {
             return historyRepository.getExtended().mapNotNull {
-                val monitoredValue = when (monitor.type.valueType) {
-                    Monitor.ValueType.Numerical -> Selectors.forNumericalMonitorType(monitor.type)(
-                        it.value.toSystemLoad(),
-                        monitor.monitoredItemId
-                    )
-
-                    Monitor.ValueType.Fractional -> Selectors.forFractionalMonitorType(monitor.type)(
-                        it.value.toSystemLoad(),
-                        monitor.monitoredItemId
-                    )
-
-                    Monitor.ValueType.Conditional -> Selectors.forConditionalMonitorType(monitor.type)(
-                        it.value.toSystemLoad(),
-                        monitor.monitoredItemId
-                    )
-                }
-                monitoredValue?.let { value -> MonitoredValueHistoryEntry(it.date, value.asMonitoredValue()) }
+                it.asMonitoredValueHistoryEntry(monitor)
             }
         }
 
+        fun getHistoryBetweenTimestamps(monitor: com.krillsson.sysapi.graphql.domain.Monitor, from: Instant, to: Instant): List<MonitoredValueHistoryEntry> {
+            return historyRepository.getExtendedHistoryLimitedToDates(from, to).mapNotNull {
+                it.asMonitoredValueHistoryEntry(monitor)
+            }
+        }
+
+        fun events(monitor: com.krillsson.sysapi.graphql.domain.Monitor): List<Event> {
+            return eventManager.eventsForMonitorId(monitor.id)
+        }
+
+        fun pastEvents(monitor: com.krillsson.sysapi.graphql.domain.Monitor) = eventManager.eventsForMonitorId(monitor.id).filterIsInstance(PastEvent::class.java)
+        fun ongoingEvents(monitor: com.krillsson.sysapi.graphql.domain.Monitor) = eventManager.eventsForMonitorId(monitor.id).filterIsInstance(OngoingEvent::class.java)
+
+        fun getMinValue(monitor: com.krillsson.sysapi.graphql.domain.Monitor): MonitoredValue? {
+            return when (monitor.type.valueType) {
+                Monitor.ValueType.Numerical -> Selectors.forNumericalMonitorType(monitor.type)(
+                    metrics.systemMetrics().systemLoad(),
+                    monitor.monitoredItemId
+                )
+
+                Monitor.ValueType.Fractional -> Selectors.forFractionalMonitorType(monitor.type)(
+                    metrics.systemMetrics().systemLoad(),
+                    monitor.monitoredItemId
+                )
+
+                Monitor.ValueType.Conditional -> Selectors.forConditionalMonitorType(monitor.type)(
+                    metrics.systemMetrics().systemLoad(),
+                    monitor.monitoredItemId
+                )
+            }?.asMonitoredValue()
+        }
         fun getCurrentValue(monitor: com.krillsson.sysapi.graphql.domain.Monitor): MonitoredValue? {
-            metrics.systemMetrics().systemLoad()
             return when (monitor.type.valueType) {
                 Monitor.ValueType.Numerical -> Selectors.forNumericalMonitorType(monitor.type)(
                     metrics.systemMetrics().systemLoad(),
@@ -426,6 +473,10 @@ class QueryResolver : GraphQLQueryResolver {
 
         fun getEndValue(event: PastEvent): MonitoredValue {
             return event.value.asMonitoredValue()
+        }
+
+        fun getStartValue(event: PastEvent): MonitoredValue {
+            return event.startValue.asMonitoredValue()
         }
 
         fun startTimestamp(event: PastEvent): Instant {

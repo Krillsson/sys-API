@@ -25,6 +25,8 @@ class MonitorManager(
     private val clock: Clock
 ) : Managed, Task {
 
+    val logger by logger()
+
     override val defaultInterval: TaskInterval = TaskInterval.LessOften
     override val key: Task.Key = Task.Key.CheckMonitors
     override fun run() {
@@ -119,9 +121,9 @@ class MonitorManager(
 
     private fun reportItemMissingForMonitor(monitor: Monitor<MonitoredValue>, value: MonitoredValue?) {
         if (value == null) {
+            logger.warn("Removing monitor ${monitor.id} as its item ${monitor.type.name}:${monitor.config.monitoredItemId} is missing")
             monitoredItemMissingChecker.reportItemMissing(monitor)
-        } else {
-            monitoredItemMissingChecker.removeItemMissingEvent(monitor)
+            remove(monitor.id)
         }
     }
 
