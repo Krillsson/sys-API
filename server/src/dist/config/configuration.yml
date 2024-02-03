@@ -77,8 +77,7 @@ tasks:
     interval: 30min
     perform: [ StoreMetricHistoryEntry ]
 logReader:
-  files:
-    - /var/log/nginx/access.log
+  files: []
   directories:
     - /var/log
     - data
