@@ -20,6 +20,7 @@ class EventStore(objectMapper: ObjectMapper) :
         val monitorType: Monitor.Type,
         val threshold: Double,
         val value: Double,
+        val startValue: Double?,
         val type: Type
     ) {
         enum class Type {

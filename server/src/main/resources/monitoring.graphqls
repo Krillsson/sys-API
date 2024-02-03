@@ -1,6 +1,8 @@
 extend type Query {
     monitors: [Monitor!]!
+    monitorById(id: String!): Monitor
     events: [Event!]!
+    eventById(id: String!): Event
     genericEvents: [GenericEvent!]!
     pastEvents: [PastEvent!]!
     ongoingEvents: [OngoingEvent!]!
@@ -169,6 +171,10 @@ type Monitor {
     currentValue: MonitoredValue
     monitoredItemId: String
     history: [MonitoredValueHistoryEntry!]!
+    events: [Event!]!
+    pastEvents: [PastEvent!]!
+    ongoingEvents: [OngoingEvent!]!
+    historyBetweenTimestamps(from: Instant!, to: Instant!): [MonitoredValueHistoryEntry!]!
 }
 
 enum MonitorType {
@@ -215,6 +221,7 @@ type PastEvent implements Event {
     endTimestamp: Instant!
     endTime: String!
     endValue: MonitoredValue!
+    startValue: MonitoredValue!
 }
 
 interface GenericEvent {

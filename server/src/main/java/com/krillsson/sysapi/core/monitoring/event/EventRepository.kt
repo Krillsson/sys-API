@@ -41,7 +41,8 @@ class EventRepository(private val store: Store<List<EventStore.StoredEvent>>) {
                 endTime = requireNotNull(endTime) { "endTime is required for past events" }.toInstant(),
                 type = monitorType,
                 threshold = mapValueToMonitorValue { it.threshold },
-                value = mapValueToMonitorValue { it.value }
+                endValue = mapValueToMonitorValue { it.value },
+                startValue = mapValueToMonitorValue { it.startValue ?: 0.0 }
             )
         }
     }
@@ -65,7 +66,8 @@ class EventRepository(private val store: Store<List<EventStore.StoredEvent>>) {
                 monitorType,
                 threshold.asDouble(),
                 value.asDouble(),
-                EventStore.StoredEvent.Type.PAST
+                startValue.asDouble(),
+                EventStore.StoredEvent.Type.PAST,
             )
 
             is OngoingEvent -> EventStore.StoredEvent(
@@ -77,6 +79,7 @@ class EventRepository(private val store: Store<List<EventStore.StoredEvent>>) {
                 monitorType,
                 threshold.asDouble(),
                 value.asDouble(),
+                null,
                 EventStore.StoredEvent.Type.ONGOING
             )
 
