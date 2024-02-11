@@ -7,5 +7,6 @@ data class FileSystem(
     val label: String,
     val type: String,
     val volume: String,
-    val mount: String
+    val mount: String,
+    val totalSpaceBytes: Long
 )

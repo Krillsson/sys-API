@@ -2,6 +2,7 @@ package com.krillsson.sysapi.core.monitoring
 
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
+import com.krillsson.sysapi.core.domain.system.SystemInfo
 import java.util.*
 
 abstract class Monitor<out T : MonitoredValue> {
@@ -40,5 +41,6 @@ abstract class Monitor<out T : MonitoredValue> {
     }
 
     abstract fun selectValue(event: MetricQueryEvent): T?
+    abstract fun maxValue(info: SystemInfo): T?
     abstract fun isPastThreshold(value: @UnsafeVariance T): Boolean
 }

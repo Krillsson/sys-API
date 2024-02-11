@@ -41,15 +41,16 @@ open class DefaultSystemMetrics(
 
     override fun systemInfo(): SystemInfo {
         return SystemInfo(
-            EnvironmentUtils.hostName,
-            operatingSystem,
-            platform,
-            cpuMetrics.cpuInfo(),
-            motherboardMetrics.motherboard(),
-            memoryMetrics.memoryInfo(),
-            driveMetrics.drives(),
-            networkMetrics.networkInterfaces(),
-            gpuMetrics.gpus()
+            hostName = EnvironmentUtils.hostName,
+            operatingSystem = operatingSystem,
+            platform = platform,
+            cpuInfo = cpuMetrics.cpuInfo(),
+            motherboard = motherboardMetrics.motherboard(),
+            memory = memoryMetrics.memoryInfo(),
+            drives = driveMetrics.drives(),
+            fileSystems = fileSystemMetrics.fileSystems(),
+            networkInterfaces = networkMetrics.networkInterfaces(),
+            gpus = gpuMetrics.gpus()
         )
     }
 }

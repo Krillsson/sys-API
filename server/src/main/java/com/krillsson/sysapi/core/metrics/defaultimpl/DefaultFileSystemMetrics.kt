@@ -62,7 +62,8 @@ open class DefaultFileSystemMetrics(
             label,
             type,
             volume,
-            mount
+            mount,
+            totalSpace
         )
     }
 

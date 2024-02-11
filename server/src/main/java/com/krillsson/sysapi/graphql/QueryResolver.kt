@@ -406,23 +406,8 @@ class QueryResolver : GraphQLQueryResolver {
         fun pastEvents(monitor: com.krillsson.sysapi.graphql.domain.Monitor) = eventManager.eventsForMonitorId(monitor.id).filterIsInstance(PastEvent::class.java)
         fun ongoingEvents(monitor: com.krillsson.sysapi.graphql.domain.Monitor) = eventManager.eventsForMonitorId(monitor.id).filterIsInstance(OngoingEvent::class.java)
 
-        fun getMinValue(monitor: com.krillsson.sysapi.graphql.domain.Monitor): MonitoredValue? {
-            return when (monitor.type.valueType) {
-                Monitor.ValueType.Numerical -> Selectors.forNumericalMonitorType(monitor.type)(
-                    metrics.systemMetrics().systemLoad(),
-                    monitor.monitoredItemId
-                )
-
-                Monitor.ValueType.Fractional -> Selectors.forFractionalMonitorType(monitor.type)(
-                    metrics.systemMetrics().systemLoad(),
-                    monitor.monitoredItemId
-                )
-
-                Monitor.ValueType.Conditional -> Selectors.forConditionalMonitorType(monitor.type)(
-                    metrics.systemMetrics().systemLoad(),
-                    monitor.monitoredItemId
-                )
-            }?.asMonitoredValue()
+        fun getMaxValue(monitor: com.krillsson.sysapi.graphql.domain.Monitor): MonitoredValue? {
+            return monitorManager.getById(monitor.id)?.maxValue(metrics.systemMetrics().systemInfo())?.asMonitoredValue()
         }
         fun getCurrentValue(monitor: com.krillsson.sysapi.graphql.domain.Monitor): MonitoredValue? {
             return when (monitor.type.valueType) {
@@ -554,6 +539,8 @@ class QueryResolver : GraphQLQueryResolver {
 
     inner class NetworkInterfaceResolver : GraphQLResolver<NetworkInterface> {
         fun getId(networkInterface: NetworkInterface) = networkInterface.name
+
+        fun getSpeed(networkInterface: NetworkInterface) = networkInterface.speedBitsPerSeconds
         fun getMetrics(networkInterface: NetworkInterface) =
             metrics.networkMetrics().networkInterfaceLoadById(networkInterface.name)
     }

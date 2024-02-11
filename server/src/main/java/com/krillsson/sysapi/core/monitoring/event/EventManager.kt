@@ -43,6 +43,36 @@ class EventManager(private val repository: EventRepository, private val clock: C
         .removeAll { it.monitorId == id }
         .also { persist() }
 
+    fun removePastEventsForMonitorId(id: UUID) = events
+        .removeAll { event -> event.monitorId == id && event is PastEvent }
+        .also { persist() }
+
+    fun removeOngoingEventsForMonitorId(id: UUID): Boolean {
+        val ongoingEventsForMonitor: List<OngoingEvent> = events.filter { event -> event.monitorId == id }
+            .filterIsInstance<OngoingEvent>()
+        return if (ongoingEventsForMonitor.isNotEmpty()) {
+            ongoingEventsForMonitor.forEach { event ->
+                val past = PastEvent(
+                    id = event.id,
+                    monitorId = event.monitorId,
+                    monitoredItemId = event.monitoredItemId,
+                    startTime = event.startTime,
+                    endTime = clock.instant(),
+                    type = event.monitorType,
+                    threshold = event.threshold,
+                    endValue = event.value,
+                    startValue = event.value
+                )
+                remove(event.id)
+                add(past)
+            }
+            persist()
+            true
+        } else {
+            false
+        }
+    }
+
     private fun persist() = repository.write(events)
 
     private fun restore() {

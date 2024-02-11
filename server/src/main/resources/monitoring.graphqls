@@ -18,6 +18,8 @@ extend type Mutation {
     updateConditionalValueMonitor(input: UpdateConditionalValueMonitorInput) : UpdateMonitorOutput
     deleteEvent(input: DeleteEventInput) : DeleteEventOutput
     deleteEventsForMonitor(input: DeleteEventsForMonitorInput) : DeleteEventOutput
+    deletePastEventsForMonitor(input: DeleteEventsForMonitorInput): DeleteEventOutput
+    closeOngoingEventForMonitor(input: DeleteEventsForMonitorInput): DeleteEventOutput
     deleteGenericEvent(input: DeleteGenericEventInput): DeleteGenericEventOutput
 }
 
@@ -169,6 +171,8 @@ type Monitor {
     type: MonitorType
     threshold: MonitoredValue!
     currentValue: MonitoredValue
+    # estimated max value of monitored value. Useful while building UI's
+    maxValue: MonitoredValue
     monitoredItemId: String
     history: [MonitoredValueHistoryEntry!]!
     events: [Event!]!
