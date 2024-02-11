@@ -49,7 +49,6 @@ fun MonitoredValue.asMonitoredValue(): com.krillsson.sysapi.graphql.domain.Monit
 
 object Selectors {
 
-
     fun forConditionalMonitorType(type: com.krillsson.sysapi.core.monitoring.Monitor.Type): ConditionalValueSelector =
         when (type) {
             com.krillsson.sysapi.core.monitoring.Monitor.Type.NETWORK_UP -> NetworkUpMonitor.selector

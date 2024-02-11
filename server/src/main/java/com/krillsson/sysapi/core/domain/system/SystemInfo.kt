@@ -22,6 +22,7 @@ package com.krillsson.sysapi.core.domain.system
 
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo
 import com.krillsson.sysapi.core.domain.drives.Drive
+import com.krillsson.sysapi.core.domain.filesystem.FileSystem
 import com.krillsson.sysapi.core.domain.gpu.Gpu
 import com.krillsson.sysapi.core.domain.memory.MemoryInfo
 import com.krillsson.sysapi.core.domain.motherboard.Motherboard
@@ -35,6 +36,7 @@ class SystemInfo(
     val motherboard: Motherboard,
     val memory: MemoryInfo,
     val drives: List<Drive>,
+    val fileSystems: List<FileSystem>,
     val networkInterfaces: List<NetworkInterface>,
     val gpus: List<Gpu>
 ) 

@@ -262,7 +262,9 @@ type NetworkInterface {
     name: String!
     displayName: String!
     mac: String!
+    @deprecated
     speed: Long!
+    speedBitsPerSeconds: Long!
     mtu: Int!
     loopback: Boolean!
     ipv6: [String!]!

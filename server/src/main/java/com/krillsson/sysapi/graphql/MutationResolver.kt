@@ -178,4 +178,14 @@ class MutationResolver : GraphQLMutationResolver {
         val removed = eventManager.removeEventsForMonitorId(input.monitorId)
         return DeleteEventOutput(removed)
     }
+
+    fun deletePastEventsForMonitor(input: DeleteEventsForMonitorInput): DeleteEventOutput {
+        val removed = eventManager.removePastEventsForMonitorId(input.monitorId)
+        return DeleteEventOutput(removed)
+    }
+
+    fun closeOngoingEventForMonitor(input: DeleteEventsForMonitorInput): DeleteEventOutput {
+        val removed = eventManager.removeOngoingEventsForMonitorId(input.monitorId)
+        return DeleteEventOutput(removed)
+    }
 }
