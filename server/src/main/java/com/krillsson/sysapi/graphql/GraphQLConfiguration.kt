@@ -41,6 +41,7 @@ class GraphQLConfiguration {
                 queryResolver,
                 mutationResolver,
                 queryResolver.dockerResolver,
+                queryResolver.containerResolver,
                 queryResolver.systemInfoResolver,
                 queryResolver.historyResolver,
                 queryResolver.pastEventEventResolver,
