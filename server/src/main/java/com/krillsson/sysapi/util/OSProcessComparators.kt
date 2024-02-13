@@ -1,7 +1,6 @@
 package com.krillsson.sysapi.util
 
 import oshi.software.os.OSProcess
-import java.lang.String
 
 object OSProcessComparators {
     val CPU_LOAD_COMPARATOR = Comparator

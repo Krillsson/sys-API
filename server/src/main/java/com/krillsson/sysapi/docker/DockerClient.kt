@@ -3,10 +3,12 @@ package com.krillsson.sysapi.docker
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.dockerjava.api.async.ResultCallback
 import com.github.dockerjava.api.model.Frame
+import com.github.dockerjava.api.model.Statistics
 import com.github.dockerjava.core.DefaultDockerClientConfig
 import com.github.dockerjava.core.DockerClientConfig
 import com.github.dockerjava.core.DockerClientConfigDelegate
 import com.github.dockerjava.core.DockerClientImpl
+import com.github.dockerjava.core.InvocationBuilder.AsyncResultCallback
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient
 import com.github.dockerjava.transport.DockerHttpClient
 import com.google.common.base.Supplier
@@ -16,6 +18,7 @@ import com.krillsson.sysapi.config.DockerConfiguration
 import com.krillsson.sysapi.core.domain.docker.Command
 import com.krillsson.sysapi.core.domain.docker.CommandType
 import com.krillsson.sysapi.core.domain.docker.Container
+import com.krillsson.sysapi.core.domain.docker.ContainerStatistics
 import com.krillsson.sysapi.util.logger
 import com.krillsson.sysapi.util.measureTimeMillis
 import java.time.Duration
@@ -91,6 +94,10 @@ class DockerClient(
         return containersCache.get().firstOrNull { it.id == id }
     }
 
+    fun statsForContainer(id: String): ContainerStatistics? {
+        return containerStatsInternal(id)
+    }
+
     fun performCommandWithContainer(command: Command): CommandResult {
         if (status == Status.Available) {
             return try {
@@ -150,6 +157,27 @@ class DockerClient(
             timedResult.second
         } else {
             emptyList()
+        }
+    }
+
+    private fun containerStatsInternal(containerId: String): ContainerStatistics? {
+        return if (status == Status.Available) {
+            var statistics: Statistics? = null
+            val callback = AsyncResultCallback<Statistics>()
+            client.statsCmd(containerId)
+                .withNoStream(true)
+                .exec(callback)
+                .awaitCompletion(READ_LOGS_COMMAND_TIMEOUT_SEC, TimeUnit.SECONDS)
+            try {
+                statistics = callback.awaitResult()
+                callback.close()
+                statistics.asStatistics()
+            } catch (exception: Exception) {
+                LOGGER.error("Error while getting stats for $containerId", exception)
+                null
+            }
+        } else {
+            null
         }
     }
 

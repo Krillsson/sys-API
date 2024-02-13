@@ -4,6 +4,7 @@ import com.krillsson.sysapi.core.domain.cpu.CentralProcessor
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad
 import com.krillsson.sysapi.core.domain.disk.Disk
 import com.krillsson.sysapi.core.domain.disk.DiskLoad
+import com.krillsson.sysapi.core.domain.docker.Container
 import com.krillsson.sysapi.core.domain.docker.State
 import com.krillsson.sysapi.core.domain.drives.Drive
 import com.krillsson.sysapi.core.domain.drives.DriveLoad
@@ -94,6 +95,7 @@ class QueryResolver : GraphQLQueryResolver {
     val systemInfoResolver = SystemResolver()
     val historyResolver = HistoryResolver()
     val dockerResolver = DockerResolver()
+    val containerResolver = ContainerResolver()
     val pastEventEventResolver = PastEventEventResolver()
     val ongoingEventResolver = OngoingEventResolver()
     val motherboardResolver = MotherboardResolver()
@@ -221,6 +223,11 @@ class QueryResolver : GraphQLQueryResolver {
                 DockerClient.ReadLogsCommandResult.Unavailable -> ReadLogsForContainerOutputFailed("Docker is not available")
             }
         }
+    }
+
+    inner class ContainerResolver : GraphQLResolver<Container> {
+        fun metrics(container: Container) = dockerClient.statsForContainer(container.id)
+
     }
 
     inner class SystemResolver : GraphQLResolver<System> {
@@ -387,13 +394,18 @@ class QueryResolver : GraphQLQueryResolver {
             }
             return monitoredValue?.let { value -> MonitoredValueHistoryEntry(date, value.asMonitoredValue()) }
         }
+
         fun getHistory(monitor: com.krillsson.sysapi.graphql.domain.Monitor): List<MonitoredValueHistoryEntry> {
             return historyRepository.getExtended().mapNotNull {
                 it.asMonitoredValueHistoryEntry(monitor)
             }
         }
 
-        fun getHistoryBetweenTimestamps(monitor: com.krillsson.sysapi.graphql.domain.Monitor, from: Instant, to: Instant): List<MonitoredValueHistoryEntry> {
+        fun getHistoryBetweenTimestamps(
+            monitor: com.krillsson.sysapi.graphql.domain.Monitor,
+            from: Instant,
+            to: Instant
+        ): List<MonitoredValueHistoryEntry> {
             return historyRepository.getExtendedHistoryLimitedToDates(from, to).mapNotNull {
                 it.asMonitoredValueHistoryEntry(monitor)
             }
@@ -403,12 +415,17 @@ class QueryResolver : GraphQLQueryResolver {
             return eventManager.eventsForMonitorId(monitor.id)
         }
 
-        fun pastEvents(monitor: com.krillsson.sysapi.graphql.domain.Monitor) = eventManager.eventsForMonitorId(monitor.id).filterIsInstance(PastEvent::class.java)
-        fun ongoingEvents(monitor: com.krillsson.sysapi.graphql.domain.Monitor) = eventManager.eventsForMonitorId(monitor.id).filterIsInstance(OngoingEvent::class.java)
+        fun pastEvents(monitor: com.krillsson.sysapi.graphql.domain.Monitor) =
+            eventManager.eventsForMonitorId(monitor.id).filterIsInstance(PastEvent::class.java)
+
+        fun ongoingEvents(monitor: com.krillsson.sysapi.graphql.domain.Monitor) =
+            eventManager.eventsForMonitorId(monitor.id).filterIsInstance(OngoingEvent::class.java)
 
         fun getMaxValue(monitor: com.krillsson.sysapi.graphql.domain.Monitor): MonitoredValue? {
-            return monitorManager.getById(monitor.id)?.maxValue(metrics.systemMetrics().systemInfo())?.asMonitoredValue()
+            return monitorManager.getById(monitor.id)?.maxValue(metrics.systemMetrics().systemInfo())
+                ?.asMonitoredValue()
         }
+
         fun getCurrentValue(monitor: com.krillsson.sysapi.graphql.domain.Monitor): MonitoredValue? {
             return when (monitor.type.valueType) {
                 Monitor.ValueType.Numerical -> Selectors.forNumericalMonitorType(monitor.type)(

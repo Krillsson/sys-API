@@ -71,10 +71,69 @@ type DockerContainer {
     state: DockerContainerState!
     health: DockerContainerHealth
     status: String!
+    metrics: DockerContainerMetrics
+}
+
+type DockerContainerMetrics{
+    cpuUsage: DockerContainerCpuUsage!
+    memoryUsage: DockerContainerMemoryUsage!
+    currentPid: Long!
+    networkUsage: [DockerContainerNetworkUsage!]!
+    blockIOUsage: DockerContainerBlockIOUsage!
+}
+
+type DockerContainerCpuUsage{
+    totalUsage: Long!
+    perCpuUsage: [Long!]!
+    usageInKernelMode: Long!
+    usageInUserMode: Long!
+    throttlingData: DockerContainerThrottlingData!
+}
+
+type DockerContainerThrottlingData{
+    periods: Long!
+    throttledPeriods: Long!
+    throttledTime: Long!
+}
+
+type DockerContainerNetworkUsage{
+    name: String!
+    rxBytes: Long!
+    rxDropped: Long!
+    rxErrors: Long!
+    rxPackets: Long!
+    txBytes: Long!
+    txDropped: Long!
+    txErrors: Long!
+    txPackets: Long!
+}
+
+type DockerContainerBlockIOUsage{
+    ioServiceBytesRecursive: [DockerContainerBlockIOEntry!]!
+    ioServicedRecursive: [DockerContainerBlockIOEntry!]!
+    ioQueueRecursive: [DockerContainerBlockIOEntry!]!
+    ioServiceTimeRecursive: [DockerContainerBlockIOEntry!]!
+    ioWaitTimeRecursive: [DockerContainerBlockIOEntry!]!
+    ioMergedRecursive: [DockerContainerBlockIOEntry!]!
+    ioTimeRecursive: [DockerContainerBlockIOEntry!]!
+    sectorsRecursive: [DockerContainerBlockIOEntry!]!
+}
+
+type DockerContainerBlockIOEntry{
+    major: Long!
+    minor: Long!
+    operation: String!
+    value: Long!
+}
+
+type DockerContainerMemoryUsage{
+    usage: Long!
+    maxUsage: Long!
+    limit: Long!
 }
 
 type DockerContainerHealth{
-    status: String,
+    status: String
     failingStreak: Int,
     logEntries: [DockerHealthLogEntry!]!
 }

@@ -160,3 +160,79 @@ fun HealthStateLog.asHealthLogEntry() = HealthLogEntry(
 fun List<HealthStateLog>.asHealthLogEntries(): List<HealthLogEntry> {
     return map { it.asHealthLogEntry() }
 }
+
+fun Statistics.asStatistics(): ContainerStatistics {
+    return ContainerStatistics(
+        currentPid = pidsStats.current.orDefault(),
+        cpuUsage = cpuStats.asCpuUsage(),
+        memoryUsage = memoryStats.asMemoryUsage(),
+        networkUsage = networks?.map { it.value.asNetworkUsage(it.key) }.orEmpty(),
+        blockIOUsage = blkioStats.asBlockIOUsage()
+    )
+}
+
+private fun BlkioStatsConfig.asBlockIOUsage(): BlockIOUsage {
+    return BlockIOUsage(
+        ioMergedRecursive = ioMergedRecursive?.map { it.asBlockIOEntry() }.orEmpty(),
+        ioServiceBytesRecursive = ioServiceBytesRecursive?.map { it.asBlockIOEntry() }.orEmpty(),
+        ioServicedRecursive = ioServicedRecursive?.map { it.asBlockIOEntry() }.orEmpty(),
+        ioQueueRecursive = ioQueueRecursive?.map { it.asBlockIOEntry() }.orEmpty(),
+        ioServiceTimeRecursive = ioServiceTimeRecursive?.map { it.asBlockIOEntry() }.orEmpty(),
+        ioWaitTimeRecursive = ioWaitTimeRecursive?.map { it.asBlockIOEntry() }.orEmpty(),
+        ioTimeRecursive = ioTimeRecursive?.map { it.asBlockIOEntry() }.orEmpty(),
+        sectorsRecursive = sectorsRecursive?.map { it.asBlockIOEntry() }.orEmpty(),
+    )
+}
+
+private fun BlkioStatEntry.asBlockIOEntry(): BlockIOEntry {
+    return BlockIOEntry(
+        major,
+        minor,
+        op,
+        value
+    )
+}
+
+private fun StatisticNetworksConfig.asNetworkUsage(name: String): NetworkUsage {
+    return NetworkUsage(
+        name = name,
+        rxBytes = rxBytes.orDefault(),
+        rxDropped = rxDropped.orDefault(),
+        rxErrors = rxErrors.orDefault(),
+        rxPackets = rxPackets.orDefault(),
+        txBytes = txBytes.orDefault(),
+        txDropped = txDropped.orDefault(),
+        txErrors = txErrors.orDefault(),
+        txPackets = txPackets.orDefault()
+    )
+}
+
+private fun MemoryStatsConfig.asMemoryUsage(): MemoryUsage {
+    return MemoryUsage(
+        usage = usage.orDefault(),
+        maxUsage = maxUsage.orDefault(),
+        limit = limit.orDefault()
+    )
+}
+
+private fun CpuStatsConfig.asCpuUsage(): CpuUsage {
+    return CpuUsage(
+        cpuUsage?.totalUsage.orDefault(),
+        cpuUsage?.percpuUsage.orEmpty(),
+        cpuUsage?.usageInKernelmode.orDefault(),
+        cpuUsage?.usageInUsermode.orDefault(),
+        throttlingData?.asThrottlingData() ?: ThrottlingData(-1, -1, -1)
+    )
+}
+
+private fun ThrottlingDataConfig.asThrottlingData(): ThrottlingData {
+    return ThrottlingData(
+        periods = periods.orDefault(),
+        throttledPeriods = throttledPeriods.orDefault(),
+        throttledTime = throttledTime.orDefault()
+    )
+}
+
+private fun Long?.orDefault(): Long {
+    return this ?: -1
+}
