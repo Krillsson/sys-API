@@ -4,8 +4,8 @@ import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.domain.monitor.toConditionalValue
 import com.krillsson.sysapi.core.domain.system.SystemInfo
-import com.krillsson.sysapi.core.monitoring.MetricQueryEvent
 import com.krillsson.sysapi.core.monitoring.Monitor
+import com.krillsson.sysapi.core.monitoring.MonitorInput
 import java.util.*
 
 class ConnectivityMonitor(
@@ -21,7 +21,7 @@ class ConnectivityMonitor(
 
     override val type: Type = Type.CONNECTIVITY
 
-    override fun selectValue(event: MetricQueryEvent): MonitoredValue.ConditionalValue? =
+    override fun selectValue(event: MonitorInput): MonitoredValue.ConditionalValue? =
         selector(event.load, null)
 
     override fun maxValue(info: SystemInfo): MonitoredValue.ConditionalValue? {

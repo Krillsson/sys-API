@@ -87,7 +87,19 @@ object Selectors {
 
     fun forContainerConditionalMonitor(type: com.krillsson.sysapi.core.monitoring.Monitor.Type): ContainerConditionalValueSelector =
         when (type) {
-            com.krillsson.sysapi.core.monitoring.Monitor.Type.CONTAINER_RUNNING -> DockerContainerRunningMonitor.selector
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.CONTAINER_RUNNING -> ContainerRunningMonitor.selector
+            else -> throw IllegalArgumentException("Use forConditionalMonitorType() method")
+        }
+
+    fun forContainerNumericalMonitor(type: com.krillsson.sysapi.core.monitoring.Monitor.Type): ContainerNumericalValueSelector =
+        when (type) {
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.CONTAINER_MEMORY_SPACE -> ContainerMemoryMonitor.selector
+            else -> throw IllegalArgumentException("Use forConditionalMonitorType() method")
+        }
+
+    fun forContainerFractionalMonitor(type: com.krillsson.sysapi.core.monitoring.Monitor.Type): ContainerFractionalValueSelector =
+        when (type) {
+            com.krillsson.sysapi.core.monitoring.Monitor.Type.CONTAINER_CPU_LOAD -> ContainerCpuMonitor.selector
             else -> throw IllegalArgumentException("Use forConditionalMonitorType() method")
         }
 }

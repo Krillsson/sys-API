@@ -5,8 +5,8 @@ import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.domain.monitor.toConditionalValue
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad
 import com.krillsson.sysapi.core.domain.system.SystemInfo
-import com.krillsson.sysapi.core.monitoring.MetricQueryEvent
 import com.krillsson.sysapi.core.monitoring.Monitor
+import com.krillsson.sysapi.core.monitoring.MonitorInput
 import java.util.*
 
 class NetworkUpMonitor(
@@ -23,7 +23,7 @@ class NetworkUpMonitor(
         }
     }
 
-    override fun selectValue(event: MetricQueryEvent): MonitoredValue.ConditionalValue? {
+    override fun selectValue(event: MonitorInput): MonitoredValue.ConditionalValue? {
         return selector(event.load, config.monitoredItemId)
     }
 

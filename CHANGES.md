@@ -5,6 +5,7 @@
 - Container metrics support
   - metricsForContainer(id) for near realtime metrics
   - containerMetricsHistoryBetweenTimestamps(id, from, to) for history
+  - added monitor types for container cpu load and container memory usage
 
 ### 0.19.3
 - fix NPE when querying ContainerNetworkSettings while using podman in rootless mode

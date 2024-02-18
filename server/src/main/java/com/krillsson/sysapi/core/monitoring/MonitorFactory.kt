@@ -7,7 +7,6 @@ import java.util.*
 
 object MonitorFactory {
     @Suppress("UNCHECKED_CAST")
-    // TODO: create three separate methods(?)
     fun createMonitor(type: Monitor.Type, id: UUID, config: MonitorConfig<MonitoredValue>): Monitor<MonitoredValue> {
         return when (type) {
             Monitor.Type.CPU_LOAD -> CpuMonitor(id, config as MonitorConfig<MonitoredValue.FractionalValue>)
@@ -15,7 +14,7 @@ object MonitorFactory {
             Monitor.Type.DRIVE_SPACE -> DriveSpaceMonitor(id, config as MonitorConfig<MonitoredValue.NumericalValue>)
             Monitor.Type.MEMORY_SPACE -> MemorySpaceMonitor(id, config as MonitorConfig<MonitoredValue.NumericalValue>)
             Monitor.Type.NETWORK_UP -> NetworkUpMonitor(id, config as MonitorConfig<MonitoredValue.ConditionalValue>)
-            Monitor.Type.CONTAINER_RUNNING -> DockerContainerRunningMonitor(
+            Monitor.Type.CONTAINER_RUNNING -> ContainerRunningMonitor(
                 id,
                 config as MonitorConfig<MonitoredValue.ConditionalValue>
             )
@@ -91,6 +90,16 @@ object MonitorFactory {
             )
 
             Monitor.Type.LOAD_AVERAGE_FIFTEEN_MINUTES -> LoadAverageMonitorFifteenMinutes(
+                id,
+                config as MonitorConfig<MonitoredValue.FractionalValue>
+            )
+
+            Monitor.Type.CONTAINER_MEMORY_SPACE -> ContainerMemoryMonitor(
+                id,
+                config as MonitorConfig<MonitoredValue.NumericalValue>
+            )
+
+            Monitor.Type.CONTAINER_CPU_LOAD -> ContainerCpuMonitor(
                 id,
                 config as MonitorConfig<MonitoredValue.FractionalValue>
             )

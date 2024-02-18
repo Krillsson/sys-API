@@ -3,8 +3,8 @@ package com.krillsson.sysapi.core.monitoring.monitors
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.domain.system.SystemInfo
-import com.krillsson.sysapi.core.monitoring.MetricQueryEvent
 import com.krillsson.sysapi.core.monitoring.Monitor
+import com.krillsson.sysapi.core.monitoring.MonitorInput
 import java.util.*
 
 class LoadAverageMonitorOneMinute(
@@ -24,7 +24,7 @@ class LoadAverageMonitorOneMinute(
 
     override val type: Type = Type.LOAD_AVERAGE_ONE_MINUTE
 
-    override fun selectValue(event: MetricQueryEvent): MonitoredValue.FractionalValue? =
+    override fun selectValue(event: MonitorInput): MonitoredValue.FractionalValue? =
         selector(event.load, null)
 
     override fun maxValue(info: SystemInfo): MonitoredValue.FractionalValue? {
@@ -54,7 +54,7 @@ class LoadAverageMonitorFiveMinutes(
 
     override val type: Type = Type.LOAD_AVERAGE_FIVE_MINUTES
 
-    override fun selectValue(event: MetricQueryEvent): MonitoredValue.FractionalValue? =
+    override fun selectValue(event: MonitorInput): MonitoredValue.FractionalValue? =
         selector(event.load, null)
 
     override fun maxValue(info: SystemInfo): MonitoredValue.FractionalValue? {
@@ -84,7 +84,7 @@ class LoadAverageMonitorFifteenMinutes(
 
     override val type: Type = Type.LOAD_AVERAGE_FIFTEEN_MINUTES
 
-    override fun selectValue(event: MetricQueryEvent): MonitoredValue.FractionalValue? =
+    override fun selectValue(event: MonitorInput): MonitoredValue.FractionalValue? =
         selector(event.load, null)
 
     override fun maxValue(info: SystemInfo): MonitoredValue.FractionalValue? {

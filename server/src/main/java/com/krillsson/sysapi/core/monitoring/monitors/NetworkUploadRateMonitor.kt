@@ -5,8 +5,8 @@ import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.domain.monitor.toNumericalValue
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad
 import com.krillsson.sysapi.core.domain.system.SystemInfo
-import com.krillsson.sysapi.core.monitoring.MetricQueryEvent
 import com.krillsson.sysapi.core.monitoring.Monitor
+import com.krillsson.sysapi.core.monitoring.MonitorInput
 import java.util.*
 
 class NetworkUploadRateMonitor(
@@ -33,7 +33,7 @@ class NetworkUploadRateMonitor(
 
     override val type: Type = Type.NETWORK_UPLOAD_RATE
 
-    override fun selectValue(event: MetricQueryEvent): MonitoredValue.NumericalValue? {
+    override fun selectValue(event: MonitorInput): MonitoredValue.NumericalValue? {
         return selector(event.load, config.monitoredItemId)
     }
 

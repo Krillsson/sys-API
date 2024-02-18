@@ -37,7 +37,7 @@ import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.event.EventManager
-import com.krillsson.sysapi.docker.DockerManager
+import com.krillsson.sysapi.docker.ContainerManager
 import com.krillsson.sysapi.docker.ReadLogsCommandResult
 import com.krillsson.sysapi.docker.Status
 import com.krillsson.sysapi.graphql.domain.*
@@ -62,7 +62,7 @@ class QueryResolver : GraphQLQueryResolver {
     private lateinit var genericEventRepository: GenericEventRepository
     private lateinit var operatingSystem: OperatingSystem
     private lateinit var platform: Platform
-    private lateinit var dockerManager: DockerManager
+    private lateinit var containerManager: ContainerManager
     private lateinit var meta: Meta
     private lateinit var logFilesManager: LogFilesManager
     private lateinit var windowsEventLogManager: WindowsManager
@@ -74,7 +74,7 @@ class QueryResolver : GraphQLQueryResolver {
         eventManager: EventManager,
         historyManager: HistoryRepository,
         genericEventRepository: GenericEventRepository,
-        dockerManager: DockerManager,
+        containerManager: ContainerManager,
         operatingSystem: OperatingSystem,
         platform: Platform,
         meta: Meta,
@@ -89,7 +89,7 @@ class QueryResolver : GraphQLQueryResolver {
         this.historyRepository = historyManager
         this.operatingSystem = operatingSystem
         this.platform = platform
-        this.dockerManager = dockerManager
+        this.containerManager = containerManager
         this.meta = meta
         this.systemDaemonManager = systemDaemonManager
         this.windowsEventLogManager = windowsManager
@@ -153,7 +153,7 @@ class QueryResolver : GraphQLQueryResolver {
 
 
     fun docker(): Docker {
-        return when (val status = dockerManager.status) {
+        return when (val status = containerManager.status) {
             Status.Available -> DockerAvailable
             Status.Disabled -> DockerUnavailable(
                 "The docker support is currently disabled. You can change this in configuration.yml",
@@ -188,10 +188,10 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     inner class DockerResolver : GraphQLResolver<DockerAvailable> {
-        fun containers(docker: DockerAvailable) = dockerManager.containers()
-        fun container(docker: DockerAvailable, id: String) = dockerManager.container(id)
+        fun containers(docker: DockerAvailable) = containerManager.containers()
+        fun container(docker: DockerAvailable, id: String) = containerManager.container(id)
         fun runningContainers(docker: DockerAvailable) =
-            dockerManager.containers().filter { it.state == State.RUNNING }
+            containerManager.containers().filter { it.state == State.RUNNING }
 
         fun readLogsForContainer(
             docker: DockerAvailable,
@@ -200,7 +200,7 @@ class QueryResolver : GraphQLQueryResolver {
             to: OffsetDateTime?
         ): ReadLogsForContainerOutput {
             return when (val result =
-                dockerManager.readLogsForContainer(containerId, from?.toInstant(), to?.toInstant())) {
+                containerManager.readLogsForContainer(containerId, from?.toInstant(), to?.toInstant())) {
                 is ReadLogsCommandResult.Success -> ReadLogsForContainerOutputSucceeded(result.lines)
                 is ReadLogsCommandResult.Failed -> ReadLogsForContainerOutputFailed(
                     result.error.message ?: result.error.toString()
@@ -217,7 +217,7 @@ class QueryResolver : GraphQLQueryResolver {
             from: Instant?,
             to: Instant?
         ): ReadLogsForContainerOutput {
-            return when (val result = dockerManager.readLogsForContainer(containerId, from, to)) {
+            return when (val result = containerManager.readLogsForContainer(containerId, from, to)) {
                 is ReadLogsCommandResult.Success -> ReadLogsForContainerOutputSucceeded(result.lines)
                 is ReadLogsCommandResult.Failed -> ReadLogsForContainerOutputFailed(
                     result.error.message ?: result.error.toString()
@@ -229,7 +229,7 @@ class QueryResolver : GraphQLQueryResolver {
         }
 
         fun metricsForContainer(docker: DockerAvailable, containerId: String): ContainerMetrics? {
-            return dockerManager.statsForContainer(containerId)
+            return containerManager.statsForContainer(containerId)
         }
 
         fun containerMetricsHistoryBetweenTimestamps(
@@ -238,14 +238,14 @@ class QueryResolver : GraphQLQueryResolver {
             from: Instant,
             to: Instant
         ): List<ContainerMetricsHistoryEntry> {
-            return dockerManager.containerMetricsHistoryBetweenTimestamps(
+            return containerManager.containerMetricsHistoryBetweenTimestamps(
                 containerId, from, to
             )
         }
     }
 
     inner class ContainerResolver : GraphQLResolver<Container> {
-        fun metrics(container: Container) = dockerManager.statsForContainer(container.id)
+        fun metrics(container: Container) = containerManager.statsForContainer(container.id)
 
     }
 
@@ -446,22 +446,40 @@ class QueryResolver : GraphQLQueryResolver {
         }
 
         fun getCurrentValue(monitor: com.krillsson.sysapi.graphql.domain.Monitor): MonitoredValue? {
-            return when (monitor.type.valueType) {
-                Monitor.ValueType.Numerical -> Selectors.forNumericalMonitorType(monitor.type)(
-                    metrics.systemMetrics().systemLoad(),
+            return when (monitor.type) {
+                Monitor.Type.CONTAINER_RUNNING -> Selectors.forContainerConditionalMonitor(monitor.type)(
+                    containerManager.containersWithIds(listOf(monitor.monitoredItemId.orEmpty())),
+                    emptyList(),
                     monitor.monitoredItemId
-                )
+                )?.asMonitoredValue()
 
-                Monitor.ValueType.Fractional -> Selectors.forFractionalMonitorType(monitor.type)(
-                    metrics.systemMetrics().systemLoad(),
+                Monitor.Type.CONTAINER_MEMORY_SPACE -> Selectors.forContainerNumericalMonitor(monitor.type)(
+                    emptyList(),
+                    listOfNotNull(containerManager.statsForContainer(monitor.monitoredItemId.orEmpty())),
                     monitor.monitoredItemId
-                )
+                )?.asMonitoredValue()
+                Monitor.Type.CONTAINER_CPU_LOAD -> Selectors.forContainerFractionalMonitor(monitor.type)(
+                    emptyList(),
+                    listOfNotNull(containerManager.statsForContainer(monitor.monitoredItemId.orEmpty())),
+                    monitor.monitoredItemId
+                )?.asMonitoredValue()
+                else -> when (monitor.type.valueType) {
+                    Monitor.ValueType.Numerical -> Selectors.forNumericalMonitorType(monitor.type)(
+                        metrics.systemMetrics().systemLoad(),
+                        monitor.monitoredItemId
+                    )
 
-                Monitor.ValueType.Conditional -> Selectors.forConditionalMonitorType(monitor.type)(
-                    metrics.systemMetrics().systemLoad(),
-                    monitor.monitoredItemId
-                )
-            }?.asMonitoredValue()
+                    Monitor.ValueType.Fractional -> Selectors.forFractionalMonitorType(monitor.type)(
+                        metrics.systemMetrics().systemLoad(),
+                        monitor.monitoredItemId
+                    )
+
+                    Monitor.ValueType.Conditional -> Selectors.forConditionalMonitorType(monitor.type)(
+                        metrics.systemMetrics().systemLoad(),
+                        monitor.monitoredItemId
+                    )
+                }?.asMonitoredValue()
+            }
         }
     }
 
