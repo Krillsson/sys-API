@@ -8,7 +8,7 @@ import com.krillsson.sysapi.core.genericevents.GenericEventRepository
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.event.EventManager
-import com.krillsson.sysapi.docker.DockerManager
+import com.krillsson.sysapi.docker.ContainerManager
 import com.krillsson.sysapi.graphql.mutations.*
 import com.krillsson.sysapi.logaccess.windowseventlog.WindowsManager
 import com.krillsson.sysapi.logaccess.windowseventlog.WindowsServiceCommandResult
@@ -23,7 +23,7 @@ class MutationResolver : GraphQLMutationResolver {
     lateinit var monitorManager: MonitorManager
     lateinit var eventManager: EventManager
     lateinit var genericEventRepository: GenericEventRepository
-    lateinit var dockerManager: DockerManager
+    lateinit var containerManager: ContainerManager
     lateinit var systemDaemonManager: SystemDaemonManager
     lateinit var windowsManager: WindowsManager
 
@@ -32,21 +32,21 @@ class MutationResolver : GraphQLMutationResolver {
         monitorManager: MonitorManager,
         genericEventRepository: GenericEventRepository,
         eventManager: EventManager,
-        dockerManager: DockerManager,
+        containerManager: ContainerManager,
         systemDaemonManager: SystemDaemonManager,
         windowsManager: WindowsManager
     ) {
         this.metrics = metrics
         this.monitorManager = monitorManager
         this.eventManager = eventManager
-        this.dockerManager = dockerManager
+        this.containerManager = containerManager
         this.genericEventRepository = genericEventRepository
         this.systemDaemonManager = systemDaemonManager
         this.windowsManager = windowsManager
     }
 
     fun performDockerContainerCommand(input: PerformDockerContainerCommandInput): PerformDockerContainerCommandOutput {
-        val result = dockerManager.performCommandWithContainer(
+        val result = containerManager.performCommandWithContainer(
             Command(input.containerId, input.command)
         )
 

@@ -15,7 +15,7 @@ import com.krillsson.sysapi.core.history.ContainersHistoryRepository
 import java.time.Instant
 import java.util.*
 
-class DockerManager(
+class ContainerManager(
     private val dockerClient: DockerClient,
     private val cacheConfiguration: CacheConfiguration,
     private val containersHistoryRepository: ContainersHistoryRepository,
@@ -56,10 +56,14 @@ class DockerManager(
     }
 
     fun container(id: String): Container? {
+        return containersWithIds(listOf(id)).firstOrNull()
+    }
+
+    fun containersWithIds(ids: List<String>): List<Container> {
         return when {
-            status != Status.Available -> null
-            !cacheConfiguration.enabled -> dockerClient.getContainer(id)
-            else -> containersCache.get().firstOrNull { it.id == id }
+            status != Status.Available -> emptyList()
+            !cacheConfiguration.enabled -> dockerClient.listContainers(ids)
+            else -> containersCache.get().filter { ids.contains(it.id) }
         }
     }
 
@@ -76,10 +80,19 @@ class DockerManager(
     }
 
     fun statsForContainer(id: String): ContainerMetrics? {
-        return if (status == Status.Available) {
-            containerStatsCache.get(id).orElse(null)
-        } else {
-            null
+        return when {
+            status != Status.Available -> null
+            !cacheConfiguration.enabled -> dockerClient.containerStatistics(id)
+            else -> containerStatsCache.get(id).orElse(null)
+        }
+    }
+
+    fun containerStats(): List<ContainerMetrics> {
+        return when {
+            status != Status.Available -> emptyList()
+            else -> containers().mapNotNull {
+                statsForContainer(it.id)
+            }
         }
     }
 

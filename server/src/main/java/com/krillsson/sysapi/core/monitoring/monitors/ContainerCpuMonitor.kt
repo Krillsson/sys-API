@@ -2,27 +2,34 @@ package com.krillsson.sysapi.core.monitoring.monitors
 
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
+import com.krillsson.sysapi.core.domain.monitor.toFractionalValue
 import com.krillsson.sysapi.core.domain.system.SystemInfo
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorInput
 import java.util.*
 
-class CpuMonitor(override val id: UUID, override val config: MonitorConfig<MonitoredValue.FractionalValue>) :
-    Monitor<MonitoredValue.FractionalValue>() {
+class ContainerCpuMonitor(
+    override val id: UUID,
+    override val config: MonitorConfig<MonitoredValue.FractionalValue>
+) : Monitor<MonitoredValue.FractionalValue>() {
+    override val type: Type = Type.CONTAINER_CPU_LOAD
 
     companion object {
-        val selector: FractionalValueSelector = { load, _ ->
-            MonitoredValue.FractionalValue(load.cpuLoad.usagePercentage.toFloat())
+        val selector: ContainerFractionalValueSelector = { _, containerMetrics, monitoredItemId ->
+            containerMetrics.filter {
+                it.id.equals(monitoredItemId, ignoreCase = true)
+            }.map {
+                it.cpuUsage.usagePercentPerCore.toFractionalValue()
+            }.firstOrNull()
         }
         val maxValueSelector: MaxValueFractionalSelector = { info, _ ->
             MonitoredValue.FractionalValue(info.cpuInfo.centralProcessor.logicalProcessorCount.toFloat() * 100f)
         }
     }
 
-    override val type: Type = Type.CPU_LOAD
-
-    override fun selectValue(event: MonitorInput): MonitoredValue.FractionalValue? =
-        selector(event.load, null)
+    override fun selectValue(event: MonitorInput): MonitoredValue.FractionalValue? {
+        return selector(event.containers, event.containerStats, config.monitoredItemId)
+    }
 
     override fun maxValue(info: SystemInfo): MonitoredValue.FractionalValue? {
         return maxValueSelector(info, null)

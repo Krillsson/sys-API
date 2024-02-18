@@ -5,7 +5,7 @@ import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.MonitorFactory.createMonitor
 import com.krillsson.sysapi.core.monitoring.event.EventManager
-import com.krillsson.sysapi.docker.DockerManager
+import com.krillsson.sysapi.docker.ContainerManager
 import com.krillsson.sysapi.periodictasks.Task
 import com.krillsson.sysapi.periodictasks.TaskInterval
 import com.krillsson.sysapi.periodictasks.TaskManager
@@ -18,7 +18,7 @@ import java.util.*
 class MonitorManager(
     private val taskManager: TaskManager,
     private val metrics: Metrics,
-    private val dockerManager: DockerManager,
+    private val containerManager: ContainerManager,
     private val eventManager: EventManager,
     private val repository: MonitorRepository,
     private val monitoredItemMissingChecker: MonitoredItemMissingChecker,
@@ -29,10 +29,17 @@ class MonitorManager(
 
     override val defaultInterval: TaskInterval = TaskInterval.LessOften
     override val key: Task.Key = Task.Key.CheckMonitors
+
     override fun run() {
+        val containerIds = idsSubset(containerTypes)
+        val containerStatisticsIds = idsSubset(containerStatisticsTypes)
+        val containers = if (containerIds.isNotEmpty()) containerManager.containersWithIds(containerIds) else emptyList()
+        val containersStats = containerStatisticsIds.mapNotNull { id -> containerManager.statsForContainer(id) }
         checkMonitors(
-            MetricQueryEvent(
-                metrics.systemMetrics().systemLoad(), dockerManager.containers()
+            MonitorInput(
+                metrics.systemMetrics().systemLoad(),
+                containers,
+                containersStats
             )
         )
     }
@@ -43,7 +50,7 @@ class MonitorManager(
 
     private lateinit var activeMonitors: MutableMap<UUID, Pair<MonitorMechanism, Monitor<MonitoredValue>>>
 
-    private fun checkMonitors(metricQueryEvent: MetricQueryEvent) {
+    private fun checkMonitors(metricQueryEvent: MonitorInput) {
         activeMonitors.values.forEach { (mechanism, monitor) ->
             val value = monitor.selectValue(metricQueryEvent)
             if (value != null) {
@@ -145,7 +152,25 @@ class MonitorManager(
     }
 
     private fun validate(monitor: Monitor<MonitoredValue>): Boolean {
-        return monitor.selectValue(MetricQueryEvent(metrics.systemMetrics().systemLoad(), emptyList())) != null
+        return monitor.selectValue(
+            MonitorInput(
+                metrics.systemMetrics().systemLoad(),
+                emptyList(),
+                emptyList()
+            )
+        ) != null
     }
+
+    private val containerTypes = listOf<Monitor.Type>(
+        Monitor.Type.CONTAINER_RUNNING
+    )
+
+    private val containerStatisticsTypes = listOf<Monitor.Type>(
+        Monitor.Type.CONTAINER_MEMORY_SPACE, Monitor.Type.CONTAINER_CPU_LOAD
+    )
+
+    private fun idsSubset(types: List<Monitor.Type>) =
+        activeMonitors.filter { types.contains(it.value.second.type) }
+            .mapNotNull { it.value.second.config.monitoredItemId }
 }
 

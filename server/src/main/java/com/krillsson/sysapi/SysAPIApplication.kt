@@ -40,9 +40,9 @@ import com.krillsson.sysapi.core.monitoring.MonitoredItemMissingChecker
 import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.core.monitoring.event.EventRepository
 import com.krillsson.sysapi.core.monitoring.event.EventStore
+import com.krillsson.sysapi.docker.ContainerManager
 import com.krillsson.sysapi.docker.ContainerStatisticsHistoryRecorder
 import com.krillsson.sysapi.docker.DockerClient
-import com.krillsson.sysapi.docker.DockerManager
 import com.krillsson.sysapi.graphql.GraphQLBundle
 import com.krillsson.sysapi.graphql.GraphQLConfiguration
 import com.krillsson.sysapi.graphql.domain.Meta
@@ -98,7 +98,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     private lateinit var keyValueRepository: KeyValueRepository
     private lateinit var eventManager: EventManager
     private lateinit var dockerClient: DockerClient
-    private lateinit var dockerManager: DockerManager
+    private lateinit var containerManager: ContainerManager
     private lateinit var metricsFactory: MetricsFactory
     private lateinit var taskManager: TaskManager
     private lateinit var logFileManager: LogFilesManager
@@ -242,7 +242,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
                 ContainerStatisticsDAO(hibernate.sessionFactory)
             )
         )
-        dockerManager = DockerManager(
+        containerManager = ContainerManager(
             dockerClient,
             config.docker.cache,
             containerHistoryRepository,
@@ -252,7 +252,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         val monitorManager = MonitorManager(
             taskManager,
             metrics,
-            dockerManager,
+            containerManager,
             eventManager,
             MonitorRepository(monitorStore),
             MonitoredItemMissingChecker(genericEventRepository),
@@ -262,7 +262,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         val containerHistoryRecorder = ContainerStatisticsHistoryRecorder(
             taskManager,
             config.metricsConfig.history,
-            dockerManager,
+            containerManager,
             containerHistoryRepository
         )
         environment.lifecycle().registerManagedObjects(
@@ -298,7 +298,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             eventManager,
             historyRepository,
             genericEventRepository,
-            dockerManager,
+            containerManager,
             os.asOperatingSystem(),
             SystemInfo.getCurrentPlatform().asPlatform(),
             Meta(

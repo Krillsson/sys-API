@@ -11,18 +11,18 @@ import io.dropwizard.lifecycle.Managed
 class ContainerStatisticsHistoryRecorder(
     private val taskManager: TaskManager,
     private val configuration: HistoryConfiguration,
-    private val dockerManager: DockerManager,
+    private val containerManager: ContainerManager,
     private val historyRepository: ContainersHistoryRepository
 ) : Managed, Task {
     override val defaultInterval: TaskInterval = TaskInterval.VerySeldom
     override val key: Task.Key = Task.Key.StoreContainerStatisticsHistoryEntry
 
     override fun run() {
-        val containers = dockerManager.containers()
+        val containers = containerManager.containers()
         val statistics = containers
             .filter { it.state == State.RUNNING }
             .mapNotNull { container ->
-                dockerManager.statsForContainer(container.id)
+                containerManager.statsForContainer(container.id)
             }
         historyRepository.recordContainerStatistics(statistics)
         historyRepository.purgeContainerStatistics(configuration.purging.olderThan, configuration.purging.unit)

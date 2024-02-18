@@ -4,8 +4,8 @@ import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.domain.monitor.toFractionalValue
 import com.krillsson.sysapi.core.domain.system.SystemInfo
-import com.krillsson.sysapi.core.monitoring.MetricQueryEvent
 import com.krillsson.sysapi.core.monitoring.Monitor
+import com.krillsson.sysapi.core.monitoring.MonitorInput
 import java.util.*
 
 class ProcessCpuMonitor(override val id: UUID, override val config: MonitorConfig<MonitoredValue.FractionalValue>) :
@@ -23,7 +23,7 @@ class ProcessCpuMonitor(override val id: UUID, override val config: MonitorConfi
 
     override val type: Type = Type.PROCESS_CPU_LOAD
 
-    override fun selectValue(event: MetricQueryEvent): MonitoredValue.FractionalValue? =
+    override fun selectValue(event: MonitorInput): MonitoredValue.FractionalValue? =
         selector(event.load, config.monitoredItemId)
 
     override fun maxValue(info: SystemInfo): MonitoredValue.FractionalValue? {

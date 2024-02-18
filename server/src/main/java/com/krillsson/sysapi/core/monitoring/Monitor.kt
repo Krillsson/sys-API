@@ -27,6 +27,8 @@ abstract class Monitor<out T : MonitoredValue> {
         NETWORK_UPLOAD_RATE(ValueType.Numerical),
         NETWORK_DOWNLOAD_RATE(ValueType.Numerical),
         CONTAINER_RUNNING(ValueType.Conditional),
+        CONTAINER_MEMORY_SPACE(ValueType.Numerical),
+        CONTAINER_CPU_LOAD(ValueType.Fractional),
         PROCESS_MEMORY_SPACE(ValueType.Numerical),
         PROCESS_CPU_LOAD(ValueType.Fractional),
         PROCESS_EXISTS(ValueType.Conditional),
@@ -40,7 +42,7 @@ abstract class Monitor<out T : MonitoredValue> {
         Conditional
     }
 
-    abstract fun selectValue(event: MetricQueryEvent): T?
+    abstract fun selectValue(event: MonitorInput): T?
     abstract fun maxValue(info: SystemInfo): T?
     abstract fun isPastThreshold(value: @UnsafeVariance T): Boolean
 }

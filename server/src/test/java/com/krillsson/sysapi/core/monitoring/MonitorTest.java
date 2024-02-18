@@ -29,7 +29,7 @@ public class MonitorTest {
     MonitorMechanism mechanism;
     Clock clock;
     SystemLoad systemLoad;
-    MetricQueryEvent load;
+    MonitorInput load;
 
     @Before
     public void setUp() throws Exception {
@@ -39,7 +39,7 @@ public class MonitorTest {
 
         mechanism = new MonitorMechanism(clock);
         systemLoad = mock(SystemLoad.class);
-        load = new MetricQueryEvent(systemLoad, Collections.emptyList());
+        load = new MonitorInput(systemLoad, Collections.emptyList());
     }
 
     @Test
@@ -212,7 +212,7 @@ public class MonitorTest {
         }
 
         @Override
-        public MonitoredValue selectValue(@NotNull MetricQueryEvent load) {
+        public MonitoredValue selectValue(@NotNull MonitorInput load) {
             return value;
         }
 

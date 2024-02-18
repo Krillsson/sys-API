@@ -111,10 +111,6 @@ class DockerClient(
         return timedResult.second
     }
 
-    fun getContainer(id: String): Container? {
-        return listContainers(listOf(id)).firstOrNull()
-    }
-
     fun containerStatistics(containerId: String): ContainerMetrics? {
         val timedResult = measureTimeMillis {
             var statistics: Statistics?
