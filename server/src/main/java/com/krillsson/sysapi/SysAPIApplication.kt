@@ -40,7 +40,9 @@ import com.krillsson.sysapi.core.monitoring.MonitoredItemMissingChecker
 import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.core.monitoring.event.EventRepository
 import com.krillsson.sysapi.core.monitoring.event.EventStore
+import com.krillsson.sysapi.docker.ContainerStatisticsHistoryRecorder
 import com.krillsson.sysapi.docker.DockerClient
+import com.krillsson.sysapi.docker.DockerManager
 import com.krillsson.sysapi.graphql.GraphQLBundle
 import com.krillsson.sysapi.graphql.GraphQLConfiguration
 import com.krillsson.sysapi.graphql.domain.Meta
@@ -94,9 +96,9 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
     private lateinit var genericEventRepository: GenericEventRepository
     private lateinit var genericEventStore: MemoryBackedStore<List<GenericEventStore.StoredGenericEvent>>
     private lateinit var keyValueRepository: KeyValueRepository
-    private lateinit var historyStore: Store<List<StoredSystemHistoryEntry>>
     private lateinit var eventManager: EventManager
     private lateinit var dockerClient: DockerClient
+    private lateinit var dockerManager: DockerManager
     private lateinit var metricsFactory: MetricsFactory
     private lateinit var taskManager: TaskManager
     private lateinit var logFileManager: LogFilesManager
@@ -124,7 +126,6 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         monitorStore = MonitorStore(mapper)
         genericEventStore = GenericEventStore(mapper).memoryBacked()
         genericEventRepository = GenericEventRepository(genericEventStore)
-        historyStore = HistoryStore(mapper)
         eventManager = EventManager(EventRepository(eventStore), Clock())
         keyValueRepository = KeyValueRepository(KeyValueStore(mapper))
 
@@ -151,11 +152,9 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
                 arrayOf(
                     SysAPIConfiguration::class.java,
                     FlywayBundle::class.java,
-                    HistorySystemLoadDAO::class.java,
-                    HistoryStore::class.java,
                     MetricRegistry::class.java
                 ),
-                arrayOf(config, flyWay, historyDao, historyStore, environment.metrics())
+                arrayOf(config, flyWay, environment.metrics())
             )
         migrator.migrate()
 
@@ -167,7 +166,6 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             DiskReadWriteRateMeasurementManager(java.time.Clock.systemUTC(), taskManager)
         val networkUploadDownloadRateMeasurementManager =
             NetworkUploadDownloadRateMeasurementManager(java.time.Clock.systemUTC(), taskManager)
-        dockerClient = DockerClient(config.metricsConfig.cache, config.docker, environment.objectMapper)
         logFileManager = LogFilesManager(config.logReader)
         windowsEventLogManager = WindowsManager(config.windows)
         systemDaemonManager = SystemDaemonManager(environment.objectMapper, config.linux)
@@ -188,6 +186,12 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         )
 
         val metrics = metricsFactory.get(config)
+        val dockerClient = DockerClient(
+            config.docker,
+            environment.objectMapper,
+            SystemInfo.getCurrentPlatform().asPlatform()
+        )
+
 
         val selfSignedCertificates = config.selfSignedCertificates
         if (selfSignedCertificates.enabled) {
@@ -227,20 +231,44 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
                 ConnectivityDAO(hibernate.sessionFactory)
             )
         )
+        val containerHistoryRepository = proxyFactory.create(
+            /* clazz = */ ContainersHistoryRepository::class.java,
+            /* constructorParamTypes = */ arrayOf(
+                com.krillsson.sysapi.util.Clock::class.java,
+                ContainerStatisticsDAO::class.java
+            ),
+            /* constructorArguments = */ arrayOf(
+                com.krillsson.sysapi.util.Clock(),
+                ContainerStatisticsDAO(hibernate.sessionFactory)
+            )
+        )
+        dockerManager = DockerManager(
+            dockerClient,
+            config.docker.cache,
+            containerHistoryRepository,
+            config.docker
+        )
         val historyManager = LegacyHistoryManager(historyRepository)
         val monitorManager = MonitorManager(
             taskManager,
             metrics,
-            dockerClient,
+            dockerManager,
             eventManager,
             MonitorRepository(monitorStore),
             MonitoredItemMissingChecker(genericEventRepository),
             com.krillsson.sysapi.util.Clock()
         )
         val historyRecorder = HistoryRecorder(taskManager, config.metricsConfig.history, metrics, historyRepository)
+        val containerHistoryRecorder = ContainerStatisticsHistoryRecorder(
+            taskManager,
+            config.metricsConfig.history,
+            dockerManager,
+            containerHistoryRepository
+        )
         environment.lifecycle().registerManagedObjects(
             monitorManager,
             eventManager,
+            containerHistoryRecorder,
             historyRecorder,
             keyValueRepository,
             genericEventStore,
@@ -270,7 +298,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             eventManager,
             historyRepository,
             genericEventRepository,
-            dockerClient,
+            dockerManager,
             os.asOperatingSystem(),
             SystemInfo.getCurrentPlatform().asPlatform(),
             Meta(

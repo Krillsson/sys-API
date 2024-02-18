@@ -5,7 +5,7 @@ import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.MonitorFactory.createMonitor
 import com.krillsson.sysapi.core.monitoring.event.EventManager
-import com.krillsson.sysapi.docker.DockerClient
+import com.krillsson.sysapi.docker.DockerManager
 import com.krillsson.sysapi.periodictasks.Task
 import com.krillsson.sysapi.periodictasks.TaskInterval
 import com.krillsson.sysapi.periodictasks.TaskManager
@@ -18,7 +18,7 @@ import java.util.*
 class MonitorManager(
     private val taskManager: TaskManager,
     private val metrics: Metrics,
-    private val dockerClient: DockerClient,
+    private val dockerManager: DockerManager,
     private val eventManager: EventManager,
     private val repository: MonitorRepository,
     private val monitoredItemMissingChecker: MonitoredItemMissingChecker,
@@ -32,7 +32,7 @@ class MonitorManager(
     override fun run() {
         checkMonitors(
             MetricQueryEvent(
-                metrics.systemMetrics().systemLoad(), dockerClient.listContainers()
+                metrics.systemMetrics().systemLoad(), dockerManager.containers()
             )
         )
     }

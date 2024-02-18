@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.history
 
+import com.krillsson.sysapi.core.domain.docker.ContainerMetrics
 import com.krillsson.sysapi.core.domain.history.HistorySystemLoad
 import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.history.db.*
@@ -230,4 +231,50 @@ private fun com.krillsson.sysapi.core.domain.cpu.CoreLoad.asCoreLoad(id: UUID): 
         id,
         percentage
     )
+}
+
+fun ContainerMetrics.asEntity(): ContainerStatisticsEntity {
+    return ContainerStatisticsEntity(
+        id,
+        Instant.now(),
+        currentPid,
+        cpuUsage.asCpuUsageEntity(),
+        memoryUsage.asMemoryUsageEntity(),
+        networkUsage.asNetworkUsageEntity(),
+        blockIOUsage.asBlockIOUsageEntity()
+    )
+}
+
+private fun com.krillsson.sysapi.core.domain.docker.BlockIOUsage.asBlockIOUsageEntity(): BlockIOUsage {
+    return BlockIOUsage(
+        bytesWritten = bytesWritten,
+        bytesRead = bytesRead
+    )
+}
+
+private fun com.krillsson.sysapi.core.domain.docker.NetworkUsage.asNetworkUsageEntity(): NetworkUsage {
+    return NetworkUsage(
+        bytesReceived = bytesReceived,
+        bytesTransferred = bytesTransferred
+    )
+}
+
+private fun com.krillsson.sysapi.core.domain.docker.MemoryUsage.asMemoryUsageEntity(): MemoryUsage {
+    return MemoryUsage(
+        usagePercent = usagePercent,
+        usageBytes = usageBytes,
+        limitBytes = limitBytes
+    )
+}
+
+private fun com.krillsson.sysapi.core.domain.docker.CpuUsage.asCpuUsageEntity(): CpuUsage {
+    return CpuUsage(
+        usagePercentPerCore = usagePercentPerCore,
+        usagePercentTotal = usagePercentTotal,
+        throttlingData = throttlingData.asThrottlingDataEntity()
+    )
+}
+
+private fun com.krillsson.sysapi.core.domain.docker.ThrottlingData.asThrottlingDataEntity(): ThrottlingData {
+    return ThrottlingData(periods, throttledPeriods, throttledTime)
 }

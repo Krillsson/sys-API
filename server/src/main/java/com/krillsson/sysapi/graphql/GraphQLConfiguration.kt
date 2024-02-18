@@ -9,7 +9,7 @@ import com.krillsson.sysapi.core.history.HistoryRepository
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.event.EventManager
-import com.krillsson.sysapi.docker.DockerClient
+import com.krillsson.sysapi.docker.DockerManager
 import com.krillsson.sysapi.graphql.domain.*
 import com.krillsson.sysapi.graphql.mutations.*
 import com.krillsson.sysapi.graphql.scalars.ScalarTypes
@@ -96,7 +96,7 @@ class GraphQLConfiguration {
         eventManager: EventManager,
         historyManager: HistoryRepository,
         genericEventRepository: GenericEventRepository,
-        dockerClient: DockerClient,
+        dockerManager: DockerManager,
         operatingSystem: OperatingSystem,
         platform: Platform,
         meta: Meta,
@@ -110,7 +110,7 @@ class GraphQLConfiguration {
             eventManager,
             historyManager,
             genericEventRepository,
-            dockerClient,
+            dockerManager,
             operatingSystem,
             platform,
             meta,
@@ -123,7 +123,7 @@ class GraphQLConfiguration {
             monitorManager,
             genericEventRepository,
             eventManager,
-            dockerClient,
+            dockerManager,
             systemDaemonManager,
             windowsManager
         )

@@ -106,7 +106,7 @@ open class DefaultNetworkMetrics(
             try {
                 up = it.queryNetworkInterface().isUp
             } catch (e: SocketException) {
-                LOGGER.error("Error occurred while getting status for NIC", e)
+                LOGGER.warn("Error occurred while getting status for NIC", e)
             }
             it.asNetworkInterfaceLoad(up, speedForInterfaceWithName(it.name))
         }.toList()
@@ -124,7 +124,7 @@ open class DefaultNetworkMetrics(
                 try {
                     up = it.queryNetworkInterface().isUp
                 } catch (e: SocketException) {
-                    LOGGER.error("Error occurred while getting status for NIC", e)
+                    LOGGER.warn("Error occurred while getting status for NIC", e)
                 }
                 it.asNetworkInterfaceLoad(up, speedForInterfaceWithName(it.name))
             })

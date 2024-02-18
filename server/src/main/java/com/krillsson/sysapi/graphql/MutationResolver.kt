@@ -8,7 +8,7 @@ import com.krillsson.sysapi.core.genericevents.GenericEventRepository
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.event.EventManager
-import com.krillsson.sysapi.docker.DockerClient
+import com.krillsson.sysapi.docker.DockerManager
 import com.krillsson.sysapi.graphql.mutations.*
 import com.krillsson.sysapi.logaccess.windowseventlog.WindowsManager
 import com.krillsson.sysapi.logaccess.windowseventlog.WindowsServiceCommandResult
@@ -23,7 +23,7 @@ class MutationResolver : GraphQLMutationResolver {
     lateinit var monitorManager: MonitorManager
     lateinit var eventManager: EventManager
     lateinit var genericEventRepository: GenericEventRepository
-    lateinit var dockerClient: DockerClient
+    lateinit var dockerManager: DockerManager
     lateinit var systemDaemonManager: SystemDaemonManager
     lateinit var windowsManager: WindowsManager
 
@@ -32,31 +32,31 @@ class MutationResolver : GraphQLMutationResolver {
         monitorManager: MonitorManager,
         genericEventRepository: GenericEventRepository,
         eventManager: EventManager,
-        dockerClient: DockerClient,
+        dockerManager: DockerManager,
         systemDaemonManager: SystemDaemonManager,
         windowsManager: WindowsManager
     ) {
         this.metrics = metrics
         this.monitorManager = monitorManager
         this.eventManager = eventManager
-        this.dockerClient = dockerClient
+        this.dockerManager = dockerManager
         this.genericEventRepository = genericEventRepository
         this.systemDaemonManager = systemDaemonManager
         this.windowsManager = windowsManager
     }
 
     fun performDockerContainerCommand(input: PerformDockerContainerCommandInput): PerformDockerContainerCommandOutput {
-        val result = dockerClient.performCommandWithContainer(
+        val result = dockerManager.performCommandWithContainer(
             Command(input.containerId, input.command)
         )
 
         return when (result) {
-            is DockerClient.CommandResult.Failed -> PerformDockerContainerCommandOutputFailed(
+            is com.krillsson.sysapi.docker.CommandResult.Failed -> PerformDockerContainerCommandOutputFailed(
                 "Message: ${result.error.message ?: "Unknown reason"} Type: ${requireNotNull(result.error::class.simpleName)}",
             )
 
-            DockerClient.CommandResult.Success -> PerformDockerContainerCommandOutputSucceeded(input.containerId)
-            DockerClient.CommandResult.Unavailable -> PerformDockerContainerCommandOutputFailed("Docker client is unavailable")
+            com.krillsson.sysapi.docker.CommandResult.Success -> PerformDockerContainerCommandOutputSucceeded(input.containerId)
+            com.krillsson.sysapi.docker.CommandResult.Unavailable -> PerformDockerContainerCommandOutputFailed("Docker client is unavailable")
         }
     }
 
