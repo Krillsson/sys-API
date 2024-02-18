@@ -12,6 +12,9 @@ import com.krillsson.sysapi.core.domain.docker.Mount
 import com.krillsson.sysapi.core.domain.docker.Network
 import com.krillsson.sysapi.core.domain.docker.PortBinding
 import com.krillsson.sysapi.core.domain.docker.PortConfig
+import com.krillsson.sysapi.core.domain.system.Platform
+import java.time.Duration
+import java.time.Instant
 
 fun ContainerConfig.asConfig(volumeBindings: List<VolumeBinding>): Config {
     return Config(
@@ -161,66 +164,118 @@ fun List<HealthStateLog>.asHealthLogEntries(): List<HealthLogEntry> {
     return map { it.asHealthLogEntry() }
 }
 
-fun Statistics.asStatistics(): ContainerStatistics {
-    return ContainerStatistics(
+fun Statistics.asStatistics(id: String, platform: Platform): ContainerMetrics {
+    return ContainerMetrics(
+        id = id,
         currentPid = pidsStats.current.orDefault(),
-        cpuUsage = cpuStats.asCpuUsage(),
+        cpuUsage = cpuStats.asCpuUsage(platform, preCpuStats, read, preread, numProcs),
         memoryUsage = memoryStats.asMemoryUsage(),
-        networkUsage = networks?.map { it.value.asNetworkUsage(it.key) }.orEmpty(),
+        networkUsage = networks.orEmpty().asNetworkUsage(),
         blockIOUsage = blkioStats.asBlockIOUsage()
     )
 }
 
-private fun BlkioStatsConfig.asBlockIOUsage(): BlockIOUsage {
-    return BlockIOUsage(
-        ioMergedRecursive = ioMergedRecursive?.map { it.asBlockIOEntry() }.orEmpty(),
-        ioServiceBytesRecursive = ioServiceBytesRecursive?.map { it.asBlockIOEntry() }.orEmpty(),
-        ioServicedRecursive = ioServicedRecursive?.map { it.asBlockIOEntry() }.orEmpty(),
-        ioQueueRecursive = ioQueueRecursive?.map { it.asBlockIOEntry() }.orEmpty(),
-        ioServiceTimeRecursive = ioServiceTimeRecursive?.map { it.asBlockIOEntry() }.orEmpty(),
-        ioWaitTimeRecursive = ioWaitTimeRecursive?.map { it.asBlockIOEntry() }.orEmpty(),
-        ioTimeRecursive = ioTimeRecursive?.map { it.asBlockIOEntry() }.orEmpty(),
-        sectorsRecursive = sectorsRecursive?.map { it.asBlockIOEntry() }.orEmpty(),
-    )
-}
+private fun Map<String, StatisticNetworksConfig>.asNetworkUsage(): NetworkUsage {
+    var bytesTransferred: Long = 0
+    var bytesReceived: Long = 0
 
-private fun BlkioStatEntry.asBlockIOEntry(): BlockIOEntry {
-    return BlockIOEntry(
-        major,
-        minor,
-        op,
-        value
-    )
-}
+    entries.forEach {
+        bytesTransferred += it.value.txBytes.orDefault()
+        bytesReceived += it.value.rxBytes.orDefault()
+    }
 
-private fun StatisticNetworksConfig.asNetworkUsage(name: String): NetworkUsage {
     return NetworkUsage(
-        name = name,
-        rxBytes = rxBytes.orDefault(),
-        rxDropped = rxDropped.orDefault(),
-        rxErrors = rxErrors.orDefault(),
-        rxPackets = rxPackets.orDefault(),
-        txBytes = txBytes.orDefault(),
-        txDropped = txDropped.orDefault(),
-        txErrors = txErrors.orDefault(),
-        txPackets = txPackets.orDefault()
+        bytesReceived = bytesReceived,
+        bytesTransferred = bytesTransferred
+    )
+}
+
+private fun BlkioStatsConfig.asBlockIOUsage(): BlockIOUsage {
+    var bytesWritten: Long = 0
+    var bytesRead: Long = 0
+
+    ioServiceBytesRecursive.orEmpty().forEach {
+        when (it.op.lowercase()) {
+            "write" -> bytesWritten += it.value
+            "read" -> bytesRead += it.value
+        }
+    }
+
+    return BlockIOUsage(
+        bytesWritten = bytesWritten,
+        bytesRead = bytesRead
     )
 }
 
 private fun MemoryStatsConfig.asMemoryUsage(): MemoryUsage {
+    val memoryUsageBytes = usage.orDefault() - stats?.cache.orDefault()
+    val limitBytes = limit.orDefault()
+    val usagePercentage = (memoryUsageBytes.toDouble() / limitBytes.toDouble()) * 100.0
     return MemoryUsage(
-        usage = usage.orDefault(),
-        maxUsage = maxUsage.orDefault(),
-        limit = limit.orDefault()
+        usageBytes = usage.orDefault(),
+        limitBytes = limitBytes,
+        usagePercent = usagePercentage
     )
 }
 
-private fun CpuStatsConfig.asCpuUsage(): CpuUsage {
+private fun CpuStatsConfig.asCpuUsage(
+    platform: Platform,
+    preCpuStats: CpuStatsConfig,
+    read: String,
+    preRead: String,
+    numProcs: Long
+): CpuUsage {
+    return when (platform) {
+        Platform.WINDOWS, Platform.WINDOWSCE -> cpuUsageWindows(preCpuStats, read, preRead, numProcs)
+        else -> cpuUsageUnix(preCpuStats)
+    }
+}
+
+fun CpuStatsConfig.cpuUsageWindows(
+    preCpuStats: CpuStatsConfig,
+    read: String,
+    preRead: String,
+    numProcs: Long
+): CpuUsage {
+    val totalCpuUsage = cpuUsage?.totalUsage?.toDouble() ?: 0.0
+    val totalPreCpuUsage = preCpuStats.cpuUsage?.totalUsage?.toDouble() ?: 0.0
+
+    val readInstant = Instant.parse(read)
+    val preReadInstant = Instant.parse(preRead)
+    val durationNanos = Duration.between(preReadInstant, readInstant).abs().toNanos()
+    val nanosHundreds = durationNanos / 100
+    val hundredsPerProcessor = nanosHundreds * numProcs
+    val intervalsUsed = totalCpuUsage - totalPreCpuUsage
+    val (cpuPercentPerCore, cpuPercentTotal) = if (hundredsPerProcessor > 0) {
+        val percentPerCore = intervalsUsed / hundredsPerProcessor.toDouble()
+        val percentTotal = percentPerCore / numProcs
+        percentPerCore to percentTotal
+    } else 0.0 to 0.0
+
     return CpuUsage(
-        cpuUsage?.totalUsage.orDefault(),
-        cpuUsage?.percpuUsage.orEmpty(),
-        cpuUsage?.usageInKernelmode.orDefault(),
-        cpuUsage?.usageInUsermode.orDefault(),
+        usagePercentPerCore = cpuPercentPerCore,
+        usagePercentTotal = cpuPercentTotal,
+        throttlingData?.asThrottlingData() ?: ThrottlingData(-1, -1, -1)
+    )
+}
+
+private fun CpuStatsConfig.cpuUsageUnix(preCpuStats: CpuStatsConfig): CpuUsage {
+    val totalCpuUSage = cpuUsage?.totalUsage?.toDouble() ?: 0.0
+    val totalPreCpuUsage = preCpuStats.cpuUsage?.totalUsage?.toDouble() ?: 0.0
+    val cpuDelta = totalCpuUSage - totalPreCpuUsage
+    val systemCpuUsage = systemCpuUsage?.toDouble()
+    val preSystemCpuUsage = preCpuStats.systemCpuUsage?.toDouble()
+    val systemDelta = systemCpuUsage?.minus(preSystemCpuUsage ?: 0.0) ?: 0.0
+    val (cpuPercentPerCore, cpuPercentTotal) = if (cpuDelta > 0.0 && systemDelta > 0.0) {
+        val cpuCount = cpuUsage?.percpuUsage?.size?.toDouble() ?: preCpuStats.cpuUsage?.percpuUsage?.size?.toDouble()
+        ?: onlineCpus?.toDouble() ?: 1.0
+        val percentPerCore = (cpuDelta / systemDelta) * (cpuCount * 100.0)
+        val percentTotal = percentPerCore / cpuCount
+        percentPerCore to percentTotal
+    } else 0.0 to 0.0
+    return CpuUsage(
+        usagePercentPerCore = cpuPercentPerCore,
+        usagePercentTotal = cpuPercentTotal,
         throttlingData?.asThrottlingData() ?: ThrottlingData(-1, -1, -1)
     )
 }

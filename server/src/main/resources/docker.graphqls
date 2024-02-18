@@ -33,12 +33,14 @@ union ReadLogsForContainerOutput = ReadLogsForContainerOutputSucceeded | ReadLog
 
 union Docker = DockerAvailable | DockerUnavailable
 
-type DockerAvailable{
+type DockerAvailable {
     container(id: String!): DockerContainer
     containers: [DockerContainer!]!
     runningContainers: [DockerContainer!]!
     readLogsForContainer(containerId: String!, from: OffsetDateTime, to: OffsetDateTime): ReadLogsForContainerOutput @deprecated(reason: "Replaced by readLogsForContainerBetweenTimestamps")
     readLogsForContainerBetweenTimestamps(containerId: String!, from: Instant, to: Instant): ReadLogsForContainerOutput
+    metricsForContainer(containerId: String!): DockerContainerMetrics
+    containerMetricsHistoryBetweenTimestamps(containerId: String!, from: Instant!, to: Instant!): [DockerContainerMetricsHistoryEntry!]!
 }
 
 type DockerUnavailable{
@@ -71,22 +73,24 @@ type DockerContainer {
     state: DockerContainerState!
     health: DockerContainerHealth
     status: String!
-    metrics: DockerContainerMetrics
 }
 
 type DockerContainerMetrics{
     cpuUsage: DockerContainerCpuUsage!
     memoryUsage: DockerContainerMemoryUsage!
     currentPid: Long!
-    networkUsage: [DockerContainerNetworkUsage!]!
+    networkUsage: DockerContainerNetworkUsage!
     blockIOUsage: DockerContainerBlockIOUsage!
 }
 
+type DockerContainerMetricsHistoryEntry {
+    timestamp: Instant!
+    metrics: DockerContainerMetrics!
+}
+
 type DockerContainerCpuUsage{
-    totalUsage: Long!
-    perCpuUsage: [Long!]!
-    usageInKernelMode: Long!
-    usageInUserMode: Long!
+    usagePercentPerCore: Float!
+    usagePercentTotal: Float!
     throttlingData: DockerContainerThrottlingData!
 }
 
@@ -97,39 +101,19 @@ type DockerContainerThrottlingData{
 }
 
 type DockerContainerNetworkUsage{
-    name: String!
-    rxBytes: Long!
-    rxDropped: Long!
-    rxErrors: Long!
-    rxPackets: Long!
-    txBytes: Long!
-    txDropped: Long!
-    txErrors: Long!
-    txPackets: Long!
+    bytesReceived: Long!
+    bytesTransferred: Long!
 }
 
 type DockerContainerBlockIOUsage{
-    ioServiceBytesRecursive: [DockerContainerBlockIOEntry!]!
-    ioServicedRecursive: [DockerContainerBlockIOEntry!]!
-    ioQueueRecursive: [DockerContainerBlockIOEntry!]!
-    ioServiceTimeRecursive: [DockerContainerBlockIOEntry!]!
-    ioWaitTimeRecursive: [DockerContainerBlockIOEntry!]!
-    ioMergedRecursive: [DockerContainerBlockIOEntry!]!
-    ioTimeRecursive: [DockerContainerBlockIOEntry!]!
-    sectorsRecursive: [DockerContainerBlockIOEntry!]!
-}
-
-type DockerContainerBlockIOEntry{
-    major: Long!
-    minor: Long!
-    operation: String!
-    value: Long!
+    bytesWritten: Long!
+    bytesRead: Long!
 }
 
 type DockerContainerMemoryUsage{
-    usage: Long!
-    maxUsage: Long!
-    limit: Long!
+    usageBytes: Long!
+    usagePercent: Float!
+    limitBytes: Long!
 }
 
 type DockerContainerHealth{

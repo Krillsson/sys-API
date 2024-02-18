@@ -41,10 +41,6 @@ class HistorySystemLoadDAO(sessionFactory: SessionFactory) : AbstractDAO<History
     fun findAll(): List<HistorySystemLoadEntity> {
         return list(namedTypedQuery("com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity.findAll"))
     }
-
-    fun findById(id: UUID): HistorySystemLoadEntity? {
-        return get(id)
-    }
 }
 
 class BasicHistorySystemLoadDAO(sessionFactory: SessionFactory) :

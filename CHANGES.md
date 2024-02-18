@@ -2,6 +2,9 @@
 - added `deletePastEventsForMonitor`, `closeOngoingEventForMonitor` to the GraphQL-API
 - added `Monitor.maxValue` to the GraphQL-API. Useful when displaying monitored value in a graph.
 - added start value to past events
+- Container metrics support
+  - metricsForContainer(id) for near realtime metrics
+  - containerMetricsHistoryBetweenTimestamps(id, from, to) for history
 
 ### 0.19.3
 - fix NPE when querying ContainerNetworkSettings while using podman in rootless mode

@@ -5,6 +5,8 @@ import com.krillsson.sysapi.core.domain.cpu.CpuLoad
 import com.krillsson.sysapi.core.domain.disk.Disk
 import com.krillsson.sysapi.core.domain.disk.DiskLoad
 import com.krillsson.sysapi.core.domain.docker.Container
+import com.krillsson.sysapi.core.domain.docker.ContainerMetrics
+import com.krillsson.sysapi.core.domain.docker.ContainerMetricsHistoryEntry
 import com.krillsson.sysapi.core.domain.docker.State
 import com.krillsson.sysapi.core.domain.drives.Drive
 import com.krillsson.sysapi.core.domain.drives.DriveLoad
@@ -35,7 +37,9 @@ import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.event.EventManager
-import com.krillsson.sysapi.docker.DockerClient
+import com.krillsson.sysapi.docker.DockerManager
+import com.krillsson.sysapi.docker.ReadLogsCommandResult
+import com.krillsson.sysapi.docker.Status
 import com.krillsson.sysapi.graphql.domain.*
 import com.krillsson.sysapi.logaccess.file.LogFilesManager
 import com.krillsson.sysapi.logaccess.windowseventlog.WindowsManager
@@ -51,18 +55,18 @@ import java.util.*
 
 class QueryResolver : GraphQLQueryResolver {
 
-    lateinit var metrics: Metrics
-    lateinit var monitorManager: MonitorManager
-    lateinit var eventManager: EventManager
-    lateinit var historyRepository: HistoryRepository
-    lateinit var genericEventRepository: GenericEventRepository
-    lateinit var operatingSystem: OperatingSystem
-    lateinit var platform: Platform
-    lateinit var dockerClient: DockerClient
-    lateinit var meta: Meta
-    lateinit var logFilesManager: LogFilesManager
-    lateinit var windowsEventLogManager: WindowsManager
-    lateinit var systemDaemonManager: SystemDaemonManager
+    private lateinit var metrics: Metrics
+    private lateinit var monitorManager: MonitorManager
+    private lateinit var eventManager: EventManager
+    private lateinit var historyRepository: HistoryRepository
+    private lateinit var genericEventRepository: GenericEventRepository
+    private lateinit var operatingSystem: OperatingSystem
+    private lateinit var platform: Platform
+    private lateinit var dockerManager: DockerManager
+    private lateinit var meta: Meta
+    private lateinit var logFilesManager: LogFilesManager
+    private lateinit var windowsEventLogManager: WindowsManager
+    private lateinit var systemDaemonManager: SystemDaemonManager
 
     fun initialize(
         metrics: Metrics,
@@ -70,7 +74,7 @@ class QueryResolver : GraphQLQueryResolver {
         eventManager: EventManager,
         historyManager: HistoryRepository,
         genericEventRepository: GenericEventRepository,
-        dockerClient: DockerClient,
+        dockerManager: DockerManager,
         operatingSystem: OperatingSystem,
         platform: Platform,
         meta: Meta,
@@ -85,7 +89,7 @@ class QueryResolver : GraphQLQueryResolver {
         this.historyRepository = historyManager
         this.operatingSystem = operatingSystem
         this.platform = platform
-        this.dockerClient = dockerClient
+        this.dockerManager = dockerManager
         this.meta = meta
         this.systemDaemonManager = systemDaemonManager
         this.windowsEventLogManager = windowsManager
@@ -149,14 +153,14 @@ class QueryResolver : GraphQLQueryResolver {
 
 
     fun docker(): Docker {
-        return when (val status = dockerClient.status) {
-            DockerClient.Status.Available -> DockerAvailable
-            DockerClient.Status.Disabled -> DockerUnavailable(
+        return when (val status = dockerManager.status) {
+            Status.Available -> DockerAvailable
+            Status.Disabled -> DockerUnavailable(
                 "The docker support is currently disabled. You can change this in configuration.yml",
                 isDisabled = true
             )
 
-            is DockerClient.Status.Unavailable -> DockerUnavailable(
+            is Status.Unavailable -> DockerUnavailable(
                 "${status.error.message ?: "Unknown reason"} Type: ${requireNotNull(status.error::class.simpleName)}",
                 isDisabled = false
             )
@@ -184,10 +188,10 @@ class QueryResolver : GraphQLQueryResolver {
     }
 
     inner class DockerResolver : GraphQLResolver<DockerAvailable> {
-        fun containers(docker: DockerAvailable) = dockerClient.listContainers()
-        fun container(docker: DockerAvailable, id: String) = dockerClient.container(id)
+        fun containers(docker: DockerAvailable) = dockerManager.containers()
+        fun container(docker: DockerAvailable, id: String) = dockerManager.container(id)
         fun runningContainers(docker: DockerAvailable) =
-            dockerClient.listContainers().filter { it.state == State.RUNNING }
+            dockerManager.containers().filter { it.state == State.RUNNING }
 
         fun readLogsForContainer(
             docker: DockerAvailable,
@@ -196,14 +200,14 @@ class QueryResolver : GraphQLQueryResolver {
             to: OffsetDateTime?
         ): ReadLogsForContainerOutput {
             return when (val result =
-                dockerClient.readLogsForContainer(containerId, from?.toInstant(), to?.toInstant())) {
-                is DockerClient.ReadLogsCommandResult.Success -> ReadLogsForContainerOutputSucceeded(result.lines)
-                is DockerClient.ReadLogsCommandResult.Failed -> ReadLogsForContainerOutputFailed(
+                dockerManager.readLogsForContainer(containerId, from?.toInstant(), to?.toInstant())) {
+                is ReadLogsCommandResult.Success -> ReadLogsForContainerOutputSucceeded(result.lines)
+                is ReadLogsCommandResult.Failed -> ReadLogsForContainerOutputFailed(
                     result.error.message ?: result.error.toString()
                 )
 
-                is DockerClient.ReadLogsCommandResult.TimedOut -> ReadLogsForContainerOutputFailed("Operation timed out after ${result.timeoutSeconds} seconds")
-                DockerClient.ReadLogsCommandResult.Unavailable -> ReadLogsForContainerOutputFailed("Docker is not available")
+                is ReadLogsCommandResult.TimedOut -> ReadLogsForContainerOutputFailed("Operation timed out after ${result.timeoutSeconds} seconds")
+                ReadLogsCommandResult.Unavailable -> ReadLogsForContainerOutputFailed("Docker is not available")
             }
         }
 
@@ -213,20 +217,35 @@ class QueryResolver : GraphQLQueryResolver {
             from: Instant?,
             to: Instant?
         ): ReadLogsForContainerOutput {
-            return when (val result = dockerClient.readLogsForContainer(containerId, from, to)) {
-                is DockerClient.ReadLogsCommandResult.Success -> ReadLogsForContainerOutputSucceeded(result.lines)
-                is DockerClient.ReadLogsCommandResult.Failed -> ReadLogsForContainerOutputFailed(
+            return when (val result = dockerManager.readLogsForContainer(containerId, from, to)) {
+                is ReadLogsCommandResult.Success -> ReadLogsForContainerOutputSucceeded(result.lines)
+                is ReadLogsCommandResult.Failed -> ReadLogsForContainerOutputFailed(
                     result.error.message ?: result.error.toString()
                 )
 
-                is DockerClient.ReadLogsCommandResult.TimedOut -> ReadLogsForContainerOutputFailed("Operation timed out after ${result.timeoutSeconds} seconds")
-                DockerClient.ReadLogsCommandResult.Unavailable -> ReadLogsForContainerOutputFailed("Docker is not available")
+                is ReadLogsCommandResult.TimedOut -> ReadLogsForContainerOutputFailed("Operation timed out after ${result.timeoutSeconds} seconds")
+                ReadLogsCommandResult.Unavailable -> ReadLogsForContainerOutputFailed("Docker is not available")
             }
+        }
+
+        fun metricsForContainer(docker: DockerAvailable, containerId: String): ContainerMetrics? {
+            return dockerManager.statsForContainer(containerId)
+        }
+
+        fun containerMetricsHistoryBetweenTimestamps(
+            docker: DockerAvailable,
+            containerId: String,
+            from: Instant,
+            to: Instant
+        ): List<ContainerMetricsHistoryEntry> {
+            return dockerManager.containerMetricsHistoryBetweenTimestamps(
+                containerId, from, to
+            )
         }
     }
 
     inner class ContainerResolver : GraphQLResolver<Container> {
-        fun metrics(container: Container) = dockerClient.statsForContainer(container.id)
+        fun metrics(container: Container) = dockerManager.statsForContainer(container.id)
 
     }
 

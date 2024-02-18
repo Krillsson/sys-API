@@ -56,33 +56,6 @@ input CreateConditionalMonitorInput {
     monitoredItemId: String
 }
 
-enum NumericalValueMonitorType {
-    CPU_TEMP,
-    DRIVE_SPACE,
-    DRIVE_READ_RATE,
-    DRIVE_WRITE_RATE,
-    MEMORY_SPACE,
-    NETWORK_UPLOAD_RATE,
-    NETWORK_DOWNLOAD_RATE,
-    PROCESS_MEMORY_SPACE,
-}
-
-enum FractionalValueMonitorType {
-    CPU_LOAD,
-    PROCESS_CPU_LOAD,
-    LOAD_AVERAGE_ONE_MINUTE,
-    LOAD_AVERAGE_FIVE_MINUTES,
-    LOAD_AVERAGE_FIFTEEN_MINUTES,
-}
-
-enum ConditionalValueMonitorType {
-    NETWORK_UP,
-    CONTAINER_RUNNING,
-    PROCESS_EXISTS,
-    CONNECTIVITY,
-    EXTERNAL_IP_CHANGED
-}
-
 input UpdateNumericalValueMonitorInput {
     monitorId: UUID!
     inertiaInSeconds: Int

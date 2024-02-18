@@ -21,8 +21,10 @@
 package com.krillsson.sysapi.config
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.concurrent.TimeUnit
 
 data class DockerConfiguration(
     @JsonProperty val enabled: Boolean,
-    @JsonProperty val host: String? = null
+    @JsonProperty val host: String? = null,
+    @JsonProperty val cache: CacheConfiguration = CacheConfiguration(false, 5, TimeUnit.SECONDS)
 )
