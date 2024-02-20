@@ -33,10 +33,7 @@ import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.metrics.MetricsFactory
 import com.krillsson.sysapi.core.metrics.defaultimpl.DiskReadWriteRateMeasurementManager
 import com.krillsson.sysapi.core.metrics.defaultimpl.NetworkUploadDownloadRateMeasurementManager
-import com.krillsson.sysapi.core.monitoring.MonitorManager
-import com.krillsson.sysapi.core.monitoring.MonitorRepository
-import com.krillsson.sysapi.core.monitoring.MonitorStore
-import com.krillsson.sysapi.core.monitoring.MonitoredItemMissingChecker
+import com.krillsson.sysapi.core.monitoring.*
 import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.core.monitoring.event.EventRepository
 import com.krillsson.sysapi.core.monitoring.event.EventStore
@@ -256,7 +253,8 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             eventManager,
             MonitorRepository(monitorStore),
             MonitoredItemMissingChecker(genericEventRepository),
-            com.krillsson.sysapi.util.Clock()
+            com.krillsson.sysapi.util.Clock(),
+            MonitorInputCreator(metrics, containerManager)
         )
         val historyRecorder = HistoryRecorder(taskManager, config.metricsConfig.history, metrics, historyRepository)
         val containerHistoryRecorder = ContainerStatisticsHistoryRecorder(

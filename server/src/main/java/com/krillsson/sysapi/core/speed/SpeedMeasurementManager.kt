@@ -21,6 +21,7 @@ abstract class SpeedMeasurementManager(
     override fun run() {
         for (speedSource in speedSources) {
             val start = speedMeasurementStore[speedSource.name]
+            speedSource.update()
             val end = SpeedMeasurement(
                 speedSource.currentRead(),
                 speedSource.currentWrite(),
@@ -85,6 +86,7 @@ abstract class SpeedMeasurementManager(
 
     interface SpeedSource {
         val name: String
+        fun update()
         fun currentRead(): Long
         fun currentWrite(): Long
     }

@@ -26,5 +26,5 @@ import java.util.concurrent.TimeUnit
 data class DockerConfiguration(
     @JsonProperty val enabled: Boolean,
     @JsonProperty val host: String? = null,
-    @JsonProperty val cache: CacheConfiguration = CacheConfiguration(false, 5, TimeUnit.SECONDS)
+    @JsonProperty val cache: CacheConfiguration = CacheConfiguration(true, 5, TimeUnit.SECONDS)
 )
