@@ -42,17 +42,19 @@ open class DefaultNetworkMetrics(
     class NetworkSpeedSource(private val networkIF: NetworkIF) : SpeedSource {
 
         override fun currentRead(): Long {
-            networkIF.updateAttributes()
             return networkIF.bytesRecv
         }
 
         override fun currentWrite(): Long {
-            networkIF.updateAttributes()
             return networkIF.bytesSent
         }
 
         override val name: String
             get() = networkIF.name
+
+        override fun update() {
+            networkIF.updateAttributes()
+        }
     }
 
     fun register() {

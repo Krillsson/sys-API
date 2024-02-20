@@ -81,17 +81,19 @@ open class DefaultDiskMetrics(
         return if (StringUtils.isEmpty(d.serial)) "n/a" else d.serial
     }
 
-    private class DiskSpeedSource constructor(
+    private class DiskSpeedSource(
         override val name: String,
         private val hwDiskStore: HWDiskStore
     ) : SpeedMeasurementManager.SpeedSource {
-        override fun currentRead(): Long {
+        override fun update() {
             hwDiskStore.updateAttributes()
+        }
+
+        override fun currentRead(): Long {
             return hwDiskStore.readBytes
         }
 
         override fun currentWrite(): Long {
-            hwDiskStore.updateAttributes()
             return hwDiskStore.writeBytes
         }
     }

@@ -1,5 +1,7 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl
 
+import com.google.common.cache.Cache
+import com.google.common.cache.CacheBuilder
 import com.krillsson.sysapi.core.domain.processes.Process
 import com.krillsson.sysapi.core.domain.processes.ProcessSort
 import com.krillsson.sysapi.core.domain.processes.ProcessSort.*
@@ -14,6 +16,7 @@ import org.slf4j.LoggerFactory
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.software.os.OSProcess
 import oshi.software.os.OperatingSystem
+import java.time.Duration
 import java.util.*
 
 class DefaultProcessesMetrics(
@@ -31,6 +34,10 @@ class DefaultProcessesMetrics(
 
     private val priorSnapshotMap: MutableMap<Int, OSProcess> = mutableMapOf()
     private val currentLoad: MutableMap<Int, Double> = mutableMapOf()
+    // profiling showed that user and group was expensive in Linux
+    private val cachedUserAndGroup: Cache<Int, Pair<String, String>> = CacheBuilder.newBuilder()
+        .expireAfterWrite(Duration.ofMinutes(5))
+        .build()
 
     init {
         updateMap(operatingSystem.processes)
@@ -110,7 +117,12 @@ class DefaultProcessesMetrics(
         }
     }
 
+    private fun OSProcess.getOrCreateUserAndGroup(pid: Int): Pair<String, String> {
+        return cachedUserAndGroup.get(pid) { user to group }
+    }
+
     private fun OSProcess.asProcess(cpuPercent: Double, totalBytes: Long): Process {
+        val (user, group) = getOrCreateUserAndGroup(processID)
         return Process(
             name,
             path,
@@ -127,7 +139,8 @@ class DefaultProcessesMetrics(
             virtualSize,
             residentSetSize,
             100.0 * residentSetSize / totalBytes,
-            kernelTime, userTime,
+            kernelTime,
+            userTime,
             upTime,
             cpuPercent,
             startTime,

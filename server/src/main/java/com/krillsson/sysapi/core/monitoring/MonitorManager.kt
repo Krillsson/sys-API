@@ -22,7 +22,8 @@ class MonitorManager(
     private val eventManager: EventManager,
     private val repository: MonitorRepository,
     private val monitoredItemMissingChecker: MonitoredItemMissingChecker,
-    private val clock: Clock
+    private val clock: Clock,
+    private val monitorInputCreator: MonitorInputCreator
 ) : Managed, Task {
 
     val logger by logger()
@@ -31,16 +32,12 @@ class MonitorManager(
     override val key: Task.Key = Task.Key.CheckMonitors
 
     override fun run() {
-        val containerIds = idsSubset(containerTypes)
-        val containerStatisticsIds = idsSubset(containerStatisticsTypes)
-        val containers = if (containerIds.isNotEmpty()) containerManager.containersWithIds(containerIds) else emptyList()
-        val containersStats = containerStatisticsIds.mapNotNull { id -> containerManager.statsForContainer(id) }
+        val input = monitorInputCreator.createInput(
+            activeMonitors.values.map { it.second }
+        )
+
         checkMonitors(
-            MonitorInput(
-                metrics.systemMetrics().systemLoad(),
-                containers,
-                containersStats
-            )
+            input
         )
     }
 
@@ -160,17 +157,5 @@ class MonitorManager(
             )
         ) != null
     }
-
-    private val containerTypes = listOf<Monitor.Type>(
-        Monitor.Type.CONTAINER_RUNNING
-    )
-
-    private val containerStatisticsTypes = listOf<Monitor.Type>(
-        Monitor.Type.CONTAINER_MEMORY_SPACE, Monitor.Type.CONTAINER_CPU_LOAD
-    )
-
-    private fun idsSubset(types: List<Monitor.Type>) =
-        activeMonitors.filter { types.contains(it.value.second.type) }
-            .mapNotNull { it.value.second.config.monitoredItemId }
 }
 
