@@ -16,9 +16,7 @@ open class DefaultDiskMetrics(
 ) : DiskMetrics {
 
     fun register() {
-        for (store in hal.diskStores) {
-            speedMeasurementManager.register(DiskSpeedSource(store.name, store))
-        }
+        speedMeasurementManager.registerStores()
     }
 
     override fun disks(): List<Disk> {
@@ -79,23 +77,6 @@ open class DefaultDiskMetrics(
 
     private fun getSerial(d: HWDiskStore): String {
         return if (StringUtils.isEmpty(d.serial)) "n/a" else d.serial
-    }
-
-    private class DiskSpeedSource(
-        override val name: String,
-        private val hwDiskStore: HWDiskStore
-    ) : SpeedMeasurementManager.SpeedSource {
-        override fun update() {
-            hwDiskStore.updateAttributes()
-        }
-
-        override fun currentRead(): Long {
-            return hwDiskStore.readBytes
-        }
-
-        override fun currentWrite(): Long {
-            return hwDiskStore.writeBytes
-        }
     }
 
     private fun HWDiskStore.asDisk() = Disk(

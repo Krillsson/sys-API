@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl
 
+import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
 import com.krillsson.sysapi.periodictasks.TaskManager
 import com.krillsson.sysapi.util.asOperatingSystem
@@ -10,6 +11,7 @@ import oshi.software.os.OperatingSystem
 
 object DefaultMetricsFactory {
     fun create(
+        config: SysAPIConfiguration,
         os: OperatingSystem,
         hal: HardwareAbstractionLayer,
         platformEnum: PlatformEnum,
@@ -30,7 +32,7 @@ object DefaultMetricsFactory {
         )
         val gpuMetrics = DefaultGpuMetrics(hal)
         val driveMetrics = DefaultDriveMetrics(os, hal)
-        val processesMetrics = DefaultProcessesMetrics(os, hal, periodicTaskManager)
+        val processesMetrics = DefaultProcessesMetrics(config.processes, os, hal, periodicTaskManager)
         val motherboardMetrics = DefaultMotherboardMetrics(hal)
         val memoryMetrics = DefaultMemoryMetrics(hal, os)
         val systemMetrics = DefaultSystemMetrics(

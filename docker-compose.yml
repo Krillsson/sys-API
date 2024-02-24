@@ -8,6 +8,11 @@ services:
     entrypoint:
       - java
       - -server
+      - -XX:+UseG1GC
+      - -XX:MinHeapFreeRatio=2
+      - -XX:MaxHeapFreeRatio=10
+      - -Xmx1300m
+      - -Xms256m
       - -Djava.awt.headless=true
       - -cp
       - /resources:/classes:/libs/*

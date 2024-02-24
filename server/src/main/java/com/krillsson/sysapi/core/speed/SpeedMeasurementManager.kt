@@ -19,6 +19,7 @@ abstract class SpeedMeasurementManager(
     private val speedSources = mutableListOf<SpeedSource>()
     override val defaultInterval: TaskInterval = TaskInterval.Often
     override fun run() {
+        onUpdateStarted()
         for (speedSource in speedSources) {
             val start = speedMeasurementStore[speedSource.name]
             speedSource.update()
@@ -55,6 +56,8 @@ abstract class SpeedMeasurementManager(
         }
     }
 
+    open fun onUpdateStarted(){}
+
     fun register(sources: Collection<SpeedSource>) {
         LOGGER.debug("Registering {}", *sources.stream().map { obj: SpeedSource -> obj.name }
             .toArray())
@@ -86,7 +89,7 @@ abstract class SpeedMeasurementManager(
 
     interface SpeedSource {
         val name: String
-        fun update()
+        fun update() = Unit
         fun currentRead(): Long
         fun currentWrite(): Long
     }

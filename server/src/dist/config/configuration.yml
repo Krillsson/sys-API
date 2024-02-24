@@ -14,9 +14,11 @@ metricsConfig:
       purgeEvery: 1
       purgeEveryUnit: DAYS
   cache:
-    enabled: true
+    enabled: false
     duration: 5
     unit: SECONDS
+processes:
+  enabled: true
 user:
   username: user
   password: password
@@ -70,10 +72,10 @@ selfSignedCertificates:
 tasks:
   often:
     interval: 5s
-    perform: [ RecordCpuLoad, RecordDiskReadWriteRate, RecordNetworkUploadDownloadRate ]
+    perform: [ RecordCpuLoad, RecordNetworkUploadDownloadRate ]
   lessOften:
     interval: 15s
-    perform: [ UpdateProcessesList, CheckMonitors ]
+    perform: [ UpdateProcessesList, CheckMonitors, RecordDiskReadWriteRate]
   seldom:
     interval: 5min
     perform: [ CheckConnectivity ]
