@@ -2,6 +2,7 @@ package com.krillsson.sysapi.core.metrics.defaultimpl
 
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
+import com.krillsson.sysapi.config.ProcessesConfiguration
 import com.krillsson.sysapi.core.domain.processes.Process
 import com.krillsson.sysapi.core.domain.processes.ProcessSort
 import com.krillsson.sysapi.core.domain.processes.ProcessSort.*
@@ -20,6 +21,7 @@ import java.time.Duration
 import java.util.*
 
 class DefaultProcessesMetrics(
+    private val config: ProcessesConfiguration,
     private val operatingSystem: OperatingSystem,
     private val hal: HardwareAbstractionLayer,
     private val taskManager: TaskManager,
@@ -34,13 +36,16 @@ class DefaultProcessesMetrics(
 
     private val priorSnapshotMap: MutableMap<Int, OSProcess> = mutableMapOf()
     private val currentLoad: MutableMap<Int, Double> = mutableMapOf()
+
     // profiling showed that user and group was expensive in Linux
     private val cachedUserAndGroup: Cache<Int, Pair<String, String>> = CacheBuilder.newBuilder()
         .expireAfterWrite(Duration.ofMinutes(5))
         .build()
 
     init {
-        updateMap(operatingSystem.processes)
+        doIfEnabled {
+            updateMap(operatingSystem.processes)
+        }
     }
 
     fun register() {
@@ -48,9 +53,11 @@ class DefaultProcessesMetrics(
     }
 
     override fun run() {
-        val processes = operatingSystem.processes
-        updateCurrentLoad(processes)
-        updateMap(processes)
+        doIfEnabled {
+            val processes = operatingSystem.processes
+            updateCurrentLoad(processes)
+            updateMap(processes)
+        }
     }
 
     override fun getProcessByPid(pid: Int): Optional<Process> {
@@ -147,5 +154,11 @@ class DefaultProcessesMetrics(
             bytesRead,
             bytesWritten
         )
+    }
+
+    private fun doIfEnabled(action: () -> Unit) {
+        if (config.enabled) {
+            action()
+        }
     }
 }

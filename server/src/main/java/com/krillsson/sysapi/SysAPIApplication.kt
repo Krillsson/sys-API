@@ -160,7 +160,7 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
             jobs
         )
         val diskReadWriteRateMeasurementManager =
-            DiskReadWriteRateMeasurementManager(java.time.Clock.systemUTC(), taskManager)
+            DiskReadWriteRateMeasurementManager(java.time.Clock.systemUTC(), hal, taskManager)
         val networkUploadDownloadRateMeasurementManager =
             NetworkUploadDownloadRateMeasurementManager(java.time.Clock.systemUTC(), taskManager)
         logFileManager = LogFilesManager(config.logReader)

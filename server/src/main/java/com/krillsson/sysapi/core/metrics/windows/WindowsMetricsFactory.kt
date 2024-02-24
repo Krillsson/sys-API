@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.metrics.windows
 
+import com.krillsson.sysapi.config.SysAPIConfiguration
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
 import com.krillsson.sysapi.core.metrics.defaultimpl.*
 import com.krillsson.sysapi.periodictasks.TaskManager
@@ -11,6 +12,7 @@ import oshi.software.os.OperatingSystem
 
 object WindowsMetricsFactory {
     fun create(
+        configuration: SysAPIConfiguration,
         os: OperatingSystem,
         hal: HardwareAbstractionLayer,
         platformEnum: PlatformEnum,
@@ -34,7 +36,7 @@ object WindowsMetricsFactory {
             val driveMetrics = DefaultDriveMetrics(os, hal)
             val diskMetrics = DefaultDiskMetrics(hal, diskReadWriteRateMeasurementManager)
             val fileSystemMetrics = DefaultFileSystemMetrics(os)
-            val processesMetrics = DefaultProcessesMetrics(os, hal, taskManager)
+            val processesMetrics = DefaultProcessesMetrics(configuration.processes, os, hal, taskManager)
             val motherboardMetrics = WindowsMotherboardMetrics(hal, monitorManager)
             val memoryMetrics = DefaultMemoryMetrics(hal, os)
             val systemMetrics = DefaultSystemMetrics(

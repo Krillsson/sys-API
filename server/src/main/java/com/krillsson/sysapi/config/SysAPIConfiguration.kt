@@ -31,6 +31,7 @@ class SysAPIConfiguration(
     val user: UserConfiguration,
     val metricsConfig: MetricsConfiguration,
     val windows: WindowsConfiguration,
+    val processes: ProcessesConfiguration = ProcessesConfiguration(),
     val linux: LinuxConfiguration = LinuxConfiguration(),
     val connectivityCheck: ConnectivityCheckConfiguration,
     val updateCheck: UpdateCheckConfiguration = UpdateCheckConfiguration(),

@@ -64,6 +64,7 @@ class MetricsFactory(
                 .enableOhmJniWrapper) -> {
                 LOGGER.info("Windows detected")
                 val metrics = WindowsMetricsFactory.create(
+                    configuration,
                     operatingSystem,
                     hal,
                     platform,
@@ -77,6 +78,7 @@ class MetricsFactory(
                 } else {
                     LOGGER.error("Unable to use Windows specific implementation: falling through to default one")
                     DefaultMetricsFactory.create(
+                        configuration,
                         operatingSystem,
                         hal,
                         platform,
@@ -92,6 +94,7 @@ class MetricsFactory(
                 .contains(RASPBIAN_QUALIFIER)) -> {
                 LOGGER.info("Raspberry Pi detected")
                 RaspbianMetricsFactory.create(
+                    configuration,
                     operatingSystem,
                     hal,
                     platform,
@@ -103,6 +106,7 @@ class MetricsFactory(
             }
 
             else -> DefaultMetricsFactory.create(
+                configuration,
                 operatingSystem,
                 hal,
                 platform,

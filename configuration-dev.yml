@@ -14,9 +14,11 @@ metricsConfig:
       purgeEvery: 1
       purgeEveryUnit: DAYS
   cache:
-    enabled: true
+    enabled: false
     duration: 5
     unit: SECONDS
+processes:
+  enabled: true
 user:
   username: user
   password: password
@@ -130,6 +132,7 @@ logging:
   loggers:
     # Sets the level for 'com.example.app' to DEBUG.
     com.krillsson.sysapi: DEBUG
+    # com.krillsson.sysapi.core.speed: TRACE
     oshi: INFO
     io.dropwizard.core.server.ServerFactory: INFO
     org.eclipse.jetty.server.Server: INFO

@@ -11,11 +11,11 @@ data class TasksConfiguration(
 val defaultTasksValue = mapOf(
     TaskInterval.Often to TasksConfiguration(
         "5s",
-        listOf(Task.Key.RecordCpuLoad, Task.Key.RecordDiskReadWriteRate, Task.Key.RecordNetworkUploadDownloadRate)
+        listOf(Task.Key.RecordCpuLoad, Task.Key.RecordNetworkUploadDownloadRate)
     ),
     TaskInterval.LessOften to TasksConfiguration(
         "15s",
-        listOf(Task.Key.UpdateProcessesList, Task.Key.CheckMonitors)
+        listOf(Task.Key.UpdateProcessesList, Task.Key.CheckMonitors, Task.Key.RecordDiskReadWriteRate)
     ),
     TaskInterval.Seldom to TasksConfiguration(
         "5min",

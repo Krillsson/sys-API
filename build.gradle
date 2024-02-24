@@ -66,6 +66,11 @@ project(':server') {
             "-server",
             "-Djava.awt.headless=true",
             "-Djava.net.preferIPv4Stack=true",
+            "-XX:+UseG1GC",
+            "-XX:MinHeapFreeRatio=2",
+            "-XX:MaxHeapFreeRatio=10",
+            "-Xmx1300m",
+            "-Xms256m",
             "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED"
 //            enable jmx to pull out dumps
 //            "-Dcom.sun.management.jmxremote",
