@@ -17,8 +17,8 @@ metricsConfig:
     enabled: false
     duration: 5
     unit: SECONDS
-processes:
-  enabled: true
+#processes:
+#  enabled: true
 user:
   username: user
   password: password
@@ -39,10 +39,10 @@ graphQLPlayGround:
 # docker management and metrics support
 docker:
   enabled: true
-  cache:
-    enabled: true
-    duration: 2
-    unit: SECONDS
+#  cache:
+#    enabled: true
+#    duration: 2
+#    unit: SECONDS
   # uncomment if you'd like to manually specify docker host
   # host: unix:///var/run/docker.sock or unix:///run/podman/podman.sock
 # resolve external IP and monitor internet connectivity
