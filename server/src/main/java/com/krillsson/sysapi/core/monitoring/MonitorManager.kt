@@ -5,7 +5,6 @@ import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.MonitorFactory.createMonitor
 import com.krillsson.sysapi.core.monitoring.event.EventManager
-import com.krillsson.sysapi.docker.ContainerManager
 import com.krillsson.sysapi.periodictasks.Task
 import com.krillsson.sysapi.periodictasks.TaskInterval
 import com.krillsson.sysapi.periodictasks.TaskManager
@@ -18,7 +17,6 @@ import java.util.*
 class MonitorManager(
     private val taskManager: TaskManager,
     private val metrics: Metrics,
-    private val containerManager: ContainerManager,
     private val eventManager: EventManager,
     private val repository: MonitorRepository,
     private val monitoredItemMissingChecker: MonitoredItemMissingChecker,
@@ -156,6 +154,10 @@ class MonitorManager(
                 emptyList()
             )
         ) != null
+    }
+
+    fun getMonitorableItemForType(type: Monitor.Type): List<MonitorableItem> {
+        return monitorInputCreator.getMonitorableItemForType(type)
     }
 }
 

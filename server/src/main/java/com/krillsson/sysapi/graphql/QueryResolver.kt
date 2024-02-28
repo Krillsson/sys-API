@@ -143,6 +143,11 @@ class QueryResolver : GraphQLQueryResolver {
 
     fun events() = eventManager.getAll().toList()
 
+    fun monitorableItemsForType(input: MonitorableItemsInput): MonitorableItemsOutput {
+        val items = monitorManager.getMonitorableItemForType(input.type)
+
+    }
+
     fun eventById(id: String): Event? {
         return eventManager.getAll().firstOrNull { it.id == UUID.fromString(id) }
     }

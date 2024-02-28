@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.graphql.domain
 
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
+import com.krillsson.sysapi.core.monitoring.MonitorableItem
 import com.krillsson.sysapi.core.monitoring.monitors.*
 import com.krillsson.sysapi.util.toOffsetDateTime
 import java.time.Instant
@@ -46,6 +47,23 @@ fun MonitoredValue.asMonitoredValue(): com.krillsson.sysapi.graphql.domain.Monit
         is MonitoredValue.NumericalValue -> NumericalValue(value)
     }
 }
+
+data class MonitorableItemsInput(
+    val type: com.krillsson.sysapi.core.monitoring.Monitor.Type
+)
+
+data class MonitorableItemsOutput(
+    val items: List<MonitorableItem>
+)
+
+data class MonitorableItem(
+    val id: String?,
+    val name: String,
+    val description: String?,
+    val maxValue: com.krillsson.sysapi.graphql.domain.MonitoredValue,
+    val currentValue: com.krillsson.sysapi.graphql.domain.MonitoredValue,
+    val type: com.krillsson.sysapi.core.monitoring.Monitor.Type
+)
 
 object Selectors {
 
