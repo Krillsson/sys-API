@@ -6,6 +6,7 @@ extend type Query {
     genericEvents: [GenericEvent!]!
     pastEvents: [PastEvent!]!
     ongoingEvents: [OngoingEvent!]!
+    monitorableItemsForType(input: MonitorableItemsInput): DeleteGenericEventOutput!
 }
 
 extend type Mutation {
@@ -32,6 +33,14 @@ input CreateNumericalMonitorInput {
     # Process: process ID
     # Docker: full container ID (ignoring case)
     monitoredItemId: String
+}
+
+input MonitorableItemsInput {
+    type: MonitorType!
+}
+
+type MonitorableItemsOutput {
+    items: [MonitorableItem!]!
 }
 
 input CreateFractionMonitorInput {
@@ -175,6 +184,15 @@ enum MonitorType {
     PROCESS_EXISTS,
     CONNECTIVITY,
     EXTERNAL_IP_CHANGED
+}
+
+type MonitorableItem {
+    id: String
+    name: String!
+    description: String
+    maxValue: MonitoredValue!
+    currentValue: MonitoredValue!
+    type: MonitorType!
 }
 
 interface Event {
