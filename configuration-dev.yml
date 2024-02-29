@@ -72,16 +72,16 @@ selfSignedCertificates:
 tasks:
   often:
     interval: 5s
-    perform: [ RecordCpuLoad, RecordDiskReadWriteRate, RecordNetworkUploadDownloadRate ]
+    perform: [ RecordCpuLoad, RecordNetworkUploadDownloadRate ]
   lessOften:
     interval: 15s
-    perform: [ UpdateProcessesList, CheckMonitors ]
+    perform: [ UpdateProcessesList, CheckMonitors, RecordDiskReadWriteRate]
   seldom:
     interval: 5min
     perform: [ CheckConnectivity ]
   verySeldom:
     interval: 30min
-    perform: [ StoreMetricHistoryEntry ]
+    perform: [ StoreMetricHistoryEntry, CheckUpdate, StoreContainerStatisticsHistoryEntry ]
 logReader:
   files:
     - /var/log/nginx/access.log
@@ -130,7 +130,6 @@ logging:
   level: WARN
   # Logger-specific levels.
   loggers:
-    # Sets the level for 'com.example.app' to DEBUG.
     com.krillsson.sysapi: DEBUG
     # com.krillsson.sysapi.core.speed: TRACE
     oshi: INFO

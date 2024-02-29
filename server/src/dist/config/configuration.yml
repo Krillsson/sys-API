@@ -35,7 +35,7 @@ linux:
     enabled: true
 # web interface for running queries
 graphQLPlayGround:
-  enabled: true
+  enabled: false
 # docker management and metrics support
 docker:
   enabled: true
@@ -81,7 +81,7 @@ tasks:
     perform: [ CheckConnectivity ]
   verySeldom:
     interval: 30min
-    perform: [ StoreMetricHistoryEntry ]
+    perform: [ StoreMetricHistoryEntry, CheckUpdate, StoreContainerStatisticsHistoryEntry ]
 logReader:
   files: []
   directories:
