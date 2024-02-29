@@ -116,8 +116,10 @@ class DockerClient(
             var statistics: Statistics?
             val callback = AsyncResultCallback<Statistics>()
             client.statsCmd(containerId)
+                .withNoStream(true)
                 .exec(callback)
             try {
+                // this call takes about ~1-2 sec since it's sleeping on the other end to measure CPU usage
                 statistics = callback.awaitResult()
                 callback.close()
                 statistics.asStatistics(containerId, platform)

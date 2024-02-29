@@ -260,24 +260,38 @@ fun CpuStatsConfig.cpuUsageWindows(
 }
 
 private fun CpuStatsConfig.cpuUsageUnix(preCpuStats: CpuStatsConfig): CpuUsage {
-    val totalCpuUSage = cpuUsage?.totalUsage?.toDouble() ?: 0.0
-    val totalPreCpuUsage = preCpuStats.cpuUsage?.totalUsage?.toDouble() ?: 0.0
-    val cpuDelta = totalCpuUSage - totalPreCpuUsage
-    val systemCpuUsage = systemCpuUsage?.toDouble()
-    val preSystemCpuUsage = preCpuStats.systemCpuUsage?.toDouble()
-    val systemDelta = systemCpuUsage?.minus(preSystemCpuUsage ?: 0.0) ?: 0.0
-    val (cpuPercentPerCore, cpuPercentTotal) = if (cpuDelta > 0.0 && systemDelta > 0.0) {
-        val cpuCount = cpuUsage?.percpuUsage?.size?.toDouble() ?: preCpuStats.cpuUsage?.percpuUsage?.size?.toDouble()
-        ?: onlineCpus?.toDouble() ?: 1.0
-        val percentPerCore = (cpuDelta / systemDelta) * (cpuCount * 100.0)
-        val percentTotal = percentPerCore / cpuCount
-        percentPerCore to percentTotal
-    } else 0.0 to 0.0
-    return CpuUsage(
-        usagePercentPerCore = cpuPercentPerCore,
-        usagePercentTotal = cpuPercentTotal,
-        throttlingData?.asThrottlingData() ?: ThrottlingData(-1, -1, -1)
+    val (usage, perCore) = calculateUsage(
+        cpuUsage?.totalUsage?.toDouble() ?: 0.0,
+        systemCpuUsage?.toDouble() ?: 0.0,
+        preCpuStats.cpuUsage?.totalUsage?.toDouble() ?: 0.0,
+        preCpuStats.systemCpuUsage?.toDouble() ?: 0.0,
+        onlineCpus?.toInt() ?: 1
     )
+
+    return CpuUsage(
+        usagePercentTotal = usage,
+        usagePercentPerCore = perCore,
+        throttlingData = throttlingData?.asThrottlingData() ?: ThrottlingData(-1, -1, -1)
+    )
+}
+
+private fun calculateUsage(
+    currentUsage: Double,
+    currentSystemUsage: Double,
+    previousUsage: Double,
+    previousSystemUsage: Double,
+    cpuCount: Int
+): Pair<Double, Double> {
+    val cpuDelta = currentUsage - previousUsage
+    val systemDelta = currentSystemUsage - previousSystemUsage
+
+    return if (cpuDelta > 0.0 && systemDelta > 0.0) {
+        val totalUsage = (cpuDelta / systemDelta) * 100.0
+        val perCoreUsage = totalUsage * cpuCount.toDouble()
+        totalUsage to perCoreUsage
+    } else {
+        0.0 to 0.0
+    }
 }
 
 private fun ThrottlingDataConfig.asThrottlingData(): ThrottlingData {
