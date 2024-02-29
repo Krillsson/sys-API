@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 0.20.0
 - added `deletePastEventsForMonitor`, `closeOngoingEventForMonitor` to the GraphQL-API
 - added `Monitor.maxValue` to the GraphQL-API. Useful when displaying monitored value in a graph.
 - added start value to past events
