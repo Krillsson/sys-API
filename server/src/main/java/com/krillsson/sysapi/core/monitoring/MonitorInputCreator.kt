@@ -107,7 +107,7 @@ class MonitorInputCreator(
                         null,
                         cpuInfo.centralProcessor.name ?: cpuInfo.centralProcessor.model ?: "",
                         null,
-                        100f.toFractionalValue(),
+                        (100f * cpuInfo.centralProcessor.logicalProcessorCount).toFractionalValue() ,
                         cpuMetrics.usagePercentage.toFractionalValue(),
                         type
                     )
@@ -121,13 +121,26 @@ class MonitorInputCreator(
                         null,
                         cpuInfo.centralProcessor.name ?: cpuInfo.centralProcessor.model ?: "",
                         null,
-                        100f.toFractionalValue(),
+                        cpuInfo.centralProcessor.logicalProcessorCount.toFloat().toFractionalValue() ,
                         cpuMetrics.loadAverages.fiveMinutes.toFractionalValue(),
                         type
                     )
                 )
             }
-            Monitor.Type.LOAD_AVERAGE_FIFTEEN_MINUTES -> TODO()
+            Monitor.Type.LOAD_AVERAGE_FIFTEEN_MINUTES -> {
+                val cpuInfo = metrics.cpuMetrics().cpuInfo()
+                val cpuMetrics = metrics.cpuMetrics().cpuLoad()
+                listOf(
+                    MonitorableItem(
+                        null,
+                        cpuInfo.centralProcessor.name ?: cpuInfo.centralProcessor.model ?: "",
+                        null,
+                        cpuInfo.centralProcessor.logicalProcessorCount.toFloat().toFractionalValue() ,
+                        cpuMetrics.loadAverages.fifteenMinutes.toFractionalValue(),
+                        type
+                    )
+                )
+            }
             Monitor.Type.CPU_TEMP -> {
                 val cpuInfo = metrics.cpuMetrics().cpuInfo()
                 val cpuMetrics = metrics.cpuMetrics().cpuLoad()
