@@ -1,6 +1,5 @@
 package com.krillsson.sysapi.core.monitoring.monitors
 
-import com.krillsson.sysapi.core.domain.drives.DriveLoad
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.domain.monitor.toNumericalValue
@@ -9,27 +8,25 @@ import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorInput
 import java.util.*
 
-class DriveWriteRateMonitor(override val id: UUID, override val config: MonitorConfig<MonitoredValue.NumericalValue>) :
+class MemoryUsedMonitor(override val id: UUID, override val config: MonitorConfig<MonitoredValue.NumericalValue>) :
     Monitor<MonitoredValue.NumericalValue>() {
-    override val type: Type = Type.DRIVE_WRITE_RATE
-
     companion object {
-        val selector: NumericalValueSelector = { load, monitoredItemId ->
-            load.driveLoads.firstOrNull { i: DriveLoad ->
-                i.serial.equals(monitoredItemId, ignoreCase = true) || i.name.equals(
-                    monitoredItemId,
-                    ignoreCase = true
-                )
-            }?.speed?.writeBytesPerSecond?.toNumericalValue()
+        val selector: NumericalValueSelector = { load, _ ->
+            load.memory.usedBytes.toNumericalValue()
+        }
+
+        val maxValueSelector: MaxValueNumericalSelector = { info, _ ->
+            info.memory.totalBytes.toNumericalValue()
         }
     }
 
+    override val type: Type = Type.MEMORY_USED
+
     override fun selectValue(event: MonitorInput): MonitoredValue.NumericalValue? =
-        selector(event.load, config.monitoredItemId)
+        selector(event.load, null)
 
     override fun maxValue(info: SystemInfo): MonitoredValue.NumericalValue? {
-        // have no way of knowing this
-        return null
+        return maxValueSelector(info, null)
     }
 
     override fun isPastThreshold(value: MonitoredValue.NumericalValue): Boolean {

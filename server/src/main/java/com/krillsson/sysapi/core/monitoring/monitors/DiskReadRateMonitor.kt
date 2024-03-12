@@ -1,6 +1,5 @@
 package com.krillsson.sysapi.core.monitoring.monitors
 
-import com.krillsson.sysapi.core.domain.drives.DriveLoad
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.domain.monitor.toNumericalValue
@@ -11,11 +10,11 @@ import java.util.*
 
 class DiskReadRateMonitor(override val id: UUID, override val config: MonitorConfig<MonitoredValue.NumericalValue>) :
     Monitor<MonitoredValue.NumericalValue>() {
-    override val type: Type = Type.DRIVE_READ_RATE
+    override val type: Type = Type.DISK_READ_RATE
 
     companion object {
         val selector: NumericalValueSelector = { load, monitoredItemId ->
-            load.driveLoads.firstOrNull { i: DriveLoad ->
+            load.diskLoads.firstOrNull { i ->
                 i.serial.equals(monitoredItemId, ignoreCase = true) || i.name.equals(
                     monitoredItemId,
                     ignoreCase = true

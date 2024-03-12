@@ -6,7 +6,6 @@ open class DefaultMetrics(
     private val cpuMetrics: DefaultCpuMetrics,
     private val networkMetrics: DefaultNetworkMetrics,
     private val gpuMetrics: GpuMetrics,
-    private val driveMetrics: DefaultDriveMetrics,
     private val diskMetrics: DefaultDiskMetrics,
     private val fileSystemMetrics: DefaultFileSystemMetrics,
     private val processesMetrics: DefaultProcessesMetrics,
@@ -28,10 +27,6 @@ open class DefaultMetrics(
 
     override fun networkMetrics(): NetworkMetrics {
         return networkMetrics
-    }
-
-    override fun driveMetrics(): DriveMetrics {
-        return driveMetrics
     }
 
     override fun fileSystemMetrics(): FileSystemMetrics {

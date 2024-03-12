@@ -13,6 +13,7 @@ import com.krillsson.sysapi.core.domain.docker.Network
 import com.krillsson.sysapi.core.domain.docker.PortBinding
 import com.krillsson.sysapi.core.domain.docker.PortConfig
 import com.krillsson.sysapi.core.domain.system.Platform
+import com.krillsson.sysapi.util.orDefault
 import java.time.Duration
 import java.time.Instant
 
@@ -302,6 +303,3 @@ private fun ThrottlingDataConfig.asThrottlingData(): ThrottlingData {
     )
 }
 
-private fun Long?.orDefault(): Long {
-    return this ?: -1
-}

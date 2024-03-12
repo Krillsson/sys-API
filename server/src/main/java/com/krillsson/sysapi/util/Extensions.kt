@@ -57,3 +57,14 @@ fun Any.reflectionToString(): String {
 }
 
 fun Int.asHex() = Integer.toHexString(this).uppercase()
+fun Long?.orDefault(): Long {
+    return this ?: -1
+}
+
+fun Float?.orDefault(): Float {
+    return this ?: -1f
+}
+
+fun Double?.orDefault(): Double {
+    return this ?: -1.0
+}

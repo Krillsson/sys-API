@@ -50,7 +50,6 @@ class GraphQLConfiguration {
                 queryResolver.updateAvailableGenericEventResolver,
                 queryResolver.motherboardResolver,
                 queryResolver.processorResolver,
-                queryResolver.driveResolver,
                 queryResolver.diskResolver,
                 queryResolver.fileSystemResolver,
                 queryResolver.diskMetricResolver,
@@ -58,7 +57,6 @@ class GraphQLConfiguration {
                 queryResolver.memoryLoadResolver,
                 queryResolver.memoryInfoResolver,
                 queryResolver.processorMetricsResolver,
-                queryResolver.driveMetricResolver,
                 queryResolver.networkInterfaceMetricResolver,
                 queryResolver.monitorResolver,
             )

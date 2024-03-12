@@ -8,8 +8,6 @@ import com.krillsson.sysapi.core.domain.docker.Container
 import com.krillsson.sysapi.core.domain.docker.ContainerMetrics
 import com.krillsson.sysapi.core.domain.docker.ContainerMetricsHistoryEntry
 import com.krillsson.sysapi.core.domain.docker.State
-import com.krillsson.sysapi.core.domain.drives.Drive
-import com.krillsson.sysapi.core.domain.drives.DriveLoad
 import com.krillsson.sysapi.core.domain.event.Event
 import com.krillsson.sysapi.core.domain.event.OngoingEvent
 import com.krillsson.sysapi.core.domain.event.PastEvent
@@ -25,7 +23,6 @@ import com.krillsson.sysapi.core.domain.network.NetworkInterface
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad
 import com.krillsson.sysapi.core.domain.processes.Process
 import com.krillsson.sysapi.core.domain.processes.ProcessSort
-import com.krillsson.sysapi.core.domain.sensors.DataType
 import com.krillsson.sysapi.core.domain.system.OperatingSystem
 import com.krillsson.sysapi.core.domain.system.Platform
 import com.krillsson.sysapi.core.domain.system.SystemLoad
@@ -105,11 +102,9 @@ class QueryResolver : GraphQLQueryResolver {
     val motherboardResolver = MotherboardResolver()
     val processorResolver = ProcessorResolver()
     val processorMetricsResolver = ProcessorMetricsResolver()
-    val driveResolver = DriveResolver()
     val diskResolver = DiskResolver()
     val diskMetricResolver = DiskMetricResolver()
     val fileSystemResolver = FileSystemResolver()
-    val driveMetricResolver = DriveMetricResolver()
     val networkInterfaceResolver = NetworkInterfaceResolver()
     val memoryLoadResolver = MemoryLoadResolver()
     val memoryInfoResolver = MemoryInfoResolver()
@@ -145,7 +140,7 @@ class QueryResolver : GraphQLQueryResolver {
 
     fun monitorableItemsForType(input: MonitorableItemsInput): MonitorableItemsOutput {
         val items = monitorManager.getMonitorableItemForType(input.type)
-
+        return MonitorableItemsOutput(items)
     }
 
     fun eventById(id: String): Event? {
@@ -285,7 +280,6 @@ class QueryResolver : GraphQLQueryResolver {
             return metrics.gpuMetrics().gpus()
         }
 
-        fun getDrives(system: System) = metrics.driveMetrics().drives()
         fun getDisks(system: System) = metrics.diskMetrics().disks()
         fun getDiskById(system: System, id: String) = metrics.diskMetrics().diskByName(id)
         fun getFileSystems(system: System) = metrics.fileSystemMetrics().fileSystems()
@@ -317,10 +311,6 @@ class QueryResolver : GraphQLQueryResolver {
 
         fun getProcessorMetrics(historyEntry: BasicHistorySystemLoadEntity): CpuLoad {
             return historyRepository.getCpuLoadById(historyEntry.id)
-        }
-
-        fun getDriveMetrics(historyEntry: BasicHistorySystemLoadEntity): List<DriveLoad> {
-            return historyRepository.getDriveLoadsById(historyEntry.id)
         }
 
         fun getDiskMetrics(historyEntry: BasicHistorySystemLoadEntity): List<DiskLoad> {
@@ -364,7 +354,6 @@ class QueryResolver : GraphQLQueryResolver {
         cpuLoad,
         networkInterfaceLoads,
         connectivity,
-        driveLoads,
         diskLoads,
         fileSystemLoads,
         memory,
@@ -558,44 +547,6 @@ class QueryResolver : GraphQLQueryResolver {
         fun getMetrics(fileSystem: com.krillsson.sysapi.core.domain.filesystem.FileSystem) =
             metrics.fileSystemMetrics().fileSystemLoadById(fileSystem.id)
     }
-
-    inner class DriveMetricResolver : GraphQLResolver<DriveLoad> {
-        fun getDriveId(driveLoad: DriveLoad) = driveLoad.serial
-        fun getTemperature(driveLoad: DriveLoad) = driveLoad.health.temperature
-        fun getHealthData(driveLoad: DriveLoad) =
-            driveLoad.health.healthData.map { DriveHealth(it.data, it.dataType) }
-
-        fun getUsableSpace(driveLoad: DriveLoad) = driveLoad.values.usableSpace
-        fun getTotalSpace(driveLoad: DriveLoad) = driveLoad.values.totalSpace
-        fun getOpenFileDescriptors(driveLoad: DriveLoad) = driveLoad.values.openFileDescriptors
-        fun getMaxFileDescriptors(driveLoad: DriveLoad) = driveLoad.values.maxFileDescriptors
-        fun getReads(driveLoad: DriveLoad) = driveLoad.values.reads
-        fun getWrites(driveLoad: DriveLoad) = driveLoad.values.writes
-        fun getReadBytes(driveLoad: DriveLoad) = driveLoad.values.readBytes
-        fun getUsableSpaceBytes(driveLoad: DriveLoad) = driveLoad.values.usableSpace
-        fun getTotalSpaceBytes(driveLoad: DriveLoad) = driveLoad.values.totalSpace
-        fun getWriteBytes(driveLoad: DriveLoad) = driveLoad.values.writeBytes
-        fun getCurrentReadWriteRate(driveLoad: DriveLoad) =
-            driveLoad.speed.let {
-                DriveReadWriteRate(
-                    it.readBytesPerSecond,
-                    it.writeBytesPerSecond
-                )
-            }
-    }
-
-    inner class DriveResolver : GraphQLResolver<Drive> {
-        fun getId(drive: Drive) = drive.serial
-        fun getMetrics(drive: Drive) = metrics.driveMetrics().driveLoadByName(drive.name)
-    }
-
-    data class DriveHealth(
-        val value: Double,
-        val type: DataType
-    )
-
-    data class DriveReadWriteRate(val readBytesPerSecond: Long, val writeBytesPerSecond: Long)
-
     inner class NetworkInterfaceResolver : GraphQLResolver<NetworkInterface> {
         fun getId(networkInterface: NetworkInterface) = networkInterface.name
 

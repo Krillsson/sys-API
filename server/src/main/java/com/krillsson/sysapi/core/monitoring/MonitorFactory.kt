@@ -11,8 +11,8 @@ object MonitorFactory {
         return when (type) {
             Monitor.Type.CPU_LOAD -> CpuMonitor(id, config as MonitorConfig<MonitoredValue.FractionalValue>)
             Monitor.Type.CPU_TEMP -> CpuTemperatureMonitor(id, config as MonitorConfig<MonitoredValue.NumericalValue>)
-            Monitor.Type.DRIVE_SPACE -> DriveSpaceMonitor(id, config as MonitorConfig<MonitoredValue.NumericalValue>)
             Monitor.Type.MEMORY_SPACE -> MemorySpaceMonitor(id, config as MonitorConfig<MonitoredValue.NumericalValue>)
+            Monitor.Type.MEMORY_USED -> MemoryUsedMonitor(id, config as MonitorConfig<MonitoredValue.NumericalValue>)
             Monitor.Type.NETWORK_UP -> NetworkUpMonitor(id, config as MonitorConfig<MonitoredValue.ConditionalValue>)
             Monitor.Type.CONTAINER_RUNNING -> ContainerRunningMonitor(
                 id,
@@ -42,16 +42,6 @@ object MonitorFactory {
             Monitor.Type.EXTERNAL_IP_CHANGED -> ExternalIpChangedMonitor(
                 id,
                 config as MonitorConfig<MonitoredValue.ConditionalValue>
-            )
-
-            Monitor.Type.DRIVE_READ_RATE -> DriveReadRateMonitor(
-                id,
-                config as MonitorConfig<MonitoredValue.NumericalValue>
-            )
-
-            Monitor.Type.DRIVE_WRITE_RATE -> DriveWriteRateMonitor(
-                id,
-                config as MonitorConfig<MonitoredValue.NumericalValue>
             )
 
             Monitor.Type.NETWORK_UPLOAD_RATE -> NetworkUploadRateMonitor(

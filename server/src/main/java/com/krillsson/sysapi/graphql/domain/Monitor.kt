@@ -80,10 +80,7 @@ object Selectors {
     fun forNumericalMonitorType(type: com.krillsson.sysapi.core.monitoring.Monitor.Type): NumericalValueSelector =
         when (type) {
             com.krillsson.sysapi.core.monitoring.Monitor.Type.CPU_TEMP -> CpuTemperatureMonitor.selector
-            com.krillsson.sysapi.core.monitoring.Monitor.Type.DRIVE_SPACE -> DriveSpaceMonitor.selector
-            com.krillsson.sysapi.core.monitoring.Monitor.Type.DRIVE_READ_RATE -> DriveReadRateMonitor.selector
             com.krillsson.sysapi.core.monitoring.Monitor.Type.DISK_READ_RATE -> DiskReadRateMonitor.selector
-            com.krillsson.sysapi.core.monitoring.Monitor.Type.DRIVE_WRITE_RATE -> DriveWriteRateMonitor.selector
             com.krillsson.sysapi.core.monitoring.Monitor.Type.DISK_WRITE_RATE -> DiskWriteRateMonitor.selector
             com.krillsson.sysapi.core.monitoring.Monitor.Type.FILE_SYSTEM_SPACE -> FileSystemSpaceMonitor.selector
             com.krillsson.sysapi.core.monitoring.Monitor.Type.MEMORY_SPACE -> MemorySpaceMonitor.selector

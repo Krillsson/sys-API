@@ -36,7 +36,6 @@ class HistoryRecorder(
             cpuLoad,
             networkInterfaceLoads,
             connectivity,
-            driveLoads,
             diskLoads,
             fileSystemLoads,
             memory,

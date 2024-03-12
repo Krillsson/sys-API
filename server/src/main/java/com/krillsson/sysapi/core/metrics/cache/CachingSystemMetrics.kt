@@ -7,7 +7,6 @@ import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultSystemMetrics
 class CachingSystemMetrics(
     cpuMetrics: CachingCpuMetrics,
     networkMetrics: CachingNetworkMetrics,
-    driveMetrics: CachingDriveMetrics,
     diskMetrics: CachingDiskMetrics,
     fileSystemMetrics: CachingFileSystemMetrics,
     memoryMetrics: CachingMemoryMetrics,
@@ -19,7 +18,6 @@ class CachingSystemMetrics(
 ) : DefaultSystemMetrics(
     cpuMetrics,
     networkMetrics,
-    driveMetrics,
     diskMetrics,
     fileSystemMetrics,
     memoryMetrics,
