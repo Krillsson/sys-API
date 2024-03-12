@@ -139,7 +139,16 @@ class QueryResolver : GraphQLQueryResolver {
     fun events() = eventManager.getAll().toList()
 
     fun monitorableItemsForType(input: MonitorableItemsInput): MonitorableItemsOutput {
-        val items = monitorManager.getMonitorableItemForType(input.type)
+        val items = monitorManager.getMonitorableItemForType(input.type).map {
+            MonitorableItem(
+                it.id,
+                it.name,
+                it.description,
+                it.maxValue.asMonitoredValue(),
+                it.currentValue.asMonitoredValue(),
+                it.type
+            )
+        }
         return MonitorableItemsOutput(items)
     }
 
