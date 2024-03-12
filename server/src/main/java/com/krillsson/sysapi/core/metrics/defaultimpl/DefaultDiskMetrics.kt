@@ -70,7 +70,7 @@ open class DefaultDiskMetrics(
 
     private fun createDiskLoad(diskStore: HWDiskStore): DiskLoad {
         val metrics = diskMetrics(diskStore)
-        val speed = diskSpeedForStore(diskStore).get()
+        val speed: DiskSpeed = requireNotNull( diskSpeedForStore(diskStore).orElse(DiskSpeed(-1, -1)))
         return DiskLoad(diskStore.name, getSerial(diskStore), metrics, speed)
     }
 

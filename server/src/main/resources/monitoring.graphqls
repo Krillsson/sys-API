@@ -166,11 +166,8 @@ type Monitor {
 enum MonitorType {
     CPU_LOAD,
     CPU_TEMP,
-    DRIVE_SPACE,
     FILE_SYSTEM_SPACE,
-    DRIVE_READ_RATE,
     DISK_READ_RATE,
-    DRIVE_WRITE_RATE,
     DISK_WRITE_RATE,
     @deprecated(reason: "Replaced by MEMORY_USED 2024-03-12") MEMORY_SPACE,
     MEMORY_USED,

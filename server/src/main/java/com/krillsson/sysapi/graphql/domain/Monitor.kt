@@ -1,7 +1,6 @@
 package com.krillsson.sysapi.graphql.domain
 
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
-import com.krillsson.sysapi.core.monitoring.MonitorableItem
 import com.krillsson.sysapi.core.monitoring.monitors.*
 import com.krillsson.sysapi.util.toOffsetDateTime
 import java.time.Instant
