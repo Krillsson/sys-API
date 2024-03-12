@@ -46,7 +46,6 @@ fun JerseyEnvironment.registerJerseyResources(
             historyManager, { os.systemUptime }
         )
     )
-    register(DrivesResource(provider.driveMetrics(), historyManager))
     register(DisksResource(provider.diskMetrics(), historyManager))
     register(FileSystemsResource(provider.fileSystemMetrics(), historyManager))
     register(GpuResource(provider.gpuMetrics(), historyManager))

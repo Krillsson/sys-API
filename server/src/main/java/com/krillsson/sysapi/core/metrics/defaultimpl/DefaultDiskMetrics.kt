@@ -2,7 +2,6 @@ package com.krillsson.sysapi.core.metrics.defaultimpl
 
 import com.krillsson.sysapi.core.domain.disk.*
 import com.krillsson.sysapi.core.metrics.DiskMetrics
-import com.krillsson.sysapi.core.metrics.Empty
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
 import org.apache.commons.lang3.StringUtils
 import oshi.hardware.HWDiskStore
@@ -71,8 +70,8 @@ open class DefaultDiskMetrics(
 
     private fun createDiskLoad(diskStore: HWDiskStore): DiskLoad {
         val metrics = diskMetrics(diskStore)
-        val speed = diskSpeedForStore(diskStore).orElse(Empty.DISK_SPEED)
-        return DiskLoad(diskStore.name, getSerial(diskStore), metrics, speed!!)
+        val speed = diskSpeedForStore(diskStore).get()
+        return DiskLoad(diskStore.name, getSerial(diskStore), metrics, speed)
     }
 
     private fun getSerial(d: HWDiskStore): String {

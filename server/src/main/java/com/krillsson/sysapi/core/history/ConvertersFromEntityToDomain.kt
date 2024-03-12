@@ -5,7 +5,6 @@ import com.krillsson.sysapi.core.domain.cpu.CpuHealth
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad
 import com.krillsson.sysapi.core.domain.docker.ContainerMetrics
 import com.krillsson.sysapi.core.domain.docker.ContainerMetricsHistoryEntry
-import com.krillsson.sysapi.core.domain.drives.DriveHealth
 import com.krillsson.sysapi.core.domain.history.HistorySystemLoad
 import com.krillsson.sysapi.core.domain.history.SystemHistoryEntry
 import com.krillsson.sysapi.core.domain.sensors.HealthData
@@ -21,7 +20,6 @@ fun HistorySystemLoadEntity.asSystemHistoryEntry(): SystemHistoryEntry {
             cpuLoad.asCpuLoad(),
             networkInterfaceLoads.map { it.asNetworkInterfaceLoad() },
             connectivity.asConnectivity(),
-            driveLoads.map { it.asDriveLoad() },
             diskLoads?.map { it.asDiskLoad() }.orEmpty(),
             fileSystemLoads?.map { it.asFileSystemLoad() }.orEmpty(),
             memory.asMemoryLoad(),
@@ -84,26 +82,6 @@ fun MemoryLoad.asMemoryLoad(): com.krillsson.sysapi.core.domain.memory.MemoryLoa
     )
 }
 
-fun DriveLoad.asDriveLoad(): com.krillsson.sysapi.core.domain.drives.DriveLoad {
-    return com.krillsson.sysapi.core.domain.drives.DriveLoad(
-        name,
-        serial,
-        values.asValues(),
-        speed.asSpeed(),
-        asHealthData()
-    )
-}
-
-fun DriveLoad.asHealthData(): DriveHealth {
-    return DriveHealth(
-        temperature, healthData.map { it.asHealthData() }
-    )
-}
-
-fun DriveHealthData.asHealthData(): HealthData {
-    return HealthData(description, data, dataType.asDataType())
-}
-
 fun DataType.asDataType(): com.krillsson.sysapi.core.domain.sensors.DataType {
     return when (this) {
         DataType.CLOCK -> com.krillsson.sysapi.core.domain.sensors.DataType.CLOCK
@@ -113,16 +91,6 @@ fun DataType.asDataType(): com.krillsson.sysapi.core.domain.sensors.DataType {
         DataType.CELCIUS -> com.krillsson.sysapi.core.domain.sensors.DataType.CELCIUS
         DataType.GIGABYTE -> com.krillsson.sysapi.core.domain.sensors.DataType.GIGABYTE
     }
-}
-
-fun DriveSpeed.asSpeed(): com.krillsson.sysapi.core.domain.drives.DriveSpeed {
-    return com.krillsson.sysapi.core.domain.drives.DriveSpeed(readBytesPerSecond, writeBytesPerSecond)
-}
-
-fun DriveValues.asValues(): com.krillsson.sysapi.core.domain.drives.DriveValues {
-    return com.krillsson.sysapi.core.domain.drives.DriveValues(
-        usableSpace, totalSpace, openFileDescriptors, maxFileDescriptors, reads, readBytes, writes, writeBytes
-    )
 }
 
 fun Connectivity.asConnectivity(): com.krillsson.sysapi.core.domain.network.Connectivity {

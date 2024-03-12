@@ -210,7 +210,6 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
                 CpuLoadDAO::class.java,
                 MemoryLoadDAO::class.java,
                 NetworkLoadDAO::class.java,
-                DriveLoadDAO::class.java,
                 DiskLoadDAO::class.java,
                 FileSystemLoadDAO::class.java,
                 ConnectivityDAO::class.java
@@ -222,7 +221,6 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
                 CpuLoadDAO(hibernate.sessionFactory),
                 MemoryLoadDAO(hibernate.sessionFactory),
                 NetworkLoadDAO(hibernate.sessionFactory),
-                DriveLoadDAO(hibernate.sessionFactory),
                 DiskLoadDAO(hibernate.sessionFactory),
                 FileSystemLoadDAO(hibernate.sessionFactory),
                 ConnectivityDAO(hibernate.sessionFactory)
@@ -249,7 +247,6 @@ class SysAPIApplication : Application<SysAPIConfiguration>() {
         val monitorManager = MonitorManager(
             taskManager,
             metrics,
-            containerManager,
             eventManager,
             MonitorRepository(monitorStore),
             MonitoredItemMissingChecker(genericEventRepository),

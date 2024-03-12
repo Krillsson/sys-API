@@ -31,14 +31,12 @@ object DefaultMetricsFactory {
             connectivityCheckManager
         )
         val gpuMetrics = DefaultGpuMetrics(hal)
-        val driveMetrics = DefaultDriveMetrics(os, hal)
         val processesMetrics = DefaultProcessesMetrics(config.processes, os, hal, periodicTaskManager)
         val motherboardMetrics = DefaultMotherboardMetrics(hal)
         val memoryMetrics = DefaultMemoryMetrics(hal, os)
         val systemMetrics = DefaultSystemMetrics(
             cpuMetrics,
             networkMetrics,
-            driveMetrics,
             diskMetrics,
             fileSystemMetrics,
             memoryMetrics,
@@ -52,7 +50,6 @@ object DefaultMetricsFactory {
             cpuMetrics,
             networkMetrics,
             gpuMetrics,
-            driveMetrics,
             diskMetrics,
             fileSystemMetrics,
             processesMetrics,

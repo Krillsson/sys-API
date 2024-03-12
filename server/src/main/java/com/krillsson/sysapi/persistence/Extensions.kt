@@ -14,7 +14,6 @@ fun createHibernateBundle() = object : HibernateBundle<SysAPIConfiguration>(
     Connectivity::class.java,
     CpuLoad::class.java,
     NetworkInterfaceLoad::class.java,
-    DriveLoad::class.java,
     DiskLoad::class.java,
     FileSystemLoad::class.java,
     MemoryLoad::class.java,
@@ -23,8 +22,7 @@ fun createHibernateBundle() = object : HibernateBundle<SysAPIConfiguration>(
     HealthData::class.java,
     CpuHealth::class.java,
     CoreLoad::class.java,
-    LoadAverages::class.java,
-    DriveHealthData::class.java
+    LoadAverages::class.java
 ) {
 
     override fun createHibernate5Module(): Hibernate5Module {

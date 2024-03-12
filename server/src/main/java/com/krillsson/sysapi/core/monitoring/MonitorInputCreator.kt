@@ -1,6 +1,10 @@
 package com.krillsson.sysapi.core.monitoring
 
+import com.krillsson.sysapi.core.domain.docker.State
+import com.krillsson.sysapi.core.domain.monitor.toConditionalValue
 import com.krillsson.sysapi.core.domain.monitor.toFractionalValue
+import com.krillsson.sysapi.core.domain.monitor.toNumericalValue
+import com.krillsson.sysapi.core.domain.processes.ProcessSort
 import com.krillsson.sysapi.core.domain.system.SystemLoad
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.docker.ContainerManager
@@ -64,7 +68,6 @@ class MonitorInputCreator(
             cpuLoad = metrics.cpuMetrics().cpuLoad(),
             networkInterfaceLoads = nicLoads,
             connectivity = metrics.networkMetrics().connectivity(),
-            driveLoads = emptyList(),
             diskLoads = diskLoads,
             fileSystemLoads = fileSystemLoads,
             memory = metrics.memoryMetrics().memoryLoad(),
@@ -84,7 +87,7 @@ class MonitorInputCreator(
     }
 
     fun getMonitorableItemForType(type: Monitor.Type): List<MonitorableItem> {
-        when (type) {
+        return when (type) {
             Monitor.Type.LOAD_AVERAGE_ONE_MINUTE -> {
                 val cpuInfo = metrics.cpuMetrics().cpuInfo()
                 val cpuMetrics = metrics.cpuMetrics().cpuLoad()
@@ -99,6 +102,7 @@ class MonitorInputCreator(
                     )
                 )
             }
+
             Monitor.Type.CPU_LOAD -> {
                 val cpuInfo = metrics.cpuMetrics().cpuInfo()
                 val cpuMetrics = metrics.cpuMetrics().cpuLoad()
@@ -107,12 +111,13 @@ class MonitorInputCreator(
                         null,
                         cpuInfo.centralProcessor.name ?: cpuInfo.centralProcessor.model ?: "",
                         null,
-                        (100f * cpuInfo.centralProcessor.logicalProcessorCount).toFractionalValue() ,
+                        (100f * cpuInfo.centralProcessor.logicalProcessorCount).toFractionalValue(),
                         cpuMetrics.usagePercentage.toFractionalValue(),
                         type
                     )
                 )
             }
+
             Monitor.Type.LOAD_AVERAGE_FIVE_MINUTES -> {
                 val cpuInfo = metrics.cpuMetrics().cpuInfo()
                 val cpuMetrics = metrics.cpuMetrics().cpuLoad()
@@ -121,12 +126,13 @@ class MonitorInputCreator(
                         null,
                         cpuInfo.centralProcessor.name ?: cpuInfo.centralProcessor.model ?: "",
                         null,
-                        cpuInfo.centralProcessor.logicalProcessorCount.toFloat().toFractionalValue() ,
+                        cpuInfo.centralProcessor.logicalProcessorCount.toFloat().toFractionalValue(),
                         cpuMetrics.loadAverages.fiveMinutes.toFractionalValue(),
                         type
                     )
                 )
             }
+
             Monitor.Type.LOAD_AVERAGE_FIFTEEN_MINUTES -> {
                 val cpuInfo = metrics.cpuMetrics().cpuInfo()
                 val cpuMetrics = metrics.cpuMetrics().cpuLoad()
@@ -135,12 +141,13 @@ class MonitorInputCreator(
                         null,
                         cpuInfo.centralProcessor.name ?: cpuInfo.centralProcessor.model ?: "",
                         null,
-                        cpuInfo.centralProcessor.logicalProcessorCount.toFloat().toFractionalValue() ,
+                        cpuInfo.centralProcessor.logicalProcessorCount.toFloat().toFractionalValue(),
                         cpuMetrics.loadAverages.fifteenMinutes.toFractionalValue(),
                         type
                     )
                 )
             }
+
             Monitor.Type.CPU_TEMP -> {
                 val cpuInfo = metrics.cpuMetrics().cpuInfo()
                 val cpuMetrics = metrics.cpuMetrics().cpuLoad()
@@ -155,24 +162,252 @@ class MonitorInputCreator(
                     )
                 )
             }
-            Monitor.Type.DRIVE_SPACE -> TODO()
-            Monitor.Type.FILE_SYSTEM_SPACE -> TODO()
-            Monitor.Type.DRIVE_READ_RATE -> TODO()
-            Monitor.Type.DISK_READ_RATE -> TODO()
-            Monitor.Type.DRIVE_WRITE_RATE -> TODO()
-            Monitor.Type.DISK_WRITE_RATE -> TODO()
-            Monitor.Type.MEMORY_SPACE -> TODO()
-            Monitor.Type.NETWORK_UP -> TODO()
-            Monitor.Type.NETWORK_UPLOAD_RATE -> TODO()
-            Monitor.Type.NETWORK_DOWNLOAD_RATE -> TODO()
-            Monitor.Type.CONTAINER_RUNNING -> TODO()
-            Monitor.Type.CONTAINER_MEMORY_SPACE -> TODO()
-            Monitor.Type.CONTAINER_CPU_LOAD -> TODO()
-            Monitor.Type.PROCESS_MEMORY_SPACE -> TODO()
-            Monitor.Type.PROCESS_CPU_LOAD -> TODO()
-            Monitor.Type.PROCESS_EXISTS -> TODO()
-            Monitor.Type.CONNECTIVITY -> TODO()
-            Monitor.Type.EXTERNAL_IP_CHANGED -> TODO()
+
+            Monitor.Type.FILE_SYSTEM_SPACE -> {
+                val fileSystemLoads = metrics.fileSystemMetrics().fileSystemLoads().associateBy { it.id }
+                metrics.fileSystemMetrics().fileSystems().mapNotNull {
+                    fileSystemLoads[it.id]?.let { load ->
+                        MonitorableItem(
+                            id = it.id,
+                            name = it.label,
+                            description = it.description,
+                            maxValue = load.totalSpaceBytes.toNumericalValue(),
+                            currentValue = load.usableSpaceBytes.toNumericalValue(),
+                            type = type
+                        )
+                    }
+                }
+            }
+
+            Monitor.Type.DISK_READ_RATE -> {
+                val diskLoads = metrics.diskMetrics().diskLoads().associateBy { it.name }
+                metrics.diskMetrics().disks().mapNotNull {
+                    diskLoads[it.name]?.let { load ->
+                        MonitorableItem(
+                            id = it.name,
+                            name = it.name,
+                            description = it.serial,
+                            maxValue = Long.MAX_VALUE.toNumericalValue(),
+                            currentValue = load.speed.readBytesPerSecond.toNumericalValue(),
+                            type = type
+                        )
+                    }
+                }
+            }
+
+            Monitor.Type.DISK_WRITE_RATE -> {
+                val diskLoads = metrics.diskMetrics().diskLoads().associateBy { it.name }
+                metrics.diskMetrics().disks().mapNotNull {
+                    diskLoads[it.name]?.let { load ->
+                        MonitorableItem(
+                            id = it.name,
+                            name = it.name,
+                            description = it.serial,
+                            maxValue = Long.MAX_VALUE.toNumericalValue(),
+                            currentValue = load.speed.writeBytesPerSecond.toNumericalValue(),
+                            type = type
+                        )
+                    }
+                }
+            }
+
+            Monitor.Type.MEMORY_SPACE -> {
+                val load = metrics.memoryMetrics().memoryLoad()
+                listOf(
+                    MonitorableItem(
+                        id = null,
+                        name = "Memory space available",
+                        description = null,
+                        maxValue = load.totalBytes.toNumericalValue(),
+                        currentValue = load.availableBytes.toNumericalValue(),
+                        type = type
+                    )
+                )
+            }
+
+            Monitor.Type.MEMORY_USED -> {
+                val load = metrics.memoryMetrics().memoryLoad()
+                listOf(
+                    MonitorableItem(
+                        id = null,
+                        name = "Memory space used",
+                        description = null,
+                        maxValue = load.totalBytes.toNumericalValue(),
+                        currentValue = load.usedBytes.toNumericalValue(),
+                        type = type
+                    )
+                )
+            }
+
+            Monitor.Type.NETWORK_UP -> {
+                val nicLoads = metrics.networkMetrics().networkInterfaceLoads().associateBy { it.name }
+                metrics.networkMetrics().networkInterfaces().mapNotNull {
+                    nicLoads[it.name]?.let { load ->
+                        MonitorableItem(
+                            id = it.name,
+                            name = it.name,
+                            description = it.mac,
+                            maxValue = true.toConditionalValue(),
+                            currentValue = load.isUp.toConditionalValue(),
+                            type = type
+                        )
+                    }
+                }
+            }
+
+            Monitor.Type.NETWORK_UPLOAD_RATE -> {
+                val nicLoads = metrics.networkMetrics().networkInterfaceLoads().associateBy { it.name }
+                metrics.networkMetrics().networkInterfaces().mapNotNull {
+                    nicLoads[it.name]?.let { load ->
+                        MonitorableItem(
+                            id = it.name,
+                            name = it.name,
+                            description = it.mac,
+                            maxValue = load.values.speed.toNumericalValue(),
+                            currentValue = load.speed.sendBytesPerSecond.toNumericalValue(),
+                            type = type
+                        )
+                    }
+                }
+            }
+
+            Monitor.Type.NETWORK_DOWNLOAD_RATE -> {
+                val nicLoads = metrics.networkMetrics().networkInterfaceLoads().associateBy { it.name }
+                metrics.networkMetrics().networkInterfaces().mapNotNull {
+                    nicLoads[it.name]?.let { load ->
+                        MonitorableItem(
+                            id = it.name,
+                            name = it.name,
+                            description = it.mac,
+                            maxValue = load.values.speed.toNumericalValue(),
+                            currentValue = load.speed.receiveBytesPerSecond.toNumericalValue(),
+                            type = type
+                        )
+                    }
+                }
+            }
+
+            Monitor.Type.CONTAINER_RUNNING -> {
+                containerManager.containers().map {
+                    MonitorableItem(
+                        id = it.id,
+                        name = it.names.joinToString(),
+                        description = null,
+                        maxValue = true.toConditionalValue(),
+                        currentValue = (it.state == State.RUNNING).toConditionalValue(),
+                        type = type
+                    )
+                }
+            }
+
+            Monitor.Type.CONTAINER_MEMORY_SPACE -> {
+                val stats = containerManager.containerStats().associateBy { it.id }
+                containerManager.containers().mapNotNull { container ->
+                    stats[container.id]?.let { statistics ->
+                        MonitorableItem(
+                            id = statistics.id,
+                            name = container.names.joinToString(),
+                            description = container.image,
+                            maxValue = statistics.memoryUsage.limitBytes.toNumericalValue(),
+                            currentValue = statistics.memoryUsage.usageBytes.toNumericalValue(),
+                            type = type
+                        )
+                    }
+                }
+            }
+
+            Monitor.Type.CONTAINER_CPU_LOAD -> {
+                val stats = containerManager.containerStats().associateBy { it.id }
+                containerManager.containers().mapNotNull { container ->
+                    stats[container.id]?.let { statistics ->
+                        MonitorableItem(
+                            id = statistics.id,
+                            name = container.names.joinToString(),
+                            description = container.image,
+                            maxValue = (100f).toFractionalValue(),
+                            currentValue = statistics.cpuUsage.usagePercentTotal.toFractionalValue(),
+                            type = type
+                        )
+                    }
+                }
+            }
+
+            Monitor.Type.PROCESS_MEMORY_SPACE -> {
+                val memorySize = metrics.memoryMetrics().memoryInfo().totalBytes
+                metrics.processesMetrics()
+                    .processesInfo(ProcessSort.MEMORY, -1)
+                    .processes
+                    .map {
+                        MonitorableItem(
+                            id = it.processID.toString(),
+                            name = it.name,
+                            description = it.path,
+                            maxValue = memorySize.toNumericalValue(),
+                            currentValue = it.residentSetSize.toNumericalValue(),
+                            type = type
+                        )
+                    }
+            }
+
+            Monitor.Type.PROCESS_CPU_LOAD -> {
+                metrics.processesMetrics()
+                    .processesInfo(ProcessSort.CPU, -1)
+                    .processes
+                    .map {
+                        MonitorableItem(
+                            id = it.processID.toString(),
+                            name = it.name,
+                            description = it.path,
+                            maxValue = (100f).toFractionalValue(),
+                            currentValue = it.cpuPercent.toFractionalValue(),
+                            type = type
+                        )
+                    }
+            }
+
+            Monitor.Type.PROCESS_EXISTS -> {
+                metrics.processesMetrics()
+                    .processesInfo(ProcessSort.PID, -1)
+                    .processes
+                    .map {
+                        MonitorableItem(
+                            id = it.processID.toString(),
+                            name = it.name,
+                            description = it.path,
+                            maxValue = true.toConditionalValue(),
+                            currentValue = true.toConditionalValue(),
+                            type = type
+                        )
+                    }
+            }
+
+            Monitor.Type.CONNECTIVITY -> {
+                val connectivity = metrics.networkMetrics().connectivity()
+                listOf(
+                    MonitorableItem(
+                        id = null,
+                        name = connectivity.externalIp.orEmpty(),
+                        description = null,
+                        maxValue = true.toConditionalValue(),
+                        currentValue = connectivity.connected.toConditionalValue(),
+                        type = type
+                    )
+                )
+            }
+
+            Monitor.Type.EXTERNAL_IP_CHANGED -> {
+                val connectivity = metrics.networkMetrics().connectivity()
+                listOf(
+                    MonitorableItem(
+                        id = null,
+                        name = connectivity.externalIp.orEmpty(),
+                        description = null,
+                        maxValue = false.toConditionalValue(),
+                        currentValue = false.toConditionalValue(),
+                        type = type
+                    )
+                )
+            }
         }
     }
 }

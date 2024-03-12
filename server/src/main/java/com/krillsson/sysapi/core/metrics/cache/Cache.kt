@@ -16,7 +16,6 @@ class Cache private constructor(
     private val gpuMetrics: GpuMetrics
     private val fileSystemMetrics: FileSystemMetrics
     private val diskMetrics: DiskMetrics
-    private val driveMetrics: DriveMetrics
     private val processesMetrics: ProcessesMetrics
     private val motherboardMetrics: MotherboardMetrics
     private val memoryMetrics: MemoryMetrics
@@ -30,10 +29,6 @@ class Cache private constructor(
 
     override fun networkMetrics(): NetworkMetrics {
         return networkMetrics
-    }
-
-    override fun driveMetrics(): DriveMetrics {
-        return driveMetrics
     }
 
     override fun fileSystemMetrics(): FileSystemMetrics {
@@ -79,7 +74,6 @@ class Cache private constructor(
         cpuMetrics = CachingCpuMetrics(metrics.cpuMetrics(), cacheConfiguration)
         networkMetrics = CachingNetworkMetrics(metrics.networkMetrics(), cacheConfiguration)
         gpuMetrics = CachingGpuMetrics(metrics.gpuMetrics(), cacheConfiguration)
-        driveMetrics = CachingDriveMetrics(metrics.driveMetrics(), cacheConfiguration)
         diskMetrics = CachingDiskMetrics(metrics.diskMetrics(), cacheConfiguration)
         fileSystemMetrics = CachingFileSystemMetrics(metrics.fileSystemMetrics(), cacheConfiguration)
         processesMetrics = CachingProcessesMetrics(metrics.processesMetrics(), cacheConfiguration)
@@ -88,7 +82,6 @@ class Cache private constructor(
         systemMetrics = CachingSystemMetrics(
             cpuMetrics,
             networkMetrics,
-            driveMetrics,
             diskMetrics,
             fileSystemMetrics,
             memoryMetrics,

@@ -7,4 +7,6 @@ class MemoryLoad(
     val totalBytes: Long,
     val availableBytes: Long,
     val usedPercent: Double
-) 
+) {
+    val usedBytes = (totalBytes - availableBytes).coerceAtLeast(0)
+}

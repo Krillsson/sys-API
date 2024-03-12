@@ -11,7 +11,6 @@ import com.krillsson.sysapi.util.EnvironmentUtils
 open class DefaultSystemMetrics(
     private val cpuMetrics: CpuMetrics,
     private val networkMetrics: NetworkMetrics,
-    private val driveMetrics: DriveMetrics,
     private val diskMetrics: DiskMetrics,
     private val fileSystemMetrics: FileSystemMetrics,
     private val memoryMetrics: MemoryMetrics,
@@ -29,7 +28,6 @@ open class DefaultSystemMetrics(
             cpuMetrics.cpuLoad(),
             networkMetrics.networkInterfaceLoads(),
             networkMetrics.connectivity(),
-            driveMetrics.driveLoads(),
             diskMetrics.diskLoads(),
             fileSystemMetrics.fileSystemLoads(),
             memoryMetrics.memoryLoad(),
@@ -47,7 +45,6 @@ open class DefaultSystemMetrics(
             cpuInfo = cpuMetrics.cpuInfo(),
             motherboard = motherboardMetrics.motherboard(),
             memory = memoryMetrics.memoryInfo(),
-            drives = driveMetrics.drives(),
             fileSystems = fileSystemMetrics.fileSystems(),
             networkInterfaces = networkMetrics.networkInterfaces(),
             gpus = gpuMetrics.gpus()

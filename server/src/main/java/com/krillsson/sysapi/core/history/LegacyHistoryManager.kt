@@ -2,7 +2,6 @@ package com.krillsson.sysapi.core.history
 
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad
 import com.krillsson.sysapi.core.domain.disk.DiskLoad
-import com.krillsson.sysapi.core.domain.drives.DriveLoad
 import com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad
 import com.krillsson.sysapi.core.domain.history.HistoryEntry
@@ -36,21 +35,6 @@ class LegacyHistoryManager(
         toDate: OffsetDateTime?
     ): List<SystemHistoryEntry> {
         return getHistoryLimitedToDates(fromDate, toDate)
-    }
-
-    fun driveLoadHistory(
-        fromDate: OffsetDateTime?,
-        toDate: OffsetDateTime?
-    ): List<HistoryEntry<List<DriveLoad>>> {
-        return systemLoadHistory(fromDate, toDate).stream()
-            .map { e: SystemHistoryEntry ->
-                HistoryEntry(
-                    e.id,
-                    e.date,
-                    e.value.driveLoads
-                )
-            }
-            .collect(Collectors.toList())
     }
 
     fun diskLoadHistory(

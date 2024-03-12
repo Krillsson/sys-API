@@ -1,4 +1,5 @@
 ### Unreleased
+- Memory monitor now operates based on "used bytes goes above threshold" compared to the old "available bytes goes below threshold" as this is more intuitive.
 
 ### 0.20.0
 - added `deletePastEventsForMonitor`, `closeOngoingEventForMonitor` to the GraphQL-API

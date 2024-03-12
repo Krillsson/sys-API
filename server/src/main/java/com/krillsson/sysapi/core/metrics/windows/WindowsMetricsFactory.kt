@@ -33,7 +33,6 @@ object WindowsMetricsFactory {
                 connectivityCheckManager
             )
             val gpuMetrics = WindowsGpuMetrics(hal, monitorManager)
-            val driveMetrics = DefaultDriveMetrics(os, hal)
             val diskMetrics = DefaultDiskMetrics(hal, diskReadWriteRateMeasurementManager)
             val fileSystemMetrics = DefaultFileSystemMetrics(os)
             val processesMetrics = DefaultProcessesMetrics(configuration.processes, os, hal, taskManager)
@@ -42,7 +41,6 @@ object WindowsMetricsFactory {
             val systemMetrics = DefaultSystemMetrics(
                 cpuMetrics,
                 networkMetrics,
-                driveMetrics,
                 diskMetrics,
                 fileSystemMetrics,
                 memoryMetrics,
@@ -56,7 +54,6 @@ object WindowsMetricsFactory {
                 cpuMetrics,
                 networkMetrics,
                 gpuMetrics,
-                driveMetrics,
                 diskMetrics,
                 fileSystemMetrics,
                 processesMetrics,

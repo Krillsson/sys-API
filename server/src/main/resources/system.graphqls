@@ -11,7 +11,6 @@ type System {
     baseboard: Board!
     usbDevices: [UsbDevices!]!
     processor: Processor!
-    drives: [Drive!]! @deprecated(reason: "replaced by disks and fileSystems")
     disks: [Disk!]!
     diskById(id: String!): Disk
     fileSystems: [FileSystem!]!
@@ -47,7 +46,6 @@ type SystemMetricsHistoryEntry {
     dateTime: OffsetDateTime! @deprecated(reason: "Replaced by timestamp")
     timestamp: Instant!
     processorMetrics: ProcessorMetrics!
-    driveMetrics: [DriveMetrics!]! @deprecated(reason: "Replaced by DiskMetrics and FileSystemMetrics")
     diskMetrics: [DiskMetrics!]!
     fileSystemMetrics: [FileSystemMetrics!]!
     networkInterfaceMetrics: [NetworkInterfaceMetrics!]!
@@ -134,16 +132,6 @@ type ProcessorCoreMetrics {
 
 ## Drives
 
-type Drive {
-    model: String!
-    name: String!
-    serial: String!
-    sizeBytes: Long!
-    diskOsPartition: DiskOsPartition!
-    partitions: [Partition!]!
-    metrics: DriveMetrics
-}
-
 type Disk {
     model: String!
     name: String!
@@ -198,21 +186,6 @@ type Partition {
     major: Int!
     minor: Int!
     mountPoint: String!
-}
-
-type DriveMetrics {
-    name: String!
-    temperature: Int!
-    healthData: [DriveHealth!]!
-    usableSpaceBytes: Long!
-    totalSpaceBytes: Long!
-    openFileDescriptors: Int!
-    maxFileDescriptors: Int!
-    reads: Int!
-    readBytes: Long!
-    writes: Int!
-    writeBytes: Long!
-    currentReadWriteRate: DriveReadWriteRate!
 }
 
 type DiskMetrics {
@@ -339,6 +312,7 @@ type MemoryMetrics {
     numberOfProcesses: Int!
     swapUsedBytes: Long!
     availableBytes: Long!
+    usedBytes: Long!
     usedPercent: Float!
 }
 

@@ -20,7 +20,6 @@ fun HistorySystemLoad.asEntity(id: UUID, dateTime: Instant): HistorySystemLoadEn
         cpuLoad.asCpuLoadEntity(id),
         networkInterfaceLoads.map { it.asNetworkInterfaceLoad(id) },
         connectivity.asConnectivity(id),
-        driveLoads.map { it.asDiskLoad(id) },
         diskLoads.map { it.asDiskLoad(id) },
         fileSystemLoads.map { it.asFileSystemLoad(id) },
         memory.asMemoryLoad(id),
@@ -106,34 +105,6 @@ private fun com.krillsson.sysapi.core.domain.memory.MemoryLoad.asMemoryLoad(id: 
         usedPercent
     )
 }
-
-private fun com.krillsson.sysapi.core.domain.drives.DriveLoad.asDiskLoad(id: UUID): DriveLoad {
-    val uuid = UUID.randomUUID()
-    return DriveLoad(
-        uuid,
-        null,
-        id,
-        name,
-        serial,
-        values.asDriveValues(),
-        speed.asSpeed(),
-        health.temperature,
-        health.healthData.map { it.asHealthData(id) }
-
-    )
-}
-
-private fun com.krillsson.sysapi.core.domain.sensors.HealthData.asHealthData(id: UUID): DriveHealthData {
-    return DriveHealthData(
-        UUID.randomUUID(),
-        null,
-        id,
-        description,
-        data,
-        dataType.asDataType()
-    )
-}
-
 private fun com.krillsson.sysapi.core.domain.sensors.DataType.asDataType(): DataType {
     return when (this) {
         com.krillsson.sysapi.core.domain.sensors.DataType.CLOCK -> DataType.CLOCK
@@ -143,18 +114,6 @@ private fun com.krillsson.sysapi.core.domain.sensors.DataType.asDataType(): Data
         com.krillsson.sysapi.core.domain.sensors.DataType.CELCIUS -> DataType.CELCIUS
         com.krillsson.sysapi.core.domain.sensors.DataType.GIGABYTE -> DataType.GIGABYTE
     }
-}
-
-private fun com.krillsson.sysapi.core.domain.drives.DriveSpeed.asSpeed(): DriveSpeed {
-    return DriveSpeed(
-        readBytesPerSecond, writeBytesPerSecond
-    )
-}
-
-private fun com.krillsson.sysapi.core.domain.drives.DriveValues.asDriveValues(): DriveValues {
-    return DriveValues(
-        usableSpace, totalSpace, openFileDescriptors, maxFileDescriptors, reads, readBytes, writes, writeBytes
-    )
 }
 
 private fun com.krillsson.sysapi.core.domain.network.Connectivity.asConnectivity(id: UUID): Connectivity {
