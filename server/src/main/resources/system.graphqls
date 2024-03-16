@@ -160,23 +160,6 @@ type FileSystemMetrics {
     totalSpaceBytes: Long!
 }
 
-type DiskOsPartition {
-    identification: String!
-    name: String!
-    type: String!
-    uuid: UUID!
-    sizeBytes: Long!
-    major: Int!
-    minor: Int!
-    mountPoint: String!
-    volume: String!
-    logicalVolume: String!
-    mount: String!
-    description: String!
-    usableSpace: Int!
-    totalSpace: Int!
-}
-
 type Partition {
     identification: String!
     name: String!
@@ -195,26 +178,6 @@ type DiskMetrics {
     writes: Int!
     writeBytes: Long!
     currentReadWriteRate: DiskReadWriteRate!
-}
-
-type DriveHealth {
-    value: Float!
-    type: DriveHealthDataType!
-}
-
-enum DriveHealthDataType {
-    CLOCK,
-    VOLTAGE,
-    PERCENT,
-    RPM,
-    CELCIUS,
-    GIGABYTE
-}
-
-
-type DriveReadWriteRate {
-    readBytesPerSecond: Long!
-    writeBytesPerSecond: Long!
 }
 
 type DiskReadWriteRate {
