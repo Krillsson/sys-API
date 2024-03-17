@@ -1,0 +1,21 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Query {
+    meta: Meta
+}
+type Mutation {}
+
+scalar UUID
+scalar OffsetDateTime
+scalar Instant
+scalar Long
+
+type Meta {
+    version: String!
+    buildDate: String!
+    processId: Int!
+    endpoints: [String!]!
+}

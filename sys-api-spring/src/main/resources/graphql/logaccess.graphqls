@@ -1,0 +1,17 @@
+extend type Query {
+    logFiles: LogFilesAccess!
+}
+
+type LogFilesAccess {
+    files: [LogFile!]!
+    openLogFile(path: String): [String!]!
+}
+
+type LogFile{
+    name: String!
+    path: String!
+    sizeBytes: Long!
+    createdAt: Instant
+    updatedAt: Instant
+    count: Int!
+}

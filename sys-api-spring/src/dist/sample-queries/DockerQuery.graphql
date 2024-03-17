@@ -1,0 +1,33 @@
+query docker {
+    docker {
+        ... on DockerUnavailable {
+            reason
+            isDisabled
+        }
+        ... on DockerAvailable {
+            containers {
+                names
+                state
+                id
+                image
+                status
+                ports {
+                    publicPort
+                    privatePort
+                }
+                mounts{
+                    source
+                    destination
+                }
+                config {
+                    env
+                    cmd
+                    exposedPorts{
+                        port
+                        portProtocol
+                    }
+                }
+            }
+        }
+    }
+}

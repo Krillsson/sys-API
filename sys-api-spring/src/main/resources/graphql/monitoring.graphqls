@@ -1,0 +1,252 @@
+extend type Query {
+    monitors: [Monitor!]!
+    monitorById(id: String!): Monitor
+    events: [Event!]!
+    eventById(id: String!): Event
+    genericEvents: [GenericEvent!]!
+    pastEvents: [PastEvent!]!
+    ongoingEvents: [OngoingEvent!]!
+    monitorableItemsForType(input: MonitorableItemsInput): MonitorableItemsOutput!
+}
+
+extend type Mutation {
+    createNumericalValueMonitor(input: CreateNumericalMonitorInput) : CreateMonitorOutput
+    createConditionalValueMonitor(input: CreateConditionalMonitorInput) : CreateMonitorOutput
+    createFractionalValueMonitor(input: CreateFractionMonitorInput) : CreateMonitorOutput
+    deleteMonitor(input: DeleteMonitorInput) : DeleteMonitorOutput
+    updateNumericalValueMonitor(input: UpdateNumericalValueMonitorInput) : UpdateMonitorOutput
+    updateFractionalValueMonitor(input: UpdateFractionalValueMonitorInput) : UpdateMonitorOutput
+    updateConditionalValueMonitor(input: UpdateConditionalValueMonitorInput) : UpdateMonitorOutput
+    deleteEvent(input: DeleteEventInput) : DeleteEventOutput
+    deleteEventsForMonitor(input: DeleteEventsForMonitorInput) : DeleteEventOutput
+    deletePastEventsForMonitor(input: DeleteEventsForMonitorInput): DeleteEventOutput
+    closeOngoingEventForMonitor(input: DeleteEventsForMonitorInput): DeleteEventOutput
+    deleteGenericEvent(input: DeleteGenericEventInput): DeleteGenericEventOutput
+}
+
+input CreateNumericalMonitorInput {
+    inertiaInSeconds: Int!
+    type: MonitorType!
+    threshold: Long!
+    # Drives: serial or name (ignoring case)
+    # NIC's: name or MAC address (ignoring case)
+    # Process: process ID
+    # Docker: full container ID (ignoring case)
+    monitoredItemId: String
+}
+
+input MonitorableItemsInput {
+    type: MonitorType!
+}
+
+type MonitorableItemsOutput {
+    items: [MonitorableItem!]!
+}
+
+input CreateFractionMonitorInput {
+    inertiaInSeconds: Int!
+    type: MonitorType!
+    threshold: Float!
+    # Drives: serial or name (ignoring case)
+    # NIC's: name or MAC address (ignoring case)
+    # Process: process ID
+    # Docker: full container ID (ignoring case)
+    monitoredItemId: String
+}
+
+input CreateConditionalMonitorInput {
+    inertiaInSeconds: Int!
+    type: MonitorType!
+    threshold: Boolean!
+    # Drives: serial or name (ignoring case)
+    # NIC's: name or MAC address (ignoring case)
+    # Process: process ID
+    # Docker: full container ID (ignoring case)
+    monitoredItemId: String
+}
+
+input UpdateNumericalValueMonitorInput {
+    monitorId: UUID!
+    inertiaInSeconds: Int
+    threshold: Long
+}
+
+input UpdateFractionalValueMonitorInput {
+    monitorId: UUID!
+    inertiaInSeconds: Int
+    threshold: Float
+}
+
+input UpdateConditionalValueMonitorInput {
+    monitorId: UUID!
+    inertiaInSeconds: Int
+    threshold: Boolean
+}
+
+type CreateMonitorOutput {
+    monitorId: UUID!
+}
+
+union UpdateMonitorOutput = UpdateMonitorOutputSucceeded | UpdateMonitorOutputFailed
+
+type UpdateMonitorOutputSucceeded {
+    monitorId: UUID!
+}
+
+type UpdateMonitorOutputFailed {
+    reason: String!
+}
+
+input DeleteMonitorInput {
+    monitorId: UUID!
+}
+
+type DeleteMonitorOutput {
+    removed: Boolean!
+}
+
+input DeleteEventInput {
+    eventId: UUID!
+}
+
+input DeleteEventsForMonitorInput {
+    monitorId: UUID!
+}
+
+type DeleteEventOutput {
+    removed: Boolean!
+}
+
+type DeleteGenericEventOutput {
+    removed: Boolean!
+}
+
+input DeleteGenericEventInput{
+    eventId: UUID!
+}
+
+
+union MonitoredValue = NumericalValue | FractionalValue | ConditionalValue
+
+type NumericalValue {
+    number: Long
+}
+
+type FractionalValue {
+    fraction: Float
+}
+
+type ConditionalValue {
+    condition: Boolean
+}
+
+type MonitoredValueHistoryEntry {
+    date: String!
+    dateTime: OffsetDateTime!
+    timestamp: Instant!
+    value: MonitoredValue!
+}
+
+type Monitor {
+    id: UUID!
+    inertiaInSeconds: Int!
+    type: MonitorType
+    threshold: MonitoredValue!
+    currentValue: MonitoredValue
+    # estimated max value of monitored value. Useful while building UI's
+    maxValue: MonitoredValue
+    monitoredItemId: String
+    history: [MonitoredValueHistoryEntry!]!
+    events: [Event!]!
+    pastEvents: [PastEvent!]!
+    ongoingEvents: [OngoingEvent!]!
+    historyBetweenTimestamps(from: Instant!, to: Instant!): [MonitoredValueHistoryEntry!]!
+}
+
+enum MonitorType {
+    CPU_LOAD,
+    CPU_TEMP,
+    FILE_SYSTEM_SPACE,
+    DISK_READ_RATE,
+    DISK_WRITE_RATE,
+    @deprecated(reason: "Replaced by MEMORY_USED 2024-03-12") MEMORY_SPACE,
+    MEMORY_USED,
+    NETWORK_UP,
+    NETWORK_UPLOAD_RATE,
+    NETWORK_DOWNLOAD_RATE,
+    CONTAINER_RUNNING,
+    CONTAINER_MEMORY_SPACE,
+    CONTAINER_CPU_LOAD,
+    PROCESS_MEMORY_SPACE,
+    PROCESS_CPU_LOAD,
+    PROCESS_EXISTS,
+    CONNECTIVITY,
+    EXTERNAL_IP_CHANGED
+}
+
+type MonitorableItem {
+    id: String
+    name: String!
+    description: String
+    maxValue: MonitoredValue!
+    currentValue: MonitoredValue!
+    type: MonitorType!
+}
+
+interface Event {
+    id: UUID!
+    monitor: Monitor!
+    startTime: String!
+    startTimestamp: Instant!
+}
+
+type OngoingEvent implements Event {
+    id: UUID!
+    monitor: Monitor!
+    startTime: String!
+    startTimestamp: Instant!
+    startValue: MonitoredValue!
+}
+
+type PastEvent implements Event {
+    id: UUID!
+    monitor: Monitor!
+    startTime: String!
+    startTimestamp: Instant!
+    endTimestamp: Instant!
+    endTime: String!
+    endValue: MonitoredValue!
+    startValue: MonitoredValue!
+}
+
+interface GenericEvent {
+    id: UUID!
+    dateTime: OffsetDateTime! @deprecated(reason: "Replaced by timestamp")
+    timestamp: Instant!
+    title: String!
+    description: String!
+}
+
+type UpdateAvailable implements GenericEvent {
+    id: UUID!
+    dateTime: OffsetDateTime! @deprecated(reason: "Replaced by timestamp")
+    timestamp: Instant!
+    title: String!
+    description: String!
+    currentVersion: String!
+    newVersion: String!
+    changeLogMarkdown: String!
+    downloadUrl: String!
+    publishDate: String!
+}
+
+type MonitoredItemMissing implements GenericEvent {
+    id: UUID!
+    dateTime: OffsetDateTime! @deprecated(reason: "Replaced by timestamp")
+    timestamp: Instant!
+    title: String!
+    description: String!
+    monitorType: MonitorType!
+    monitorId: UUID!
+    monitoredItemId: String
+}
