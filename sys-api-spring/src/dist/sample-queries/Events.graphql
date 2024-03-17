@@ -1,0 +1,61 @@
+query Events {
+    ongoingEvents {
+        id
+        startTime
+        startValue {
+            ... on NumericalValue {
+                number
+            }
+            ... on ConditionalValue {
+                condition
+            }
+            ... on FractionalValue {
+                fraction
+            }
+        }
+        monitor {
+            type
+            threshold {
+                ... on NumericalValue {
+                    number
+                }
+                ... on ConditionalValue {
+                    condition
+                }
+                ... on FractionalValue {
+                    fraction
+                }
+            }
+        }
+    }
+    pastEvents {
+        id
+        startTime
+        endTime
+        endValue {
+            ... on NumericalValue {
+                number
+            }
+            ... on ConditionalValue {
+                condition
+            }
+            ... on FractionalValue {
+                fraction
+            }
+        }
+        monitor {
+            type
+            threshold {
+                ... on NumericalValue {
+                    number
+                }
+                ... on ConditionalValue {
+                    condition
+                }
+                ... on FractionalValue {
+                    fraction
+                }
+            }
+        }
+    }
+}

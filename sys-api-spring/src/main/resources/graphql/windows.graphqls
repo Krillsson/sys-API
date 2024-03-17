@@ -1,0 +1,92 @@
+extend type Query {
+    windowsManagement: WindowsManagementAccess!
+}
+
+extend type Mutation {
+    performWindowsServiceCommand(input: PerformWindowsServiceCommandInput) : PerformWindowsServiceCommandOutput
+}
+
+enum WindowsServiceCommand {
+    START,
+    STOP,
+    PAUSE,
+    CONTINUE
+}
+
+enum WindowsServiceType {
+    KERNEL_DRIVER,
+    FILE_SYSTEM_DRIVER,
+    ADAPTER,
+    RECOGNIZER_DRIVER,
+    WIN32_OWN_PROCESS,
+    WIN32_SHARE_PROCESS,
+    INTERACTIVE_PROCESS,
+    UNKNOWN
+}
+
+enum WindowsServiceState {
+    STOPPED,
+    START_PENDING,
+    STOP_PENDING,
+    RUNNING,
+    CONTINUE_PENDING,
+    PAUSE_PENDING,
+    PAUSED,
+    UNKNOWN
+}
+
+type WindowsService {
+    name: String!
+    displayName: String!
+    serviceType: WindowsServiceType!
+    state: WindowsServiceState!
+    pid: Int!
+}
+
+input PerformWindowsServiceCommandInput {
+    serviceName: String!
+    command: WindowsServiceCommand
+}
+
+type PerformWindowsServiceCommandOutputFailed {
+    reason: String!
+}
+
+type PerformWindowsServiceCommandOutputSucceeded {
+    serviceName: String!
+}
+
+union PerformWindowsServiceCommandOutput = PerformWindowsServiceCommandOutputSucceeded | PerformWindowsServiceCommandOutputFailed
+
+union WindowsManagementAccess = WindowsManagementAccessAvailable | WindowsManagementAccessUnavailable
+
+type WindowsManagementAccessAvailable {
+    services: [WindowsService!]!
+    service(name: String!): WindowsService
+    eventLogs: [WindowsEventLog!]!
+    openEventLogBySource(name: String): [WindowsEventLogRecord!]!
+    openApplicationEventLog: [WindowsEventLogRecord!]!
+    openSystemEventLog: [WindowsEventLogRecord!]!
+    openSecurityEventLog: [WindowsEventLogRecord!]!
+}
+
+type WindowsEventLog {
+    name: String!
+    recordCount: Int!
+}
+
+type WindowsEventLogRecord {
+    timestamp: Instant!
+    message: String!
+    eventType: WindowsEventLogRecordType!
+    source: String!
+    category: String!
+}
+
+enum WindowsEventLogRecordType {
+    Error, Warning, Informational, AuditSuccess, AuditFailure
+}
+
+type WindowsManagementAccessUnavailable {
+    reason: String!
+}

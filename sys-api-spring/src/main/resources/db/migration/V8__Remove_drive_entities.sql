@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS DriveLoad;
+DROP TABLE IF EXISTS DriveHealthData;
