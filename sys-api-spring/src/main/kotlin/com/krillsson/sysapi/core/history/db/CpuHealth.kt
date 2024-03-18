@@ -9,10 +9,10 @@ import java.util.UUID
 @Embeddable
 class CpuHealth(
     @Id
-    var id: UUID,
+    open var id: UUID,
     @ElementCollection(fetch = FetchType.EAGER)
-    var temperatures: List<Double>,
-    var voltage: Double,
-    var fanRpm: Double,
-    var fanPercent: Double
+    open var temperatures: List<Double>,
+    open var voltage: Double,
+    open var fanRpm: Double,
+    open var fanPercent: Double
 )

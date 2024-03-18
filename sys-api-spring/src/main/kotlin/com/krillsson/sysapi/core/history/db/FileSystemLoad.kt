@@ -5,25 +5,23 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.criteria.CriteriaQuery
-import org.hibernate.SessionFactory
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
-import java.util.*
+import java.util.UUID
 
 @Entity
-data class FileSystemLoad(
+class FileSystemLoad(
     @Id
-    var id: UUID,
+    open var id: UUID,
     @JoinColumn(name = "historyId", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    var history: HistorySystemLoadEntity? = null,
-    var historyId: UUID,
-    var name: String,
-    var fsId: String?,
-    var freeSpaceBytes: Long,
-    var usableSpaceBytes: Long,
-    var totalSpaceBytes: Long
+    open var history: HistorySystemLoadEntity? = null,
+    open var historyId: UUID,
+    open var name: String,
+    open var fsId: String?,
+    open var freeSpaceBytes: Long,
+    open var usableSpaceBytes: Long,
+    open var totalSpaceBytes: Long
 )
 
 @Repository

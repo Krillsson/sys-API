@@ -10,6 +10,7 @@ plugins {
 	id 'org.jetbrains.kotlin.plugin.spring' version '1.9.22'
 	id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.22'
 	id 'com.github.gmazzo.buildconfig' version '5.3.5'
+	// id "org.jetbrains.kotlin.plugin.allopen" version "1.9.22"
 }
 
 group = 'com.krillsson'
@@ -24,6 +25,10 @@ java {
 	sourceCompatibility = '21'
 }
 
+//allOpen {
+//	annotation("jakarta.persistence.Entity")
+//}
+
 repositories {
 	mavenCentral()
 	flatDir {
@@ -33,9 +38,12 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	// implementation 'org.springframework.boot:spring-boot-starter-graphql'
 	implementation 'org.springframework.boot:spring-boot-starter-quartz'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation ('com.graphql-java-kickstart:playground-spring-boot-starter:11.1.0'){
+		exclude group: "com.graphql-java-kickstart", module: "graphiql-spring-boot-starter"
+		exclude group: "com.graphql-java-kickstart", module: "graphiql-spring-boot-autoconfigure"
+	}
 	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 	implementation 'org.flywaydb:flyway-core'

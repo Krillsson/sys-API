@@ -9,13 +9,13 @@ import java.util.UUID
 @Entity
 class MemoryLoad(
     @Id
-    var id: UUID,
-    var numberOfProcesses: Int,
-    var swapTotalBytes: Long,
-    var swapUsedBytes: Long,
-    var totalBytes: Long,
-    var availableBytes: Long,
-    var usedPercent: Double
+    open var id: UUID,
+    open var numberOfProcesses: Int,
+    open var swapTotalBytes: Long,
+    open var swapUsedBytes: Long,
+    open var totalBytes: Long,
+    open var availableBytes: Long,
+    open var usedPercent: Double
 )
 
 @Repository

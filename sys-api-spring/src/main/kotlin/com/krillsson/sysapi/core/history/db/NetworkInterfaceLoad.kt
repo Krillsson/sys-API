@@ -14,33 +14,33 @@ import java.util.UUID
 @Entity
 class NetworkInterfaceLoad(
     @Id
-    var id: UUID,
+    open var id: UUID,
     @JoinColumn(name = "historyId", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    var history: HistorySystemLoadEntity? = null,
-    var historyId: UUID,
-    var name: String,
-    var mac: String,
-    var isUp: Boolean,
+    open var history: HistorySystemLoadEntity? = null,
+    open var historyId: UUID,
+    open var name: String,
+    open var mac: String,
+    open var isUp: Boolean,
     @Embedded
-    var values: NetworkInterfaceValues,
+    open var values: NetworkInterfaceValues,
     @Embedded
-    var speed: NetworkInterfaceSpeed
+    open var speed: NetworkInterfaceSpeed
 )
 
 @Embeddable
 class NetworkInterfaceValues(
-    var speed: Long,
-    var bytesReceived: Long,
-    var bytesSent: Long,
-    var packetsReceived: Long,
-    var packetsSent: Long,
-    var inErrors: Long,
-    var outErrors: Long
+    open var speed: Long,
+    open var bytesReceived: Long,
+    open var bytesSent: Long,
+    open var packetsReceived: Long,
+    open var packetsSent: Long,
+    open var inErrors: Long,
+    open var outErrors: Long
 )
 
 @Embeddable
-class NetworkInterfaceSpeed(var receiveBytesPerSecond: Long, var sendBytesPerSecond: Long)
+class NetworkInterfaceSpeed(open var receiveBytesPerSecond: Long, open var sendBytesPerSecond: Long)
 
 @Repository
 interface NetworkLoadDAO : JpaRepository<NetworkInterfaceLoad, UUID> {

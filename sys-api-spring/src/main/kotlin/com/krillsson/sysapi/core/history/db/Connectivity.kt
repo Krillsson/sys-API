@@ -9,11 +9,11 @@ import java.util.UUID
 @Entity
 class Connectivity(
     @Id
-    var id: UUID,
-    var externalIp: String?,
-    var previousExternalIp: String?,
-    var localIp: String?,
-    var connected: Boolean
+    open var id: UUID,
+    open var externalIp: String?,
+    open var previousExternalIp: String?,
+    open var localIp: String?,
+    open var connected: Boolean
 )
 
 @Repository

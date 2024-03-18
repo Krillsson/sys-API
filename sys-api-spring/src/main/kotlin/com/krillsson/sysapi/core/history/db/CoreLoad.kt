@@ -5,15 +5,15 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import java.util.*
+import java.util.UUID
 
 @Entity
 class CoreLoad(
     @Id
-    var id: UUID,
+    open var id: UUID,
     @JoinColumn(name = "cpuLoadId", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    var cpuLoad: CpuLoad? = null,
-    var cpuLoadId: UUID,
-    var percentage: Double,
+    open var cpuLoad: CpuLoad? = null,
+    open var cpuLoadId: UUID,
+    open var percentage: Double,
 )

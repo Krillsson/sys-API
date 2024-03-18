@@ -4,12 +4,10 @@ import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Root
-import org.hibernate.HibernateException
-import org.hibernate.query.Query
 import org.springframework.stereotype.Repository
 import java.time.Instant
 import java.time.OffsetDateTime
-import java.util.*
+import java.util.UUID
 
 @Repository
 class HistorySystemLoadDAO {
@@ -23,24 +21,24 @@ class HistorySystemLoadDAO {
 
     fun insert(entities: List<HistorySystemLoadEntity>): List<UUID> {
         return entities.map {
-            var createdId = insert(it)
+            val createdId = insert(it)
             createdId
         }
     }
 
     fun findAllBetween(from: Instant, to: Instant): List<HistorySystemLoadEntity> {
-        var builder = em.criteriaBuilder
-        var query: CriteriaQuery<HistorySystemLoadEntity> = builder.createQuery(HistorySystemLoadEntity::class.java)
-        var root: Root<HistorySystemLoadEntity> = query.from(HistorySystemLoadEntity::class.java)
-        var between = builder.between(root.get("date"), from, to)
+        val builder = em.criteriaBuilder
+        val query: CriteriaQuery<HistorySystemLoadEntity> = builder.createQuery(HistorySystemLoadEntity::class.java)
+        val root: Root<HistorySystemLoadEntity> = query.from(HistorySystemLoadEntity::class.java)
+        val between = builder.between(root.get("date"), from, to)
         return em.createQuery(query.where(between)).resultList
     }
 
     fun purge(maxAge: Instant): Int {
-        var builder = em.criteriaBuilder
-        var delete = builder.createCriteriaDelete(HistorySystemLoadEntity::class.java)
-        var table = delete.from(HistorySystemLoadEntity::class.java)
-        var lessThan = builder.lessThan(table.get("date"), maxAge)
+        val builder = em.criteriaBuilder
+        val delete = builder.createCriteriaDelete(HistorySystemLoadEntity::class.java)
+        val table = delete.from(HistorySystemLoadEntity::class.java)
+        val lessThan = builder.lessThan(table.get("date"), maxAge)
         return em
             .createQuery(delete.where(lessThan))
             .executeUpdate()
@@ -61,19 +59,19 @@ class BasicHistorySystemLoadDAO {
     lateinit var em: EntityManager
 
     fun findAllBetween(from: Instant, to: Instant): List<BasicHistorySystemLoadEntity> {
-        var builder = em.criteriaBuilder
-        var query: CriteriaQuery<BasicHistorySystemLoadEntity> =
+        val builder = em.criteriaBuilder
+        val query: CriteriaQuery<BasicHistorySystemLoadEntity> =
             builder.createQuery(BasicHistorySystemLoadEntity::class.java)
-        var root: Root<BasicHistorySystemLoadEntity> = query.from(BasicHistorySystemLoadEntity::class.java)
-        var between = builder.between(root.get("date"), from, to)
+        val root: Root<BasicHistorySystemLoadEntity> = query.from(BasicHistorySystemLoadEntity::class.java)
+        val between = builder.between(root.get("date"), from, to)
         return em.createQuery(query.where(between)).resultList
     }
 
     fun purge(maxAge: OffsetDateTime): Int {
-        var builder = em.criteriaBuilder
-        var delete = builder.createCriteriaDelete(BasicHistorySystemLoadEntity::class.java)
-        var table = delete.from(BasicHistorySystemLoadEntity::class.java)
-        var lessThan = builder.lessThan(table.get("date"), maxAge)
+        val builder = em.criteriaBuilder
+        val delete = builder.createCriteriaDelete(BasicHistorySystemLoadEntity::class.java)
+        val table = delete.from(BasicHistorySystemLoadEntity::class.java)
+        val lessThan = builder.lessThan(table.get("date"), maxAge)
         return em
             .createQuery(delete.where(lessThan))
             .executeUpdate()

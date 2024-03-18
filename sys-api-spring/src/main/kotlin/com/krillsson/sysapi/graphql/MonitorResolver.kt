@@ -17,8 +17,10 @@ import com.krillsson.sysapi.graphql.domain.MonitoredValueHistoryEntry
 import com.krillsson.sysapi.graphql.domain.Selectors
 import com.krillsson.sysapi.graphql.domain.asMonitoredValue
 import graphql.kickstart.tools.GraphQLResolver
+import org.springframework.stereotype.Component
 import java.time.Instant
 
+@Component
 class MonitorResolver(
     val historyRepository: HistoryRepository,
     val eventManager: EventManager,
