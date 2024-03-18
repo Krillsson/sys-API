@@ -8,7 +8,7 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import java.time.Instant
-import java.util.*
+import java.util.UUID
 
 // https://vladmihalcea.com/the-best-way-to-map-a-onetomany-association-with-jpa-and-hibernate/
 // https://stackoverflow.com/a/50378345
@@ -20,10 +20,10 @@ import java.util.*
 )
 class BasicHistorySystemLoadEntity(
     @Id
-    var id: UUID,
-    var date: Instant,
-    var uptime: Long,
-    var systemLoadAverage: Double,
+    open var id: UUID,
+    open var date: Instant,
+    open var uptime: Long,
+    open var systemLoadAverage: Double,
 )
 
 @Entity
@@ -33,24 +33,24 @@ class BasicHistorySystemLoadEntity(
 )
 class HistorySystemLoadEntity(
     @Id
-    var id: UUID,
-    var date: Instant,
-    var uptime: Long,
-    var systemLoadAverage: Double,
+    open var id: UUID,
+    open var date: Instant,
+    open var uptime: Long,
+    open var systemLoadAverage: Double,
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true)
-    var cpuLoad: CpuLoad,
+    open var cpuLoad: CpuLoad,
     @OneToMany(mappedBy = "history", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var networkInterfaceLoads: List<NetworkInterfaceLoad>,
+    open var networkInterfaceLoads: List<NetworkInterfaceLoad>,
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true)
-    var connectivity: Connectivity,
+    open var connectivity: Connectivity,
     @OneToMany(mappedBy = "history", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var diskLoads: List<DiskLoad>?,
+    open var diskLoads: List<DiskLoad>?,
     @OneToMany(mappedBy = "history", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var fileSystemLoads: List<FileSystemLoad>?,
+    open var fileSystemLoads: List<FileSystemLoad>?,
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true)
-    var memory: MemoryLoad,
+    open var memory: MemoryLoad,
     @OneToMany(mappedBy = "history", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var gpuLoads: List<GpuLoad>,
+    open var gpuLoads: List<GpuLoad>,
     @OneToMany(mappedBy = "history", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var motherboardHealth: List<HealthData>
+    open var motherboardHealth: List<HealthData>
 )

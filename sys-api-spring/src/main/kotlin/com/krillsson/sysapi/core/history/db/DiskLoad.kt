@@ -9,36 +9,36 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
-import java.util.*
+import java.util.UUID
 
 @Entity
 data class DiskLoad(
     @Id
-    var id: UUID,
+    open var id: UUID,
     @JoinColumn(name = "historyId", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    var history: HistorySystemLoadEntity? = null,
-    var historyId: UUID,
-    var name: String,
-    var serial: String,
+    open var history: HistorySystemLoadEntity? = null,
+    open var historyId: UUID,
+    open var name: String,
+    open var serial: String,
     @Embedded
-    var values: DiskValues,
+    open var values: DiskValues,
     @Embedded
-    var speed: DiskSpeed,
+    open var speed: DiskSpeed,
 )
 
 @Embeddable
 data class DiskValues(
-    var reads: Long,
-    var readBytes: Long,
-    var writes: Long,
-    var writeBytes: Long
+    open var reads: Long,
+    open var readBytes: Long,
+    open var writes: Long,
+    open var writeBytes: Long
 )
 
 @Embeddable
 class DiskSpeed(
-    var readBytesPerSecond: Long,
-    var writeBytesPerSecond: Long
+    open var readBytesPerSecond: Long,
+    open var writeBytesPerSecond: Long
 )
 
 @Repository

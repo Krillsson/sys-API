@@ -15,7 +15,7 @@ import java.time.Instant
 class ContainerStatisticsDAO {
 
     @PersistenceContext
-    lateinit var em: EntityManager
+    lateinit open var em: EntityManager
 
     fun insert(entity: ContainerStatisticsEntity): String {
         em.persist(entity)
@@ -24,40 +24,40 @@ class ContainerStatisticsDAO {
 
     fun insertAll(entities: List<ContainerStatisticsEntity>): List<String> {
         return entities.map {
-            var createdId = insert(it)
+            val createdId = insert(it)
             createdId
         }
     }
 
     fun findAllBetween(id: String, from: Instant, to: Instant): List<ContainerStatisticsEntity> {
-        var builder = em.criteriaBuilder
-        var query: CriteriaQuery<ContainerStatisticsEntity> = builder.createQuery(ContainerStatisticsEntity::class.java)
-        var root: Root<ContainerStatisticsEntity> = query.from(ContainerStatisticsEntity::class.java)
-        var between = builder
+        val builder = em.criteriaBuilder
+        val query: CriteriaQuery<ContainerStatisticsEntity> = builder.createQuery(ContainerStatisticsEntity::class.java)
+        val root: Root<ContainerStatisticsEntity> = query.from(ContainerStatisticsEntity::class.java)
+        val between = builder
             .between(root.get("timestamp"), from, to)
-        var equal = builder.equal(root.get<String>("id"), id)
-        var condition = builder.and(between, equal)
+        val equal = builder.equal(root.get<String>("id"), id)
+        val condition = builder.and(between, equal)
         return em.createQuery(query.where(condition)).resultList
     }
 
     fun findLatest(id: String): ContainerStatisticsEntity? {
-        var cb = em.criteriaBuilder
-        var query: CriteriaQuery<ContainerStatisticsEntity> = cb.createQuery(ContainerStatisticsEntity::class.java)
-        var root: Root<ContainerStatisticsEntity> = query.from(ContainerStatisticsEntity::class.java)
-        var idPredicate = cb.equal(root.get<String>("id"), id)
+        val cb = em.criteriaBuilder
+        val query: CriteriaQuery<ContainerStatisticsEntity> = cb.createQuery(ContainerStatisticsEntity::class.java)
+        val root: Root<ContainerStatisticsEntity> = query.from(ContainerStatisticsEntity::class.java)
+        val idPredicate = cb.equal(root.get<String>("id"), id)
         query.where(idPredicate)
         query.orderBy(cb.desc(root.get<Instant>("timestamp")))
-        var results = em.createQuery(query)
+        val results = em.createQuery(query)
             .setMaxResults(1) // Limit to only the first result
             .resultList
         return results.firstOrNull()
     }
 
     fun purge(maxAge: Instant): Int {
-        var builder = em.criteriaBuilder
-        var delete = builder.createCriteriaDelete(ContainerStatisticsEntity::class.java)
-        var table = delete.from(ContainerStatisticsEntity::class.java)
-        var lessThan = builder.lessThan(table.get("timestamp"), maxAge)
+        val builder = em.criteriaBuilder
+        val delete = builder.createCriteriaDelete(ContainerStatisticsEntity::class.java)
+        val table = delete.from(ContainerStatisticsEntity::class.java)
+        val lessThan = builder.lessThan(table.get("timestamp"), maxAge)
         return em
             .createQuery(delete.where(lessThan))
             .executeUpdate()
@@ -67,48 +67,48 @@ class ContainerStatisticsDAO {
 @Entity
 class ContainerStatisticsEntity(
     @Id
-    var id: String,
-    var timestamp: Instant,
-    var currentPid: Long,
+    open var id: String,
+    open var timestamp: Instant,
+    open var currentPid: Long,
     @Embedded
-    var cpuUsage: CpuUsage,
+    open var cpuUsage: CpuUsage,
     @Embedded
-    var memoryUsage: MemoryUsage,
+    open var memoryUsage: MemoryUsage,
     @Embedded
-    var networkUsage: NetworkUsage,
+    open var networkUsage: NetworkUsage,
     @Embedded
-    var blockIOUsage: BlockIOUsage
+    open var blockIOUsage: BlockIOUsage
 )
 
 @Embeddable
 data class CpuUsage(
-    var usagePercentPerCore: Double,
-    var usagePercentTotal: Double,
-    var throttlingData: ThrottlingData
+    open var usagePercentPerCore: Double,
+    open var usagePercentTotal: Double,
+    open var throttlingData: ThrottlingData
 )
 
 @Embeddable
 data class ThrottlingData(
-    var periods: Long,
-    var throttledPeriods: Long,
-    var throttledTime: Long
+    open var periods: Long,
+    open var throttledPeriods: Long,
+    open var throttledTime: Long
 )
 
 @Embeddable
 data class NetworkUsage(
-    var bytesReceived: Long,
-    var bytesTransferred: Long,
+    open var bytesReceived: Long,
+    open var bytesTransferred: Long,
 )
 
 @Embeddable
 data class BlockIOUsage(
-    var bytesWritten: Long,
-    var bytesRead: Long
+    open var bytesWritten: Long,
+    open var bytesRead: Long
 )
 
 @Embeddable
 data class MemoryUsage(
-    var usageBytes: Long,
-    var usagePercent: Double,
-    var limitBytes: Long
+    open var usageBytes: Long,
+    open var usagePercent: Double,
+    open var limitBytes: Long
 )

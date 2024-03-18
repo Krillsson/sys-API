@@ -7,22 +7,22 @@ import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
-import java.util.*
+import java.util.UUID
 
 @Entity
 class CpuLoad(
     @Id
-    var id: UUID,
-    var usagePercentage: Double,
-    var systemLoadAverage: Double,
+    open var id: UUID,
+    open var usagePercentage: Double,
+    open var systemLoadAverage: Double,
     @Embedded
-    var loadAverages: LoadAverages,
+    open var loadAverages: LoadAverages,
     @OneToMany(mappedBy = "cpuLoad", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var coreLoads: List<CoreLoad>,
+    open var coreLoads: List<CoreLoad>,
     @Embedded
-    var cpuHealth: CpuHealth,
-    var processCount: Int,
-    var threadCount: Int
+    open var cpuHealth: CpuHealth,
+    open var processCount: Int,
+    open var threadCount: Int
 )
 
 @Repository

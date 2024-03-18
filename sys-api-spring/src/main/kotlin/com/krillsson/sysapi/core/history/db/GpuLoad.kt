@@ -7,22 +7,22 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import java.util.*
+import java.util.UUID
 
 @Entity
 class GpuLoad(
     @Id
-    var id: UUID,
+    open var id: UUID,
     @JoinColumn(name = "historyId", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    var history: HistorySystemLoadEntity? = null,
-    var historyId: UUID,
-    var name: String,
-    var coreLoad: Double,
-    var memoryLoad: Double,
+    open var history: HistorySystemLoadEntity? = null,
+    open var historyId: UUID,
+    open var name: String,
+    open var coreLoad: Double,
+    open var memoryLoad: Double,
     @Embedded
-    var health: GpuHealth
+    open var health: GpuHealth
 )
 
 @Embeddable
-class GpuHealth(var fanRpm: Double, var fanPercent: Double, var temperature: Double)
+class GpuHealth(open var fanRpm: Double, open var fanPercent: Double, open var temperature: Double)
