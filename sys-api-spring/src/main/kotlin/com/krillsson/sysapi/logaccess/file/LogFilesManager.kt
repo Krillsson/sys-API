@@ -1,12 +1,12 @@
 package com.krillsson.sysapi.logaccess.file
 
-import com.krillsson.sysapi.config.LogReaderConfiguration
+import com.krillsson.sysapi.config.YAMLConfigFile
 import com.krillsson.sysapi.util.logger
 import org.springframework.stereotype.Service
 import java.io.File
 
 @Service
-class LogFilesManager(private val configuration: LogReaderConfiguration) {
+class LogFilesManager(private val configuration: YAMLConfigFile) {
 
     val logger by logger()
 
@@ -17,7 +17,7 @@ class LogFilesManager(private val configuration: LogReaderConfiguration) {
 
     fun files(): List<LogFileReader> {
         val list = mutableListOf<LogFileReader>()
-        configuration.directories.map { path ->
+        configuration.logReader.directories.map { path ->
             val directory = File(path)
             if (directory.isDirectory) {
                 directory.listFiles { dir -> dir.extension == "log" }
@@ -30,7 +30,7 @@ class LogFilesManager(private val configuration: LogReaderConfiguration) {
         }
 
 
-        configuration.files.mapNotNull { path ->
+        configuration.logReader.files.mapNotNull { path ->
             val file = File(path)
             when {
                 file.exists() && file.isFile && file.canRead() -> LogFileReader(file)

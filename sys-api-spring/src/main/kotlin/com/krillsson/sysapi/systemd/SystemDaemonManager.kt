@@ -1,7 +1,7 @@
 package com.krillsson.sysapi.systemd
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.krillsson.sysapi.config.LinuxConfiguration
+import com.krillsson.sysapi.config.YAMLConfigFile
 import com.krillsson.sysapi.graphql.domain.SystemDaemonAccessAvailable
 import com.krillsson.sysapi.util.logger
 import org.springframework.stereotype.Service
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 @Service
 class SystemDaemonManager(
     private val mapper: ObjectMapper,
-    private val config: LinuxConfiguration
+    private val config: YAMLConfigFile
 ) : SystemDaemonAccessAvailable {
 
     sealed class Status {
@@ -20,21 +20,21 @@ class SystemDaemonManager(
 
     val logger by logger()
 
-    private val journalCtl = JournalCtl(mapper, config.journalLogs)
-    private val systemCtl = SystemCtl(mapper, config.systemDaemonServiceManagement)
+    private val journalCtl = JournalCtl(mapper, config.linux.journalLogs)
+    private val systemCtl = SystemCtl(mapper, config.linux.systemDaemonServiceManagement)
 
     private val supportedBySystem = journalCtl.supportedBySystem() && systemCtl.supportedBySystem()
 
     fun status(): Status {
         return when {
-            !config.systemDaemonServiceManagement.enabled -> Status.Disabled
+            !config.linux.systemDaemonServiceManagement.enabled -> Status.Disabled
             !supportedBySystem() -> Status.Unavailable(RuntimeException("systemctl or journalctl command was not found"))
             else -> Status.Available
         }
     }
 
     override fun openJournal(name: String, limit: Int): List<SystemDaemonJournalEntry> {
-        return if (config.journalLogs.enabled) {
+        return if (config.linux.journalLogs.enabled) {
             journalCtl.lines(name, limit)
         } else {
             emptyList()

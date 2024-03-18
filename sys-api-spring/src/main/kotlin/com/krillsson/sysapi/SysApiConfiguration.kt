@@ -10,17 +10,16 @@ import com.krillsson.sysapi.core.metrics.MetricsFactory
 import com.krillsson.sysapi.core.metrics.NetworkMetrics
 import com.krillsson.sysapi.core.metrics.defaultimpl.DiskReadWriteRateMeasurementManager
 import com.krillsson.sysapi.core.metrics.defaultimpl.NetworkUploadDownloadRateMeasurementManager
+import com.krillsson.sysapi.graphql.domain.Meta
 import com.krillsson.sysapi.updatechecker.GithubApiService
 import com.krillsson.sysapi.util.FileSystem
+import com.krillsson.sysapi.util.asOperatingSystem
 import com.krillsson.sysapi.util.asPlatform
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
 import org.springframework.jdbc.datasource.DriverManagerDataSource
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter
-import oshi.PlatformEnum
 import oshi.SystemInfo
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.software.os.OperatingSystem
@@ -67,7 +66,7 @@ class SysApiConfiguration {
     @Bean
     fun networkMetrics(metrics: Metrics): NetworkMetrics = metrics.networkMetrics()
 
-    @Bean
+    /*@Bean
     fun entityManagerFactory(): LocalContainerEntityManagerFactoryBean? {
         val em = LocalContainerEntityManagerFactoryBean()
         em.dataSource = dataSource()!!
@@ -75,7 +74,7 @@ class SysApiConfiguration {
         em.jpaVendorAdapter = HibernateJpaVendorAdapter()
         em.setJpaProperties(additionalProperties())
         return em
-    }
+    }*/
 
     @Bean
     fun clock(): Clock = Clock.systemUTC()
@@ -85,6 +84,17 @@ class SysApiConfiguration {
 
     @Bean
     fun os() = SystemInfo().operatingSystem
+
+    @Bean
+    fun operatingSystem() = SystemInfo().operatingSystem.asOperatingSystem()
+
+    @Bean
+    fun meta(os: OperatingSystem) = Meta(
+        version = BuildConfig.APP_VERSION,
+        buildDate = BuildConfig.BUILD_TIME.toString(),
+        processId = os.processId,
+        endpoints = emptyList(),
+    )
 
     @Bean
     fun platform() = SystemInfo.getCurrentPlatform().asPlatform()
