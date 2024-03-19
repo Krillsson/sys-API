@@ -10,12 +10,12 @@ import java.util.UUID
 @Entity
 class HealthData(
     @Id
-    open var id: UUID,
+    val id: UUID,
     @JoinColumn(name = "historyId", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    open var history: HistorySystemLoadEntity? = null,
-    open var historyId: UUID,
-    open var description: String,
-    open var data: Double,
-    open var dataType: DataType
+    val history: HistorySystemLoadEntity? = null,
+    val historyId: UUID,
+    val description: String,
+    val data: Double,
+    val dataType: DataType
 )

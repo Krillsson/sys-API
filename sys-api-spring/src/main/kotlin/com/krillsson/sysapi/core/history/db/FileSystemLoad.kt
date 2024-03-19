@@ -12,16 +12,16 @@ import java.util.UUID
 @Entity
 class FileSystemLoad(
     @Id
-    open var id: UUID,
+    val id: UUID,
     @JoinColumn(name = "historyId", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    open var history: HistorySystemLoadEntity? = null,
-    open var historyId: UUID,
-    open var name: String,
-    open var fsId: String?,
-    open var freeSpaceBytes: Long,
-    open var usableSpaceBytes: Long,
-    open var totalSpaceBytes: Long
+    val history: HistorySystemLoadEntity? = null,
+    val historyId: UUID,
+    val name: String,
+    val fsId: String?,
+    val freeSpaceBytes: Long,
+    val usableSpaceBytes: Long,
+    val totalSpaceBytes: Long
 )
 
 @Repository

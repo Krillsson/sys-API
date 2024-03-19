@@ -12,17 +12,17 @@ import java.util.UUID
 @Entity
 class CpuLoad(
     @Id
-    open var id: UUID,
-    open var usagePercentage: Double,
-    open var systemLoadAverage: Double,
+    val id: UUID,
+    val usagePercentage: Double,
+    val systemLoadAverage: Double,
     @Embedded
-    open var loadAverages: LoadAverages,
+    val loadAverages: LoadAverages,
     @OneToMany(mappedBy = "cpuLoad", cascade = [CascadeType.ALL], orphanRemoval = true)
-    open var coreLoads: List<CoreLoad>,
+    val coreLoads: List<CoreLoad>,
     @Embedded
-    open var cpuHealth: CpuHealth,
-    open var processCount: Int,
-    open var threadCount: Int
+    val cpuHealth: CpuHealth,
+    val processCount: Int,
+    val threadCount: Int
 )
 
 @Repository

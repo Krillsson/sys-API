@@ -20,6 +20,11 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
 import org.springframework.jdbc.datasource.DriverManagerDataSource
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.transaction.annotation.EnableTransactionManagement
 import oshi.SystemInfo
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.software.os.OperatingSystem
@@ -31,6 +36,7 @@ import java.util.Properties
 import javax.sql.DataSource
 
 @Configuration
+@EnableTransactionManagement
 class SysApiConfiguration {
     @Autowired
     var env: Environment? = null
@@ -66,15 +72,15 @@ class SysApiConfiguration {
     @Bean
     fun networkMetrics(metrics: Metrics): NetworkMetrics = metrics.networkMetrics()
 
-    /*@Bean
+    @Bean
     fun entityManagerFactory(): LocalContainerEntityManagerFactoryBean? {
         val em = LocalContainerEntityManagerFactoryBean()
         em.dataSource = dataSource()!!
-        em.setPackagesToScan(*arrayOf("com.baeldung.books.models"))
+        em.setPackagesToScan(*arrayOf("com.krillsson.sysapi"))
         em.jpaVendorAdapter = HibernateJpaVendorAdapter()
         em.setJpaProperties(additionalProperties())
         return em
-    }*/
+    }
 
     @Bean
     fun clock(): Clock = Clock.systemUTC()
@@ -121,5 +127,10 @@ class SysApiConfiguration {
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
             .create(ExternalIpAddressService::class.java)
+    }
+
+    @Bean
+    fun passwordEncoder(): PasswordEncoder {
+        return BCryptPasswordEncoder()
     }
 }

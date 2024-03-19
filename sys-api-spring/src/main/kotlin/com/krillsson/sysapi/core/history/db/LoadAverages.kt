@@ -7,8 +7,8 @@ import java.util.UUID
 @Embeddable
 data class LoadAverages(
     @Id
-    open var id: UUID,
-    open var oneMinutes: Double,
-    open var fiveMinutes: Double,
-    open var fifteenMinutes: Double
+    val id: UUID,
+    val oneMinutes: Double,
+    val fiveMinutes: Double,
+    val fifteenMinutes: Double
 )
