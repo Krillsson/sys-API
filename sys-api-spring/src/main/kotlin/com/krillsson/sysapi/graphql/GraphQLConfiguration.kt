@@ -103,7 +103,7 @@ class GraphQLConfiguration {
                     .with(graphQLObjectMapper())
                     .build()
             ),
-            "/graphql/*"
+            "/graphql"
         ).apply {
             isAsyncSupported = false
         }

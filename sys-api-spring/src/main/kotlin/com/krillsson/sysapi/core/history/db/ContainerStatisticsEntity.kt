@@ -15,7 +15,7 @@ import java.time.Instant
 class ContainerStatisticsDAO {
 
     @PersistenceContext
-    lateinit open var em: EntityManager
+    lateinit var em: EntityManager
 
     fun insert(entity: ContainerStatisticsEntity): String {
         em.persist(entity)
@@ -67,48 +67,48 @@ class ContainerStatisticsDAO {
 @Entity
 class ContainerStatisticsEntity(
     @Id
-    open var id: String,
-    open var timestamp: Instant,
-    open var currentPid: Long,
+    val id: String,
+    val timestamp: Instant,
+    val currentPid: Long,
     @Embedded
-    open var cpuUsage: CpuUsage,
+    val cpuUsage: CpuUsage,
     @Embedded
-    open var memoryUsage: MemoryUsage,
+    val memoryUsage: MemoryUsage,
     @Embedded
-    open var networkUsage: NetworkUsage,
+    val networkUsage: NetworkUsage,
     @Embedded
-    open var blockIOUsage: BlockIOUsage
+    val blockIOUsage: BlockIOUsage
 )
 
 @Embeddable
 data class CpuUsage(
-    open var usagePercentPerCore: Double,
-    open var usagePercentTotal: Double,
-    open var throttlingData: ThrottlingData
+    val usagePercentPerCore: Double,
+    val usagePercentTotal: Double,
+    val throttlingData: ThrottlingData
 )
 
 @Embeddable
 data class ThrottlingData(
-    open var periods: Long,
-    open var throttledPeriods: Long,
-    open var throttledTime: Long
+    val periods: Long,
+    val throttledPeriods: Long,
+    val throttledTime: Long
 )
 
 @Embeddable
 data class NetworkUsage(
-    open var bytesReceived: Long,
-    open var bytesTransferred: Long,
+    val bytesReceived: Long,
+    val bytesTransferred: Long,
 )
 
 @Embeddable
 data class BlockIOUsage(
-    open var bytesWritten: Long,
-    open var bytesRead: Long
+    val bytesWritten: Long,
+    val bytesRead: Long
 )
 
 @Embeddable
 data class MemoryUsage(
-    open var usageBytes: Long,
-    open var usagePercent: Double,
-    open var limitBytes: Long
+    val usageBytes: Long,
+    val usagePercent: Double,
+    val limitBytes: Long
 )

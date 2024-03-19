@@ -14,31 +14,31 @@ import java.util.UUID
 @Entity
 data class DiskLoad(
     @Id
-    open var id: UUID,
+    val id: UUID,
     @JoinColumn(name = "historyId", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    open var history: HistorySystemLoadEntity? = null,
-    open var historyId: UUID,
-    open var name: String,
-    open var serial: String,
+    val history: HistorySystemLoadEntity? = null,
+    val historyId: UUID,
+    val name: String,
+    val serial: String,
     @Embedded
-    open var values: DiskValues,
+    val values: DiskValues,
     @Embedded
-    open var speed: DiskSpeed,
+    val speed: DiskSpeed,
 )
 
 @Embeddable
 data class DiskValues(
-    open var reads: Long,
-    open var readBytes: Long,
-    open var writes: Long,
-    open var writeBytes: Long
+    val reads: Long,
+    val readBytes: Long,
+    val writes: Long,
+    val writeBytes: Long
 )
 
 @Embeddable
 class DiskSpeed(
-    open var readBytesPerSecond: Long,
-    open var writeBytesPerSecond: Long
+    val readBytesPerSecond: Long,
+    val writeBytesPerSecond: Long
 )
 
 @Repository

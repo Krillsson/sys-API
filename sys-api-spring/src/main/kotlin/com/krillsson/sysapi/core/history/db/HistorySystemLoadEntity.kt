@@ -20,10 +20,10 @@ import java.util.UUID
 )
 class BasicHistorySystemLoadEntity(
     @Id
-    open var id: UUID,
-    open var date: Instant,
-    open var uptime: Long,
-    open var systemLoadAverage: Double,
+    val id: UUID,
+    val date: Instant,
+    val uptime: Long,
+    val systemLoadAverage: Double,
 )
 
 @Entity
@@ -33,24 +33,24 @@ class BasicHistorySystemLoadEntity(
 )
 class HistorySystemLoadEntity(
     @Id
-    open var id: UUID,
-    open var date: Instant,
-    open var uptime: Long,
-    open var systemLoadAverage: Double,
+    val id: UUID,
+    val date: Instant,
+    val uptime: Long,
+    val systemLoadAverage: Double,
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true)
-    open var cpuLoad: CpuLoad,
+    val cpuLoad: CpuLoad,
     @OneToMany(mappedBy = "history", cascade = [CascadeType.ALL], orphanRemoval = true)
-    open var networkInterfaceLoads: List<NetworkInterfaceLoad>,
+    val networkInterfaceLoads: List<NetworkInterfaceLoad>,
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true)
-    open var connectivity: Connectivity,
+    val connectivity: Connectivity,
     @OneToMany(mappedBy = "history", cascade = [CascadeType.ALL], orphanRemoval = true)
-    open var diskLoads: List<DiskLoad>?,
+    val diskLoads: List<DiskLoad>?,
     @OneToMany(mappedBy = "history", cascade = [CascadeType.ALL], orphanRemoval = true)
-    open var fileSystemLoads: List<FileSystemLoad>?,
+    val fileSystemLoads: List<FileSystemLoad>?,
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true)
-    open var memory: MemoryLoad,
+    val memory: MemoryLoad,
     @OneToMany(mappedBy = "history", cascade = [CascadeType.ALL], orphanRemoval = true)
-    open var gpuLoads: List<GpuLoad>,
+    val gpuLoads: List<GpuLoad>,
     @OneToMany(mappedBy = "history", cascade = [CascadeType.ALL], orphanRemoval = true)
-    open var motherboardHealth: List<HealthData>
+    val motherboardHealth: List<HealthData>
 )

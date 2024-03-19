@@ -12,17 +12,17 @@ import java.util.UUID
 @Entity
 class GpuLoad(
     @Id
-    open var id: UUID,
+    val id: UUID,
     @JoinColumn(name = "historyId", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    open var history: HistorySystemLoadEntity? = null,
-    open var historyId: UUID,
-    open var name: String,
-    open var coreLoad: Double,
-    open var memoryLoad: Double,
+    val history: HistorySystemLoadEntity? = null,
+    val historyId: UUID,
+    val name: String,
+    val coreLoad: Double,
+    val memoryLoad: Double,
     @Embedded
-    open var health: GpuHealth
+    val health: GpuHealth
 )
 
 @Embeddable
-class GpuHealth(open var fanRpm: Double, open var fanPercent: Double, open var temperature: Double)
+class GpuHealth(val fanRpm: Double, val fanPercent: Double, val temperature: Double)

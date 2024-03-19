@@ -10,10 +10,10 @@ import java.util.UUID
 @Entity
 class CoreLoad(
     @Id
-    open var id: UUID,
+    val id: UUID,
     @JoinColumn(name = "cpuLoadId", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    open var cpuLoad: CpuLoad? = null,
-    open var cpuLoadId: UUID,
-    open var percentage: Double,
+    val cpuLoad: CpuLoad? = null,
+    val cpuLoadId: UUID,
+    val percentage: Double,
 )

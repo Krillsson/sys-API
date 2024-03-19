@@ -19,11 +19,4 @@
  * contact[at]christian-jensen[dot]se
  */
 package com.krillsson.sysapi.config
-
-import java.security.Principal
-
-data class UserConfiguration(var username: String, var password: String) : Principal {
-    override fun getName(): String {
-        return username
-    }
-}
+data class UserConfiguration(var username: String, var password: String)
