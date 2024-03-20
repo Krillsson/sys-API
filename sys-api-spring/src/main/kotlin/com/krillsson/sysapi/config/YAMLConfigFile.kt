@@ -21,8 +21,7 @@
 package com.krillsson.sysapi.config
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.EnableConfigurationProperties
-import org.springframework.boot.context.properties.bind.ConstructorBinding
+import org.springframework.boot.context.properties.NestedConfigurationProperty
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.PropertySource
 
@@ -30,20 +29,32 @@ import org.springframework.context.annotation.PropertySource
 @ConfigurationProperties
 @PropertySource(value = ["classpath:config/configuration.yml"], factory = YamlPropertySourceFactory::class)
 class YAMLConfigFile{
+    @NestedConfigurationProperty
     var authentication: UserConfiguration = UserConfiguration("user", "password")
+    @NestedConfigurationProperty
     var metricsConfig: MetricsConfiguration = MetricsConfiguration()
+    @NestedConfigurationProperty
     var windows: WindowsConfiguration = WindowsConfiguration()
+    @NestedConfigurationProperty
     var processes: ProcessesConfiguration = ProcessesConfiguration()
+    @NestedConfigurationProperty
     var linux: LinuxConfiguration = LinuxConfiguration()
+    @NestedConfigurationProperty
     var connectivityCheck: ConnectivityCheckConfiguration = ConnectivityCheckConfiguration(true, "https://ifconfig.me")
+    @NestedConfigurationProperty
     var updateCheck: UpdateCheckConfiguration = UpdateCheckConfiguration()
+    @NestedConfigurationProperty
     var docker: DockerConfiguration = DockerConfiguration()
+    @NestedConfigurationProperty
     var logReader: LogReaderConfiguration = LogReaderConfiguration()
+    @NestedConfigurationProperty
     var selfSignedCertificates: SelfSignedCertificateConfiguration = SelfSignedCertificateConfiguration(
         true,
         true,
         true
     )
+    @NestedConfigurationProperty
     var mDNS: MdnsConfiguration = MdnsConfiguration(false)
+    @NestedConfigurationProperty
     var upnp: UpnpIgdConfiguration = UpnpIgdConfiguration(false)
 }
