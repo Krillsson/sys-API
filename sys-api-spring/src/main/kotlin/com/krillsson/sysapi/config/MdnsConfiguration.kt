@@ -1,5 +1,5 @@
 package com.krillsson.sysapi.config
 
-class MdnsConfiguration(
+data class MdnsConfiguration(
     var enabled: Boolean = true
 )
