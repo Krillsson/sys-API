@@ -2,24 +2,7 @@ package com.krillsson.sysapi
 
 import com.github.dockerjava.api.model.AuthConfig
 import com.github.dockerjava.core.DockerConfigFile
-import com.krillsson.sysapi.config.CacheConfiguration
-import com.krillsson.sysapi.config.ConnectivityCheckConfiguration
-import com.krillsson.sysapi.config.DockerConfiguration
-import com.krillsson.sysapi.config.GraphQLPlayGroundConfiguration
-import com.krillsson.sysapi.config.HistoryConfiguration
-import com.krillsson.sysapi.config.HistoryPurgingConfiguration
-import com.krillsson.sysapi.config.LinuxConfiguration
-import com.krillsson.sysapi.config.LogReaderConfiguration
-import com.krillsson.sysapi.config.MdnsConfiguration
-import com.krillsson.sysapi.config.MetricsConfiguration
-import com.krillsson.sysapi.config.MonitorConfiguration
-import com.krillsson.sysapi.config.ProcessesConfiguration
-import com.krillsson.sysapi.config.SelfSignedCertificateConfiguration
-import com.krillsson.sysapi.config.UpdateCheckConfiguration
-import com.krillsson.sysapi.config.UpnpIgdConfiguration
-import com.krillsson.sysapi.config.UserConfiguration
-import com.krillsson.sysapi.config.WindowsConfiguration
-import com.krillsson.sysapi.config.YAMLConfigFile
+import com.krillsson.sysapi.config.*
 import com.krillsson.sysapi.tls.CertificateNamesCreator
 import com.krillsson.sysapi.tls.SelfSignedCertificateManager
 import com.krillsson.sysapi.util.FileSystem
@@ -33,7 +16,7 @@ import org.springframework.context.annotation.ImportRuntimeHints
 import oshi.util.GlobalConfig
 
 @SpringBootApplication(scanBasePackages = ["com.krillsson.sysapi"])
-@ImportRuntimeHints(RuntimeHints::class)
+@ImportRuntimeHints(RuntimeHint::class)
 @RegisterReflectionForBinding(
     CacheConfiguration::class,
     ConnectivityCheckConfiguration::class,
@@ -55,7 +38,8 @@ import oshi.util.GlobalConfig
     YAMLConfigFile::class,
     DockerConfigFile::class,
     AuthConfig::class,
-    com.sun.jna.platform.mac.SystemB.Timeval::class
+    com.sun.jna.platform.mac.SystemB.Timeval::class,
+    oshi.jna.ByRef::class,
 )
 // https://www.graalvm.org/latest/reference-manual/native-image/dynamic-features/JNI/
 // Failed to parse docker config.json

@@ -5,7 +5,7 @@ import org.springframework.aot.hint.MemberCategory
 import org.springframework.aot.hint.RuntimeHints
 import org.springframework.aot.hint.RuntimeHintsRegistrar
 
-class RuntimeHints : RuntimeHintsRegistrar {
+class RuntimeHint : RuntimeHintsRegistrar {
     override fun registerHints(hints: RuntimeHints, classLoader: ClassLoader?) {
         hints.reflection()
             .registerType(
