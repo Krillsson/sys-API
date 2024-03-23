@@ -20,8 +20,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
 import org.springframework.jdbc.datasource.DriverManagerDataSource
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.transaction.annotation.EnableTransactionManagement
@@ -32,8 +30,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.time.Clock
-import java.util.Properties
+import java.util.*
 import javax.sql.DataSource
+
 
 @Configuration
 @EnableTransactionManagement
@@ -51,36 +50,26 @@ class SysApiConfiguration {
 
     @Bean
     fun metrics(
-        configuration: YAMLConfigFile,
-        hal: HardwareAbstractionLayer,
-        operatingSystem: OperatingSystem,
-        platform: Platform,
-        diskReadWriteRateMeasurementManager: DiskReadWriteRateMeasurementManager,
-        networkUploadDownloadRateMeasurementManager: NetworkUploadDownloadRateMeasurementManager,
-        connectivityCheckManager: ConnectivityCheckManager
+            configuration: YAMLConfigFile,
+            hal: HardwareAbstractionLayer,
+            operatingSystem: OperatingSystem,
+            platform: Platform,
+            diskReadWriteRateMeasurementManager: DiskReadWriteRateMeasurementManager,
+            networkUploadDownloadRateMeasurementManager: NetworkUploadDownloadRateMeasurementManager,
+            connectivityCheckManager: ConnectivityCheckManager
     ): Metrics {
         return MetricsFactory(
-            hal,
-            operatingSystem,
-            platform,
-            diskReadWriteRateMeasurementManager,
-            networkUploadDownloadRateMeasurementManager,
-            connectivityCheckManager
+                hal,
+                operatingSystem,
+                platform,
+                diskReadWriteRateMeasurementManager,
+                networkUploadDownloadRateMeasurementManager,
+                connectivityCheckManager
         ).get(configuration)
     }
 
     @Bean
     fun networkMetrics(metrics: Metrics): NetworkMetrics = metrics.networkMetrics()
-
-    @Bean
-    fun entityManagerFactory(): LocalContainerEntityManagerFactoryBean? {
-        val em = LocalContainerEntityManagerFactoryBean()
-        em.dataSource = dataSource()!!
-        em.setPackagesToScan(*arrayOf("com.krillsson.sysapi"))
-        em.jpaVendorAdapter = HibernateJpaVendorAdapter()
-        em.setJpaProperties(additionalProperties())
-        return em
-    }
 
     @Bean
     fun clock(): Clock = Clock.systemUTC()
@@ -96,37 +85,31 @@ class SysApiConfiguration {
 
     @Bean
     fun meta(os: OperatingSystem) = Meta(
-        version = BuildConfig.APP_VERSION,
-        buildDate = BuildConfig.BUILD_TIME.toString(),
-        processId = os.processId,
-        endpoints = emptyList(),
+            version = BuildConfig.APP_VERSION,
+            buildDate = BuildConfig.BUILD_TIME.toString(),
+            processId = os.processId,
+            endpoints = emptyList(),
     )
 
     @Bean
     fun platform() = SystemInfo.getCurrentPlatform().asPlatform()
 
-    fun additionalProperties(): Properties {
-        val hibernateProperties = Properties()
-        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop")
-        return hibernateProperties
-    }
-
     @Bean
     fun githubApi(yamlConfigFile: YAMLConfigFile, mapper: ObjectMapper): GithubApiService {
         return Retrofit.Builder()
-            .baseUrl(yamlConfigFile.updateCheck.address)
-            .addConverterFactory(JacksonConverterFactory.create(mapper))
-            .build()
-            .create(GithubApiService::class.java)
+                .baseUrl(yamlConfigFile.updateCheck.address)
+                .addConverterFactory(JacksonConverterFactory.create(mapper))
+                .build()
+                .create(GithubApiService::class.java)
     }
 
     @Bean
     fun externalIpAddressService(yamlConfigFile: YAMLConfigFile): ExternalIpAddressService {
         return Retrofit.Builder()
-            .baseUrl(yamlConfigFile.connectivityCheck.address)
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .build()
-            .create(ExternalIpAddressService::class.java)
+                .baseUrl(yamlConfigFile.connectivityCheck.address)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build()
+                .create(ExternalIpAddressService::class.java)
     }
 
     @Bean
