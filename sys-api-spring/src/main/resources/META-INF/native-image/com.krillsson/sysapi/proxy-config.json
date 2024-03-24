@@ -130,5 +130,14 @@
   },
   {
     "interfaces":["oshi.jna.platform.mac.SystemConfiguration"]
+  },
+  {
+    "interfaces":["oshi.jna.platform.linux.LinuxLibc"]
+  },
+  {
+    "interfaces":["com.sun.jna.platform.linux.LibC"]
+  },
+  {
+    "interfaces":["com.sun.jna.platform.linux.Udev"]
   }
 ]
