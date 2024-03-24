@@ -15018,5 +15018,29 @@
 },
 {
   "name":"zipkin2.reporter.Sender"
+},
+{
+  "name":"com.sun.jna.platform.linux.LibC",
+  "allPublicFields":true
+},
+{
+  "name":"com.sun.jna.platform.linux.LibC$Sysinfo",
+  "allDeclaredFields":true
+},
+{
+  "name":"com.sun.jna.platform.linux.Udev$UdevContext",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.jna.platform.linux.Udev$UdevDevice",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.jna.platform.linux.Udev$UdevEnumerate",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.jna.platform.linux.Udev$UdevListEntry",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 }
 ]
