@@ -1,5 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+buildscript {
+    dependencies {
+        classpath('com.google.cloud.tools:jib-native-image-extension-gradle:0.1.0')
+    }
+}
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.3'
@@ -11,6 +17,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.22'
     id 'com.github.gmazzo.buildconfig' version '5.3.5'
     id "org.jetbrains.kotlin.plugin.allopen" version "1.9.22"
+    id "com.google.cloud.tools.jib" version "3.4.1"
 }
 
 group = 'com.krillsson'
@@ -36,10 +43,11 @@ repositories {
     }
 }
 
+// https://github.com/GoogleContainerTools/jib-extensions/tree/master/first-party/jib-native-image-extension-gradle
 graalvmNative {
     binaries {
         //https://www.graalvm.org/latest/reference-manual/native-image/metadata/AutomaticMetadataCollection/#tracing-agent
-        // -agentlib:native-image-agent=config-output-dir=META-INF/native-image
+        // -agentlib:native-image-agent=config-merge-dir=META-INF/native-image
         main {
             buildArgs.add('--no-server')
             buildArgs.add('--no-fallback')
@@ -51,13 +59,40 @@ graalvmNative {
             buildArgs.add('-H:+PrintAnalysisCallTree')
             /**
             //https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#configuration-options
-            buildArgs.add('--verbose')
-            buildArgs.add("-H:ReflectionConfigurationFiles=$projectDir/conf/reflect-config.json")
-            buildArgs.add("-H:DynamicProxyConfigurationFiles=$projectDir/conf/proxy-config.json")
-            buildArgs.add("-H:JNIConfigurationFiles=$projectDir/conf/jni-config.json")
-            buildArgs.add("-H:ResourceConfigurationFiles=$projectDir/conf/resource-config.json")
-            buildArgs.add('-H:Log=registerResource')
              */
+        }
+    }
+}
+
+jib {
+    to.image = "krillsson/sys-api:nightly"
+    container {
+        //appRoot = "/"
+        //args = ["server", "/config/configuration.yml"]
+        ports = ["8080", "8443", "2375"]
+        volumes = ["/config", "/data", "/var/run/docker.sock"]
+        creationTime = "USE_CURRENT_TIMESTAMP"
+        //jvmFlags = jvmArgs
+    }
+    jib.from {
+        image = 'krillsson/openjdk11-debian-systemd:latest'
+//        platforms {
+//            platform {
+//                architecture = 'amd64'
+//                os = 'linux'
+//            }
+//            platform {
+//                architecture = 'arm64'
+//                os = 'linux'
+//            }
+//        }
+    }
+    pluginExtensions {
+        pluginExtension {
+            implementation = 'com.google.cloud.tools.jib.gradle.extension.nativeimage.JibNativeImageExtension'
+            properties = [
+                    imageName: 'sysapi'
+            ]
         }
     }
 }
