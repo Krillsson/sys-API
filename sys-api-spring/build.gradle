@@ -76,6 +76,7 @@ dependencies {
         exclude group: "com.graphql-java-kickstart", module: "graphiql-spring-boot-autoconfigure"
     }
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.jetbrains.kotlin:kotlin-reflect'

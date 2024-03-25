@@ -5,6 +5,7 @@ import java.io.File
 
 object FileSystem {
     val data = File("data")
+    val config = File("config")
 
 //    /**
 //     * Gets the base location of the given class.

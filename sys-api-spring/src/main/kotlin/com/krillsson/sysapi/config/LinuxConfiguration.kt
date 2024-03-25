@@ -1,14 +1,14 @@
 package com.krillsson.sysapi.config
 
 data class LinuxConfiguration(
-    var systemDaemonServiceManagement: SystemDaemonServiceManagementConfiguration = SystemDaemonServiceManagementConfiguration(),
-    var journalLogs: JournalLogsConfiguration = JournalLogsConfiguration()
+        val systemDaemonServiceManagement: SystemDaemonServiceManagementConfiguration = SystemDaemonServiceManagementConfiguration(),
+        val journalLogs: JournalLogsConfiguration = JournalLogsConfiguration()
 )
 
 data class SystemDaemonServiceManagementConfiguration(
-    var enabled: Boolean = true
+        val enabled: Boolean = true
 )
 
 data class JournalLogsConfiguration(
-    var enabled: Boolean = true
+        val enabled: Boolean = true
 )

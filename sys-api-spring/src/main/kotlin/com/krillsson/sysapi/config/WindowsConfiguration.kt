@@ -21,15 +21,15 @@
 package com.krillsson.sysapi.config
 
 data class WindowsConfiguration(
-    var enableOhmJniWrapper: Boolean = false,
-    var eventLog: WindowsEventLogConfiguration = WindowsEventLogConfiguration(),
-    var serviceManagement: ServiceManagement = ServiceManagement()
+        val enableOhmJniWrapper: Boolean = false,
+        val eventLog: WindowsEventLogConfiguration = WindowsEventLogConfiguration(),
+        val serviceManagement: ServiceManagement = ServiceManagement()
 )
 
 data class ServiceManagement(
-    var enabled: Boolean = true
+        val enabled: Boolean = true
 )
 
 data class WindowsEventLogConfiguration(
-    var enabled: Boolean = true
+        val enabled: Boolean = true
 )

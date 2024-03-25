@@ -1,6 +1,8 @@
 package com.krillsson.sysapi
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.krillsson.sysapi.config.YAMLConfigFile
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
 import com.krillsson.sysapi.core.connectivity.ExternalIpAddressService
@@ -29,6 +31,7 @@ import oshi.software.os.OperatingSystem
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.io.File
 import java.time.Clock
 import java.util.*
 import javax.sql.DataSource
@@ -41,11 +44,13 @@ class SysApiConfiguration {
     var env: Environment? = null
 
     @Bean
-    fun dataSource(): DataSource? {
-        val dataSource = DriverManagerDataSource()
-        dataSource.setDriverClassName("org.sqlite.JDBC")
-        dataSource.setUrl("jdbc:sqlite:${FileSystem.data.absolutePath}/database.sqlite")
-        return dataSource
+    fun userConfigFile(): YAMLConfigFile {
+        val configFile = File(FileSystem.config, "configuration.yml")
+        check(configFile.exists()) {"Config file is missing at ${configFile.absoluteFile}"}
+        val yamlParser = ObjectMapper(YAMLFactory())
+        yamlParser.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        yamlParser.findAndRegisterModules()
+        return yamlParser.readValue(configFile, YAMLConfigFile::class.java)
     }
 
     @Bean

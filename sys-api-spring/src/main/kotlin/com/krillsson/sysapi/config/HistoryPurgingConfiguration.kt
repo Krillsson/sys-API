@@ -5,8 +5,8 @@ import java.time.temporal.ChronoUnit
 import java.util.concurrent.TimeUnit
 
 class HistoryPurgingConfiguration(
-    @JsonProperty var olderThan: Long,
-    @JsonProperty var unit: ChronoUnit,
-    @JsonProperty var purgeEvery: Long,
-    @JsonProperty var purgeEveryUnit: TimeUnit
+        @JsonProperty val olderThan: Long,
+        @JsonProperty val unit: ChronoUnit,
+        @JsonProperty val purgeEvery: Long,
+        @JsonProperty val purgeEveryUnit: TimeUnit
 )

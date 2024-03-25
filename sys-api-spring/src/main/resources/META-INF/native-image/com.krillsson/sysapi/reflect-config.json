@@ -36,6 +36,9 @@
   "name":"[Lcom.sun.jna.platform.mac.SystemB$Statfs;"
 },
 {
+  "name":"[Lcom.zaxxer.hikari.util.ConcurrentBag$IConcurrentBagEntry;"
+},
+{
   "name":"[Ljava.lang.Class;"
 },
 {
@@ -58,6 +61,9 @@
 },
 {
   "name":"[Ljava.rmi.server.ObjID;"
+},
+{
+  "name":"[Ljava.sql.Statement;"
 },
 {
   "name":"[Ljavax.management.openmbean.CompositeData;"
@@ -760,7 +766,7 @@
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"clock","parameterTypes":[] }, {"name":"dataSource","parameterTypes":[] }, {"name":"entityManagerFactory","parameterTypes":[] }, {"name":"externalIpAddressService","parameterTypes":["com.krillsson.sysapi.config.YAMLConfigFile"] }, {"name":"githubApi","parameterTypes":["com.krillsson.sysapi.config.YAMLConfigFile","com.fasterxml.jackson.databind.ObjectMapper"] }, {"name":"hal","parameterTypes":[] }, {"name":"meta","parameterTypes":["oshi.software.os.OperatingSystem"] }, {"name":"metrics","parameterTypes":["com.krillsson.sysapi.config.YAMLConfigFile","oshi.hardware.HardwareAbstractionLayer","oshi.software.os.OperatingSystem","com.krillsson.sysapi.core.domain.system.Platform","com.krillsson.sysapi.core.metrics.defaultimpl.DiskReadWriteRateMeasurementManager","com.krillsson.sysapi.core.metrics.defaultimpl.NetworkUploadDownloadRateMeasurementManager","com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager"] }, {"name":"networkMetrics","parameterTypes":["com.krillsson.sysapi.core.metrics.Metrics"] }, {"name":"operatingSystem","parameterTypes":[] }, {"name":"os","parameterTypes":[] }, {"name":"passwordEncoder","parameterTypes":[] }, {"name":"platform","parameterTypes":[] }, {"name":"setBeanFactory","parameterTypes":["org.springframework.beans.factory.BeanFactory"] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"clock","parameterTypes":[] }, {"name":"dataSource","parameterTypes":[] }, {"name":"entityManagerFactory","parameterTypes":[] }, {"name":"externalIpAddressService","parameterTypes":["com.krillsson.sysapi.config.YAMLConfigFile"] }, {"name":"githubApi","parameterTypes":["com.krillsson.sysapi.config.YAMLConfigFile","com.fasterxml.jackson.databind.ObjectMapper"] }, {"name":"hal","parameterTypes":[] }, {"name":"meta","parameterTypes":["oshi.software.os.OperatingSystem"] }, {"name":"metrics","parameterTypes":["com.krillsson.sysapi.config.YAMLConfigFile","oshi.hardware.HardwareAbstractionLayer","oshi.software.os.OperatingSystem","com.krillsson.sysapi.core.domain.system.Platform","com.krillsson.sysapi.core.metrics.defaultimpl.DiskReadWriteRateMeasurementManager","com.krillsson.sysapi.core.metrics.defaultimpl.NetworkUploadDownloadRateMeasurementManager","com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager"] }, {"name":"networkMetrics","parameterTypes":["com.krillsson.sysapi.core.metrics.Metrics"] }, {"name":"operatingSystem","parameterTypes":[] }, {"name":"os","parameterTypes":[] }, {"name":"passwordEncoder","parameterTypes":[] }, {"name":"platform","parameterTypes":[] }, {"name":"setBeanFactory","parameterTypes":["org.springframework.beans.factory.BeanFactory"] }, {"name":"userConfigFile","parameterTypes":[] }]
 },
 {
   "name":"com.krillsson.sysapi.SysApiConfiguration$$SpringCGLIB$$0",
@@ -783,136 +789,147 @@
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["boolean","long","java.util.concurrent.TimeUnit"] }, {"name":"setDuration","parameterTypes":["long"] }, {"name":"setEnabled","parameterTypes":["boolean"] }, {"name":"setUnit","parameterTypes":["java.util.concurrent.TimeUnit"] }]
+  "methods":[{"name":"<init>","parameterTypes":["boolean","long","java.util.concurrent.TimeUnit"] }, {"name":"<init>","parameterTypes":["boolean","long","java.util.concurrent.TimeUnit","int","kotlin.jvm.internal.DefaultConstructorMarker"] }, {"name":"setDuration","parameterTypes":["long"] }, {"name":"setEnabled","parameterTypes":["boolean"] }, {"name":"setUnit","parameterTypes":["java.util.concurrent.TimeUnit"] }]
 },
 {
   "name":"com.krillsson.sysapi.config.ConnectivityCheckConfiguration",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"setAddress","parameterTypes":["java.lang.String"] }, {"name":"setEnabled","parameterTypes":["boolean"] }]
+  "methods":[{"name":"<init>","parameterTypes":["boolean","java.lang.String"] }, {"name":"<init>","parameterTypes":["boolean","java.lang.String","int","kotlin.jvm.internal.DefaultConstructorMarker"] }, {"name":"setAddress","parameterTypes":["java.lang.String"] }, {"name":"setEnabled","parameterTypes":["boolean"] }]
 },
 {
   "name":"com.krillsson.sysapi.config.DockerConfiguration",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["boolean","java.lang.String","com.krillsson.sysapi.config.CacheConfiguration"] }, {"name":"setEnabled","parameterTypes":["boolean"] }]
+  "methods":[{"name":"<init>","parameterTypes":["boolean","java.lang.String","com.krillsson.sysapi.config.CacheConfiguration"] }, {"name":"<init>","parameterTypes":["boolean","java.lang.String","com.krillsson.sysapi.config.CacheConfiguration","int","kotlin.jvm.internal.DefaultConstructorMarker"] }, {"name":"setEnabled","parameterTypes":["boolean"] }]
+},
+{
+  "name":"com.krillsson.sysapi.config.GraphQLPlayGroundConfiguration",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":["boolean"] }, {"name":"<init>","parameterTypes":["boolean","int","kotlin.jvm.internal.DefaultConstructorMarker"] }]
 },
 {
   "name":"com.krillsson.sysapi.config.HistoryConfiguration",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["com.krillsson.sysapi.config.HistoryPurgingConfiguration","long","java.util.concurrent.TimeUnit"] }, {"name":"getPurging","parameterTypes":[] }, {"name":"setPurging","parameterTypes":["com.krillsson.sysapi.config.HistoryPurgingConfiguration"] }, {"name":"setUnit","parameterTypes":["java.util.concurrent.TimeUnit"] }]
+  "methods":[{"name":"<init>","parameterTypes":["com.krillsson.sysapi.config.HistoryPurgingConfiguration","long","java.util.concurrent.TimeUnit"] }, {"name":"<init>","parameterTypes":["com.krillsson.sysapi.config.HistoryPurgingConfiguration","long","java.util.concurrent.TimeUnit","int","kotlin.jvm.internal.DefaultConstructorMarker"] }, {"name":"getPurging","parameterTypes":[] }, {"name":"setPurging","parameterTypes":["com.krillsson.sysapi.config.HistoryPurgingConfiguration"] }, {"name":"setUnit","parameterTypes":["java.util.concurrent.TimeUnit"] }]
 },
 {
   "name":"com.krillsson.sysapi.config.HistoryPurgingConfiguration",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"setOlderThan","parameterTypes":["long"] }, {"name":"setPurgeEvery","parameterTypes":["long"] }, {"name":"setPurgeEveryUnit","parameterTypes":["java.util.concurrent.TimeUnit"] }, {"name":"setUnit","parameterTypes":["java.time.temporal.ChronoUnit"] }]
+  "methods":[{"name":"<init>","parameterTypes":["long","java.time.temporal.ChronoUnit","long","java.util.concurrent.TimeUnit"] }, {"name":"<init>","parameterTypes":["long","java.time.temporal.ChronoUnit","long","java.util.concurrent.TimeUnit","int","kotlin.jvm.internal.DefaultConstructorMarker"] }, {"name":"setOlderThan","parameterTypes":["long"] }, {"name":"setPurgeEvery","parameterTypes":["long"] }, {"name":"setPurgeEveryUnit","parameterTypes":["java.util.concurrent.TimeUnit"] }, {"name":"setUnit","parameterTypes":["java.time.temporal.ChronoUnit"] }]
 },
 {
   "name":"com.krillsson.sysapi.config.JournalLogsConfiguration",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["boolean"] }, {"name":"setEnabled","parameterTypes":["boolean"] }]
+  "methods":[{"name":"<init>","parameterTypes":["boolean"] }, {"name":"<init>","parameterTypes":["boolean","int","kotlin.jvm.internal.DefaultConstructorMarker"] }, {"name":"setEnabled","parameterTypes":["boolean"] }]
 },
 {
   "name":"com.krillsson.sysapi.config.LinuxConfiguration",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["com.krillsson.sysapi.config.SystemDaemonServiceManagementConfiguration","com.krillsson.sysapi.config.JournalLogsConfiguration"] }, {"name":"getJournalLogs","parameterTypes":[] }, {"name":"getSystemDaemonServiceManagement","parameterTypes":[] }, {"name":"setJournalLogs","parameterTypes":["com.krillsson.sysapi.config.JournalLogsConfiguration"] }, {"name":"setSystemDaemonServiceManagement","parameterTypes":["com.krillsson.sysapi.config.SystemDaemonServiceManagementConfiguration"] }]
+  "methods":[{"name":"<init>","parameterTypes":["com.krillsson.sysapi.config.SystemDaemonServiceManagementConfiguration","com.krillsson.sysapi.config.JournalLogsConfiguration"] }, {"name":"<init>","parameterTypes":["com.krillsson.sysapi.config.SystemDaemonServiceManagementConfiguration","com.krillsson.sysapi.config.JournalLogsConfiguration","int","kotlin.jvm.internal.DefaultConstructorMarker"] }, {"name":"getJournalLogs","parameterTypes":[] }, {"name":"getSystemDaemonServiceManagement","parameterTypes":[] }, {"name":"setJournalLogs","parameterTypes":["com.krillsson.sysapi.config.JournalLogsConfiguration"] }, {"name":"setSystemDaemonServiceManagement","parameterTypes":["com.krillsson.sysapi.config.SystemDaemonServiceManagementConfiguration"] }]
 },
 {
   "name":"com.krillsson.sysapi.config.LogReaderConfiguration",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["java.util.List","java.util.List"] }, {"name":"getDirectories","parameterTypes":[] }, {"name":"getFiles","parameterTypes":[] }, {"name":"setDirectories","parameterTypes":["java.util.List"] }, {"name":"setFiles","parameterTypes":["java.util.List"] }]
+  "methods":[{"name":"<init>","parameterTypes":["java.util.List","java.util.List"] }, {"name":"<init>","parameterTypes":["java.util.List","java.util.List","int","kotlin.jvm.internal.DefaultConstructorMarker"] }, {"name":"getDirectories","parameterTypes":[] }, {"name":"getFiles","parameterTypes":[] }, {"name":"setDirectories","parameterTypes":["java.util.List"] }, {"name":"setFiles","parameterTypes":["java.util.List"] }]
 },
 {
   "name":"com.krillsson.sysapi.config.MdnsConfiguration",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["boolean"] }, {"name":"setEnabled","parameterTypes":["boolean"] }]
+  "methods":[{"name":"<init>","parameterTypes":["boolean"] }, {"name":"<init>","parameterTypes":["boolean","int","kotlin.jvm.internal.DefaultConstructorMarker"] }, {"name":"setEnabled","parameterTypes":["boolean"] }]
 },
 {
   "name":"com.krillsson.sysapi.config.MetricsConfiguration",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["com.krillsson.sysapi.config.HistoryConfiguration","com.krillsson.sysapi.config.CacheConfiguration"] }, {"name":"getCache","parameterTypes":[] }, {"name":"getHistory","parameterTypes":[] }, {"name":"setCache","parameterTypes":["com.krillsson.sysapi.config.CacheConfiguration"] }, {"name":"setHistory","parameterTypes":["com.krillsson.sysapi.config.HistoryConfiguration"] }]
+  "methods":[{"name":"<init>","parameterTypes":["com.krillsson.sysapi.config.HistoryConfiguration","com.krillsson.sysapi.config.CacheConfiguration"] }, {"name":"<init>","parameterTypes":["com.krillsson.sysapi.config.HistoryConfiguration","com.krillsson.sysapi.config.CacheConfiguration","int","kotlin.jvm.internal.DefaultConstructorMarker"] }, {"name":"getCache","parameterTypes":[] }, {"name":"getHistory","parameterTypes":[] }, {"name":"setCache","parameterTypes":["com.krillsson.sysapi.config.CacheConfiguration"] }, {"name":"setHistory","parameterTypes":["com.krillsson.sysapi.config.HistoryConfiguration"] }]
 },
 {
-  "name":"com.krillsson.sysapi.config.ProcessesConfiguration"
+  "name":"com.krillsson.sysapi.config.ProcessesConfiguration",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":["boolean"] }]
 },
 {
   "name":"com.krillsson.sysapi.config.SelfSignedCertificateConfiguration",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"setEnabled","parameterTypes":["boolean"] }, {"name":"setPopulateCN","parameterTypes":["boolean"] }, {"name":"setPopulateSAN","parameterTypes":["boolean"] }]
+  "methods":[{"name":"<init>","parameterTypes":["boolean","boolean","boolean","java.lang.String","java.util.List"] }, {"name":"<init>","parameterTypes":["boolean","boolean","boolean","java.lang.String","java.util.List","int","kotlin.jvm.internal.DefaultConstructorMarker"] }, {"name":"setEnabled","parameterTypes":["boolean"] }, {"name":"setPopulateCN","parameterTypes":["boolean"] }, {"name":"setPopulateSAN","parameterTypes":["boolean"] }]
 },
 {
   "name":"com.krillsson.sysapi.config.ServiceManagement",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["boolean"] }, {"name":"setEnabled","parameterTypes":["boolean"] }]
+  "methods":[{"name":"<init>","parameterTypes":["boolean"] }, {"name":"<init>","parameterTypes":["boolean","int","kotlin.jvm.internal.DefaultConstructorMarker"] }, {"name":"setEnabled","parameterTypes":["boolean"] }]
 },
 {
   "name":"com.krillsson.sysapi.config.SystemDaemonServiceManagementConfiguration",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["boolean"] }, {"name":"setEnabled","parameterTypes":["boolean"] }]
+  "methods":[{"name":"<init>","parameterTypes":["boolean"] }, {"name":"<init>","parameterTypes":["boolean","int","kotlin.jvm.internal.DefaultConstructorMarker"] }, {"name":"setEnabled","parameterTypes":["boolean"] }]
 },
 {
   "name":"com.krillsson.sysapi.config.UpdateCheckConfiguration",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["boolean","java.lang.String","java.lang.String","java.lang.String"] }, {"name":"setAddress","parameterTypes":["java.lang.String"] }, {"name":"setEnabled","parameterTypes":["boolean"] }, {"name":"setRepo","parameterTypes":["java.lang.String"] }, {"name":"setUser","parameterTypes":["java.lang.String"] }]
+  "methods":[{"name":"<init>","parameterTypes":["boolean","java.lang.String","java.lang.String","java.lang.String"] }, {"name":"<init>","parameterTypes":["boolean","java.lang.String","java.lang.String","java.lang.String","int","kotlin.jvm.internal.DefaultConstructorMarker"] }, {"name":"setAddress","parameterTypes":["java.lang.String"] }, {"name":"setEnabled","parameterTypes":["boolean"] }, {"name":"setRepo","parameterTypes":["java.lang.String"] }, {"name":"setUser","parameterTypes":["java.lang.String"] }]
 },
 {
   "name":"com.krillsson.sysapi.config.UpnpIgdConfiguration",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["boolean"] }, {"name":"setEnabled","parameterTypes":["boolean"] }]
+  "methods":[{"name":"<init>","parameterTypes":["boolean"] }, {"name":"<init>","parameterTypes":["boolean","int","kotlin.jvm.internal.DefaultConstructorMarker"] }, {"name":"setEnabled","parameterTypes":["boolean"] }]
 },
 {
   "name":"com.krillsson.sysapi.config.UserConfiguration",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"setPassword","parameterTypes":["java.lang.String"] }, {"name":"setUsername","parameterTypes":["java.lang.String"] }]
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String","java.lang.String"] }, {"name":"<init>","parameterTypes":["java.lang.String","java.lang.String","int","kotlin.jvm.internal.DefaultConstructorMarker"] }, {"name":"setPassword","parameterTypes":["java.lang.String"] }, {"name":"setUsername","parameterTypes":["java.lang.String"] }]
 },
 {
   "name":"com.krillsson.sysapi.config.WindowsConfiguration",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["boolean","com.krillsson.sysapi.config.WindowsEventLogConfiguration","com.krillsson.sysapi.config.ServiceManagement"] }, {"name":"getEventLog","parameterTypes":[] }, {"name":"getServiceManagement","parameterTypes":[] }, {"name":"setEnableOhmJniWrapper","parameterTypes":["boolean"] }, {"name":"setEventLog","parameterTypes":["com.krillsson.sysapi.config.WindowsEventLogConfiguration"] }, {"name":"setServiceManagement","parameterTypes":["com.krillsson.sysapi.config.ServiceManagement"] }]
+  "methods":[{"name":"<init>","parameterTypes":["boolean","com.krillsson.sysapi.config.WindowsEventLogConfiguration","com.krillsson.sysapi.config.ServiceManagement"] }, {"name":"<init>","parameterTypes":["boolean","com.krillsson.sysapi.config.WindowsEventLogConfiguration","com.krillsson.sysapi.config.ServiceManagement","int","kotlin.jvm.internal.DefaultConstructorMarker"] }, {"name":"getEventLog","parameterTypes":[] }, {"name":"getServiceManagement","parameterTypes":[] }, {"name":"setEnableOhmJniWrapper","parameterTypes":["boolean"] }, {"name":"setEventLog","parameterTypes":["com.krillsson.sysapi.config.WindowsEventLogConfiguration"] }, {"name":"setServiceManagement","parameterTypes":["com.krillsson.sysapi.config.ServiceManagement"] }]
 },
 {
   "name":"com.krillsson.sysapi.config.WindowsEventLogConfiguration",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["boolean"] }, {"name":"setEnabled","parameterTypes":["boolean"] }]
+  "methods":[{"name":"<init>","parameterTypes":["boolean"] }, {"name":"<init>","parameterTypes":["boolean","int","kotlin.jvm.internal.DefaultConstructorMarker"] }, {"name":"setEnabled","parameterTypes":["boolean"] }]
 },
 {
   "name":"com.krillsson.sysapi.config.YAMLConfigFile",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getAuthentication","parameterTypes":[] }, {"name":"getConnectivityCheck","parameterTypes":[] }, {"name":"getDocker","parameterTypes":[] }, {"name":"getLinux","parameterTypes":[] }, {"name":"getLogReader","parameterTypes":[] }, {"name":"getMDNS","parameterTypes":[] }, {"name":"getMetricsConfig","parameterTypes":[] }, {"name":"getSelfSignedCertificates","parameterTypes":[] }, {"name":"getUpdateCheck","parameterTypes":[] }, {"name":"getUpnp","parameterTypes":[] }, {"name":"getWindows","parameterTypes":[] }, {"name":"setAuthentication","parameterTypes":["com.krillsson.sysapi.config.UserConfiguration"] }, {"name":"setBeanFactory","parameterTypes":["org.springframework.beans.factory.BeanFactory"] }, {"name":"setConnectivityCheck","parameterTypes":["com.krillsson.sysapi.config.ConnectivityCheckConfiguration"] }, {"name":"setDocker","parameterTypes":["com.krillsson.sysapi.config.DockerConfiguration"] }, {"name":"setLinux","parameterTypes":["com.krillsson.sysapi.config.LinuxConfiguration"] }, {"name":"setLogReader","parameterTypes":["com.krillsson.sysapi.config.LogReaderConfiguration"] }, {"name":"setMDNS","parameterTypes":["com.krillsson.sysapi.config.MdnsConfiguration"] }, {"name":"setMetricsConfig","parameterTypes":["com.krillsson.sysapi.config.MetricsConfiguration"] }, {"name":"setSelfSignedCertificates","parameterTypes":["com.krillsson.sysapi.config.SelfSignedCertificateConfiguration"] }, {"name":"setUpdateCheck","parameterTypes":["com.krillsson.sysapi.config.UpdateCheckConfiguration"] }, {"name":"setUpnp","parameterTypes":["com.krillsson.sysapi.config.UpnpIgdConfiguration"] }, {"name":"setWindows","parameterTypes":["com.krillsson.sysapi.config.WindowsConfiguration"] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"<init>","parameterTypes":["com.krillsson.sysapi.config.UserConfiguration","com.krillsson.sysapi.config.MetricsConfiguration","com.krillsson.sysapi.config.WindowsConfiguration","com.krillsson.sysapi.config.ProcessesConfiguration","com.krillsson.sysapi.config.LinuxConfiguration","com.krillsson.sysapi.config.ConnectivityCheckConfiguration","com.krillsson.sysapi.config.UpdateCheckConfiguration","com.krillsson.sysapi.config.GraphQLPlayGroundConfiguration","com.krillsson.sysapi.config.DockerConfiguration","boolean","com.krillsson.sysapi.config.LogReaderConfiguration","com.krillsson.sysapi.config.SelfSignedCertificateConfiguration","com.krillsson.sysapi.config.MdnsConfiguration","com.krillsson.sysapi.config.UpnpIgdConfiguration"] }, {"name":"<init>","parameterTypes":["com.krillsson.sysapi.config.UserConfiguration","com.krillsson.sysapi.config.MetricsConfiguration","com.krillsson.sysapi.config.WindowsConfiguration","com.krillsson.sysapi.config.ProcessesConfiguration","com.krillsson.sysapi.config.LinuxConfiguration","com.krillsson.sysapi.config.ConnectivityCheckConfiguration","com.krillsson.sysapi.config.UpdateCheckConfiguration","com.krillsson.sysapi.config.GraphQLPlayGroundConfiguration","com.krillsson.sysapi.config.DockerConfiguration","boolean","com.krillsson.sysapi.config.LogReaderConfiguration","com.krillsson.sysapi.config.SelfSignedCertificateConfiguration","com.krillsson.sysapi.config.MdnsConfiguration","com.krillsson.sysapi.config.UpnpIgdConfiguration","int","kotlin.jvm.internal.DefaultConstructorMarker"] }, {"name":"close","parameterTypes":[] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"getAuthentication","parameterTypes":[] }, {"name":"getConnectivityCheck","parameterTypes":[] }, {"name":"getDocker","parameterTypes":[] }, {"name":"getForwardHttpToHttps","parameterTypes":[] }, {"name":"getGraphQLPlayGround","parameterTypes":[] }, {"name":"getLinux","parameterTypes":[] }, {"name":"getLogReader","parameterTypes":[] }, {"name":"getMDNS","parameterTypes":[] }, {"name":"getMetricsConfig","parameterTypes":[] }, {"name":"getSelfSignedCertificates","parameterTypes":[] }, {"name":"getUpdateCheck","parameterTypes":[] }, {"name":"getUpnp","parameterTypes":[] }, {"name":"getWindows","parameterTypes":[] }, {"name":"hashCode","parameterTypes":[] }, {"name":"setAuthentication","parameterTypes":["com.krillsson.sysapi.config.UserConfiguration"] }, {"name":"setBeanFactory","parameterTypes":["org.springframework.beans.factory.BeanFactory"] }, {"name":"setConnectivityCheck","parameterTypes":["com.krillsson.sysapi.config.ConnectivityCheckConfiguration"] }, {"name":"setDocker","parameterTypes":["com.krillsson.sysapi.config.DockerConfiguration"] }, {"name":"setLinux","parameterTypes":["com.krillsson.sysapi.config.LinuxConfiguration"] }, {"name":"setLogReader","parameterTypes":["com.krillsson.sysapi.config.LogReaderConfiguration"] }, {"name":"setMDNS","parameterTypes":["com.krillsson.sysapi.config.MdnsConfiguration"] }, {"name":"setMetricsConfig","parameterTypes":["com.krillsson.sysapi.config.MetricsConfiguration"] }, {"name":"setSelfSignedCertificates","parameterTypes":["com.krillsson.sysapi.config.SelfSignedCertificateConfiguration"] }, {"name":"setUpdateCheck","parameterTypes":["com.krillsson.sysapi.config.UpdateCheckConfiguration"] }, {"name":"setUpnp","parameterTypes":["com.krillsson.sysapi.config.UpnpIgdConfiguration"] }, {"name":"setWindows","parameterTypes":["com.krillsson.sysapi.config.WindowsConfiguration"] }, {"name":"shutdown","parameterTypes":[] }, {"name":"toString","parameterTypes":[] }]
 },
 {
   "name":"com.krillsson.sysapi.config.YAMLConfigFile$$SpringCGLIB$$0",
@@ -1302,7 +1319,16 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity$HibernateAccessOptimizer$Knwp604B",
+  "fields":[{"name":"invocationTarget$00ulu90"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity$HibernateInstantiator$Mg0WF25T",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity$HibernateInstantiator$o7vVDyhf",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1327,12 +1353,21 @@
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"<init>","parameterTypes":["java.util.UUID","java.lang.String","java.lang.String","java.lang.String","boolean"] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"getConnected","parameterTypes":[] }, {"name":"getExternalIp","parameterTypes":[] }, {"name":"getId","parameterTypes":[] }, {"name":"getLocalIp","parameterTypes":[] }, {"name":"getPreviousExternalIp","parameterTypes":[] }, {"name":"hashCode","parameterTypes":[] }, {"name":"toString","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.Connectivity$HibernateAccessOptimizer$VPDSARKU",
+  "fields":[{"name":"invocationTarget$0j3bm71"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.Connectivity$HibernateAccessOptimizer$uEjrnL7h",
   "fields":[{"name":"invocationTarget$414b8c0"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"com.krillsson.sysapi.core.history.db.Connectivity$HibernateInstantiator$2v7G43Xo",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.Connectivity$HibernateInstantiator$HnBi8s6M",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1368,6 +1403,15 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.ContainerStatisticsEntity$HibernateAccessOptimizer$Yq6WFyNo",
+  "fields":[{"name":"invocationTarget$cvgqkf1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.ContainerStatisticsEntity$HibernateInstantiator$Uegs2MgA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.ContainerStatisticsEntity$HibernateInstantiator$bYnc3Yvs",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -1388,7 +1432,16 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.CoreLoad$HibernateAccessOptimizer$m4EnEH9o",
+  "fields":[{"name":"invocationTarget$5adlfa0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.CoreLoad$HibernateInstantiator$S66C3Rse",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.CoreLoad$HibernateInstantiator$TaXJ7nUq",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1414,8 +1467,17 @@
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"<init>","parameterTypes":["java.util.UUID","double","double","com.krillsson.sysapi.core.history.db.LoadAverages","java.util.List","com.krillsson.sysapi.core.history.db.CpuHealth","int","int"] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"getCoreLoads","parameterTypes":[] }, {"name":"getCpuHealth","parameterTypes":[] }, {"name":"getId","parameterTypes":[] }, {"name":"getLoadAverages","parameterTypes":[] }, {"name":"getProcessCount","parameterTypes":[] }, {"name":"getSystemLoadAverage","parameterTypes":[] }, {"name":"getThreadCount","parameterTypes":[] }, {"name":"getUsagePercentage","parameterTypes":[] }, {"name":"hashCode","parameterTypes":[] }, {"name":"toString","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.CpuLoad$HibernateAccessOptimizer$380dmfH6",
+  "fields":[{"name":"invocationTarget$d8fjmc1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.CpuLoad$HibernateAccessOptimizer$pRZXLwOi",
   "fields":[{"name":"invocationTarget$25t8850"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.CpuLoad$HibernateInstantiator$0oGCrrA7",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1452,8 +1514,17 @@
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"<init>","parameterTypes":["java.util.UUID","com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity","java.util.UUID","java.lang.String","java.lang.String","com.krillsson.sysapi.core.history.db.DiskValues","com.krillsson.sysapi.core.history.db.DiskSpeed"] }, {"name":"component1","parameterTypes":[] }, {"name":"component2","parameterTypes":[] }, {"name":"component3","parameterTypes":[] }, {"name":"component4","parameterTypes":[] }, {"name":"component5","parameterTypes":[] }, {"name":"component6","parameterTypes":[] }, {"name":"component7","parameterTypes":[] }, {"name":"copy","parameterTypes":["java.util.UUID","com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity","java.util.UUID","java.lang.String","java.lang.String","com.krillsson.sysapi.core.history.db.DiskValues","com.krillsson.sysapi.core.history.db.DiskSpeed"] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"getHistory","parameterTypes":[] }, {"name":"getHistoryId","parameterTypes":[] }, {"name":"getId","parameterTypes":[] }, {"name":"getName","parameterTypes":[] }, {"name":"getSerial","parameterTypes":[] }, {"name":"getSpeed","parameterTypes":[] }, {"name":"getValues","parameterTypes":[] }, {"name":"hashCode","parameterTypes":[] }, {"name":"toString","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.DiskLoad$HibernateAccessOptimizer$30KXf7Ag",
+  "fields":[{"name":"invocationTarget$b5n80k0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.DiskLoad$HibernateAccessOptimizer$s3eGww74",
   "fields":[{"name":"invocationTarget$m1rtp01"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.DiskLoad$HibernateInstantiator$QLnutiQ1",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1505,7 +1576,16 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.FileSystemLoad$HibernateAccessOptimizer$uFo2MpCQ",
+  "fields":[{"name":"invocationTarget$p7p89a0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.FileSystemLoad$HibernateInstantiator$0lbEoFEG",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.FileSystemLoad$HibernateInstantiator$oGBePrQq",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1537,12 +1617,21 @@
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"<init>","parameterTypes":["java.util.UUID","com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity","java.util.UUID","java.lang.String","double","double","com.krillsson.sysapi.core.history.db.GpuHealth"] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"getCoreLoad","parameterTypes":[] }, {"name":"getHealth","parameterTypes":[] }, {"name":"getHistory","parameterTypes":[] }, {"name":"getHistoryId","parameterTypes":[] }, {"name":"getId","parameterTypes":[] }, {"name":"getMemoryLoad","parameterTypes":[] }, {"name":"getName","parameterTypes":[] }, {"name":"hashCode","parameterTypes":[] }, {"name":"toString","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.GpuLoad$HibernateAccessOptimizer$pk69I77w",
+  "fields":[{"name":"invocationTarget$kh5agc0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.GpuLoad$HibernateAccessOptimizer$toSYESQU",
   "fields":[{"name":"invocationTarget$2cvsqa0"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"com.krillsson.sysapi.core.history.db.GpuLoad$HibernateInstantiator$L31Lm2s4",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.GpuLoad$HibernateInstantiator$WooV0EM3",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1559,6 +1648,15 @@
 {
   "name":"com.krillsson.sysapi.core.history.db.HealthData$HibernateAccessOptimizer$XpwVWA6o",
   "fields":[{"name":"invocationTarget$sebifl1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.HealthData$HibernateAccessOptimizer$eQITjLEC",
+  "fields":[{"name":"invocationTarget$kar3cb0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.HealthData$HibernateInstantiator$BBAQVE3a",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1594,6 +1692,15 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity$HibernateAccessOptimizer$2EEPrmiS",
+  "fields":[{"name":"invocationTarget$12lp280"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity$HibernateInstantiator$PPzmWU4e",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity$HibernateInstantiator$Zzgkwker",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -1625,7 +1732,16 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.MemoryLoad$HibernateAccessOptimizer$H0JK1THH",
+  "fields":[{"name":"invocationTarget$ju0b861"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.MemoryLoad$HibernateInstantiator$eJYzhfxY",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.MemoryLoad$HibernateInstantiator$vNIlFQPn",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1660,7 +1776,16 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.NetworkInterfaceLoad$HibernateAccessOptimizer$mi5Af47L",
+  "fields":[{"name":"invocationTarget$786c280"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.NetworkInterfaceLoad$HibernateInstantiator$Iibk1CCZ",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.NetworkInterfaceLoad$HibernateInstantiator$J37OoJGO",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2625,6 +2750,30 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.sun.jna.platform.linux.LibC",
+  "allPublicFields":true
+},
+{
+  "name":"com.sun.jna.platform.linux.LibC$Sysinfo",
+  "allDeclaredFields":true
+},
+{
+  "name":"com.sun.jna.platform.linux.Udev$UdevContext",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.jna.platform.linux.Udev$UdevDevice",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.jna.platform.linux.Udev$UdevEnumerate",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.jna.platform.linux.Udev$UdevListEntry",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.sun.jna.platform.mac.CoreFoundation$CFAllocatorRef",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -2850,7 +2999,40 @@
   "name":"com.wavefront.sdk.common.application.ApplicationTags"
 },
 {
-  "name":"com.zaxxer.hikari.HikariDataSource"
+  "name":"com.zaxxer.hikari.HikariConfig",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"addDataSourceProperty","parameterTypes":["java.lang.String","java.lang.Object"] }, {"name":"addHealthCheckProperty","parameterTypes":["java.lang.String","java.lang.String"] }, {"name":"copyStateTo","parameterTypes":["com.zaxxer.hikari.HikariConfig"] }, {"name":"getCatalog","parameterTypes":[] }, {"name":"getConnectionInitSql","parameterTypes":[] }, {"name":"getConnectionTestQuery","parameterTypes":[] }, {"name":"getConnectionTimeout","parameterTypes":[] }, {"name":"getDataSource","parameterTypes":[] }, {"name":"getDataSourceClassName","parameterTypes":[] }, {"name":"getDataSourceJNDI","parameterTypes":[] }, {"name":"getDataSourceProperties","parameterTypes":[] }, {"name":"getDriverClassName","parameterTypes":[] }, {"name":"getExceptionOverrideClassName","parameterTypes":[] }, {"name":"getHealthCheckProperties","parameterTypes":[] }, {"name":"getHealthCheckRegistry","parameterTypes":[] }, {"name":"getIdleTimeout","parameterTypes":[] }, {"name":"getInitializationFailTimeout","parameterTypes":[] }, {"name":"getJdbcUrl","parameterTypes":[] }, {"name":"getKeepaliveTime","parameterTypes":[] }, {"name":"getLeakDetectionThreshold","parameterTypes":[] }, {"name":"getMaxLifetime","parameterTypes":[] }, {"name":"getMaximumPoolSize","parameterTypes":[] }, {"name":"getMetricRegistry","parameterTypes":[] }, {"name":"getMetricsTrackerFactory","parameterTypes":[] }, {"name":"getMinimumIdle","parameterTypes":[] }, {"name":"getPassword","parameterTypes":[] }, {"name":"getPoolName","parameterTypes":[] }, {"name":"getScheduledExecutor","parameterTypes":[] }, {"name":"getSchema","parameterTypes":[] }, {"name":"getThreadFactory","parameterTypes":[] }, {"name":"getTransactionIsolation","parameterTypes":[] }, {"name":"getUsername","parameterTypes":[] }, {"name":"getValidationTimeout","parameterTypes":[] }, {"name":"isAllowPoolSuspension","parameterTypes":[] }, {"name":"isAutoCommit","parameterTypes":[] }, {"name":"isIsolateInternalQueries","parameterTypes":[] }, {"name":"isReadOnly","parameterTypes":[] }, {"name":"isRegisterMbeans","parameterTypes":[] }, {"name":"setAllowPoolSuspension","parameterTypes":["boolean"] }, {"name":"setAutoCommit","parameterTypes":["boolean"] }, {"name":"setCatalog","parameterTypes":["java.lang.String"] }, {"name":"setConnectionInitSql","parameterTypes":["java.lang.String"] }, {"name":"setConnectionTestQuery","parameterTypes":["java.lang.String"] }, {"name":"setConnectionTimeout","parameterTypes":["long"] }, {"name":"setDataSource","parameterTypes":["javax.sql.DataSource"] }, {"name":"setDataSourceClassName","parameterTypes":["java.lang.String"] }, {"name":"setDataSourceJNDI","parameterTypes":["java.lang.String"] }, {"name":"setDataSourceProperties","parameterTypes":["java.util.Properties"] }, {"name":"setDriverClassName","parameterTypes":["java.lang.String"] }, {"name":"setExceptionOverrideClassName","parameterTypes":["java.lang.String"] }, {"name":"setHealthCheckProperties","parameterTypes":["java.util.Properties"] }, {"name":"setIdleTimeout","parameterTypes":["long"] }, {"name":"setInitializationFailTimeout","parameterTypes":["long"] }, {"name":"setIsolateInternalQueries","parameterTypes":["boolean"] }, {"name":"setJdbcUrl","parameterTypes":["java.lang.String"] }, {"name":"setKeepaliveTime","parameterTypes":["long"] }, {"name":"setLeakDetectionThreshold","parameterTypes":["long"] }, {"name":"setMaxLifetime","parameterTypes":["long"] }, {"name":"setMaximumPoolSize","parameterTypes":["int"] }, {"name":"setMinimumIdle","parameterTypes":["int"] }, {"name":"setPassword","parameterTypes":["java.lang.String"] }, {"name":"setPoolName","parameterTypes":["java.lang.String"] }, {"name":"setReadOnly","parameterTypes":["boolean"] }, {"name":"setRegisterMbeans","parameterTypes":["boolean"] }, {"name":"setScheduledExecutor","parameterTypes":["java.util.concurrent.ScheduledExecutorService"] }, {"name":"setSchema","parameterTypes":["java.lang.String"] }, {"name":"setThreadFactory","parameterTypes":["java.util.concurrent.ThreadFactory"] }, {"name":"setTransactionIsolation","parameterTypes":["java.lang.String"] }, {"name":"setUsername","parameterTypes":["java.lang.String"] }, {"name":"setValidationTimeout","parameterTypes":["long"] }, {"name":"validate","parameterTypes":[] }]
+},
+{
+  "name":"com.zaxxer.hikari.HikariConfigMXBean",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
+},
+{
+  "name":"com.zaxxer.hikari.HikariDataSource",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"close","parameterTypes":[] }, {"name":"getConnection","parameterTypes":[] }, {"name":"getConnection","parameterTypes":["java.lang.String","java.lang.String"] }, {"name":"getLogWriter","parameterTypes":[] }, {"name":"getLoginTimeout","parameterTypes":[] }, {"name":"getParentLogger","parameterTypes":[] }, {"name":"isWrapperFor","parameterTypes":["java.lang.Class"] }, {"name":"setHealthCheckRegistry","parameterTypes":["java.lang.Object"] }, {"name":"setLogWriter","parameterTypes":["java.io.PrintWriter"] }, {"name":"setLoginTimeout","parameterTypes":["int"] }, {"name":"setMetricRegistry","parameterTypes":["java.lang.Object"] }, {"name":"setMetricsTrackerFactory","parameterTypes":["com.zaxxer.hikari.metrics.MetricsTrackerFactory"] }, {"name":"toString","parameterTypes":[] }, {"name":"unwrap","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"com.zaxxer.hikari.HikariPoolMXBean"
+},
+{
+  "name":"com.zaxxer.hikari.metrics.MetricsTrackerFactory"
+},
+{
+  "name":"com.zaxxer.hikari.pool.HikariProxyConnection",
+  "methods":[{"name":"getSchema","parameterTypes":[] }]
+},
+{
+  "name":"com.zaxxer.hikari.pool.PoolBase",
+  "fields":[{"name":"catalog"}]
+},
+{
+  "name":"com.zaxxer.hikari.pool.PoolEntry",
+  "fields":[{"name":"state"}]
 },
 {
   "name":"freemarker.template.Configuration"
@@ -3143,6 +3325,10 @@
   "name":"io.micrometer.core.instrument.distribution.DistributionStatisticConfig"
 },
 {
+  "name":"io.micrometer.core.instrument.distribution.TimeWindowMax",
+  "fields":[{"name":"rotating"}]
+},
+{
   "name":"io.micrometer.core.instrument.distribution.TimeWindowSum",
   "fields":[{"name":"rotating"}]
 },
@@ -3415,13 +3601,13 @@
   "name":"jakarta.persistence.EntityManager",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[{"name":"<init>","parameterTypes":["jdk.proxy2.$Proxy148"] }, {"name":"clear","parameterTypes":[] }, {"name":"close","parameterTypes":[] }, {"name":"contains","parameterTypes":["java.lang.Object"] }, {"name":"createEntityGraph","parameterTypes":["java.lang.Class"] }, {"name":"createEntityGraph","parameterTypes":["java.lang.String"] }, {"name":"createNamedQuery","parameterTypes":["java.lang.String"] }, {"name":"createNamedQuery","parameterTypes":["java.lang.String","java.lang.Class"] }, {"name":"createNamedStoredProcedureQuery","parameterTypes":["java.lang.String"] }, {"name":"createNativeQuery","parameterTypes":["java.lang.String"] }, {"name":"createNativeQuery","parameterTypes":["java.lang.String","java.lang.Class"] }, {"name":"createNativeQuery","parameterTypes":["java.lang.String","java.lang.String"] }, {"name":"createQuery","parameterTypes":["jakarta.persistence.criteria.CriteriaDelete"] }, {"name":"createQuery","parameterTypes":["jakarta.persistence.criteria.CriteriaQuery"] }, {"name":"createQuery","parameterTypes":["jakarta.persistence.criteria.CriteriaUpdate"] }, {"name":"createQuery","parameterTypes":["java.lang.String"] }, {"name":"createQuery","parameterTypes":["java.lang.String","java.lang.Class"] }, {"name":"createStoredProcedureQuery","parameterTypes":["java.lang.String"] }, {"name":"createStoredProcedureQuery","parameterTypes":["java.lang.String","java.lang.Class[]"] }, {"name":"createStoredProcedureQuery","parameterTypes":["java.lang.String","java.lang.String[]"] }, {"name":"detach","parameterTypes":["java.lang.Object"] }, {"name":"find","parameterTypes":["java.lang.Class","java.lang.Object"] }, {"name":"find","parameterTypes":["java.lang.Class","java.lang.Object","jakarta.persistence.LockModeType"] }, {"name":"find","parameterTypes":["java.lang.Class","java.lang.Object","jakarta.persistence.LockModeType","java.util.Map"] }, {"name":"find","parameterTypes":["java.lang.Class","java.lang.Object","java.util.Map"] }, {"name":"flush","parameterTypes":[] }, {"name":"from","parameterTypes":["jdk.proxy2.$Proxy148"] }, {"name":"getCriteriaBuilder","parameterTypes":[] }, {"name":"getDelegate","parameterTypes":[] }, {"name":"getEntityGraph","parameterTypes":["java.lang.String"] }, {"name":"getEntityGraphs","parameterTypes":["java.lang.Class"] }, {"name":"getEntityManagerFactory","parameterTypes":[] }, {"name":"getFlushMode","parameterTypes":[] }, {"name":"getLockMode","parameterTypes":["java.lang.Object"] }, {"name":"getMetamodel","parameterTypes":[] }, {"name":"getProperties","parameterTypes":[] }, {"name":"getReference","parameterTypes":["java.lang.Class","java.lang.Object"] }, {"name":"getTransaction","parameterTypes":[] }, {"name":"isJoinedToTransaction","parameterTypes":[] }, {"name":"isOpen","parameterTypes":[] }, {"name":"joinTransaction","parameterTypes":[] }, {"name":"lock","parameterTypes":["java.lang.Object","jakarta.persistence.LockModeType"] }, {"name":"lock","parameterTypes":["java.lang.Object","jakarta.persistence.LockModeType","java.util.Map"] }, {"name":"merge","parameterTypes":["java.lang.Object"] }, {"name":"of","parameterTypes":["jdk.proxy2.$Proxy148"] }, {"name":"persist","parameterTypes":["java.lang.Object"] }, {"name":"refresh","parameterTypes":["java.lang.Object"] }, {"name":"refresh","parameterTypes":["java.lang.Object","jakarta.persistence.LockModeType"] }, {"name":"refresh","parameterTypes":["java.lang.Object","jakarta.persistence.LockModeType","java.util.Map"] }, {"name":"refresh","parameterTypes":["java.lang.Object","java.util.Map"] }, {"name":"remove","parameterTypes":["java.lang.Object"] }, {"name":"setFlushMode","parameterTypes":["jakarta.persistence.FlushModeType"] }, {"name":"setProperty","parameterTypes":["java.lang.String","java.lang.Object"] }, {"name":"unwrap","parameterTypes":["java.lang.Class"] }, {"name":"valueOf","parameterTypes":["jdk.proxy2.$Proxy148"] }]
+  "methods":[{"name":"<init>","parameterTypes":["jdk.proxy2.$Proxy148"] }, {"name":"<init>","parameterTypes":["jdk.proxy2.$Proxy151"] }, {"name":"clear","parameterTypes":[] }, {"name":"close","parameterTypes":[] }, {"name":"contains","parameterTypes":["java.lang.Object"] }, {"name":"createEntityGraph","parameterTypes":["java.lang.Class"] }, {"name":"createEntityGraph","parameterTypes":["java.lang.String"] }, {"name":"createNamedQuery","parameterTypes":["java.lang.String"] }, {"name":"createNamedQuery","parameterTypes":["java.lang.String","java.lang.Class"] }, {"name":"createNamedStoredProcedureQuery","parameterTypes":["java.lang.String"] }, {"name":"createNativeQuery","parameterTypes":["java.lang.String"] }, {"name":"createNativeQuery","parameterTypes":["java.lang.String","java.lang.Class"] }, {"name":"createNativeQuery","parameterTypes":["java.lang.String","java.lang.String"] }, {"name":"createQuery","parameterTypes":["jakarta.persistence.criteria.CriteriaDelete"] }, {"name":"createQuery","parameterTypes":["jakarta.persistence.criteria.CriteriaQuery"] }, {"name":"createQuery","parameterTypes":["jakarta.persistence.criteria.CriteriaUpdate"] }, {"name":"createQuery","parameterTypes":["java.lang.String"] }, {"name":"createQuery","parameterTypes":["java.lang.String","java.lang.Class"] }, {"name":"createStoredProcedureQuery","parameterTypes":["java.lang.String"] }, {"name":"createStoredProcedureQuery","parameterTypes":["java.lang.String","java.lang.Class[]"] }, {"name":"createStoredProcedureQuery","parameterTypes":["java.lang.String","java.lang.String[]"] }, {"name":"detach","parameterTypes":["java.lang.Object"] }, {"name":"find","parameterTypes":["java.lang.Class","java.lang.Object"] }, {"name":"find","parameterTypes":["java.lang.Class","java.lang.Object","jakarta.persistence.LockModeType"] }, {"name":"find","parameterTypes":["java.lang.Class","java.lang.Object","jakarta.persistence.LockModeType","java.util.Map"] }, {"name":"find","parameterTypes":["java.lang.Class","java.lang.Object","java.util.Map"] }, {"name":"flush","parameterTypes":[] }, {"name":"from","parameterTypes":["jdk.proxy2.$Proxy148"] }, {"name":"from","parameterTypes":["jdk.proxy2.$Proxy151"] }, {"name":"getCriteriaBuilder","parameterTypes":[] }, {"name":"getDelegate","parameterTypes":[] }, {"name":"getEntityGraph","parameterTypes":["java.lang.String"] }, {"name":"getEntityGraphs","parameterTypes":["java.lang.Class"] }, {"name":"getEntityManagerFactory","parameterTypes":[] }, {"name":"getFlushMode","parameterTypes":[] }, {"name":"getLockMode","parameterTypes":["java.lang.Object"] }, {"name":"getMetamodel","parameterTypes":[] }, {"name":"getProperties","parameterTypes":[] }, {"name":"getReference","parameterTypes":["java.lang.Class","java.lang.Object"] }, {"name":"getTransaction","parameterTypes":[] }, {"name":"isJoinedToTransaction","parameterTypes":[] }, {"name":"isOpen","parameterTypes":[] }, {"name":"joinTransaction","parameterTypes":[] }, {"name":"lock","parameterTypes":["java.lang.Object","jakarta.persistence.LockModeType"] }, {"name":"lock","parameterTypes":["java.lang.Object","jakarta.persistence.LockModeType","java.util.Map"] }, {"name":"merge","parameterTypes":["java.lang.Object"] }, {"name":"of","parameterTypes":["jdk.proxy2.$Proxy148"] }, {"name":"of","parameterTypes":["jdk.proxy2.$Proxy151"] }, {"name":"persist","parameterTypes":["java.lang.Object"] }, {"name":"refresh","parameterTypes":["java.lang.Object"] }, {"name":"refresh","parameterTypes":["java.lang.Object","jakarta.persistence.LockModeType"] }, {"name":"refresh","parameterTypes":["java.lang.Object","jakarta.persistence.LockModeType","java.util.Map"] }, {"name":"refresh","parameterTypes":["java.lang.Object","java.util.Map"] }, {"name":"remove","parameterTypes":["java.lang.Object"] }, {"name":"setFlushMode","parameterTypes":["jakarta.persistence.FlushModeType"] }, {"name":"setProperty","parameterTypes":["java.lang.String","java.lang.Object"] }, {"name":"unwrap","parameterTypes":["java.lang.Class"] }, {"name":"valueOf","parameterTypes":["jdk.proxy2.$Proxy148"] }, {"name":"valueOf","parameterTypes":["jdk.proxy2.$Proxy151"] }]
 },
 {
   "name":"jakarta.persistence.EntityManagerFactory",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[{"name":"<init>","parameterTypes":["jdk.proxy2.$Proxy147"] }, {"name":"addNamedEntityGraph","parameterTypes":["java.lang.String","jakarta.persistence.EntityGraph"] }, {"name":"addNamedQuery","parameterTypes":["java.lang.String","jakarta.persistence.Query"] }, {"name":"createEntityManager","parameterTypes":[] }, {"name":"createEntityManager","parameterTypes":["jakarta.persistence.SynchronizationType"] }, {"name":"createEntityManager","parameterTypes":["jakarta.persistence.SynchronizationType","java.util.Map"] }, {"name":"createEntityManager","parameterTypes":["java.util.Map"] }, {"name":"from","parameterTypes":["jdk.proxy2.$Proxy147"] }, {"name":"getCriteriaBuilder","parameterTypes":[] }, {"name":"getMetamodel","parameterTypes":[] }, {"name":"getPersistenceUnitUtil","parameterTypes":[] }, {"name":"getProperties","parameterTypes":[] }, {"name":"isOpen","parameterTypes":[] }, {"name":"of","parameterTypes":["jdk.proxy2.$Proxy147"] }, {"name":"unwrap","parameterTypes":["java.lang.Class"] }, {"name":"valueOf","parameterTypes":["jdk.proxy2.$Proxy147"] }]
+  "methods":[{"name":"<init>","parameterTypes":["jdk.proxy2.$Proxy147"] }, {"name":"<init>","parameterTypes":["jdk.proxy2.$Proxy150"] }, {"name":"addNamedEntityGraph","parameterTypes":["java.lang.String","jakarta.persistence.EntityGraph"] }, {"name":"addNamedQuery","parameterTypes":["java.lang.String","jakarta.persistence.Query"] }, {"name":"createEntityManager","parameterTypes":[] }, {"name":"createEntityManager","parameterTypes":["jakarta.persistence.SynchronizationType"] }, {"name":"createEntityManager","parameterTypes":["jakarta.persistence.SynchronizationType","java.util.Map"] }, {"name":"createEntityManager","parameterTypes":["java.util.Map"] }, {"name":"from","parameterTypes":["jdk.proxy2.$Proxy147"] }, {"name":"from","parameterTypes":["jdk.proxy2.$Proxy150"] }, {"name":"getCriteriaBuilder","parameterTypes":[] }, {"name":"getMetamodel","parameterTypes":[] }, {"name":"getPersistenceUnitUtil","parameterTypes":[] }, {"name":"getProperties","parameterTypes":[] }, {"name":"isOpen","parameterTypes":[] }, {"name":"of","parameterTypes":["jdk.proxy2.$Proxy147"] }, {"name":"of","parameterTypes":["jdk.proxy2.$Proxy150"] }, {"name":"unwrap","parameterTypes":["java.lang.Class"] }, {"name":"valueOf","parameterTypes":["jdk.proxy2.$Proxy147"] }, {"name":"valueOf","parameterTypes":["jdk.proxy2.$Proxy150"] }]
 },
 {
   "name":"jakarta.persistence.FlushModeType"
@@ -3546,7 +3732,7 @@
   "name":"jakarta.servlet.Filter",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[{"name":"<init>","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001eccd08"] }, {"name":"from","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001eccd08"] }, {"name":"of","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001eccd08"] }, {"name":"valueOf","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001eccd08"] }]
+  "methods":[{"name":"<init>","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000501eab738"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001eccd08"] }, {"name":"from","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000501eab738"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001eccd08"] }, {"name":"of","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000501eab738"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001eccd08"] }, {"name":"valueOf","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000501eab738"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001eccd08"] }]
 },
 {
   "name":"jakarta.servlet.FilterChain"
@@ -4340,6 +4526,9 @@
   "fields":[{"name":"next"}]
 },
 {
+  "name":"java.sql.SQLFeatureNotSupportedException"
+},
+{
   "name":"java.sql.SQLWarning"
 },
 {
@@ -4396,13 +4585,16 @@
   "name":"java.time.ZoneId"
 },
 {
-  "name":"java.time.temporal.ChronoUnit"
+  "name":"java.time.temporal.ChronoUnit",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"java.time.temporal.ChronoUnitEditor"
 },
 {
-  "name":"java.time.temporal.TemporalUnit"
+  "name":"java.time.temporal.TemporalUnit",
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"java.util.ArrayList"
@@ -4508,6 +4700,9 @@
   "name":"java.util.concurrent.RejectedExecutionHandler"
 },
 {
+  "name":"java.util.concurrent.ScheduledExecutorService"
+},
+{
   "name":"java.util.concurrent.ThreadFactory",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true
@@ -4516,7 +4711,9 @@
   "name":"java.util.concurrent.ThreadPoolExecutor"
 },
 {
-  "name":"java.util.concurrent.TimeUnit"
+  "name":"java.util.concurrent.TimeUnit",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"java.util.concurrent.TimeUnitEditor"
@@ -6008,6 +6205,10 @@
   "name":"org.hibernate.UnknownProfileException"
 },
 {
+  "name":"org.hibernate.boot.archive.scan.internal.DisabledScanner",
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"<init>","parameterTypes":["org.hibernate.boot.archive.spi.ArchiveDescriptorFactory"] }]
+},
+{
   "name":"org.hibernate.boot.beanvalidation.TypeSafeActivator",
   "methods":[{"name":"activate","parameterTypes":["org.hibernate.boot.beanvalidation.ActivationContext"] }]
 },
@@ -6018,6 +6219,10 @@
 {
   "name":"org.hibernate.boot.internal.DefaultSessionFactoryBuilderService",
   "queryAllPublicMethods":true
+},
+{
+  "name":"org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"org.hibernate.boot.model.naming.ImplicitNamingStrategy"
@@ -6068,6 +6273,11 @@
 },
 {
   "name":"org.hibernate.community.dialect.CommunityDialectSelector"
+},
+{
+  "name":"org.hibernate.community.dialect.SQLiteDialect",
+  "allDeclaredFields":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"<init>","parameterTypes":["org.hibernate.engine.jdbc.dialect.spi.DialectResolutionInfo"] }]
 },
 {
   "name":"org.hibernate.dialect.DialectLogging_$logger",
@@ -6216,7 +6426,8 @@
 },
 {
   "name":"org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform",
-  "queryAllPublicMethods":true
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"org.hibernate.engine.transaction.jta.platform.internal.StandardJtaPlatformResolver",
@@ -9365,7 +9576,47 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration$PooledDataSourceConfiguration",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"jdbcConnectionDetails","parameterTypes":["org.springframework.boot.autoconfigure.jdbc.DataSourceProperties"] }]
+},
+{
   "name":"org.springframework.boot.autoconfigure.jdbc.DataSourceCheckpointRestoreConfiguration"
+},
+{
+  "name":"org.springframework.boot.autoconfigure.jdbc.DataSourceConfiguration$Dbcp2"
+},
+{
+  "name":"org.springframework.boot.autoconfigure.jdbc.DataSourceConfiguration$Generic"
+},
+{
+  "name":"org.springframework.boot.autoconfigure.jdbc.DataSourceConfiguration$Hikari",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"dataSource","parameterTypes":["org.springframework.boot.autoconfigure.jdbc.DataSourceProperties","org.springframework.boot.autoconfigure.jdbc.JdbcConnectionDetails"] }, {"name":"jdbcConnectionDetailsHikariBeanPostProcessor","parameterTypes":["org.springframework.beans.factory.ObjectProvider"] }]
+},
+{
+  "name":"org.springframework.boot.autoconfigure.jdbc.DataSourceConfiguration$OracleUcp"
+},
+{
+  "name":"org.springframework.boot.autoconfigure.jdbc.DataSourceConfiguration$Tomcat"
+},
+{
+  "name":"org.springframework.boot.autoconfigure.jdbc.DataSourceJmxConfiguration",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.springframework.boot.autoconfigure.jdbc.DataSourceJmxConfiguration$Hikari",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":["javax.sql.DataSource","org.springframework.beans.factory.ObjectProvider"] }]
 },
 {
   "name":"org.springframework.boot.autoconfigure.jdbc.DataSourceProperties",
@@ -9392,6 +9643,10 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"org.springframework.boot.autoconfigure.jdbc.HikariJdbcConnectionDetailsBeanPostProcessor",
+  "methods":[{"name":"close","parameterTypes":[] }, {"name":"shutdown","parameterTypes":[] }]
+},
+{
   "name":"org.springframework.boot.autoconfigure.jdbc.JdbcClientAutoConfiguration",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
@@ -9399,7 +9654,9 @@
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"jdbcClient","parameterTypes":["org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate"] }]
 },
 {
-  "name":"org.springframework.boot.autoconfigure.jdbc.JdbcConnectionDetails"
+  "name":"org.springframework.boot.autoconfigure.jdbc.JdbcConnectionDetails",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
 },
 {
   "name":"org.springframework.boot.autoconfigure.jdbc.JdbcProperties",
@@ -9431,6 +9688,12 @@
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"namedParameterJdbcTemplate","parameterTypes":["org.springframework.jdbc.core.JdbcTemplate"] }]
+},
+{
+  "name":"org.springframework.boot.autoconfigure.jdbc.PropertiesJdbcConnectionDetails",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"close","parameterTypes":[] }, {"name":"getDriverClassName","parameterTypes":[] }, {"name":"getJdbcUrl","parameterTypes":[] }, {"name":"getPassword","parameterTypes":[] }, {"name":"getUsername","parameterTypes":[] }, {"name":"getXaDataSourceClassName","parameterTypes":[] }, {"name":"shutdown","parameterTypes":[] }]
 },
 {
   "name":"org.springframework.boot.autoconfigure.jdbc.XADataSourceAutoConfiguration"
@@ -9562,6 +9825,13 @@
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "methods":[{"name":"addInterceptors","parameterTypes":["org.springframework.web.servlet.config.annotation.InterceptorRegistry"] }, {"name":"close","parameterTypes":[] }, {"name":"shutdown","parameterTypes":[] }]
+},
+{
+  "name":"org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$PersistenceManagedTypesConfiguration",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"persistenceManagedTypes","parameterTypes":["org.springframework.beans.factory.BeanFactory","org.springframework.core.io.ResourceLoader"] }]
 },
 {
   "name":"org.springframework.boot.autoconfigure.orm.jpa.JpaProperties",
@@ -10899,6 +11169,10 @@
   "methods":[{"name":"<init>","parameterTypes":["org.springframework.core.env.Environment"] }]
 },
 {
+  "name":"org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"org.springframework.boot.r2dbc.init.R2dbcScriptDatabaseInitializerDetector",
   "queryAllDeclaredConstructors":true,
   "queryAllPublicConstructors":true,
@@ -11916,7 +12190,7 @@
   "name":"org.springframework.data.mapping.context.MappingContext",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[{"name":"<init>","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"from","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"getPersistentEntity","parameterTypes":["java.lang.Class"] }, {"name":"getPersistentEntity","parameterTypes":["org.springframework.data.mapping.PersistentProperty"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["java.lang.Class"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["org.springframework.data.mapping.PersistentProperty"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["org.springframework.data.util.TypeInformation"] }, {"name":"of","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"valueOf","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }]
+  "methods":[{"name":"<init>","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"from","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"getPersistentEntity","parameterTypes":["java.lang.Class"] }, {"name":"getPersistentEntity","parameterTypes":["org.springframework.data.mapping.PersistentProperty"] }, {"name":"getPersistentEntity","parameterTypes":["org.springframework.data.util.TypeInformation"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["java.lang.Class"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["org.springframework.data.mapping.PersistentProperty"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["org.springframework.data.util.TypeInformation"] }, {"name":"of","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"valueOf","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }]
 },
 {
   "name":"org.springframework.data.mapping.model.MutablePersistentEntity"
@@ -12776,13 +13050,21 @@
   "name":"org.springframework.orm.jpa.persistenceunit.ManagedClassNameFilter"
 },
 {
-  "name":"org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes"
+  "name":"org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
 },
 {
   "name":"org.springframework.orm.jpa.persistenceunit.PersistenceUnitManager"
 },
 {
   "name":"org.springframework.orm.jpa.persistenceunit.PersistenceUnitPostProcessor"
+},
+{
+  "name":"org.springframework.orm.jpa.persistenceunit.SimplePersistenceManagedTypes",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"close","parameterTypes":[] }, {"name":"getManagedClassNames","parameterTypes":[] }, {"name":"getManagedPackages","parameterTypes":[] }, {"name":"getPersistenceUnitRootUrl","parameterTypes":[] }, {"name":"shutdown","parameterTypes":[] }]
 },
 {
   "name":"org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter"
@@ -14516,7 +14798,8 @@
   "name":"org.springframework.ws.transport.http.MessageDispatcherServlet"
 },
 {
-  "name":"org.sqlite.JDBC"
+  "name":"org.sqlite.JDBC",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"org.sqlite.SQLiteConnection",
@@ -14713,11 +14996,6 @@
 {
   "name":"oshi.jna.Struct$CloseableVnodePathInfo",
   "allDeclaredFields":true
-},
-{
-  "name":"org.hibernate.community.dialect.SQLiteDialect",
-  "allDeclaredFields":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"oshi.jna.platform.mac.SystemConfiguration$SCNetworkInterfaceRef",
@@ -15018,29 +15296,5 @@
 },
 {
   "name":"zipkin2.reporter.Sender"
-},
-{
-  "name":"com.sun.jna.platform.linux.LibC",
-  "allPublicFields":true
-},
-{
-  "name":"com.sun.jna.platform.linux.LibC$Sysinfo",
-  "allDeclaredFields":true
-},
-{
-  "name":"com.sun.jna.platform.linux.Udev$UdevContext",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"com.sun.jna.platform.linux.Udev$UdevDevice",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"com.sun.jna.platform.linux.Udev$UdevEnumerate",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"com.sun.jna.platform.linux.Udev$UdevListEntry",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
 }
 ]

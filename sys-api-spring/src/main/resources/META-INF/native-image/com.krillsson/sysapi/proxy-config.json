@@ -24,6 +24,12 @@
     "interfaces":["com.krillsson.sysapi.updatechecker.GithubApiService"]
   },
   {
+    "interfaces":["com.sun.jna.platform.linux.LibC"]
+  },
+  {
+    "interfaces":["com.sun.jna.platform.linux.Udev"]
+  },
+  {
     "interfaces":["com.sun.jna.platform.mac.CoreFoundation"]
   },
   {
@@ -46,6 +52,9 @@
   },
   {
     "interfaces":["java.lang.reflect.WildcardType","org.springframework.core.SerializableTypeWrapper$SerializableTypeProxy","java.io.Serializable"]
+  },
+  {
+    "interfaces":["java.sql.Connection"]
   },
   {
     "interfaces":["net.bytebuddy.description.method.MethodDescription$InDefinedShape$AbstractBase$Executable"]
@@ -126,18 +135,12 @@
     "interfaces":["org.springframework.web.bind.annotation.RequestMapping"]
   },
   {
+    "interfaces":["oshi.jna.platform.linux.LinuxLibc"]
+  },
+  {
     "interfaces":["oshi.jna.platform.mac.SystemB"]
   },
   {
     "interfaces":["oshi.jna.platform.mac.SystemConfiguration"]
-  },
-  {
-    "interfaces":["oshi.jna.platform.linux.LinuxLibc"]
-  },
-  {
-    "interfaces":["com.sun.jna.platform.linux.LibC"]
-  },
-  {
-    "interfaces":["com.sun.jna.platform.linux.Udev"]
   }
 ]
