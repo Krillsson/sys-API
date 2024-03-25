@@ -37,7 +37,7 @@ class SelfSignedCertificateManager {
     companion object {
         private val logger by logger()
         private val JETTY_KEYSTORE_PATH_PROPERTY = "data${System.getProperty("file.separator")}keystorewww.jks"
-        private const val KEYSTORE_PASSWORD = "sys-api"
+        const val KEYSTORE_PASSWORD = "sys-api"
         private const val KEYSTORE_ENTRY_ALIAS = "sys-api-key"
         private const val KEYSTORE_CA_ENTRY_ALIAS = "sys-api-ca-key"
         private const val KEYSTORE_JKS_TYPE = "JKS"
@@ -48,23 +48,23 @@ class SelfSignedCertificateManager {
     private val random = SecureRandom()
 
     private data class Certificate(
-        val certificate: X509Certificate,
-        val keypair: KeyPair
+            val certificate: X509Certificate,
+            val keypair: KeyPair
     )
 
     private data class CertificateKeyStore(val store: KeyStore, val file: File)
 
 
     @Throws(Exception::class)
-    fun start(namesCreator: CertificateNamesCreator, config: SelfSignedCertificateConfiguration) {
+    fun start(namesCreator: CertificateNamesCreator, config: SelfSignedCertificateConfiguration): KeyStore {
+        val certificateKeyStore = ensureKeystore()
         try {
-            val certificateKeyStore = ensureKeystore()
             if (!isCertificateInKeystore(certificateKeyStore.store)) {
                 logger.debug("{} alias not found. Generating a new certificate.", KEYSTORE_ENTRY_ALIAS)
                 val caCertificate = generateX509CACertificate()
                 val names = namesCreator.createNames(config)
                 val serverCertificate =
-                    generateX509ServerCertificate(caCertificate, names.commonName, names.subjectAlternativeNames)
+                        generateX509ServerCertificate(caCertificate, names.commonName, names.subjectAlternativeNames)
                 certificateKeyStore.store.saveCertificate(caCertificate, KEYSTORE_CA_ENTRY_ALIAS)
                 certificateKeyStore.store.saveCertificate(serverCertificate, KEYSTORE_ENTRY_ALIAS)
                 certificateKeyStore.store.writeToFile(certificateKeyStore.file, KEYSTORE_PASSWORD)
@@ -79,10 +79,11 @@ class SelfSignedCertificateManager {
         } catch (e: KeyStoreException) {
             logger.error("Failed to generate a new SSL Certificate.", e)
         }
+        return certificateKeyStore.store
     }
 
     private fun readCertificateFromStore(keystore: KeyStore, alias: String): X509Certificate =
-        keystore.getCertificate(alias) as X509Certificate
+            keystore.getCertificate(alias) as X509Certificate
 
     @Throws(Exception::class)
     fun stop() {
@@ -138,15 +139,15 @@ class SelfSignedCertificateManager {
 
     private fun KeyStore.saveCertificate(certificate: Certificate, alias: String) {
         setKeyEntry(
-            alias,
-            certificate.keypair.private,
-            KEYSTORE_PASSWORD.toCharArray(),
-            arrayOf(certificate.certificate)
+                alias,
+                certificate.keypair.private,
+                KEYSTORE_PASSWORD.toCharArray(),
+                arrayOf(certificate.certificate)
         )
     }
 
     private fun KeyStore.writeToFile(file: File, password: String) =
-        store(FileOutputStream(file), password.toCharArray())
+            store(FileOutputStream(file), password.toCharArray())
 
     private fun writeCertificateToPemFile(fileName: String, certificate: X509Certificate) {
         val file = File("data${System.getProperty("file.separator")}$fileName")
@@ -173,29 +174,29 @@ class SelfSignedCertificateManager {
         val caKeyPair = generateKeypair()
         val owner = X500Name("CN=sys-API-CA, O=sys-api, C=SE")
         val builder: X509v3CertificateBuilder = JcaX509v3CertificateBuilder(
-            owner,
-            BigInteger(64, random),
-            notBefore,
-            notAfter,
-            owner,
-            caKeyPair.public
+                owner,
+                BigInteger(64, random),
+                notBefore,
+                notAfter,
+                owner,
+                caKeyPair.public
         )
-            .addExtension(Extension.basicConstraints, false, BasicConstraints(true))
+                .addExtension(Extension.basicConstraints, false, BasicConstraints(true))
 
         val signer: ContentSigner = JcaContentSignerBuilder(SHA256_RSA).build(caKeyPair.private)
         val certHolder = builder.build(signer)
         val cert: X509Certificate = JcaX509CertificateConverter().setProvider(provider).getCertificate(certHolder)
 
         return Certificate(
-            cert,
-            caKeyPair
+                cert,
+                caKeyPair
         )
     }
 
     private fun generateX509ServerCertificate(
-        caCertificate: Certificate,
-        commonName: String,
-        subjectAlternativeNames: List<String>
+            caCertificate: Certificate,
+            commonName: String,
+            subjectAlternativeNames: List<String>
     ): Certificate {
         val now = LocalDateTime.now().atZone(ZoneId.systemDefault()).truncatedTo(ChronoUnit.DAYS)
 
@@ -205,44 +206,44 @@ class SelfSignedCertificateManager {
         val keyPair = generateKeypair()
         val owner = X500Name("CN=$commonName, O=sys-api, C=SE")
         val keyUsage = X509KeyUsage(
-            X509KeyUsage.digitalSignature
-                    or X509KeyUsage.dataEncipherment or X509KeyUsage.keyAgreement or X509KeyUsage.keyEncipherment
+                X509KeyUsage.digitalSignature
+                        or X509KeyUsage.dataEncipherment or X509KeyUsage.keyAgreement or X509KeyUsage.keyEncipherment
         )
         val builder: X509v3CertificateBuilder = JcaX509v3CertificateBuilder(
-            caCertificate.certificate,
-            BigInteger(64, random),
-            notBefore,
-            notAfter,
-            owner,
-            keyPair.public
+                caCertificate.certificate,
+                BigInteger(64, random),
+                notBefore,
+                notAfter,
+                owner,
+                keyPair.public
         )
-            .addExtension(Extension.keyUsage, false, keyUsage)
-            .apply {
-                val names: Array<GeneralName> = subjectAlternativeNames.mapNotNull { name ->
-                    if (InetAddresses.isInetAddress(name)) {
-                        GeneralName(GeneralName.iPAddress, name)
-                    } else if (HostSpecifier.isValid(name)) {
-                        GeneralName(GeneralName.dNSName, name)
-                    } else {
-                        logger.warn("$name is neither a valid URL nor a valid IP")
-                        null
+                .addExtension(Extension.keyUsage, false, keyUsage)
+                .apply {
+                    val names: Array<GeneralName> = subjectAlternativeNames.mapNotNull { name ->
+                        if (InetAddresses.isInetAddress(name)) {
+                            GeneralName(GeneralName.iPAddress, name)
+                        } else if (HostSpecifier.isValid(name)) {
+                            GeneralName(GeneralName.dNSName, name)
+                        } else {
+                            logger.warn("$name is neither a valid URL nor a valid IP")
+                            null
+                        }
+                    }.toTypedArray()
+                    if (names.isNotEmpty()) {
+                        addExtension(
+                                Extension.subjectAlternativeName,
+                                false,
+                                GeneralNames(names)
+                        )
                     }
-                }.toTypedArray()
-                if (names.isNotEmpty()) {
-                    addExtension(
-                        Extension.subjectAlternativeName,
-                        false,
-                        GeneralNames(names)
-                    )
                 }
-            }
 
         val signer: ContentSigner = JcaContentSignerBuilder(SHA256_RSA).build(caCertificate.keypair.private)
         val certHolder = builder.build(signer)
         val cert: X509Certificate = JcaX509CertificateConverter().setProvider(provider).getCertificate(certHolder)
         return Certificate(
-            cert,
-            keyPair
+                cert,
+                keyPair
         )
     }
 

@@ -13,15 +13,20 @@ import com.krillsson.sysapi.core.metrics.NetworkMetrics
 import com.krillsson.sysapi.core.metrics.defaultimpl.DiskReadWriteRateMeasurementManager
 import com.krillsson.sysapi.core.metrics.defaultimpl.NetworkUploadDownloadRateMeasurementManager
 import com.krillsson.sysapi.graphql.domain.Meta
+import com.krillsson.sysapi.tls.CertificateNamesCreator
+import com.krillsson.sysapi.tls.SelfSignedCertificateManager
 import com.krillsson.sysapi.updatechecker.GithubApiService
 import com.krillsson.sysapi.util.FileSystem
 import com.krillsson.sysapi.util.asOperatingSystem
 import com.krillsson.sysapi.util.asPlatform
-import org.springframework.beans.factory.annotation.Autowired
+import com.krillsson.sysapi.util.logger
+import org.apache.catalina.connector.Connector
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory
+import org.springframework.boot.web.server.SslStoreProvider
+import org.springframework.boot.web.server.WebServerFactoryCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.core.env.Environment
-import org.springframework.jdbc.datasource.DriverManagerDataSource
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.transaction.annotation.EnableTransactionManagement
@@ -32,16 +37,16 @@ import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.File
+import java.security.KeyStore
 import java.time.Clock
 import java.util.*
-import javax.sql.DataSource
 
 
 @Configuration
 @EnableTransactionManagement
 class SysApiConfiguration {
-    @Autowired
-    var env: Environment? = null
+
+    val logger by logger()
 
     @Bean
     fun userConfigFile(): YAMLConfigFile {
@@ -51,6 +56,46 @@ class SysApiConfiguration {
         yamlParser.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         yamlParser.findAndRegisterModules()
         return yamlParser.readValue(configFile, YAMLConfigFile::class.java)
+    }
+
+    @Suppress("DEPRECATION")
+    @Bean
+    fun tomcatSslStoreCustomizer(
+            selfSignedCertificateManager: SelfSignedCertificateManager,
+            certificateNamesCreator: CertificateNamesCreator,
+            config: YAMLConfigFile
+    ): WebServerFactoryCustomizer<TomcatServletWebServerFactory> {
+        if (!FileSystem.data.isDirectory) {
+            logger.info("Attempting to create {}", FileSystem.data)
+            assert(FileSystem.data.mkdir()) { "Unable to create ${FileSystem.data}" }
+        }
+        val store = selfSignedCertificateManager.start(certificateNamesCreator, config.selfSignedCertificates)
+
+        return WebServerFactoryCustomizer { tomcat: TomcatServletWebServerFactory ->
+            tomcat.sslStoreProvider = object : SslStoreProvider {
+                override fun getKeyStore(): KeyStore {
+                    return store
+                }
+
+                override fun getTrustStore(): KeyStore? {
+                    return null
+                }
+
+                override fun getKeyPassword(): String {
+                    return SelfSignedCertificateManager.KEYSTORE_PASSWORD
+                }
+            }
+        }
+    }
+
+    @Bean
+    fun cookieProcessorCustomizer(@Value("\${http.port}") httpPort: Int): WebServerFactoryCustomizer<TomcatServletWebServerFactory> {
+        return WebServerFactoryCustomizer<TomcatServletWebServerFactory> { factory: TomcatServletWebServerFactory ->
+            // also listen on http
+            val connector = Connector()
+            connector.setPort(httpPort)
+            factory.addAdditionalTomcatConnectors(connector)
+        }
     }
 
     @Bean
