@@ -34,8 +34,8 @@ class WebSecurityConfig {
     fun configure(auth: AuthenticationManagerBuilder, yamlConfigFile: YAMLConfigFile, passwordEncoder: PasswordEncoder) {
         auth
             .inMemoryAuthentication()
-            .withUser(yamlConfigFile.authentication.username)
-            .password(passwordEncoder.encode(yamlConfigFile.authentication.password))
+            .withUser(yamlConfigFile.user.username)
+            .password(passwordEncoder.encode(yamlConfigFile.user.password))
             .authorities("ROLE_USER")
     }
 }

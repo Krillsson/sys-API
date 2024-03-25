@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.concurrent.TimeUnit
 
 data class DockerConfiguration(
-    @JsonProperty var enabled: Boolean = true,
-    @JsonProperty var host: String? = null,
-    @JsonProperty var cache: CacheConfiguration = CacheConfiguration(true, 5, TimeUnit.SECONDS)
+        @JsonProperty val enabled: Boolean = true,
+        @JsonProperty val host: String? = null,
+        @JsonProperty val cache: CacheConfiguration = CacheConfiguration(true, 5, TimeUnit.SECONDS)
 )

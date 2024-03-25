@@ -19,4 +19,5 @@
  * contact[at]christian-jensen[dot]se
  */
 package com.krillsson.sysapi.config
-data class UserConfiguration(var username: String, var password: String)
+
+data class UserConfiguration(val username: String, val password: String)

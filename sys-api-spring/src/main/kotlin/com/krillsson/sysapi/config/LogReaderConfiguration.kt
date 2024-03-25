@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.config
 
 data class LogReaderConfiguration(
-    var files: List<String> = emptyList(),
-    var directories: List<String> = emptyList()
+        val files: List<String> = emptyList(),
+        val directories: List<String> = emptyList()
 )

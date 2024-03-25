@@ -9,9 +9,9 @@ import java.io.IOException
 
 class YamlPropertySourceFactory : PropertySourceFactory {
     override fun createPropertySource(name: String?, encodedResource: EncodedResource): PropertySource<*> {
-        var factory = YamlPropertiesFactoryBean()
+        val factory = YamlPropertiesFactoryBean()
         factory.setResources(encodedResource.resource)
-        var properties = factory.getObject()
+        val properties = factory.getObject()
         return PropertiesPropertySource(encodedResource.resource.filename!!, properties!!)
     }
 }

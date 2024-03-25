@@ -20,41 +20,19 @@
  */
 package com.krillsson.sysapi.config
 
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.NestedConfigurationProperty
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.PropertySource
-
-@Configuration
-@ConfigurationProperties
-@PropertySource(value = ["classpath:config/configuration.yml"], factory = YamlPropertySourceFactory::class)
-class YAMLConfigFile{
-    @NestedConfigurationProperty
-    var authentication: UserConfiguration = UserConfiguration("user", "password")
-    @NestedConfigurationProperty
-    var metricsConfig: MetricsConfiguration = MetricsConfiguration()
-    @NestedConfigurationProperty
-    var windows: WindowsConfiguration = WindowsConfiguration()
-    @NestedConfigurationProperty
-    var processes: ProcessesConfiguration = ProcessesConfiguration()
-    @NestedConfigurationProperty
-    var linux: LinuxConfiguration = LinuxConfiguration()
-    @NestedConfigurationProperty
-    var connectivityCheck: ConnectivityCheckConfiguration = ConnectivityCheckConfiguration(true, "https://ifconfig.me")
-    @NestedConfigurationProperty
-    var updateCheck: UpdateCheckConfiguration = UpdateCheckConfiguration()
-    @NestedConfigurationProperty
-    var docker: DockerConfiguration = DockerConfiguration()
-    @NestedConfigurationProperty
-    var logReader: LogReaderConfiguration = LogReaderConfiguration()
-    @NestedConfigurationProperty
-    var selfSignedCertificates: SelfSignedCertificateConfiguration = SelfSignedCertificateConfiguration(
-        true,
-        true,
-        true
-    )
-    @NestedConfigurationProperty
-    var mDNS: MdnsConfiguration = MdnsConfiguration(false)
-    @NestedConfigurationProperty
-    var upnp: UpnpIgdConfiguration = UpnpIgdConfiguration(false)
-}
+data class YAMLConfigFile(
+        val user: UserConfiguration,
+        val metricsConfig: MetricsConfiguration,
+        val windows: WindowsConfiguration,
+        val processes: ProcessesConfiguration = ProcessesConfiguration(),
+        val linux: LinuxConfiguration = LinuxConfiguration(),
+        val connectivityCheck: ConnectivityCheckConfiguration,
+        val updateCheck: UpdateCheckConfiguration = UpdateCheckConfiguration(),
+        val graphQLPlayGround: GraphQLPlayGroundConfiguration,
+        val docker: DockerConfiguration,
+        val forwardHttpToHttps: Boolean,
+        val logReader: LogReaderConfiguration = LogReaderConfiguration(),
+        val selfSignedCertificates: SelfSignedCertificateConfiguration,
+        val mDNS: MdnsConfiguration = MdnsConfiguration(false),
+        val upnp: UpnpIgdConfiguration = UpnpIgdConfiguration(false)
+)
