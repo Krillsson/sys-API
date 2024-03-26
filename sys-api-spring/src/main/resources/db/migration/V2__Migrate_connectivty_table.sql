@@ -1,1 +1,0 @@
-ALTER TABLE Connectivity ADD COLUMN localIp VARCHAR(255) NULL;
