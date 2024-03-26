@@ -1,173 +1,164 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 buildscript {
-    ext {
-        kotlinVersion = "1.7.20"
-    }
-    repositories {
-        mavenCentral()
-        gradlePluginPortal()
-    }
     dependencies {
-        classpath(
-                "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",
-                "gradle.plugin.com.github.johnrengelman:shadow:7.1.2",
-                "com.google.cloud.tools:jib-gradle-plugin:3.3.1",
-                "org.jetbrains.kotlin:kotlin-noarg:$kotlinVersion",
-                "com.github.gmazzo:gradle-buildconfig-plugin:3.1.0"
-        )
+        classpath('com.google.cloud.tools:jib-native-image-extension-gradle:0.1.0')
     }
 }
 
-allprojects {
-    group = 'com.krillsson'
-    version = '0.20.0'
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.3'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'org.hibernate.orm' version '6.4.2.Final'
+    id 'org.graalvm.buildtools.native' version '0.9.28'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.22'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.9.22'
+    id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.22'
+    id 'com.github.gmazzo.buildconfig' version '5.3.5'
+    id "org.jetbrains.kotlin.plugin.allopen" version "1.9.22"
+    id "com.google.cloud.tools.jib" version "3.4.1"
 }
 
-subprojects {
-    apply plugin: 'java'
-    apply plugin: 'kotlin'
+group = 'com.krillsson'
+version = '0.0.1-SNAPSHOT'
 
-    repositories {
-        mavenCentral()
-        mavenLocal()
-        flatDir {
-            dirs 'lib'
+buildConfig {
+    buildConfigField("String", "APP_VERSION", provider { "\"${project.version}\"" })
+    buildConfigField("java.util.Date", "BUILD_TIME", "java.util.Date(" + System.currentTimeMillis() + "L)")
+}
+
+java {
+    sourceCompatibility = '21'
+}
+
+allOpen {
+    annotation("jakarta.persistence.Entity")
+}
+
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs 'lib'
+    }
+}
+
+// https://github.com/GoogleContainerTools/jib-extensions/tree/master/first-party/jib-native-image-extension-gradle
+graalvmNative {
+    binaries {
+        //https://www.graalvm.org/latest/reference-manual/native-image/metadata/AutomaticMetadataCollection/#tracing-agent
+        // -agentlib:native-image-agent=config-merge-dir=META-INF/native-image
+        main {
+            buildArgs.add('--no-server')
+            buildArgs.add('--no-fallback')
+            buildArgs.add('--report-unsupported-elements-at-runtime')
+            buildArgs.add('--initialize-at-run-time=com.sun.jna')
+            buildArgs.add('--allow-incomplete-classpath')
+            buildArgs.add('-H:+JNI')
+            buildArgs.add('-H:+ReportExceptionStackTraces')
+            buildArgs.add('-H:+PrintAnalysisCallTree')
+            /**
+            //https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#configuration-options
+             */
         }
     }
 }
 
-project(':server') {
-    apply plugin: 'com.github.johnrengelman.shadow'
-    apply plugin: 'application'
-    apply plugin: "com.google.cloud.tools.jib"
-    apply plugin: "org.jetbrains.kotlin.plugin.jpa"
-    apply plugin: "com.github.gmazzo.buildconfig"
-
-    sourceCompatibility = 11
-    targetCompatibility = 11
-
-    compileKotlin {
-        kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_11
-        }
+jib {
+    to.image = "krillsson/sys-api:nightly"
+    container {
+        //appRoot = "/"
+        //args = ["server", "/config/configuration.yml"]
+        ports = ["8080", "8443", "2375"]
+        volumes = ["/config", "/data", "/var/run/docker.sock"]
+        creationTime = "USE_CURRENT_TIMESTAMP"
+        //jvmFlags = jvmArgs
     }
-
-    buildConfig {
-        buildConfigField("String", "APP_VERSION", provider { "\"${project.version}\"" })
-        buildConfigField("java.util.Date", "BUILD_TIME", "java.util.Date(" + System.currentTimeMillis() + "L)")
+    jib.from {
+        image = 'krillsson/openjdk11-debian-systemd:latest'
+//        platforms {
+//            platform {
+//                architecture = 'amd64'
+//                os = 'linux'
+//            }
+//            platform {
+//                architecture = 'arm64'
+//                os = 'linux'
+//            }
+//        }
     }
-
-    shadowJar {
-        mergeServiceFiles()
-        exclude 'META-INF/*.DSA'
-        exclude 'META-INF/*.RSA'
-    }
-
-    def jvmArgs = [
-            "-server",
-            "-Djava.awt.headless=true",
-            "-Djava.net.preferIPv4Stack=true",
-            "-XX:+UseG1GC",
-            "-XX:MinHeapFreeRatio=2",
-            "-XX:MaxHeapFreeRatio=10",
-            "-Xmx1300m",
-            "-Xms256m",
-            "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED"
-//            enable jmx to pull out dumps
-//            "-Dcom.sun.management.jmxremote",
-//            "-Dcom.sun.management.jmxremote.authenticate=false",
-//            "-Dcom.sun.management.jmxremote.ssl=false",
-//            "-Dcom.sun.management.jmxremote.port=1098",
-//            "-Dcom.sun.management.jmxremote.rmi.port=1098",
-//            "-Dcom.sun.management.jmxremote.local.only=false",
-//            "-Djava.rmi.server.hostname=<machine IP>",
-    ]
-
-    mainClassName = 'com.krillsson.sysapi.SysAPIApplication'
-
-    applicationDefaultJvmArgs = jvmArgs
-
-    run {
-        args project.hasProperty("appArgs") ? Eval.me(appArgs) : ['server', 'src/dist/config/configuration.yml']
-    }
-
-    jar {
-        duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
-        manifest {
-            attributes('Main-Class': mainClassName, "Implementation-Version": project.version)
+    pluginExtensions {
+        pluginExtension {
+            implementation = 'com.google.cloud.tools.jib.gradle.extension.nativeimage.JibNativeImageExtension'
+            properties = [
+                    imageName: 'sysapi'
+            ]
         }
-    }
-
-    shadowDistZip {
-
-    }
-
-    jib {
-        to.image = "krillsson/sys-api:nightly"
-        container {
-            appRoot = "/"
-            args = ["server", "/config/configuration.yml"]
-            ports = ["8080", "8443", "2375"]
-            volumes = ["/config", "/data", "/var/run/docker.sock"]
-            creationTime = "USE_CURRENT_TIMESTAMP"
-            jvmFlags = jvmArgs
-        }
-        jib.from {
-            image = 'krillsson/openjdk11-debian-systemd:latest'
-            platforms {
-                platform {
-                    architecture = 'amd64'
-                    os = 'linux'
-                }
-                platform {
-                    architecture = 'arm64'
-                    os = 'linux'
-                }
-            }
-        }
-    }
-
-    dependencies {
-        implementation 'io.dropwizard:dropwizard-core:3.0.0'
-        implementation 'io.dropwizard:dropwizard-auth:3.0.0'
-        implementation 'io.dropwizard:dropwizard-assets:3.0.0'
-        implementation 'io.dropwizard:dropwizard-hibernate:3.0.0'
-        implementation 'io.github.dropwizard-jobs:dropwizard-jobs-core:5.0.1'
-        implementation 'io.dropwizard.modules:dropwizard-flyway:3.0.0-1'
-        implementation 'org.xerial:sqlite-jdbc:3.39.3.0'
-        implementation 'com.zsoltfabok:sqlite-dialect:1.0'
-        implementation 'org.glassfish:jakarta.el:3.0.0'
-        implementation 'javax.el:javax.el-api:3.0.0'
-        implementation 'org.bitlet:weupnp:0.1.4'
-        implementation('com.github.oshi:oshi-core:6.4.12') {
-            exclude group: "org.slf4j"
-        }
-        implementation('com.graphql-java-kickstart:graphql-java-tools:13.0.3') {
-            exclude group: "org.slf4j"
-        }
-        implementation('com.graphql-java-kickstart:graphql-java-servlet:14.0.0') {
-            exclude group: "org.slf4j"
-        }
-        implementation('com.smoketurner.dropwizard:graphql-core:3.0.0-1') {
-            exclude group: "com.graphql-java-kickstart"
-        }
-        implementation 'org.jmdns:jmdns:3.5.1'
-        implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-        implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
-        implementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
-        implementation 'org.apache.commons:commons-exec:1.3'
-        implementation 'javax.xml.bind:jaxb-api:2.2.11'
-        implementation 'com.github.docker-java:docker-java-core:3.3.4'
-        implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.3.4'
-        implementation 'com.sun.xml.bind:jaxb-core:2.2.11'
-        implementation 'com.sun.xml.bind:jaxb-impl:2.2.11'
-        implementation 'javax.activation:activation:1.1.1'
-        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-        implementation name: 'jni4net.j-0.8.9.0'
-        implementation name: 'OhmJniWrapper.j4n'
-
-        testImplementation 'junit:junit:4.13.1'
-        testImplementation 'io.dropwizard:dropwizard-testing:2.0.15'
-        testImplementation 'org.hamcrest:hamcrest-all:1.1'
-        testImplementation 'org.mockito:mockito-core:2.20.0'
     }
 }
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-quartz'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.thymeleaf:thymeleaf-spring6:3.1.2.RELEASE'
+    implementation('com.graphql-java-kickstart:playground-spring-boot-starter:11.1.0') {
+        exclude group: "com.graphql-java-kickstart", module: "graphiql-spring-boot-starter"
+        exclude group: "com.graphql-java-kickstart", module: "graphiql-spring-boot-autoconfigure"
+    }
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect'
+    implementation 'org.xerial:sqlite-jdbc:3.44.1.0'
+    implementation 'org.hibernate.orm:hibernate-community-dialects'
+    implementation 'com.github.docker-java:docker-java-core:3.3.4'
+    implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.3.4'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
+    implementation 'org.bitlet:weupnp:0.1.4'
+    implementation 'org.jmdns:jmdns:3.5.1'
+    implementation 'org.apache.commons:commons-exec:1.3'
+    implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+    implementation('com.graphql-java-kickstart:graphql-java-tools:13.1.1') {
+        exclude group: "org.slf4j"
+    }
+    implementation('com.graphql-java-kickstart:graphql-java-servlet:15.2.0') {
+        exclude group: "org.slf4j"
+    }
+    implementation('com.github.oshi:oshi-core:6.4.12') {
+        exclude group: "org.slf4j"
+    }
+    implementation name: 'jni4net.j-0.8.9.0', group: "net.sf.jni4net", version: "1"
+    implementation name: 'OhmJniWrapper.j4n', group: "ohmwrapper", version: "1"
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    implementation "org.springframework.boot:spring-boot-configuration-processor"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework:spring-webflux'
+    testImplementation 'org.springframework.graphql:spring-graphql-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+tasks.withType(KotlinCompile) {
+    kotlinOptions {
+        freeCompilerArgs += '-Xjsr305=strict'
+        jvmTarget = '21'
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+hibernate {
+    enhancement {
+        enableAssociationManagement = true
+    }
+}
+

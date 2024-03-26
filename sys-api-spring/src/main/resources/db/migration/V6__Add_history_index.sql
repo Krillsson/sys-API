@@ -1,1 +1,0 @@
-create index if not exists HistorySystemLoadEntityDate on HistorySystemLoadEntity (id, date);
