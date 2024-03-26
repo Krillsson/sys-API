@@ -20,9 +20,11 @@ jobs:
         with:
           java-version: '21'
           distribution: 'graalvm-community'
+          cache: 'gradle'
+          set-java-home: 'true'
           # github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
       - name: Compile native image
-        run: gradlew nativeCompile
+        run: ./gradlew nativeCompile
       - name: Upload using jib
-        run: gradlew jib
+        run: ./gradlew jib
