@@ -75,7 +75,7 @@ jib {
         //jvmFlags = jvmArgs
     }
     jib.from {
-        image = 'krillsson/openjdk11-debian-systemd:latest'
+        image = 'krillsson/openjdk21-ubuntu-systemd:latest'
 //        platforms {
 //            platform {
 //                architecture = 'amd64'
