@@ -1,0 +1,71 @@
+#########################################
+### System-Api configuration          ###
+#########################################
+metricsConfig:
+  monitor:
+    interval: 45
+    unit: SECONDS
+  history:
+    interval: 30
+    unit: MINUTES
+    purging:
+      olderThan: 14
+      unit: DAYS
+      purgeEvery: 1
+      purgeEveryUnit: DAYS
+  cache:
+    enabled: false
+    duration: 5
+    unit: SECONDS
+#processes:
+#  enabled: true
+user:
+  username: user
+  password: password
+windows:
+  enableOhmJniWrapper: true
+  eventLog:
+    enabled: true
+  serviceManagement:
+    enabled: true
+linux:
+  journalLogs:
+    enabled: true
+  systemDaemonServiceManagement:
+    enabled: true
+# web interface for running queries
+graphQLPlayGround:
+  enabled: false
+# docker management and metrics support
+docker:
+  enabled: true
+  #  cache:
+  #    enabled: true
+  #    duration: 2
+  #    unit: SECONDS
+  # uncomment if you'd like to manually specify docker host
+  # host: unix:///var/run/docker.sock or unix:///run/podman/podman.sock
+# resolve external IP and monitor internet connectivity
+connectivityCheck:
+  enabled: true
+  address: https://ifconfig.me
+updateCheck:
+  enabled: true
+  address: https://api.github.com
+  user: krillsson
+  repo: sys-api
+# advertise service in local network for easier client setup
+mDNS:
+  enabled: true
+upnp:
+  enabled: true
+forwardHttpToHttps: false
+selfSignedCertificates:
+  enabled: true
+  ## automatically put external IP in CN
+  populateCN: true
+  ## automatically put internal IPs in SAN
+  populateSAN: true
+  ## manually populate CN and SAN below
+  # commonName: sys-api.org
+  # subjectAlternativeNames: [192.168.0.24, 10.8.0.24]
