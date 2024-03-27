@@ -138,6 +138,9 @@
     "interfaces":["oshi.jna.platform.linux.LinuxLibc"]
   },
   {
+    "interfaces":["oshi.jna.platform.mac.IOKit"]
+  },
+  {
     "interfaces":["oshi.jna.platform.mac.SystemB"]
   },
   {
