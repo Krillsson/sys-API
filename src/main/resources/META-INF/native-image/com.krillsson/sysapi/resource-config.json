@@ -173,11 +173,17 @@
   }, {
     "pattern":"\\Qcom/krillsson/sysapi/SysAPIApplication$$Lambda/0x0000000501eaf028.class\\E"
   }, {
+    "pattern":"\\Qcom/krillsson/sysapi/SysAPIApplication$$Lambda/0x0000000801f4e7e8.class\\E"
+  }, {
     "pattern":"\\Qcom/krillsson/sysapi/SysAPIApplication$$Lambda/0x0000007001ed06b8.class\\E"
   }, {
     "pattern":"\\Qcom/krillsson/sysapi/SysAPIApplication$$SpringCGLIB$$0.class\\E"
   }, {
     "pattern":"\\Qcom/krillsson/sysapi/SysAPIApplication.class\\E"
+  }, {
+    "pattern":"\\Qcom/krillsson/sysapi/SysApiConfiguration$$Lambda/0x000000080178b720.class\\E"
+  }, {
+    "pattern":"\\Qcom/krillsson/sysapi/SysApiConfiguration$$Lambda/0x000000080178bdd8.class\\E"
   }, {
     "pattern":"\\Qcom/krillsson/sysapi/SysApiConfiguration$$SpringCGLIB$$0.class\\E"
   }, {
@@ -673,6 +679,8 @@
   }, {
     "pattern":"\\Qjavax/sql/DataSource.class\\E"
   }, {
+    "pattern":"\\Qjdk/proxy2/$Proxy100.class\\E"
+  }, {
     "pattern":"\\Qjdk/proxy2/$Proxy147.class\\E"
   }, {
     "pattern":"\\Qjdk/proxy2/$Proxy148.class\\E"
@@ -703,7 +711,13 @@
   }, {
     "pattern":"\\Qjdk/proxy2/$Proxy172.class\\E"
   }, {
+    "pattern":"\\Qjdk/proxy2/$Proxy173.class\\E"
+  }, {
     "pattern":"\\Qjdk/proxy2/$Proxy174.class\\E"
+  }, {
+    "pattern":"\\Qjdk/proxy2/$Proxy175.class\\E"
+  }, {
+    "pattern":"\\Qjdk/proxy2/$Proxy177.class\\E"
   }, {
     "pattern":"\\Qjndi.properties\\E"
   }, {
@@ -722,6 +736,8 @@
     "pattern":"\\Qkotlin/collections/collections.kotlin_builtins\\E"
   }, {
     "pattern":"\\Qkotlin/coroutines/coroutines.kotlin_builtins\\E"
+  }, {
+    "pattern":"\\Qkotlin/enums/enums.kotlin_builtins\\E"
   }, {
     "pattern":"\\Qkotlin/internal/internal.kotlin_builtins\\E"
   }, {
@@ -851,6 +867,8 @@
   }, {
     "pattern":"\\Qorg/springframework/boot/LazyInitializationExcludeFilter$$Lambda/0x0000000501ee8000.class\\E"
   }, {
+    "pattern":"\\Qorg/springframework/boot/LazyInitializationExcludeFilter$$Lambda/0x0000000801f893a8.class\\E"
+  }, {
     "pattern":"\\Qorg/springframework/boot/LazyInitializationExcludeFilter$$Lambda/0x0000007001f11c58.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/LazyInitializationExcludeFilter.class\\E"
@@ -888,6 +906,8 @@
     "pattern":"\\Qorg/springframework/boot/actuate/autoconfigure/endpoint/expose/IncludeExcludeEndpointFilter.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/actuate/autoconfigure/endpoint/jackson/JacksonEndpointAutoConfiguration$$Lambda/0x0000000501e33028.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/boot/actuate/autoconfigure/endpoint/jackson/JacksonEndpointAutoConfiguration$$Lambda/0x0000000801e956b0.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/actuate/autoconfigure/endpoint/jackson/JacksonEndpointAutoConfiguration$$Lambda/0x0000007001e14bb8.class\\E"
   }, {
@@ -1199,6 +1219,8 @@
   }, {
     "pattern":"\\Qorg/springframework/boot/actuate/autoconfigure/web/servlet/ServletManagementContextAutoConfiguration$$Lambda/0x0000000501edd430.class\\E"
   }, {
+    "pattern":"\\Qorg/springframework/boot/actuate/autoconfigure/web/servlet/ServletManagementContextAutoConfiguration$$Lambda/0x0000000801f7f3a0.class\\E"
+  }, {
     "pattern":"\\Qorg/springframework/boot/actuate/autoconfigure/web/servlet/ServletManagementContextAutoConfiguration$$Lambda/0x0000007001f08000.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/actuate/autoconfigure/web/servlet/ServletManagementContextAutoConfiguration$ApplicationContextFilterConfiguration.class\\E"
@@ -1411,6 +1433,10 @@
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/data/web/SpringDataWebAutoConfiguration$$Lambda/0x0000000501eb9a40.class\\E"
   }, {
+    "pattern":"\\Qorg/springframework/boot/autoconfigure/data/web/SpringDataWebAutoConfiguration$$Lambda/0x0000000801f59970.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/boot/autoconfigure/data/web/SpringDataWebAutoConfiguration$$Lambda/0x0000000801f5a6d0.class\\E"
+  }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/data/web/SpringDataWebAutoConfiguration$$Lambda/0x0000007001ede610.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/data/web/SpringDataWebAutoConfiguration$$Lambda/0x0000007001edf370.class\\E"
@@ -1499,11 +1525,15 @@
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/http/codec/CodecsAutoConfiguration$DefaultCodecsConfiguration$$Lambda/0x0000000501eaf248.class\\E"
   }, {
+    "pattern":"\\Qorg/springframework/boot/autoconfigure/http/codec/CodecsAutoConfiguration$DefaultCodecsConfiguration$$Lambda/0x0000000801f4ea08.class\\E"
+  }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/http/codec/CodecsAutoConfiguration$DefaultCodecsConfiguration$$Lambda/0x0000007001ed08d8.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/http/codec/CodecsAutoConfiguration$DefaultCodecsConfiguration.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/http/codec/CodecsAutoConfiguration$JacksonCodecConfiguration$$Lambda/0x0000000501eaf468.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/boot/autoconfigure/http/codec/CodecsAutoConfiguration$JacksonCodecConfiguration$$Lambda/0x0000000801f4ec28.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/http/codec/CodecsAutoConfiguration$JacksonCodecConfiguration$$Lambda/0x0000007001ed0af8.class\\E"
   }, {
@@ -1594,6 +1624,8 @@
     "pattern":"\\Qorg/springframework/boot/autoconfigure/jdbc/metadata/DataSourcePoolMetadataProvidersConfiguration$CommonsDbcp2PoolDataSourceMetadataProviderConfiguration.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/jdbc/metadata/DataSourcePoolMetadataProvidersConfiguration$HikariPoolDataSourceMetadataProviderConfiguration$$Lambda/0x0000000501762b68.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/boot/autoconfigure/jdbc/metadata/DataSourcePoolMetadataProvidersConfiguration$HikariPoolDataSourceMetadataProviderConfiguration$$Lambda/0x00000008018adbe8.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/jdbc/metadata/DataSourcePoolMetadataProvidersConfiguration$HikariPoolDataSourceMetadataProviderConfiguration$$Lambda/0x0000007001e95850.class\\E"
   }, {
@@ -2016,6 +2048,8 @@
     "pattern":"\\Qorg/springframework/boot/web/server/AbstractConfigurableWebServerFactory.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/web/server/ConfigurableWebServerFactory.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/boot/web/server/SslStoreProvider.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/web/servlet/AbstractFilterRegistrationBean.class\\E"
   }, {
@@ -2453,6 +2487,8 @@
   }, {
     "pattern":"\\Qorg/springframework/web/servlet/handler/HandlerMappingIntrospector$$Lambda/0x0000000501eab738.class\\E"
   }, {
+    "pattern":"\\Qorg/springframework/web/servlet/handler/HandlerMappingIntrospector$$Lambda/0x0000000801f4aef8.class\\E"
+  }, {
     "pattern":"\\Qorg/springframework/web/servlet/handler/HandlerMappingIntrospector$$Lambda/0x0000007001eccd08.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/web/servlet/handler/HandlerMappingIntrospector.class\\E"
@@ -2597,6 +2633,9 @@
     "name":"i18n.Parsing",
     "locales":["", "und"]
   }, {
+    "name":"i18n.Validation",
+    "locales":[""]
+  }, {
     "name":"jakarta.servlet.LocalStrings",
     "locales":["", "und"]
   }, {
@@ -2605,6 +2644,9 @@
   }, {
     "name":"org.apache.catalina.authenticator.LocalStrings",
     "locales":["", "und"]
+  }, {
+    "name":"org.apache.catalina.authenticator.jaspic.LocalStrings",
+    "locales":[""]
   }, {
     "name":"org.apache.catalina.connector.LocalStrings",
     "locales":["", "und"]
@@ -2651,6 +2693,9 @@
     "name":"org.apache.coyote.http11.LocalStrings",
     "locales":["", "und"]
   }, {
+    "name":"org.apache.coyote.http11.filters.LocalStrings",
+    "locales":[""]
+  }, {
     "name":"org.apache.naming.LocalStrings",
     "locales":["", "und"]
   }, {
@@ -2668,6 +2713,9 @@
   }, {
     "name":"org.apache.tomcat.util.http.LocalStrings",
     "locales":["", "und"]
+  }, {
+    "name":"org.apache.tomcat.util.http.parser.LocalStrings",
+    "locales":[""]
   }, {
     "name":"org.apache.tomcat.util.modeler.LocalStrings",
     "locales":["", "und"]
@@ -2692,5 +2740,8 @@
   }, {
     "name":"org.apache.tomcat.websocket.server.LocalStrings",
     "locales":["", "und"]
+  }, {
+    "name":"org.springframework.security.messages",
+    "locales":["", "en"]
   }]
 }
