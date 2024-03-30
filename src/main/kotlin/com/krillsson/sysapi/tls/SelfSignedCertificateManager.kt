@@ -38,7 +38,7 @@ class SelfSignedCertificateManager {
         private val logger by logger()
         private val JETTY_KEYSTORE_PATH_PROPERTY = "data${System.getProperty("file.separator")}keystorewww.jks"
         const val KEYSTORE_PASSWORD = "sys-api"
-        private const val KEYSTORE_ENTRY_ALIAS = "sys-api-key"
+        const val KEYSTORE_ENTRY_ALIAS = "sys-api-key"
         private const val KEYSTORE_CA_ENTRY_ALIAS = "sys-api-ca-key"
         private const val KEYSTORE_JKS_TYPE = "JKS"
         private const val SHA256_RSA = "SHA256WithRSAEncryption"
@@ -56,7 +56,7 @@ class SelfSignedCertificateManager {
 
 
     @Throws(Exception::class)
-    fun start(namesCreator: CertificateNamesCreator, config: SelfSignedCertificateConfiguration): KeyStore {
+    fun start(namesCreator: CertificateNamesCreator, config: SelfSignedCertificateConfiguration): File {
         val certificateKeyStore = ensureKeystore()
         try {
             if (!isCertificateInKeystore(certificateKeyStore.store)) {
@@ -79,7 +79,7 @@ class SelfSignedCertificateManager {
         } catch (e: KeyStoreException) {
             logger.error("Failed to generate a new SSL Certificate.", e)
         }
-        return certificateKeyStore.store
+        return certificateKeyStore.file
     }
 
     private fun readCertificateFromStore(keystore: KeyStore, alias: String): X509Certificate =
@@ -168,8 +168,8 @@ class SelfSignedCertificateManager {
     private fun generateX509CACertificate(): Certificate {
         val now = LocalDateTime.now().atZone(ZoneId.systemDefault()).truncatedTo(ChronoUnit.DAYS)
 
-        val notBefore = Date(now.minusDays(30).toEpochSecond())
-        val notAfter = Date(now.plusYears(3).toEpochSecond())
+        val notBefore = Date(now.minusDays(30).toInstant().toEpochMilli())
+        val notAfter = Date(now.plusYears(4).toInstant().toEpochMilli())
 
         val caKeyPair = generateKeypair()
         val owner = X500Name("CN=sys-API-CA, O=sys-api, C=SE")

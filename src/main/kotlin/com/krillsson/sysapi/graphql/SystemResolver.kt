@@ -17,8 +17,6 @@ import oshi.hardware.UsbDevice
 @Controller
 @SchemaMapping(typeName = "System")
 class SystemResolver(val metrics: Metrics) {
-    @SchemaMapping
-    fun processorMetrics(system: System) = metrics.cpuMetrics().cpuLoad()
 
     @SchemaMapping
     fun baseboard(system: System): Motherboard {
@@ -48,11 +46,6 @@ class SystemResolver(val metrics: Metrics) {
     @SchemaMapping
     fun processor(system: System): CentralProcessor {
         return metrics.cpuMetrics().cpuInfo().centralProcessor
-    }
-
-    @SchemaMapping
-    fun graphics(system: System): List<Gpu> {
-        return metrics.gpuMetrics().gpus()
     }
 
     @SchemaMapping

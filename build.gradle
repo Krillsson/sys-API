@@ -8,7 +8,7 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.2.3'
+    id 'org.springframework.boot' version '3.3.0-SNAPSHOT'
     id 'io.spring.dependency-management' version '1.1.4'
     id 'org.hibernate.orm' version '6.4.2.Final'
     id 'org.graalvm.buildtools.native' version '0.9.28'
@@ -38,6 +38,8 @@ allOpen {
 
 repositories {
     mavenCentral()
+    maven { url 'https://repo.spring.io/snapshot' }
+    maven { url 'https://repo.spring.io/milestone' }
     flatDir {
         dirs 'lib'
     }
@@ -57,6 +59,10 @@ graalvmNative {
             buildArgs.add('-H:+JNI')
             buildArgs.add('-H:+ReportExceptionStackTraces')
             buildArgs.add('-H:+PrintAnalysisCallTree')
+            buildArgs.add('--trace-class-initialization=ch.qos.logback.classic.Logger')
+            buildArgs.add('--trace-object-instantiation=ch.qos.logback.core.AsyncAppenderBase$Worker')
+            buildArgs.add('--initialize-at-build-time=org.slf4j.LoggerFactory,ch.qos.logback')
+            buildArgs.add('--initialize-at-run-time=io.netty')
             /**
             //https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#configuration-options
              */
@@ -105,12 +111,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-graphql'
+    // implementation 'org.springframework.boot:spring-boot-starter-graphql'
+    implementation 'org.springframework.graphql:spring-graphql:1.3.0-SNAPSHOT'
     implementation 'org.thymeleaf:thymeleaf-spring6:3.1.2.RELEASE'
-//    implementation('com.graphql-java-kickstart:playground-spring-boot-starter:11.1.0') {
-//        exclude group: "com.graphql-java-kickstart", module: "graphiql-spring-boot-starter"
-//        exclude group: "com.graphql-java-kickstart", module: "graphiql-spring-boot-autoconfigure"
-//    }
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'

@@ -133,6 +133,7 @@ type ProcessorCoreMetrics {
 ## Drives
 
 type Disk {
+    id: String!
     model: String!
     name: String!
     serial: String!
@@ -172,6 +173,7 @@ type Partition {
 }
 
 type DiskMetrics {
+    id: String!
     name: String!
     reads: Int!
     readBytes: Long!
@@ -210,6 +212,7 @@ type NetworkInterface {
 }
 
 type NetworkInterfaceMetrics {
+    id: String!
     name: String!
     bytesReceived: Long!
     bytesSent: Long!

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller
 @SchemaMapping(typeName = "DiskMetrics")
 class DiskMetricResolver {
     @SchemaMapping
-    fun diskId(driveLoad: DiskLoad) = driveLoad.serial
+    fun id(driveLoad: DiskLoad) = driveLoad.name
 
     @SchemaMapping
     fun reads(driveLoad: DiskLoad) = driveLoad.values.reads
