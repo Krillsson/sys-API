@@ -11,141 +11,144 @@ import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.docker.ContainerManager
-import com.krillsson.sysapi.graphql.domain.Monitor
-import com.krillsson.sysapi.graphql.domain.MonitoredValue
-import com.krillsson.sysapi.graphql.domain.MonitoredValueHistoryEntry
-import com.krillsson.sysapi.graphql.domain.Selectors
-import com.krillsson.sysapi.graphql.domain.asMonitoredValue
-import graphql.kickstart.tools.GraphQLResolver
-import org.springframework.stereotype.Component
+import com.krillsson.sysapi.graphql.domain.*
+import org.springframework.graphql.data.method.annotation.Argument
+import org.springframework.graphql.data.method.annotation.QueryMapping
+import org.springframework.graphql.data.method.annotation.SchemaMapping
+import org.springframework.stereotype.Controller
 import java.time.Instant
 
-@Component
+@Controller
+@SchemaMapping(typeName="Monitor")
 class MonitorResolver(
-    val historyRepository: HistoryRepository,
-    val eventManager: EventManager,
-    val monitorManager: MonitorManager,
-    val containerManager: ContainerManager,
-    val metrics: Metrics
-) : GraphQLResolver<Monitor> {
+        val historyRepository: HistoryRepository,
+        val eventManager: EventManager,
+        val monitorManager: MonitorManager,
+        val containerManager: ContainerManager,
+        val metrics: Metrics
+) {
 
     private fun SystemHistoryEntry.asMonitoredValueHistoryEntry(monitor: Monitor): MonitoredValueHistoryEntry? {
         val monitoredValue = when (monitor.type.valueType) {
             com.krillsson.sysapi.core.monitoring.Monitor.ValueType.Numerical -> Selectors.forNumericalMonitorType(
-                monitor.type
+                    monitor.type
             )(
-                value.toSystemLoad(),
-                monitor.monitoredItemId
+                    value.toSystemLoad(),
+                    monitor.monitoredItemId
             )
 
             com.krillsson.sysapi.core.monitoring.Monitor.ValueType.Fractional -> Selectors.forFractionalMonitorType(
-                monitor.type
+                    monitor.type
             )(
-                value.toSystemLoad(),
-                monitor.monitoredItemId
+                    value.toSystemLoad(),
+                    monitor.monitoredItemId
             )
 
             com.krillsson.sysapi.core.monitoring.Monitor.ValueType.Conditional -> Selectors.forConditionalMonitorType(
-                monitor.type
+                    monitor.type
             )(
-                value.toSystemLoad(),
-                monitor.monitoredItemId
+                    value.toSystemLoad(),
+                    monitor.monitoredItemId
             )
         }
         return monitoredValue?.let { value -> MonitoredValueHistoryEntry(date, value.asMonitoredValue()) }
     }
 
-    fun getHistory(monitor: Monitor): List<MonitoredValueHistoryEntry> {
+    @SchemaMapping
+    fun history(monitor: Monitor): List<MonitoredValueHistoryEntry> {
         return historyRepository.getExtended().mapNotNull {
             it.asMonitoredValueHistoryEntry(monitor)
         }
     }
 
-    fun getHistoryBetweenTimestamps(
-        monitor: Monitor,
-        from: Instant,
-        to: Instant
+    @SchemaMapping
+    fun historyBetweenTimestamps(
+            monitor: Monitor,
+            @Argument from: Instant,
+            @Argument to: Instant
     ): List<MonitoredValueHistoryEntry> {
         return historyRepository.getExtendedHistoryLimitedToDates(from, to).mapNotNull {
             it.asMonitoredValueHistoryEntry(monitor)
         }
     }
-
+    @SchemaMapping
     fun events(monitor: Monitor): List<Event> {
         return eventManager.eventsForMonitorId(monitor.id)
     }
-
+    @SchemaMapping
     fun pastEvents(monitor: Monitor) =
-        eventManager.eventsForMonitorId(monitor.id).filterIsInstance(PastEvent::class.java)
-
+            eventManager.eventsForMonitorId(monitor.id).filterIsInstance(PastEvent::class.java)
+    @SchemaMapping
     fun ongoingEvents(monitor: Monitor) =
-        eventManager.eventsForMonitorId(monitor.id).filterIsInstance(OngoingEvent::class.java)
-
-    fun getMaxValue(monitor: Monitor): MonitoredValue? {
+            eventManager.eventsForMonitorId(monitor.id).filterIsInstance(OngoingEvent::class.java)
+    @SchemaMapping
+    fun maxValue(monitor: Monitor): MonitoredValue? {
         return monitorManager.getById(monitor.id)?.maxValue(metrics.systemMetrics().systemInfo())
-            ?.asMonitoredValue()
+                ?.asMonitoredValue()
     }
-
-    fun getCurrentValue(monitor: Monitor): MonitoredValue? {
+    @SchemaMapping
+    fun currentValue(monitor: Monitor): MonitoredValue? {
         return when (monitor.type) {
             com.krillsson.sysapi.core.monitoring.Monitor.Type.CONTAINER_RUNNING -> Selectors.forContainerConditionalMonitor(
-                monitor.type
+                    monitor.type
             )(
-                containerManager.containersWithIds(listOf(monitor.monitoredItemId.orEmpty())),
-                emptyList(),
-                monitor.monitoredItemId
+                    containerManager.containersWithIds(listOf(monitor.monitoredItemId.orEmpty())),
+                    emptyList(),
+                    monitor.monitoredItemId
             )?.asMonitoredValue()
 
             com.krillsson.sysapi.core.monitoring.Monitor.Type.CONTAINER_MEMORY_SPACE -> Selectors.forContainerNumericalMonitor(
-                monitor.type
+                    monitor.type
             )(
-                emptyList(),
-                listOfNotNull(containerManager.statsForContainer(monitor.monitoredItemId.orEmpty())),
-                monitor.monitoredItemId
+                    emptyList(),
+                    listOfNotNull(containerManager.statsForContainer(monitor.monitoredItemId.orEmpty())),
+                    monitor.monitoredItemId
             )?.asMonitoredValue()
+
             com.krillsson.sysapi.core.monitoring.Monitor.Type.CONTAINER_CPU_LOAD -> Selectors.forContainerFractionalMonitor(
-                monitor.type
+                    monitor.type
             )(
-                emptyList(),
-                listOfNotNull(containerManager.statsForContainer(monitor.monitoredItemId.orEmpty())),
-                monitor.monitoredItemId
+                    emptyList(),
+                    listOfNotNull(containerManager.statsForContainer(monitor.monitoredItemId.orEmpty())),
+                    monitor.monitoredItemId
             )?.asMonitoredValue()
+
             else -> when (monitor.type.valueType) {
                 com.krillsson.sysapi.core.monitoring.Monitor.ValueType.Numerical -> Selectors.forNumericalMonitorType(
-                    monitor.type
+                        monitor.type
                 )(
-                    metrics.systemMetrics().systemLoad(),
-                    monitor.monitoredItemId
+                        metrics.systemMetrics().systemLoad(),
+                        monitor.monitoredItemId
                 )
 
                 com.krillsson.sysapi.core.monitoring.Monitor.ValueType.Fractional -> Selectors.forFractionalMonitorType(
-                    monitor.type
+                        monitor.type
                 )(
-                    metrics.systemMetrics().systemLoad(),
-                    monitor.monitoredItemId
+                        metrics.systemMetrics().systemLoad(),
+                        monitor.monitoredItemId
                 )
 
                 com.krillsson.sysapi.core.monitoring.Monitor.ValueType.Conditional -> Selectors.forConditionalMonitorType(
-                    monitor.type
+                        monitor.type
                 )(
-                    metrics.systemMetrics().systemLoad(),
-                    monitor.monitoredItemId
+                        metrics.systemMetrics().systemLoad(),
+                        monitor.monitoredItemId
                 )
             }?.asMonitoredValue()
         }
     }
 
     private fun HistorySystemLoad.toSystemLoad() = SystemLoad(
-        uptime,
-        systemLoadAverage,
-        cpuLoad,
-        networkInterfaceLoads,
-        connectivity,
-        diskLoads,
-        fileSystemLoads,
-        memory,
-        emptyList(),
-        gpuLoads,
-        motherboardHealth
+            uptime,
+            systemLoadAverage,
+            cpuLoad,
+            networkInterfaceLoads,
+            connectivity,
+            diskLoads,
+            fileSystemLoads,
+            memory,
+            emptyList(),
+            gpuLoads,
+            motherboardHealth
     )
 }

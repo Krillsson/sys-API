@@ -2,37 +2,48 @@ package com.krillsson.sysapi.graphql
 
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad
 import com.krillsson.sysapi.graphql.domain.NetworkInterfaceReadWriteRate
-import graphql.kickstart.tools.GraphQLResolver
-import org.springframework.stereotype.Component
+import org.springframework.graphql.data.method.annotation.QueryMapping
+import org.springframework.graphql.data.method.annotation.SchemaMapping
+import org.springframework.stereotype.Controller
 
-@Component
-class NetworkInterfaceMetricResolver : GraphQLResolver<NetworkInterfaceLoad> {
-    fun getNetworkInterfaceid(networkInterfaceLoad: NetworkInterfaceLoad) =
-        networkInterfaceLoad.name
+@Controller
+@SchemaMapping(typeName = "NetworkInterfaceMetrics")
+class NetworkInterfaceMetricResolver {
 
-    fun getBytesReceived(networkInterfaceLoad: NetworkInterfaceLoad) =
-        networkInterfaceLoad.values.bytesReceived
+    @SchemaMapping
+    fun networkInterfaceId(networkInterfaceLoad: NetworkInterfaceLoad) =
+            networkInterfaceLoad.name
 
-    fun getBytesSent(networkInterfaceLoad: NetworkInterfaceLoad) =
-        networkInterfaceLoad.values.bytesSent
+    @SchemaMapping
+    fun bytesReceived(networkInterfaceLoad: NetworkInterfaceLoad) =
+            networkInterfaceLoad.values.bytesReceived
 
-    fun getPacketsReceived(networkInterfaceLoad: NetworkInterfaceLoad) =
-        networkInterfaceLoad.values.packetsReceived
+    @SchemaMapping
+    fun bytesSent(networkInterfaceLoad: NetworkInterfaceLoad) =
+            networkInterfaceLoad.values.bytesSent
 
-    fun getPacketsSent(networkInterfaceLoad: NetworkInterfaceLoad) =
-        networkInterfaceLoad.values.packetsSent
+    @SchemaMapping
+    fun packetsReceived(networkInterfaceLoad: NetworkInterfaceLoad) =
+            networkInterfaceLoad.values.packetsReceived
 
-    fun getInErrors(networkInterfaceLoad: NetworkInterfaceLoad) =
-        networkInterfaceLoad.values.inErrors
+    @SchemaMapping
+    fun packetsSent(networkInterfaceLoad: NetworkInterfaceLoad) =
+            networkInterfaceLoad.values.packetsSent
 
-    fun getOutErrors(networkInterfaceLoad: NetworkInterfaceLoad) =
-        networkInterfaceLoad.values.outErrors
+    @SchemaMapping
+    fun inErrors(networkInterfaceLoad: NetworkInterfaceLoad) =
+            networkInterfaceLoad.values.inErrors
 
-    fun getReadWriteRate(networkInterfaceLoad: NetworkInterfaceLoad) =
-        networkInterfaceLoad.speed.let {
-            NetworkInterfaceReadWriteRate(
-                it.receiveBytesPerSecond,
-                it.sendBytesPerSecond
-            )
-        }
+    @SchemaMapping
+    fun outErrors(networkInterfaceLoad: NetworkInterfaceLoad) =
+            networkInterfaceLoad.values.outErrors
+
+    @SchemaMapping
+    fun readWriteRate(networkInterfaceLoad: NetworkInterfaceLoad) =
+            networkInterfaceLoad.speed.let {
+                NetworkInterfaceReadWriteRate(
+                        it.receiveBytesPerSecond,
+                        it.sendBytesPerSecond
+                )
+            }
 }

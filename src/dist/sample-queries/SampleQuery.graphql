@@ -18,13 +18,6 @@ query SampleQuery {
                 usedPercent
             }
         }
-        drives {
-            name
-            partitions {
-                name
-                sizeBytes
-            }
-        }
         networkInterfaces {
             name
             speed

@@ -5,16 +5,16 @@ import com.krillsson.sysapi.core.domain.docker.CommandType
 interface PerformDockerContainerCommandOutput
 
 data class PerformDockerContainerCommandOutputSucceeded(
-    val containerId: String
+        val containerId: String
 ) : PerformDockerContainerCommandOutput
 
 data class PerformDockerContainerCommandOutputFailed(
-    val reason: String
+        val reason: String
 ) : PerformDockerContainerCommandOutput
 
 data class PerformDockerContainerCommandInput(
-    val containerId: String,
-    val command: CommandType
+        val containerId: String,
+        val command: CommandType
 )
 
 

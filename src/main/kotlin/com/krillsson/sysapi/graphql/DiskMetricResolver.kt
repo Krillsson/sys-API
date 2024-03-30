@@ -1,16 +1,28 @@
 package com.krillsson.sysapi.graphql
 
 import com.krillsson.sysapi.core.domain.disk.DiskLoad
-import graphql.kickstart.tools.GraphQLResolver
-import org.springframework.stereotype.Component
+import org.springframework.graphql.data.method.annotation.SchemaMapping
+import org.springframework.stereotype.Controller
 
-@Component
-class DiskMetricResolver : GraphQLResolver<DiskLoad> {
-    fun getDiskId(driveLoad: DiskLoad) = driveLoad.serial
-    fun getReads(driveLoad: DiskLoad) = driveLoad.values.reads
-    fun getWrites(driveLoad: DiskLoad) = driveLoad.values.writes
-    fun getReadBytes(driveLoad: DiskLoad) = driveLoad.values.readBytes
-    fun getWriteBytes(driveLoad: DiskLoad) = driveLoad.values.writeBytes
-    fun getCurrentReadWriteRate(driveLoad: DiskLoad) =
-        driveLoad.speed
+@Controller
+@SchemaMapping(typeName = "DiskMetrics")
+class DiskMetricResolver {
+    @SchemaMapping
+    fun diskId(driveLoad: DiskLoad) = driveLoad.serial
+
+    @SchemaMapping
+    fun reads(driveLoad: DiskLoad) = driveLoad.values.reads
+
+    @SchemaMapping
+    fun writes(driveLoad: DiskLoad) = driveLoad.values.writes
+
+    @SchemaMapping
+    fun readBytes(driveLoad: DiskLoad) = driveLoad.values.readBytes
+
+    @SchemaMapping
+    fun writeBytes(driveLoad: DiskLoad) = driveLoad.values.writeBytes
+
+    @SchemaMapping
+    fun currentReadWriteRate(driveLoad: DiskLoad) =
+            driveLoad.speed
 }

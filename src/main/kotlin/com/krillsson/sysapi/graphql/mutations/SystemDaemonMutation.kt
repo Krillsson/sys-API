@@ -5,16 +5,16 @@ import com.krillsson.sysapi.systemd.SystemDaemonCommand
 interface PerformSystemDaemonCommandOutput
 
 data class PerformSystemDaemonCommandOutputSucceeded(
-    val serviceName: String
+        val serviceName: String
 ) : PerformSystemDaemonCommandOutput
 
 data class PerformSystemDaemonCommandOutputFailed(
-    val reason: String
+        val reason: String
 ) : PerformSystemDaemonCommandOutput
 
 data class PerformSystemDaemonCommandInput(
-    val serviceName: String,
-    val command: SystemDaemonCommand
+        val serviceName: String,
+        val command: SystemDaemonCommand
 )
 
 

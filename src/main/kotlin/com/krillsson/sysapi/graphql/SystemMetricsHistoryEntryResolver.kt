@@ -9,43 +9,52 @@ import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad
 import com.krillsson.sysapi.core.history.HistoryRepository
 import com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity
 import com.krillsson.sysapi.util.toOffsetDateTime
-import graphql.kickstart.tools.GraphQLResolver
-import org.springframework.stereotype.Component
+import org.springframework.graphql.data.method.annotation.SchemaMapping
+import org.springframework.stereotype.Controller
 import java.time.Instant
 import java.time.OffsetDateTime
 
-@Component
-class HistoryResolver(val historyRepository: HistoryRepository) : GraphQLResolver<BasicHistorySystemLoadEntity> {
+@Controller
+@SchemaMapping(typeName = "SystemMetricsHistoryEntry")
+class SystemMetricsHistoryEntryResolver(val historyRepository: HistoryRepository) {
 
-    fun getDateTime(historyEntry: BasicHistorySystemLoadEntity): OffsetDateTime {
+    @SchemaMapping
+    fun dateTime(historyEntry: BasicHistorySystemLoadEntity): OffsetDateTime {
         return historyEntry.date.toOffsetDateTime()
     }
 
-    fun getTimestamp(historyEntry: BasicHistorySystemLoadEntity): Instant {
+    @SchemaMapping
+    fun timestamp(historyEntry: BasicHistorySystemLoadEntity): Instant {
         return historyEntry.date
     }
 
-    fun getProcessorMetrics(historyEntry: BasicHistorySystemLoadEntity): CpuLoad {
+    @SchemaMapping
+    fun processorMetrics(historyEntry: BasicHistorySystemLoadEntity): CpuLoad {
         return historyRepository.getCpuLoadById(historyEntry.id)
     }
 
-    fun getDiskMetrics(historyEntry: BasicHistorySystemLoadEntity): List<DiskLoad> {
+    @SchemaMapping
+    fun diskMetrics(historyEntry: BasicHistorySystemLoadEntity): List<DiskLoad> {
         return historyRepository.getDiskLoadsById(historyEntry.id)
     }
 
-    fun getFileSystemMetrics(historyEntry: BasicHistorySystemLoadEntity): List<FileSystemLoad> {
+    @SchemaMapping
+    fun fileSystemMetrics(historyEntry: BasicHistorySystemLoadEntity): List<FileSystemLoad> {
         return historyRepository.getFileSystemLoadsById(historyEntry.id)
     }
 
-    fun getNetworkInterfaceMetrics(historyEntry: BasicHistorySystemLoadEntity): List<NetworkInterfaceLoad> {
+    @SchemaMapping
+    fun networkInterfaceMetrics(historyEntry: BasicHistorySystemLoadEntity): List<NetworkInterfaceLoad> {
         return historyRepository.getNetworkInterfaceLoadsById(historyEntry.id)
     }
 
-    fun getConnectivity(historyEntry: BasicHistorySystemLoadEntity): Connectivity {
+    @SchemaMapping
+    fun connectivity(historyEntry: BasicHistorySystemLoadEntity): Connectivity {
         return historyRepository.getConnectivityById(historyEntry.id)
     }
 
-    fun getMemoryMetrics(historyEntry: BasicHistorySystemLoadEntity): MemoryLoad {
+    @SchemaMapping
+    fun memoryMetrics(historyEntry: BasicHistorySystemLoadEntity): MemoryLoad {
         return historyRepository.getMemoryLoadById(historyEntry.id)
     }
 }

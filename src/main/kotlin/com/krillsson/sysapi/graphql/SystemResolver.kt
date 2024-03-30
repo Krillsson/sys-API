@@ -8,57 +8,76 @@ import com.krillsson.sysapi.core.domain.processes.Process
 import com.krillsson.sysapi.core.domain.processes.ProcessSort
 import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.graphql.domain.System
-import graphql.kickstart.tools.GraphQLResolver
-import org.springframework.stereotype.Component
+import org.springframework.graphql.data.method.annotation.Argument
+import org.springframework.graphql.data.method.annotation.QueryMapping
+import org.springframework.graphql.data.method.annotation.SchemaMapping
+import org.springframework.stereotype.Controller
 import oshi.hardware.UsbDevice
 
-@Component
-class SystemResolver(val metrics: Metrics) : GraphQLResolver<System> {
+@Controller
+@SchemaMapping(typeName = "System")
+class SystemResolver(val metrics: Metrics) {
+    @SchemaMapping
     fun processorMetrics(system: System) = metrics.cpuMetrics().cpuLoad()
 
-    fun getBaseboard(system: System): Motherboard {
+    @SchemaMapping
+    fun baseboard(system: System): Motherboard {
         return metrics.motherboardMetrics().motherboard()
     }
 
-    fun getHostname(system: System): String {
+    @SchemaMapping
+    fun hostname(system: System): String {
         return system.hostName
     }
 
-    fun getUsbDevices(system: System): List<UsbDevice> {
-        return getBaseboard(system).usbDevices.toList()
+    @SchemaMapping
+    fun usbDevices(system: System): List<UsbDevice> {
+        return baseboard(system).usbDevices.toList()
     }
 
-    fun getUptime(system: System): Long {
+    @SchemaMapping
+    fun uptime(system: System): Long {
         return metrics.cpuMetrics().uptime()
     }
 
-    fun getConnectivity(system: System): Connectivity {
+    @SchemaMapping
+    fun connectivity(system: System): Connectivity {
         return metrics.networkMetrics().connectivity()
     }
 
-    fun getProcessor(system: System): CentralProcessor {
+    @SchemaMapping
+    fun processor(system: System): CentralProcessor {
         return metrics.cpuMetrics().cpuInfo().centralProcessor
     }
 
-    fun getGraphics(system: System): List<Gpu> {
+    @SchemaMapping
+    fun graphics(system: System): List<Gpu> {
         return metrics.gpuMetrics().gpus()
     }
 
-    fun getDisks(system: System) = metrics.diskMetrics().disks()
-    fun getDiskById(system: System, id: String) = metrics.diskMetrics().diskByName(id)
-    fun getFileSystems(system: System) = metrics.fileSystemMetrics().fileSystems()
-    fun getFileSystemById(system: System, id: String) = metrics.fileSystemMetrics().fileSystemById(id)
+    @SchemaMapping
+    fun disks(system: System) = metrics.diskMetrics().disks()
+    @SchemaMapping
+    fun diskById(system: System, @Argument id: String) = metrics.diskMetrics().diskByName(id)
+    @SchemaMapping
+    fun fileSystems(system: System) = metrics.fileSystemMetrics().fileSystems()
+    @SchemaMapping
+    fun fileSystemById(system: System, @Argument id: String) = metrics.fileSystemMetrics().fileSystemById(id)
 
-    fun getProcesses(
-        system: System,
-        limit: Int = 0,
-        processSortMethod: ProcessSort = ProcessSort.MEMORY
+    @SchemaMapping
+    fun processes(
+            system: System,
+            @Argument limit: Int = 0,
+            @Argument sortBy: ProcessSort = ProcessSort.MEMORY
     ): List<Process> {
         return metrics.processesMetrics()
-            .processesInfo(processSortMethod, limit).processes
+                .processesInfo(sortBy, limit).processes
     }
 
+    @SchemaMapping
     fun networkInterfaces(system: System) = metrics.networkMetrics().networkInterfaces()
-    fun getNetworkInterfaceById(system: System, id: String) = metrics.networkMetrics().networkInterfaceById(id)
-    fun getMemory(system: System) = metrics.memoryMetrics().memoryInfo()
+    @SchemaMapping
+    fun networkInterfaceById(system: System, @Argument id: String) = metrics.networkMetrics().networkInterfaceById(id)
+    @SchemaMapping
+    fun memory(system: System) = metrics.memoryMetrics().memoryInfo()
 }

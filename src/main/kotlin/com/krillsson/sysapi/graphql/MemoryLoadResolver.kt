@@ -1,10 +1,8 @@
 package com.krillsson.sysapi.graphql
 
-import com.krillsson.sysapi.core.domain.memory.MemoryLoad
-import graphql.kickstart.tools.GraphQLResolver
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Controller
 
-@Component
-class MemoryLoadResolver : GraphQLResolver<MemoryLoad> {
+@Controller
+class MemoryLoadResolver {
 
 }
