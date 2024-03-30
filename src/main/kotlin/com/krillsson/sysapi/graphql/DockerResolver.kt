@@ -5,10 +5,7 @@ import com.krillsson.sysapi.core.domain.docker.ContainerMetricsHistoryEntry
 import com.krillsson.sysapi.core.domain.docker.State
 import com.krillsson.sysapi.docker.ContainerManager
 import com.krillsson.sysapi.docker.ReadLogsCommandResult
-import com.krillsson.sysapi.graphql.domain.DockerAvailable
-import com.krillsson.sysapi.graphql.domain.ReadLogsForContainerOutput
-import com.krillsson.sysapi.graphql.domain.ReadLogsForContainerOutputFailed
-import com.krillsson.sysapi.graphql.domain.ReadLogsForContainerOutputSucceeded
+import com.krillsson.sysapi.graphql.domain.*
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SchemaMapping
@@ -27,6 +24,7 @@ class DockerResolver(val containerManager: ContainerManager) {
     fun runningContainers(docker: DockerAvailable) =
             containerManager.containers().filter { it.state == State.RUNNING }
 
+    @SchemaMapping
     fun readLogsForContainer(
             docker: DockerAvailable,
             @Argument

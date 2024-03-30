@@ -12,7 +12,7 @@ class GenericEventRepository(private val store: GenericEventStore) {
     }
 
     fun write(value: List<GenericEvent>) {
-        store.write(value.map { it.asStored() })
+        store.write(value.mapNotNull { it.asStored() })
     }
 
     fun add(event: GenericEvent) {
@@ -48,9 +48,9 @@ class GenericEventRepository(private val store: GenericEventStore) {
         write(newValue)
     }
 
-    private fun GenericEvent.asStored(): GenericEventStore.StoredGenericEvent {
+    private fun GenericEvent.asStored(): GenericEventStore.StoredGenericEvent? {
         return when (this) {
-            is GenericEvent.MonitoredItemMissing -> GenericEventStore.StoredGenericEvent.MonitoredItemMissing(
+            is MonitoredItemMissing -> GenericEventStore.StoredGenericEvent.MonitoredItemMissing(
                 id = id,
                 dateTime = timestamp.toOffsetDateTime(),
                 monitorType = monitorType,
@@ -58,7 +58,7 @@ class GenericEventRepository(private val store: GenericEventStore) {
                 monitoredItemId = monitoredItemId
             )
 
-            is GenericEvent.UpdateAvailable -> GenericEventStore.StoredGenericEvent.UpdateAvailable(
+            is UpdateAvailable -> GenericEventStore.StoredGenericEvent.UpdateAvailable(
                 id = id,
                 dateTime = timestamp.toOffsetDateTime(),
                 currentVersion = currentVersion,
@@ -67,12 +67,13 @@ class GenericEventRepository(private val store: GenericEventStore) {
                 downloadUrl = downloadUrl,
                 publishDate = publishDate
             )
+            else -> null
         }
     }
 
     private fun GenericEventStore.StoredGenericEvent.asDomain(): GenericEvent {
         return when (this) {
-            is GenericEventStore.StoredGenericEvent.MonitoredItemMissing -> GenericEvent.MonitoredItemMissing(
+            is GenericEventStore.StoredGenericEvent.MonitoredItemMissing -> MonitoredItemMissing(
                 id = id,
                 timestamp = dateTime.toInstant(),
                 monitorType = monitorType,
@@ -80,7 +81,7 @@ class GenericEventRepository(private val store: GenericEventStore) {
                 monitoredItemId = monitoredItemId
             )
 
-            is GenericEventStore.StoredGenericEvent.UpdateAvailable -> GenericEvent.UpdateAvailable(
+            is GenericEventStore.StoredGenericEvent.UpdateAvailable -> UpdateAvailable(
                 id = id,
                 timestamp = dateTime.toInstant(),
                 currentVersion = currentVersion,

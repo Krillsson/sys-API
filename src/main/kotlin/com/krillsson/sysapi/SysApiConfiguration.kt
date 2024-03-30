@@ -24,7 +24,6 @@ import com.krillsson.sysapi.util.logger
 import org.apache.catalina.connector.Connector
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory
-import org.springframework.boot.web.server.SslStoreProvider
 import org.springframework.boot.web.server.WebServerFactoryCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -73,19 +72,11 @@ class SysApiConfiguration {
         val store = selfSignedCertificateManager.start(certificateNamesCreator, config.selfSignedCertificates)
 
         return WebServerFactoryCustomizer { tomcat: TomcatServletWebServerFactory ->
-            tomcat.sslStoreProvider = object : SslStoreProvider {
-                override fun getKeyStore(): KeyStore {
-                    return store
-                }
-
-                override fun getTrustStore(): KeyStore? {
-                    return null
-                }
-
-                override fun getKeyPassword(): String {
-                    return SelfSignedCertificateManager.KEYSTORE_PASSWORD
-                }
-            }
+            val ssl = tomcat.ssl
+            ssl.keyStore = store.path
+            ssl.keyAlias = SelfSignedCertificateManager.KEYSTORE_ENTRY_ALIAS
+            ssl.keyStorePassword = SelfSignedCertificateManager.KEYSTORE_PASSWORD
+            ssl.keyPassword = SelfSignedCertificateManager.KEYSTORE_PASSWORD
         }
     }
 

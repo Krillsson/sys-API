@@ -2,6 +2,7 @@ package com.krillsson.sysapi.core.monitoring
 
 import com.krillsson.sysapi.core.genericevents.GenericEvent
 import com.krillsson.sysapi.core.genericevents.GenericEventRepository
+import com.krillsson.sysapi.core.genericevents.MonitoredItemMissing
 import com.krillsson.sysapi.util.logger
 import org.springframework.stereotype.Component
 import java.time.Instant
@@ -18,7 +19,7 @@ class MonitoredItemMissingChecker(
         if (existingEvent == null) {
             logger.info("Creating event about missing item for monitor ${monitor.type.name} / ${monitor.config.monitoredItemId} (${monitor.id})")
             repository.add(
-                GenericEvent.MonitoredItemMissing(
+                MonitoredItemMissing(
                     UUID.randomUUID(),
                     Instant.now(),
                     monitor.type,
@@ -40,5 +41,5 @@ class MonitoredItemMissingChecker(
     }
 
     private fun getExistingEventForMonitor(monitorId: UUID) = repository.read()
-        .firstOrNull { event -> (event as? GenericEvent.MonitoredItemMissing)?.monitorId == monitorId }
+        .firstOrNull { event -> (event as? MonitoredItemMissing)?.monitorId == monitorId }
 }

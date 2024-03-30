@@ -4,6 +4,7 @@ import com.krillsson.sysapi.BuildConfig
 import com.krillsson.sysapi.config.UpdateCheckConfiguration
 import com.krillsson.sysapi.core.genericevents.GenericEvent
 import com.krillsson.sysapi.core.genericevents.GenericEventRepository
+import com.krillsson.sysapi.core.genericevents.UpdateAvailable
 import com.krillsson.sysapi.util.logger
 import org.springframework.scheduling.annotation.Scheduled
 import java.time.Instant
@@ -48,7 +49,7 @@ verySeldom:30min
         val existingEvent = getExistingEventForRelease(release)
         if (existingEvent == null) {
             logger.info("Creating event: new update available current: $currentVersion, remote: $remoteVersion")
-            val newEvent = GenericEvent.UpdateAvailable(
+            val newEvent = UpdateAvailable(
                 id = UUID.randomUUID(),
                 timestamp = Instant.now(),
                 currentVersion = BuildConfig.APP_VERSION,
@@ -64,10 +65,10 @@ verySeldom:30min
     }
 
     private fun getExistingEventForRelease(it: ApiResponse.Release) = repository.read()
-        .firstOrNull { event -> (event as? GenericEvent.UpdateAvailable)?.newVersion == it.tag_name }
+        .firstOrNull { event -> (event as? UpdateAvailable)?.newVersion == it.tag_name }
 
     private fun removeOutdatedEvents() {
-        repository.read().filterIsInstance<GenericEvent.UpdateAvailable>().forEach { oldEvent ->
+        repository.read().filterIsInstance<UpdateAvailable>().forEach { oldEvent ->
             logger.info("Removing event about ${oldEvent.newVersion} since its outdated")
             repository.removeById(oldEvent.id)
         }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller
 @SchemaMapping(typeName = "Disk")
 class DiskResolver(val metrics: Metrics) {
     @SchemaMapping
-    fun id(drive: Disk) = drive.serial
+    fun id(drive: Disk) = drive.name
     @SchemaMapping
     fun metrics(drive: Disk) = metrics.diskMetrics().diskLoadByName(drive.name)
 }

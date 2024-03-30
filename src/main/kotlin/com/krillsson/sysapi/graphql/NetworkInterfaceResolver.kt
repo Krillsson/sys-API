@@ -13,6 +13,9 @@ class NetworkInterfaceResolver(val metrics: Metrics) {
     fun id(networkInterface: NetworkInterface) = networkInterface.name
 
     @SchemaMapping
+    fun loopback(networkInterface: NetworkInterface) = networkInterface.isLoopback
+
+    @SchemaMapping
     fun speed(networkInterface: NetworkInterface) = networkInterface.speedBitsPerSeconds
     @SchemaMapping
     fun metrics(networkInterface: NetworkInterface) =

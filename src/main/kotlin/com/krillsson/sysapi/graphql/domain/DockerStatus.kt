@@ -1,13 +1,12 @@
 package com.krillsson.sysapi.graphql.domain
 
 interface Docker
+object DockerAvailable : Docker
 
 data class DockerUnavailable(
         val reason: String,
         val isDisabled: Boolean
 ) : Docker
-
-object DockerAvailable : Docker
 
 interface ReadLogsForContainerOutput
 

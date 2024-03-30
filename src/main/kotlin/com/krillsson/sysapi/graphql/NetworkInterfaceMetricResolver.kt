@@ -11,9 +11,12 @@ import org.springframework.stereotype.Controller
 class NetworkInterfaceMetricResolver {
 
     @SchemaMapping
-    fun networkInterfaceId(networkInterfaceLoad: NetworkInterfaceLoad) =
+    fun id(networkInterfaceLoad: NetworkInterfaceLoad) =
             networkInterfaceLoad.name
 
+    @SchemaMapping
+    fun up(networkInterfaceLoad: NetworkInterfaceLoad) =
+            networkInterfaceLoad.isUp
     @SchemaMapping
     fun bytesReceived(networkInterfaceLoad: NetworkInterfaceLoad) =
             networkInterfaceLoad.values.bytesReceived
