@@ -5,7 +5,6 @@ import com.krillsson.sysapi.core.domain.monitor.toConditionalValue
 import com.krillsson.sysapi.core.domain.monitor.toFractionalValue
 import com.krillsson.sysapi.core.domain.monitor.toNumericalValue
 import com.krillsson.sysapi.core.genericevents.GenericEventRepository
-import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.docker.ContainerManager
@@ -14,28 +13,30 @@ import com.krillsson.sysapi.logaccess.windowseventlog.WindowsManager
 import com.krillsson.sysapi.logaccess.windowseventlog.WindowsServiceCommandResult
 import com.krillsson.sysapi.systemd.CommandResult
 import com.krillsson.sysapi.systemd.SystemDaemonManager
-import graphql.kickstart.tools.GraphQLMutationResolver
-import org.springframework.stereotype.Component
+import org.springframework.graphql.data.method.annotation.Argument
+import org.springframework.graphql.data.method.annotation.MutationMapping
+import org.springframework.stereotype.Controller
 import java.time.Duration
 
-@Component
+@Controller
 class MutationResolver(
-    private val monitorManager: MonitorManager,
-    private val eventManager: EventManager,
-    private val genericEventRepository: GenericEventRepository,
-    private val containerManager: ContainerManager,
-    private val systemDaemonManager: SystemDaemonManager,
-    private val windowsManager: WindowsManager,
-) : GraphQLMutationResolver {
+        private val monitorManager: MonitorManager,
+        private val eventManager: EventManager,
+        private val genericEventRepository: GenericEventRepository,
+        private val containerManager: ContainerManager,
+        private val systemDaemonManager: SystemDaemonManager,
+        private val windowsManager: WindowsManager,
+) {
 
-    fun performDockerContainerCommand(input: PerformDockerContainerCommandInput): PerformDockerContainerCommandOutput {
+    @MutationMapping
+    fun performDockerContainerCommand(@Argument input: PerformDockerContainerCommandInput): PerformDockerContainerCommandOutput {
         val result = containerManager.performCommandWithContainer(
-            Command(input.containerId, input.command)
+                Command(input.containerId, input.command)
         )
 
         return when (result) {
             is com.krillsson.sysapi.docker.CommandResult.Failed -> PerformDockerContainerCommandOutputFailed(
-                "Message: ${result.error.message ?: "Unknown reason"} Type: ${requireNotNull(result.error::class.simpleName)}",
+                    "Message: ${result.error.message ?: "Unknown reason"} Type: ${requireNotNull(result.error::class.simpleName)}",
             )
 
             com.krillsson.sysapi.docker.CommandResult.Success -> PerformDockerContainerCommandOutputSucceeded(input.containerId)
@@ -43,12 +44,13 @@ class MutationResolver(
         }
     }
 
-    fun performWindowsServiceCommand(input: PerformWindowsServiceCommandInput): PerformWindowsServiceCommandOutput {
+    @MutationMapping
+    fun performWindowsServiceCommand(@Argument input: PerformWindowsServiceCommandInput): PerformWindowsServiceCommandOutput {
         val result = windowsManager.performWindowsServiceCommand(input.serviceName, input.command)
 
         return when (result) {
             is WindowsServiceCommandResult.Failed -> PerformWindowsServiceCommandOutputFailed(
-                "Message: ${result.error.message ?: "Unknown reason"} Type: ${requireNotNull(result.error::class.simpleName)}",
+                    "Message: ${result.error.message ?: "Unknown reason"} Type: ${requireNotNull(result.error::class.simpleName)}",
             )
 
             WindowsServiceCommandResult.Success -> PerformWindowsServiceCommandOutputSucceeded(input.serviceName)
@@ -57,14 +59,15 @@ class MutationResolver(
         }
     }
 
-    fun performSystemDaemonCommand(input: PerformSystemDaemonCommandInput): PerformSystemDaemonCommandOutput {
+    @MutationMapping
+    fun performSystemDaemonCommand(@Argument input: PerformSystemDaemonCommandInput): PerformSystemDaemonCommandOutput {
         val result = systemDaemonManager.performCommandWithService(
-            input.serviceName, input.command
+                input.serviceName, input.command
         )
 
         return when (result) {
             is CommandResult.Failed -> PerformSystemDaemonCommandOutputFailed(
-                "Message: ${result.error.message ?: "Unknown reason"} Type: ${requireNotNull(result.error::class.simpleName)}",
+                    "Message: ${result.error.message ?: "Unknown reason"} Type: ${requireNotNull(result.error::class.simpleName)}",
             )
 
             CommandResult.Success -> PerformSystemDaemonCommandOutputSucceeded(input.serviceName)
@@ -73,47 +76,52 @@ class MutationResolver(
         }
     }
 
-    fun createNumericalValueMonitor(input: CreateNumericalMonitorInput): CreateMonitorOutput {
+    @MutationMapping
+    fun createNumericalValueMonitor(@Argument input: CreateNumericalMonitorInput): CreateMonitorOutput {
         val createdId = monitorManager.add(
-            Duration.ofSeconds(input.inertiaInSeconds.toLong()),
-            input.type,
-            input.threshold.toNumericalValue(),
-            input.monitoredItemId
+                Duration.ofSeconds(input.inertiaInSeconds.toLong()),
+                input.type,
+                input.threshold.toNumericalValue(),
+                input.monitoredItemId
         )
         return CreateMonitorOutput(createdId)
     }
 
-    fun createFractionalValueMonitor(input: CreateFractionMonitorInput): CreateMonitorOutput {
+    @MutationMapping
+    fun createFractionalValueMonitor(@Argument input: CreateFractionMonitorInput): CreateMonitorOutput {
         val createdId = monitorManager.add(
-            Duration.ofSeconds(input.inertiaInSeconds.toLong()),
-            input.type,
-            input.threshold.toFractionalValue(),
-            input.monitoredItemId
+                Duration.ofSeconds(input.inertiaInSeconds.toLong()),
+                input.type,
+                input.threshold.toFractionalValue(),
+                input.monitoredItemId
         )
         return CreateMonitorOutput(createdId)
     }
 
-    fun createConditionalValueMonitor(input: CreateConditionalMonitorInput): CreateMonitorOutput {
+    @MutationMapping
+    fun createConditionalValueMonitor(@Argument input: CreateConditionalMonitorInput): CreateMonitorOutput {
         val createdId = monitorManager.add(
-            Duration.ofSeconds(input.inertiaInSeconds.toLong()),
-            input.type,
-            input.threshold.toConditionalValue(),
-            input.monitoredItemId
+                Duration.ofSeconds(input.inertiaInSeconds.toLong()),
+                input.type,
+                input.threshold.toConditionalValue(),
+                input.monitoredItemId
         )
         return CreateMonitorOutput(createdId)
     }
 
-    fun deleteMonitor(input: DeleteMonitorInput): DeleteMonitorOutput {
+    @MutationMapping
+    fun deleteMonitor(@Argument input: DeleteMonitorInput): DeleteMonitorOutput {
         val removed = monitorManager.remove(input.monitorId)
         return DeleteMonitorOutput(removed)
     }
 
-    fun updateNumericalValueMonitor(input: UpdateNumericalMonitorInput): UpdateMonitorOutput {
+    @MutationMapping
+    fun updateNumericalValueMonitor(@Argument input: UpdateNumericalMonitorInput): UpdateMonitorOutput {
         return try {
             val updatedMonitorId = monitorManager.update(
-                input.monitorId,
-                input.inertiaInSeconds?.toLong()?.let { Duration.ofSeconds(it) },
-                input.threshold?.toNumericalValue()
+                    input.monitorId,
+                    input.inertiaInSeconds?.toLong()?.let { Duration.ofSeconds(it) },
+                    input.threshold?.toNumericalValue()
             )
             UpdateMonitorOutputSucceeded(updatedMonitorId)
         } catch (exception: Exception) {
@@ -121,12 +129,13 @@ class MutationResolver(
         }
     }
 
-    fun updateFractionalValueMonitor(input: UpdateFractionMonitorInput): UpdateMonitorOutput {
+    @MutationMapping
+    fun updateFractionalValueMonitor(@Argument input: UpdateFractionMonitorInput): UpdateMonitorOutput {
         return try {
             val updatedMonitorId = monitorManager.update(
-                input.monitorId,
-                input.inertiaInSeconds?.toLong()?.let { Duration.ofSeconds(it) },
-                input.threshold?.toFractionalValue()
+                    input.monitorId,
+                    input.inertiaInSeconds?.toLong()?.let { Duration.ofSeconds(it) },
+                    input.threshold?.toFractionalValue()
             )
             UpdateMonitorOutputSucceeded(updatedMonitorId)
         } catch (exception: Exception) {
@@ -134,12 +143,13 @@ class MutationResolver(
         }
     }
 
-    fun updateConditionalValueMonitor(input: UpdateConditionalMonitorInput): UpdateMonitorOutput {
+    @MutationMapping
+    fun updateConditionalValueMonitor(@Argument input: UpdateConditionalMonitorInput): UpdateMonitorOutput {
         return try {
             val updatedMonitorId = monitorManager.update(
-                input.monitorId,
-                input.inertiaInSeconds?.toLong()?.let { Duration.ofSeconds(it) },
-                input.threshold?.toConditionalValue()
+                    input.monitorId,
+                    input.inertiaInSeconds?.toLong()?.let { Duration.ofSeconds(it) },
+                    input.threshold?.toConditionalValue()
             )
             UpdateMonitorOutputSucceeded(updatedMonitorId)
         } catch (exception: Exception) {
@@ -147,27 +157,32 @@ class MutationResolver(
         }
     }
 
-    fun deleteEvent(input: DeleteEventInput): DeleteEventOutput {
+    @MutationMapping
+    fun deleteEvent(@Argument input: DeleteEventInput): DeleteEventOutput {
         val removed = eventManager.remove(input.eventId)
         return DeleteEventOutput(removed)
     }
 
-    fun deleteGenericEvent(input: DeleteGenericEventInput): DeleteGenericEventOutput {
+    @MutationMapping
+    fun deleteGenericEvent(@Argument input: DeleteGenericEventInput): DeleteGenericEventOutput {
         val removed = genericEventRepository.removeById(input.eventId)
         return DeleteGenericEventOutput(removed)
     }
 
-    fun deleteEventsForMonitor(input: DeleteEventsForMonitorInput): DeleteEventOutput {
+    @MutationMapping
+    fun deleteEventsForMonitor(@Argument input: DeleteEventsForMonitorInput): DeleteEventOutput {
         val removed = eventManager.removeEventsForMonitorId(input.monitorId)
         return DeleteEventOutput(removed)
     }
 
-    fun deletePastEventsForMonitor(input: DeleteEventsForMonitorInput): DeleteEventOutput {
+    @MutationMapping
+    fun deletePastEventsForMonitor(@Argument input: DeleteEventsForMonitorInput): DeleteEventOutput {
         val removed = eventManager.removePastEventsForMonitorId(input.monitorId)
         return DeleteEventOutput(removed)
     }
 
-    fun closeOngoingEventForMonitor(input: DeleteEventsForMonitorInput): DeleteEventOutput {
+    @MutationMapping
+    fun closeOngoingEventForMonitor(@Argument input: DeleteEventsForMonitorInput): DeleteEventOutput {
         val removed = eventManager.removeOngoingEventsForMonitorId(input.monitorId)
         return DeleteEventOutput(removed)
     }

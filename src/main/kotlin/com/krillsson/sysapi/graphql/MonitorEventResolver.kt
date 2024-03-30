@@ -1,10 +1,13 @@
 package com.krillsson.sysapi.graphql
 
 import com.krillsson.sysapi.graphql.domain.MonitorEvent
-import graphql.kickstart.tools.GraphQLResolver
-import org.springframework.stereotype.Component
+import org.springframework.graphql.data.method.annotation.QueryMapping
+import org.springframework.graphql.data.method.annotation.SchemaMapping
+import org.springframework.stereotype.Controller
 
-@Component
-class MonitorEventResolver : GraphQLResolver<MonitorEvent> {
-    fun getType(monitorEvent: MonitorEvent) = monitorEvent.monitorType
+@Controller
+class MonitorEventResolver {
+
+    @SchemaMapping
+    fun type(monitorEvent: MonitorEvent) = monitorEvent.monitorType
 }

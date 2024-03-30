@@ -2,10 +2,13 @@ package com.krillsson.sysapi.graphql
 
 import com.krillsson.sysapi.core.domain.cpu.CentralProcessor
 import com.krillsson.sysapi.core.metrics.Metrics
-import graphql.kickstart.tools.GraphQLResolver
-import org.springframework.stereotype.Component
+import org.springframework.graphql.data.method.annotation.QueryMapping
+import org.springframework.graphql.data.method.annotation.SchemaMapping
+import org.springframework.stereotype.Controller
 
-@Component
-class ProcessorResolver(val metrics: Metrics) : GraphQLResolver<CentralProcessor> {
-    fun getMetrics(processor: CentralProcessor) = metrics.cpuMetrics().cpuLoad()
+@Controller
+@SchemaMapping(typeName="Processor")
+class ProcessorResolver(val metrics: Metrics) {
+    @SchemaMapping
+    fun metrics(processor: CentralProcessor) = metrics.cpuMetrics().cpuLoad()
 }

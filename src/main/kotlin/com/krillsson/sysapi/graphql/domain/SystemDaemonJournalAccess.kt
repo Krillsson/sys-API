@@ -15,7 +15,7 @@ interface SystemDaemonAccessAvailable : SystemDaemonJournalAccess {
 }
 
 data class SystemDaemonAccessUnavailable(
-    val reason: String
+        val reason: String
 ) : SystemDaemonJournalAccess
 
 interface WindowsManagementAccess
@@ -31,5 +31,5 @@ interface WindowsManagementAccessAvailable : WindowsManagementAccess {
 }
 
 data class WindowsManagementAccessUnavailable(
-    val reason: String
+        val reason: String
 ) : WindowsManagementAccess

@@ -16,7 +16,7 @@ class DurationCoercing : Coercing<Duration?, String> {
     override fun serialize(input: Any): String {
         val duration: Optional<Duration> = if (input is String) {
             Optional.ofNullable(parseDuration(
-                input.toString()
+                    input.toString()
             ) { message: String? -> CoercingSerializeException(message) })
         } else {
             toDuration(input) { message: String? -> CoercingSerializeException(message) }
@@ -44,8 +44,8 @@ class DurationCoercing : Coercing<Duration?, String> {
         }
         if (input is IntValue) {
             return parseDuration(
-                input.value.longValueExact(),
-                Function { message: String? -> CoercingParseLiteralException(message) })
+                    input.value.longValueExact(),
+                    Function { message: String? -> CoercingParseLiteralException(message) })
         }
         throw CoercingParseLiteralException("Expected AST type 'StringValue' or 'IntValue' but was '" + input::class.java.simpleName.toString() + "'.")
     }

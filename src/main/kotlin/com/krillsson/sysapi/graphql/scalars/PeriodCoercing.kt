@@ -18,9 +18,9 @@ class PeriodCoercing : Coercing<Period?, String> {
         val period: Optional<Period>
         period = if (input is String) {
             Optional.ofNullable(
-                parsePeriod(
-                    input.toString(),
-                    Function { message: String? -> CoercingSerializeException(message) })
+                    parsePeriod(
+                            input.toString(),
+                            Function { message: String? -> CoercingSerializeException(message) })
             )
         } else {
             toPeriod(input, Function { message: String? -> CoercingParseValueException(message) })
@@ -49,8 +49,8 @@ class PeriodCoercing : Coercing<Period?, String> {
         }
         if (input is IntValue) {
             return parsePeriod(
-                input.value.intValueExact(),
-                Function { message: String? -> CoercingParseLiteralException(message) })
+                    input.value.intValueExact(),
+                    Function { message: String? -> CoercingParseLiteralException(message) })
         }
         throw CoercingParseLiteralException("Expected AST type 'StringValue' or 'IntValue' but was '" + input::class.java.simpleName.toString() + "'.")
     }

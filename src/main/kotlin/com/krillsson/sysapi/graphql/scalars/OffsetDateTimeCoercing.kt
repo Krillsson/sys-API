@@ -17,9 +17,9 @@ class OffsetDateTimeCoercing : Coercing<OffsetDateTime, OffsetDateTime> {
         val zonedDateTime: Optional<OffsetDateTime>
         zonedDateTime = if (input is String) {
             Optional.of(
-                parseOffsetDateTime(
-                    input.toString(),
-                    Function { message: String? -> CoercingSerializeException(message) })
+                    parseOffsetDateTime(
+                            input.toString(),
+                            Function { message: String? -> CoercingSerializeException(message) })
             )
         } else {
             toOffsetDateTime(input, Function { message: String? -> CoercingSerializeException(message) })
@@ -33,11 +33,11 @@ class OffsetDateTimeCoercing : Coercing<OffsetDateTime, OffsetDateTime> {
     override fun parseValue(input: Any): OffsetDateTime {
         if (input is String) {
             return parseOffsetDateTime(
-                input.toString(),
-                Function { message: String? -> CoercingParseValueException(message) })
+                    input.toString(),
+                    Function { message: String? -> CoercingParseValueException(message) })
         }
         val zonedDateTime =
-            toOffsetDateTime(input, Function { message: String? -> CoercingParseValueException(message) })
+                toOffsetDateTime(input, Function { message: String? -> CoercingParseValueException(message) })
         if (!zonedDateTime.isPresent) {
             throw CoercingParseValueException("Expected a 'OffsetDateTime' like object but was '" + input::class.java.simpleName.toString() + "'.")
         }
@@ -53,8 +53,8 @@ class OffsetDateTimeCoercing : Coercing<OffsetDateTime, OffsetDateTime> {
 
     companion object {
         private fun parseOffsetDateTime(
-            input: String,
-            exceptionMaker: Function<String?, RuntimeException>
+                input: String,
+                exceptionMaker: Function<String?, RuntimeException>
         ): OffsetDateTime {
             return try {
                 OffsetDateTime.parse(input)
@@ -64,8 +64,8 @@ class OffsetDateTimeCoercing : Coercing<OffsetDateTime, OffsetDateTime> {
         }
 
         private fun toOffsetDateTime(
-            input: Any,
-            exceptionMaker: Function<String?, RuntimeException>
+                input: Any,
+                exceptionMaker: Function<String?, RuntimeException>
         ): Optional<OffsetDateTime> {
             try {
                 if (input is TemporalAccessor) {

@@ -6,22 +6,26 @@ import com.krillsson.sysapi.graphql.domain.Monitor
 import com.krillsson.sysapi.graphql.domain.MonitoredValue
 import com.krillsson.sysapi.graphql.domain.asMonitor
 import com.krillsson.sysapi.graphql.domain.asMonitoredValue
-import graphql.kickstart.tools.GraphQLResolver
-import org.springframework.stereotype.Component
+import org.springframework.graphql.data.method.annotation.SchemaMapping
+import org.springframework.stereotype.Controller
 import java.time.Instant
 
-@Component
-class OngoingEventResolver(val monitorManager: MonitorManager) : GraphQLResolver<OngoingEvent> {
-    fun getMonitor(event: OngoingEvent): Monitor {
+@Controller
+@SchemaMapping(typeName = "OngoingEvent")
+class OngoingEventResolver(val monitorManager: MonitorManager) {
+    @SchemaMapping(typeName = "OngoingEvent", field = "monitor")
+    fun monitor(event: OngoingEvent): Monitor {
         return requireNotNull(
-            monitorManager.getById(event.monitorId)?.asMonitor()
+                monitorManager.getById(event.monitorId)?.asMonitor()
         ) { "No monitor of type ${event.monitorType} with id ${event.monitorId}" }
     }
 
-    fun getStartValue(event: OngoingEvent): MonitoredValue {
+    @SchemaMapping(typeName = "OngoingEvent", field = "startValue")
+    fun startValue(event: OngoingEvent): MonitoredValue {
         return event.value.asMonitoredValue()
     }
 
+    @SchemaMapping(typeName = "OngoingEvent", field = "startTimestamp")
     fun startTimestamp(event: OngoingEvent): Instant {
         return event.startTime
     }

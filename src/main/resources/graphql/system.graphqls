@@ -195,6 +195,7 @@ type Connectivity {
 }
 
 type NetworkInterface {
+    id: String!
     name: String!
     displayName: String!
     mac: String!

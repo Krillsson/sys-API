@@ -1,16 +1,22 @@
 package com.krillsson.sysapi.graphql
 
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad
-import graphql.kickstart.tools.GraphQLResolver
-import org.springframework.stereotype.Component
+import org.springframework.graphql.data.method.annotation.QueryMapping
+import org.springframework.graphql.data.method.annotation.SchemaMapping
+import org.springframework.stereotype.Controller
 
-@Component
-class ProcessorMetricsResolver : GraphQLResolver<CpuLoad> {
-    fun getVoltage(cpuLoad: CpuLoad) = cpuLoad.cpuHealth.voltage.toInt()
-    fun getFanRpm(cpuLoad: CpuLoad) = cpuLoad.cpuHealth.fanRpm.toInt()
-    fun getFanPercent(cpuLoad: CpuLoad) =
-        cpuLoad.cpuHealth.fanPercent.toInt()
+@Controller
+@SchemaMapping(typeName="ProcessorMetrics")
+class ProcessorMetricsResolver {
+    @SchemaMapping
+    fun voltage(cpuLoad: CpuLoad) = cpuLoad.cpuHealth.voltage.toInt()
+    @SchemaMapping
+    fun fanRpm(cpuLoad: CpuLoad) = cpuLoad.cpuHealth.fanRpm.toInt()
+    @SchemaMapping
+    fun fanPercent(cpuLoad: CpuLoad) =
+            cpuLoad.cpuHealth.fanPercent.toInt()
 
-    fun getTemperatures(cpuLoad: CpuLoad) =
-        cpuLoad.cpuHealth.temperatures
+    @SchemaMapping
+    fun temperatures(cpuLoad: CpuLoad) =
+            cpuLoad.cpuHealth.temperatures
 }

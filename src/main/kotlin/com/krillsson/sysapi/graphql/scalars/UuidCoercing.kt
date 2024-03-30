@@ -13,9 +13,9 @@ class UuidCoercing : Coercing<UUID, UUID> {
         val uuid: Optional<UUID>
         uuid = if (input is String) {
             Optional.of(
-                parseUUID(
-                    input.toString(),
-                    Function { message: String? -> CoercingSerializeException(message) })
+                    parseUUID(
+                            input.toString(),
+                            Function { message: String? -> CoercingSerializeException(message) })
             )
         } else {
             toUUID(input)

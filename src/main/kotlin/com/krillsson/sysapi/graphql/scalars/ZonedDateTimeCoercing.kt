@@ -17,9 +17,9 @@ class ZonedDateTimeCoercing : Coercing<ZonedDateTime, ZonedDateTime> {
         val zonedDateTime: Optional<ZonedDateTime>
         zonedDateTime = if (input is String) {
             Optional.of(
-                parseZonedDateTime(
-                    input.toString(),
-                    Function { message: String? -> CoercingSerializeException(message) })
+                    parseZonedDateTime(
+                            input.toString(),
+                            Function { message: String? -> CoercingSerializeException(message) })
             )
         } else {
             toZonedDateTime(input, Function { message: String? -> CoercingSerializeException(message) })
@@ -33,11 +33,11 @@ class ZonedDateTimeCoercing : Coercing<ZonedDateTime, ZonedDateTime> {
     override fun parseValue(input: Any): ZonedDateTime {
         if (input is String) {
             return parseZonedDateTime(
-                input.toString(),
-                Function { message: String? -> CoercingParseValueException(message) })
+                    input.toString(),
+                    Function { message: String? -> CoercingParseValueException(message) })
         }
         val zonedDateTime =
-            toZonedDateTime(input, Function { message: String? -> CoercingParseValueException(message) })
+                toZonedDateTime(input, Function { message: String? -> CoercingParseValueException(message) })
         if (!zonedDateTime.isPresent) {
             throw CoercingParseValueException("Expected a 'ZonedDateTime' like object but was '" + input::class.java.simpleName.toString() + "'.")
         }
@@ -53,8 +53,8 @@ class ZonedDateTimeCoercing : Coercing<ZonedDateTime, ZonedDateTime> {
 
     companion object {
         private fun parseZonedDateTime(
-            input: String,
-            exceptionMaker: Function<String?, RuntimeException>
+                input: String,
+                exceptionMaker: Function<String?, RuntimeException>
         ): ZonedDateTime {
             return try {
                 ZonedDateTime.parse(input)
@@ -64,8 +64,8 @@ class ZonedDateTimeCoercing : Coercing<ZonedDateTime, ZonedDateTime> {
         }
 
         private fun toZonedDateTime(
-            input: Any,
-            exceptionMaker: Function<String?, RuntimeException>
+                input: Any,
+                exceptionMaker: Function<String?, RuntimeException>
         ): Optional<ZonedDateTime> {
             try {
                 if (input is TemporalAccessor) {

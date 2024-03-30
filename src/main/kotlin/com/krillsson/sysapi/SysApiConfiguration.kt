@@ -13,6 +13,7 @@ import com.krillsson.sysapi.core.metrics.NetworkMetrics
 import com.krillsson.sysapi.core.metrics.defaultimpl.DiskReadWriteRateMeasurementManager
 import com.krillsson.sysapi.core.metrics.defaultimpl.NetworkUploadDownloadRateMeasurementManager
 import com.krillsson.sysapi.graphql.domain.Meta
+import com.krillsson.sysapi.graphql.scalars.ScalarTypes
 import com.krillsson.sysapi.tls.CertificateNamesCreator
 import com.krillsson.sysapi.tls.SelfSignedCertificateManager
 import com.krillsson.sysapi.updatechecker.GithubApiService
@@ -27,6 +28,7 @@ import org.springframework.boot.web.server.SslStoreProvider
 import org.springframework.boot.web.server.WebServerFactoryCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.graphql.execution.RuntimeWiringConfigurer
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.transaction.annotation.EnableTransactionManagement
@@ -39,7 +41,6 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.File
 import java.security.KeyStore
 import java.time.Clock
-import java.util.*
 
 
 @Configuration
@@ -51,7 +52,7 @@ class SysApiConfiguration {
     @Bean
     fun userConfigFile(): YAMLConfigFile {
         val configFile = File(FileSystem.config, "configuration.yml")
-        check(configFile.exists()) {"Config file is missing at ${configFile.absoluteFile}"}
+        check(configFile.exists()) { "Config file is missing at ${configFile.absoluteFile}" }
         val yamlParser = ObjectMapper(YAMLFactory())
         yamlParser.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         yamlParser.findAndRegisterModules()
@@ -165,5 +166,14 @@ class SysApiConfiguration {
     @Bean
     fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
+    }
+
+    @Bean
+    fun configureGraphQLRuntimeWiring(): RuntimeWiringConfigurer {
+        return RuntimeWiringConfigurer { builder ->
+            ScalarTypes.scalars.forEach {
+                builder.scalar(it)
+            }
+        }
     }
 }
