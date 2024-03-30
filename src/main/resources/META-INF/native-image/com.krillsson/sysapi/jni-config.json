@@ -34,6 +34,10 @@
   "name":"com.sun.jna.JNIEnv"
 },
 {
+  "name":"com.sun.jna.NativeLong",
+  "methods":[{"name":"<init>","parameterTypes":["long"] }]
+},
+{
   "name":"com.sun.jna.Native",
   "methods":[{"name":"dispose","parameterTypes":[] }, {"name":"fromNative","parameterTypes":["com.sun.jna.FromNativeConverter","java.lang.Object","java.lang.reflect.Method"] }, {"name":"fromNative","parameterTypes":["java.lang.Class","java.lang.Object"] }, {"name":"fromNative","parameterTypes":["java.lang.reflect.Method","java.lang.Object"] }, {"name":"nativeType","parameterTypes":["java.lang.Class"] }, {"name":"toNative","parameterTypes":["com.sun.jna.ToNativeConverter","java.lang.Object"] }]
 },
