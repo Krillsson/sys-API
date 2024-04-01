@@ -75,11 +75,11 @@ jib {
     to.image = "krillsson/sys-api:nightly"
     container {
         //appRoot = "/"
-        //args = ["server", "/config/configuration.yml"]
+        args = ["-Djava.io.tmpdir=tmp2"]
         ports = ["8080", "8443", "2375"]
         volumes = ["/config", "/data", "/var/run/docker.sock"]
         creationTime = "USE_CURRENT_TIMESTAMP"
-        //jvmFlags = jvmArgs
+        jvmFlags = "-Djava.io.tmpdir=tmp"
     }
     jib.from {
         image = 'krillsson/openjdk21-ubuntu-systemd:latest'
