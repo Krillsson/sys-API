@@ -24,6 +24,12 @@
     "interfaces":["com.krillsson.sysapi.updatechecker.GithubApiService"]
   },
   {
+    "interfaces":["com.sun.jna.Callback"]
+  },
+  {
+    "interfaces":["com.sun.jna.Library"]
+  },
+  {
     "interfaces":["com.sun.jna.platform.linux.LibC"]
   },
   {
@@ -40,6 +46,21 @@
   },
   {
     "interfaces":["com.sun.jna.platform.mac.SystemB"]
+  },
+  {
+    "interfaces":["com.sun.jna.platform.win32.Advapi32"]
+  },
+  {
+    "interfaces":["com.sun.jna.platform.win32.Kernel32"]
+  },
+  {
+    "interfaces":["com.sun.jna.platform.win32.Ole32"]
+  },
+  {
+    "interfaces":["com.sun.jna.platform.win32.OleAutoc"]
+  },
+  {
+    "interfaces":["com.sun.jna.platform.win32.WinNT"]
   },
   {
     "interfaces":["java.lang.reflect.GenericArrayType","org.springframework.core.SerializableTypeWrapper$SerializableTypeProxy","java.io.Serializable"]
@@ -151,32 +172,5 @@
   },
   {
     "interfaces":["oshi.jna.platform.mac.SystemConfiguration"]
-  },
-  {
-    "interfaces": ["com.sun.jna.Library"]
-  },
-  {
-    "interfaces": ["com.sun.jna.Callback"]
-  },
-  {
-    "interfaces": ["com.sun.jna.platform.win32.Advapi32"]
-  },
-  {
-    "interfaces": ["com.sun.jna.platform.win32.Kernel32"]
-  },
-  {
-    "interfaces": ["com.sun.jna.platform.win32.WinNT"]
-  },
-  {
-    "interfaces": ["com.sun.jna.platform.win32.Advapi32"]
-  },
-  {
-    "interfaces": ["sample.jna.graalvm.Kernelz32"]
-  },
-  {
-    "interfaces": ["com.sun.jna.platform.win32.Ole32"]
-  },
-  {
-    "interfaces": ["com.sun.jna.platform.win32.OleAutoc"]
   }
 ]

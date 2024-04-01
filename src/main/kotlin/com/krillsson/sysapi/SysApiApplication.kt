@@ -67,9 +67,9 @@ class SysAPIApplication {
 
 fun main(args: Array<String>) {
     val logger = LoggerFactory.getLogger(SysAPIApplication::class.java.name.removeSuffix("\$Companion"))
-    val tmpDirEnv = File(System.getenv("TMPDIR"))
-    val tmpDirProp = File(System.getProperty("java.io.tmpdir"))
-    logger.info("${if(tmpDirEnv.canWrite()) "Can write to" else "Unable to write to"} ${tmpDirEnv.absolutePath}")
-    logger.info("${if(tmpDirProp.canWrite()) "Can write to" else "Unable to write to"} ${tmpDirProp.absolutePath}")
+    val tmpDirEnv = System.getenv("TMPDIR")?.let { File(it) }
+    val tmpDirProp = System.getProperty("java.io.tmpdir")?.let { File(it) }
+    logger.info("${if(tmpDirEnv?.canWrite() == true) "Can write to" else "Unable to write to"} ${tmpDirEnv?.absolutePath ?: "TMPDIR is null"}")
+    logger.info("${if(tmpDirProp?.canWrite() == true) "Can write to" else "Unable to write to"} ${tmpDirProp?.absolutePath} ?: java.io.tmpdir is null")
     runApplication<SysAPIApplication>(*args)
 }
