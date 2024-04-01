@@ -55,7 +55,7 @@ graalvmNative {
             buildArgs.add('--no-server')
             buildArgs.add('--no-fallback')
             buildArgs.add('--report-unsupported-elements-at-runtime')
-            buildArgs.add('--initialize-at-run-time=com.sun.jna')
+            // buildArgs.add('--initialize-at-run-time=com.sun.jna')
             buildArgs.add('--allow-incomplete-classpath')
             buildArgs.add('-H:+JNI')
             buildArgs.add('-H:+ReportExceptionStackTraces')
@@ -75,11 +75,9 @@ jib {
     to.image = "krillsson/sys-api:nightly"
     container {
         //appRoot = "/"
-        args = ["-Djava.io.tmpdir=tmp2"]
         ports = ["8080", "8443", "2375"]
         volumes = ["/config", "/data", "/var/run/docker.sock"]
         creationTime = "USE_CURRENT_TIMESTAMP"
-        jvmFlags = ["-Djava.io.tmpdir=tmp"]
     }
     jib.from {
         image = 'krillsson/openjdk21-ubuntu-systemd:latest'
