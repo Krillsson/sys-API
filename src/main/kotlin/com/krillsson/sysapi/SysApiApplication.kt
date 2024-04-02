@@ -7,6 +7,7 @@ import com.krillsson.sysapi.tls.CertificateNamesCreator
 import com.krillsson.sysapi.tls.SelfSignedCertificateManager
 import com.krillsson.sysapi.util.FileSystem
 import com.krillsson.sysapi.util.logger
+import org.slf4j.LoggerFactory
 import org.springframework.aot.hint.annotation.RegisterReflectionForBinding
 import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -14,6 +15,10 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ImportRuntimeHints
 import oshi.util.GlobalConfig
+import java.nio.file.Files
+import java.nio.file.attribute.PosixFilePermission
+import kotlin.io.path.Path
+import kotlin.io.path.absolutePathString
 
 @SpringBootApplication(scanBasePackages = ["com.krillsson.sysapi"])
 @ImportRuntimeHints(RuntimeHint::class)
@@ -37,9 +42,7 @@ import oshi.util.GlobalConfig
         WindowsConfiguration::class,
         YAMLConfigFile::class,
         DockerConfigFile::class,
-        AuthConfig::class,
-        com.sun.jna.platform.mac.SystemB.Timeval::class,
-        oshi.jna.ByRef::class,
+        AuthConfig::class
 )
 // https://www.graalvm.org/latest/reference-manual/native-image/dynamic-features/JNI/
 // Failed to parse docker config.json
@@ -64,5 +67,10 @@ class SysAPIApplication {
 }
 
 fun main(args: Array<String>) {
+    val logger = LoggerFactory.getLogger(SysAPIApplication::class.java.name.removeSuffix("\$Companion"))
+    val tmp = Path( System.getProperty("java.io.tmpdir"))
+    val posixFilePermissions = Files.getPosixFilePermissions(tmp)
+    val canExecute = posixFilePermissions.contains(PosixFilePermission.OWNER_EXECUTE)
+    logger.info("${tmp.absolutePathString()} is ${if(canExecute) "executable" else "not executable"} all prms (${posixFilePermissions.joinToString { it.name }})")
     runApplication<SysAPIApplication>(*args)
 }
