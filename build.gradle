@@ -9,7 +9,7 @@ buildscript {
 plugins {
     id 'java'
     // https://github.com/spring-projects/spring-graphql/issues/924
-    id 'org.springframework.boot' version '3.3.0-SNAPSHOT'
+    id 'org.springframework.boot' version '3.3.0-M3'
     id 'io.spring.dependency-management' version '1.1.4'
     id 'org.hibernate.orm' version '6.4.2.Final'
     id 'org.graalvm.buildtools.native' version '0.10.1'
@@ -121,7 +121,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
-    implementation 'org.xerial:sqlite-jdbc:3.44.1.0'
+    implementation 'org.xerial:sqlite-jdbc:3.45.2.0'
     implementation 'org.hibernate.orm:hibernate-community-dialects'
     implementation 'com.github.docker-java:docker-java-core:3.3.4'
     implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.3.4'
