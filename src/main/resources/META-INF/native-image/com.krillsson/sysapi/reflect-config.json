@@ -733,7 +733,8 @@
   "name":"com.github.dockerjava.api.command.HealthState",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"com.github.dockerjava.api.command.HealthStateLog",
