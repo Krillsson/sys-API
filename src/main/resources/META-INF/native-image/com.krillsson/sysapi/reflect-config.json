@@ -913,7 +913,8 @@
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"fromPrimitive","parameterTypes":["java.util.Map"] }]
 },
 {
   "name":"com.github.dockerjava.api.model.HealthCheck",
