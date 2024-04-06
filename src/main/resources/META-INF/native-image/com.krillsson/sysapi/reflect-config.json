@@ -875,8 +875,9 @@
 {
   "name":"com.github.dockerjava.api.model.ContainerPort",
   "allDeclaredFields":true,
+  "queryAllDeclaredConstructors":true,
   "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"com.github.dockerjava.api.model.Device",
