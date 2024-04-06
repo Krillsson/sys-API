@@ -923,7 +923,8 @@
   "name":"com.github.dockerjava.api.model.HealthCheck",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"com.github.dockerjava.api.model.HostConfig",
@@ -947,14 +948,16 @@
   "name":"com.github.dockerjava.api.model.Link",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String", "java.lang.String"] }]
 },
 {
   "name":"com.github.dockerjava.api.model.Links",
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"fromPrimitive","parameterTypes":["java.lang.String[]"] }]
 },
 {
   "name":"com.github.dockerjava.api.model.LogConfig",
@@ -1009,7 +1012,8 @@
   "name":"com.github.dockerjava.api.model.Ports$Binding",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String", "java.lang.String"] }]
 },
 {
   "name":"com.github.dockerjava.api.model.PropagationMode",
@@ -1032,13 +1036,15 @@
   "name":"com.github.dockerjava.api.model.TmpfsOptions",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"com.github.dockerjava.api.model.Ulimit",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String", "long", "long"] }]
 },
 {
   "name":"com.github.dockerjava.api.model.Volume",
@@ -1052,40 +1058,46 @@
   "name":"com.github.dockerjava.api.model.VolumeBind",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String", "java.lang.String"] }]
 },
 {
   "name":"com.github.dockerjava.api.model.VolumeBinds",
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"fromPrimitive","parameterTypes":["java.util.Map"] }]
 },
 {
   "name":"com.github.dockerjava.api.model.VolumeOptions",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"com.github.dockerjava.api.model.VolumeRW",
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"fromPrimitive","parameterTypes":["java.util.Map"] }]
 },
 {
   "name":"com.github.dockerjava.api.model.VolumesFrom",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"parse","parameterTypes":["java.lang.String"] }]
 },
 {
   "name":"com.github.dockerjava.api.model.VolumesRW",
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"fromPrimitive","parameterTypes":["java.util.Map"] }]
 },
 {
   "name":"com.github.dockerjava.core.DefaultInvocationBuilder"
