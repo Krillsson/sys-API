@@ -12,6 +12,7 @@ import com.krillsson.sysapi.core.domain.docker.Container
 import com.krillsson.sysapi.core.domain.docker.ContainerMetrics
 import com.krillsson.sysapi.core.domain.docker.ContainerMetricsHistoryEntry
 import com.krillsson.sysapi.core.history.ContainersHistoryRepository
+import com.krillsson.sysapi.util.logger
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.util.*
@@ -22,9 +23,12 @@ class ContainerManager(
     private val config: YAMLConfigFile,
     private val containersHistoryRepository: ContainersHistoryRepository,
 ) {
+    private val logger by logger()
+
     private val dockerConfiguration: DockerConfiguration = config.docker
     private val cacheConfiguration = config.docker.cache
     val status = checkAvailability()
+
 
     private val containersCache: Supplier<List<Container>> = Suppliers.memoizeWithExpiration(
         {
@@ -127,7 +131,10 @@ class ContainerManager(
 
             else -> {
                 when (val result = dockerClient.checkAvailability()) {
-                    is DockerClient.PingResult.Fail -> Status.Unavailable(result.throwable)
+                    is DockerClient.PingResult.Fail -> {
+                        logger.error("Docker is unavailable because of an error", result.throwable)
+                        Status.Unavailable(result.throwable)
+                    }
                     DockerClient.PingResult.Success -> Status.Available
                 }
             }
