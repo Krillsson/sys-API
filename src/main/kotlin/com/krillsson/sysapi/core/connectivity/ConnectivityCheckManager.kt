@@ -42,7 +42,7 @@ class ConnectivityCheckManager(
         val storedExternalIp = repository.get(externalIpStoreKey)
         val newExternalIp = response.body()
         return if (response.isSuccessful && newExternalIp != null) {
-            logger.info("Connected - external IP $newExternalIp (old: $storedExternalIp)")
+            logger.info("Connectivity check: CONNECTED - external IP $newExternalIp (old: $storedExternalIp)")
             repository.put(externalIpStoreKey, newExternalIp)
             Connectivity(
                 externalIp = newExternalIp,
@@ -51,7 +51,7 @@ class ConnectivityCheckManager(
                 connected = true
             )
         } else {
-            logger.info("Disconnected - got ${response.code()}/${response.body().orEmpty()} from ${config.connectivityCheck.address}. stored ip: $storedExternalIp")
+            logger.info("Connectivity check: DISCONNECTED - got ${response.code()}/${response.body().orEmpty()} from ${config.connectivityCheck.address}. stored ip: $storedExternalIp")
             Connectivity(
                 externalIp = null,
                 previousExternalIp = storedExternalIp,
