@@ -19,14 +19,6 @@ class DefaultCpuLoadMetrics(private val processor: CentralProcessor) {
     var coreLoads = updateCoreLoads()
     var systemUsage = updateSystemUsagePercent()
 
-    /*
-*
-* often: 5s
-lessOften: 15s
-seldom:5min
-verySeldom:30min
-*
-* */
     @Scheduled(fixedRate = 5, timeUnit = TimeUnit.SECONDS)
     fun run() {
         coreLoads = updateCoreLoads()
