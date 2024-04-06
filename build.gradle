@@ -107,7 +107,6 @@ jib {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-quartz'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -115,7 +114,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     // implementation 'org.springframework.boot:spring-boot-starter-graphql'
     implementation 'org.springframework.graphql:spring-graphql:1.3.0-SNAPSHOT'
-    implementation 'org.thymeleaf:thymeleaf-spring6:3.1.2.RELEASE'
+    // implementation 'org.thymeleaf:thymeleaf-spring6:3.1.2.RELEASE'
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
@@ -131,13 +130,6 @@ dependencies {
     implementation 'org.bitlet:weupnp:0.1.4'
     implementation 'org.jmdns:jmdns:3.5.1'
     implementation 'org.apache.commons:commons-exec:1.3'
-    implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
-//    implementation('com.graphql-java-kickstart:graphql-java-tools:13.1.1') {
-//        exclude group: "org.slf4j"
-//    }
-//    implementation('com.graphql-java-kickstart:graphql-java-servlet:15.2.0') {
-//        exclude group: "org.slf4j"
-//    }
     implementation('com.github.oshi:oshi-core:6.4.12') {
         exclude group: "org.slf4j"
     }

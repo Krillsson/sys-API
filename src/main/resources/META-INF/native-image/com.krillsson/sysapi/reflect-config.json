@@ -1444,6 +1444,13 @@
   "methods":[{"name":"CGLIB$SET_THREAD_CALLBACKS","parameterTypes":["org.springframework.cglib.proxy.Callback[]"] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.HistoryRecorder",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":["com.krillsson.sysapi.config.YAMLConfigFile","com.krillsson.sysapi.core.metrics.Metrics","com.krillsson.sysapi.core.history.HistoryRepository"] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.HistoryRepository",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
@@ -1491,13 +1498,28 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity$HibernateAccessOptimizer$CCL61Xmq",
+  "fields":[{"name":"invocationTarget$6prsl51"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity$HibernateAccessOptimizer$EYQzERhj",
   "fields":[{"name":"invocationTarget$43ufbd0"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity$HibernateAccessOptimizer$FGH9SnNd",
+  "fields":[{"name":"invocationTarget$6prsl51"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity$HibernateAccessOptimizer$FUeBKJwW",
   "fields":[{"name":"invocationTarget$bo0ob01"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity$HibernateAccessOptimizer$HtqP9LDW",
+  "fields":[{"name":"invocationTarget$njm6ej1"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1513,6 +1535,11 @@
 {
   "name":"com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity$HibernateAccessOptimizer$MQEWbV5i",
   "fields":[{"name":"invocationTarget$ieh5ic0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity$HibernateAccessOptimizer$SwKpIMCL",
+  "fields":[{"name":"invocationTarget$27nofu0"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1536,6 +1563,11 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity$HibernateAccessOptimizer$pnOim9Qk",
+  "fields":[{"name":"invocationTarget$c7hpsj0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity$HibernateAccessOptimizer$sxbkb3j9",
   "fields":[{"name":"invocationTarget$f6p0540"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
@@ -1551,6 +1583,10 @@
 },
 {
   "name":"com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity$HibernateInstantiator$5DMSBovP",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity$HibernateInstantiator$A67QNIeE",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1574,7 +1610,19 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity$HibernateInstantiator$Yw4JMpRr",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity$HibernateInstantiator$hJESFyw0",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity$HibernateInstantiator$o7vVDyhf",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity$HibernateInstantiator$qQHHL6tA",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1599,6 +1647,10 @@
 },
 {
   "name":"com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity$HibernateInstantiator$xilUvU6c",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity$HibernateInstantiator$zz6wXbCW",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1628,6 +1680,11 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.Connectivity$HibernateAccessOptimizer$EZ7RPHn6",
+  "fields":[{"name":"invocationTarget$kaotap1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.Connectivity$HibernateAccessOptimizer$Hy2WBVki",
   "fields":[{"name":"invocationTarget$gtjenp0"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
@@ -1643,8 +1700,18 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.Connectivity$HibernateAccessOptimizer$MVmRkV52",
+  "fields":[{"name":"invocationTarget$hmsmii1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.Connectivity$HibernateAccessOptimizer$T5WzbAMQ",
   "fields":[{"name":"invocationTarget$hq2dif0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.Connectivity$HibernateAccessOptimizer$Te10kyVo",
+  "fields":[{"name":"invocationTarget$9jic050"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1658,8 +1725,18 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.Connectivity$HibernateAccessOptimizer$VkKmUqOP",
+  "fields":[{"name":"invocationTarget$hmsmii1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.Connectivity$HibernateAccessOptimizer$YpwDUUos",
   "fields":[{"name":"invocationTarget$p6e0h00"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.Connectivity$HibernateAccessOptimizer$ahBT0Kr6",
+  "fields":[{"name":"invocationTarget$vleq161"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1705,6 +1782,10 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.Connectivity$HibernateInstantiator$6NxGYa5D",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.Connectivity$HibernateInstantiator$EougDLcU",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -1729,6 +1810,10 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.Connectivity$HibernateInstantiator$Nd5psamm",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.Connectivity$HibernateInstantiator$PzaMy4hW",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -1741,7 +1826,19 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.Connectivity$HibernateInstantiator$aTFOjh56",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.Connectivity$HibernateInstantiator$bQj6JBWF",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.Connectivity$HibernateInstantiator$nqrQ32Yr",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.Connectivity$HibernateInstantiator$rAsm119n",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1786,8 +1883,23 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.ContainerStatisticsEntity$HibernateAccessOptimizer$2wgksK3I",
+  "fields":[{"name":"invocationTarget$basuj40"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.ContainerStatisticsEntity$HibernateAccessOptimizer$6PoQkJ11",
+  "fields":[{"name":"invocationTarget$fnq1bs1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.ContainerStatisticsEntity$HibernateAccessOptimizer$ET3ttUly",
   "fields":[{"name":"invocationTarget$je89190"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.ContainerStatisticsEntity$HibernateAccessOptimizer$G3iKgjtv",
+  "fields":[{"name":"invocationTarget$pe9okm0"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1836,6 +1948,16 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.ContainerStatisticsEntity$HibernateAccessOptimizer$dnxuaSxC",
+  "fields":[{"name":"invocationTarget$pe9okm0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.ContainerStatisticsEntity$HibernateAccessOptimizer$nlTWnktM",
+  "fields":[{"name":"invocationTarget$m39ij90"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.ContainerStatisticsEntity$HibernateAccessOptimizer$o6cVuuYQ",
   "fields":[{"name":"invocationTarget$mcvq6i1"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
@@ -1854,6 +1976,18 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.ContainerStatisticsEntity$HibernateInstantiator$9acEicXA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.ContainerStatisticsEntity$HibernateInstantiator$Ahe5bFk7",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.ContainerStatisticsEntity$HibernateInstantiator$CBggZiJg",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.ContainerStatisticsEntity$HibernateInstantiator$Dw1KBwiB",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -1867,6 +2001,10 @@
 },
 {
   "name":"com.krillsson.sysapi.core.history.db.ContainerStatisticsEntity$HibernateInstantiator$Uegs2MgA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.ContainerStatisticsEntity$HibernateInstantiator$VtcFwolh",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1895,6 +2033,10 @@
 },
 {
   "name":"com.krillsson.sysapi.core.history.db.ContainerStatisticsEntity$HibernateInstantiator$m3YCOLN8",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.ContainerStatisticsEntity$HibernateInstantiator$rOPBJBP7",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1933,6 +2075,11 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.CoreLoad$HibernateAccessOptimizer$OseWuu59",
+  "fields":[{"name":"invocationTarget$niom260"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.CoreLoad$HibernateAccessOptimizer$SYXVh5TJ",
   "fields":[{"name":"invocationTarget$vqbg880"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
@@ -1948,6 +2095,11 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.CoreLoad$HibernateAccessOptimizer$Uotz0TnH",
+  "fields":[{"name":"invocationTarget$niom260"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.CoreLoad$HibernateAccessOptimizer$VYpCxwpm",
   "fields":[{"name":"invocationTarget$9hdff31"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
@@ -1955,6 +2107,11 @@
 {
   "name":"com.krillsson.sysapi.core.history.db.CoreLoad$HibernateAccessOptimizer$gpTsD0Zr",
   "fields":[{"name":"invocationTarget$f1k72t0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.CoreLoad$HibernateAccessOptimizer$hpC7i4SC",
+  "fields":[{"name":"invocationTarget$ruvo4k0"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1968,8 +2125,18 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.CoreLoad$HibernateAccessOptimizer$maT4Brec",
+  "fields":[{"name":"invocationTarget$5lm4sc0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.CoreLoad$HibernateAccessOptimizer$nx4sDhxI",
   "fields":[{"name":"invocationTarget$ufn27m0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.CoreLoad$HibernateAccessOptimizer$s9uGyBPp",
+  "fields":[{"name":"invocationTarget$tjpkmm0"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1983,6 +2150,14 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.CoreLoad$HibernateInstantiator$0Mb4z8Ug",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.CoreLoad$HibernateInstantiator$2RJMEZZN",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.CoreLoad$HibernateInstantiator$2pxxXTUv",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -1992,6 +2167,10 @@
 },
 {
   "name":"com.krillsson.sysapi.core.history.db.CoreLoad$HibernateInstantiator$8hYIKgMe",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.CoreLoad$HibernateInstantiator$9uKiZCdf",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2024,6 +2203,14 @@
 },
 {
   "name":"com.krillsson.sysapi.core.history.db.CoreLoad$HibernateInstantiator$bDFdNd31",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.CoreLoad$HibernateInstantiator$bfNMk2Qu",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.CoreLoad$HibernateInstantiator$dNP2HHVu",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2061,6 +2248,16 @@
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"<init>","parameterTypes":["java.util.UUID","double","double","com.krillsson.sysapi.core.history.db.LoadAverages","java.util.List","com.krillsson.sysapi.core.history.db.CpuHealth","int","int"] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"getCoreLoads","parameterTypes":[] }, {"name":"getCpuHealth","parameterTypes":[] }, {"name":"getId","parameterTypes":[] }, {"name":"getLoadAverages","parameterTypes":[] }, {"name":"getProcessCount","parameterTypes":[] }, {"name":"getSystemLoadAverage","parameterTypes":[] }, {"name":"getThreadCount","parameterTypes":[] }, {"name":"getUsagePercentage","parameterTypes":[] }, {"name":"hashCode","parameterTypes":[] }, {"name":"toString","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.CpuLoad$HibernateAccessOptimizer$1kZFS3Vh",
+  "fields":[{"name":"invocationTarget$d91ldr0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.CpuLoad$HibernateAccessOptimizer$37SKAZat",
+  "fields":[{"name":"invocationTarget$cisluv1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.CpuLoad$HibernateAccessOptimizer$380dmfH6",
   "fields":[{"name":"invocationTarget$d8fjmc1"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
@@ -2091,8 +2288,23 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.CpuLoad$HibernateAccessOptimizer$NP4hb9AF",
+  "fields":[{"name":"invocationTarget$pphmgm1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.CpuLoad$HibernateAccessOptimizer$O0m6vlQj",
   "fields":[{"name":"invocationTarget$63i2ij0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.CpuLoad$HibernateAccessOptimizer$SLzD6u7e",
+  "fields":[{"name":"invocationTarget$1le5s10"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.CpuLoad$HibernateAccessOptimizer$W7GMsxTe",
+  "fields":[{"name":"invocationTarget$d91ldr0"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2139,6 +2351,10 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.CpuLoad$HibernateInstantiator$3FZsW7LF",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.CpuLoad$HibernateInstantiator$ATASqf4o",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -2163,11 +2379,27 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.CpuLoad$HibernateInstantiator$OmI3ta3K",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.CpuLoad$HibernateInstantiator$REtUxKNv",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.CpuLoad$HibernateInstantiator$VxUOJnLJ",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.CpuLoad$HibernateInstantiator$WdWskOk7",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.CpuLoad$HibernateInstantiator$YgI7zKau",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.CpuLoad$HibernateInstantiator$hHJtI6RM",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2231,6 +2463,21 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.DiskLoad$HibernateAccessOptimizer$MSj8qMc9",
+  "fields":[{"name":"invocationTarget$qjec1t1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.DiskLoad$HibernateAccessOptimizer$NIJao8bx",
+  "fields":[{"name":"invocationTarget$qblfpo0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.DiskLoad$HibernateAccessOptimizer$Q0jqjS8p",
+  "fields":[{"name":"invocationTarget$89tpji0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.DiskLoad$HibernateAccessOptimizer$Tr5zcgZo",
   "fields":[{"name":"invocationTarget$pebrc11"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
@@ -2251,6 +2498,11 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.DiskLoad$HibernateAccessOptimizer$fmDJoCYM",
+  "fields":[{"name":"invocationTarget$sj9fn71"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.DiskLoad$HibernateAccessOptimizer$k9e2uRZ5",
   "fields":[{"name":"invocationTarget$mttus40"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
@@ -2263,6 +2515,11 @@
 {
   "name":"com.krillsson.sysapi.core.history.db.DiskLoad$HibernateAccessOptimizer$n8eXiUyn",
   "fields":[{"name":"invocationTarget$nhue471"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.DiskLoad$HibernateAccessOptimizer$qVQHOrLS",
+  "fields":[{"name":"invocationTarget$sj9fn71"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2294,6 +2551,14 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.DiskLoad$HibernateInstantiator$5W15vw5p",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.DiskLoad$HibernateInstantiator$8FiDapCW",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.DiskLoad$HibernateInstantiator$PLoGffpz",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -2318,11 +2583,23 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.DiskLoad$HibernateInstantiator$dQ2ce0YZ",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.DiskLoad$HibernateInstantiator$i8U4JYPg",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"com.krillsson.sysapi.core.history.db.DiskLoad$HibernateInstantiator$lFdkolZg",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.DiskLoad$HibernateInstantiator$mgYcqAoT",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.DiskLoad$HibernateInstantiator$nBmlx5yY",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2381,8 +2658,18 @@
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"<init>","parameterTypes":["java.util.UUID","com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity","java.util.UUID","java.lang.String","java.lang.String","long","long","long"] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"getFreeSpaceBytes","parameterTypes":[] }, {"name":"getFsId","parameterTypes":[] }, {"name":"getHistory","parameterTypes":[] }, {"name":"getHistoryId","parameterTypes":[] }, {"name":"getId","parameterTypes":[] }, {"name":"getName","parameterTypes":[] }, {"name":"getTotalSpaceBytes","parameterTypes":[] }, {"name":"getUsableSpaceBytes","parameterTypes":[] }, {"name":"hashCode","parameterTypes":[] }, {"name":"toString","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.FileSystemLoad$HibernateAccessOptimizer$3tCejwRF",
+  "fields":[{"name":"invocationTarget$455mc01"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.FileSystemLoad$HibernateAccessOptimizer$6w5Z6AnN",
   "fields":[{"name":"invocationTarget$fuj60q1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.FileSystemLoad$HibernateAccessOptimizer$8jyGdzUa",
+  "fields":[{"name":"invocationTarget$rh1rvv0"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2391,8 +2678,18 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.FileSystemLoad$HibernateAccessOptimizer$CJh36x0X",
+  "fields":[{"name":"invocationTarget$drn0fg0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.FileSystemLoad$HibernateAccessOptimizer$DEE9e7WF",
   "fields":[{"name":"invocationTarget$mk0mtp0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.FileSystemLoad$HibernateAccessOptimizer$DuibVL35",
+  "fields":[{"name":"invocationTarget$drn0fg0"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2423,6 +2720,11 @@
 {
   "name":"com.krillsson.sysapi.core.history.db.FileSystemLoad$HibernateAccessOptimizer$dL0r7CS9",
   "fields":[{"name":"invocationTarget$l9lbcn1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.FileSystemLoad$HibernateAccessOptimizer$hm71eiBf",
+  "fields":[{"name":"invocationTarget$73iuck0"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2483,11 +2785,31 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.FileSystemLoad$HibernateInstantiator$dRsO7AwK",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.FileSystemLoad$HibernateInstantiator$fju4cOOZ",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.FileSystemLoad$HibernateInstantiator$oGBePrQq",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.FileSystemLoad$HibernateInstantiator$onKUZrfU",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.FileSystemLoad$HibernateInstantiator$pV3jBAlF",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.FileSystemLoad$HibernateInstantiator$qoWQ8VQP",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.FileSystemLoad$HibernateInstantiator$ukA6dWra",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2575,8 +2897,23 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.GpuLoad$HibernateAccessOptimizer$U8suDaZR",
+  "fields":[{"name":"invocationTarget$cj9ina1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.GpuLoad$HibernateAccessOptimizer$WetusdEh",
+  "fields":[{"name":"invocationTarget$jsb7ot1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.GpuLoad$HibernateAccessOptimizer$aF6upiRy",
   "fields":[{"name":"invocationTarget$a6q80f0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.GpuLoad$HibernateAccessOptimizer$fZbdIJTW",
+  "fields":[{"name":"invocationTarget$989mfe0"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2595,6 +2932,11 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.GpuLoad$HibernateAccessOptimizer$mLpj4tf4",
+  "fields":[{"name":"invocationTarget$t96ff80"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.GpuLoad$HibernateAccessOptimizer$pk69I77w",
   "fields":[{"name":"invocationTarget$kh5agc0"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
@@ -2602,6 +2944,11 @@
 {
   "name":"com.krillsson.sysapi.core.history.db.GpuLoad$HibernateAccessOptimizer$toSYESQU",
   "fields":[{"name":"invocationTarget$2cvsqa0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.GpuLoad$HibernateAccessOptimizer$xdzyGErh",
+  "fields":[{"name":"invocationTarget$jsb7ot1"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2621,6 +2968,18 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.GpuLoad$HibernateInstantiator$5PPXgnTp",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.GpuLoad$HibernateInstantiator$DfNgi2JV",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.GpuLoad$HibernateInstantiator$DmwwwfoF",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.GpuLoad$HibernateInstantiator$IK5U9uaq",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -2634,6 +2993,10 @@
 },
 {
   "name":"com.krillsson.sysapi.core.history.db.GpuLoad$HibernateInstantiator$PrFMsy9H",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.GpuLoad$HibernateInstantiator$RtKYsrwh",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2654,6 +3017,10 @@
 },
 {
   "name":"com.krillsson.sysapi.core.history.db.GpuLoad$HibernateInstantiator$k4Ke57Jw",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.GpuLoad$HibernateInstantiator$wPCTmcN1",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2679,6 +3046,16 @@
 {
   "name":"com.krillsson.sysapi.core.history.db.HealthData$HibernateAccessOptimizer$Dwi23hNH",
   "fields":[{"name":"invocationTarget$871d5e1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.HealthData$HibernateAccessOptimizer$Fa96temn",
+  "fields":[{"name":"invocationTarget$88apbv1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.HealthData$HibernateAccessOptimizer$HhJ2phit",
+  "fields":[{"name":"invocationTarget$2lm6f61"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2712,13 +3089,28 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.HealthData$HibernateAccessOptimizer$ehSTtB2T",
+  "fields":[{"name":"invocationTarget$88apbv1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.HealthData$HibernateAccessOptimizer$fWJapZAY",
   "fields":[{"name":"invocationTarget$vrj52u0"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.HealthData$HibernateAccessOptimizer$lB5mRrbq",
+  "fields":[{"name":"invocationTarget$h3mubr0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.HealthData$HibernateAccessOptimizer$m3d2o1wf",
   "fields":[{"name":"invocationTarget$ehq7in0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.HealthData$HibernateAccessOptimizer$mFTngpyn",
+  "fields":[{"name":"invocationTarget$uh9o6t0"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2746,6 +3138,14 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.HealthData$HibernateInstantiator$3XwXURZR",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.HealthData$HibernateInstantiator$AhDPecDP",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.HealthData$HibernateInstantiator$BBAQVE3a",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -2755,6 +3155,10 @@
 },
 {
   "name":"com.krillsson.sysapi.core.history.db.HealthData$HibernateInstantiator$LNUtpmpS",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.HealthData$HibernateInstantiator$QmEpw7rH",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2778,7 +3182,15 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.HealthData$HibernateInstantiator$dojlWoOq",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.HealthData$HibernateInstantiator$ds84Hccf",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.HealthData$HibernateInstantiator$dvNFg3GM",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2841,6 +3253,11 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity$HibernateAccessOptimizer$6yZV91E2",
+  "fields":[{"name":"invocationTarget$hnrqjj0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity$HibernateAccessOptimizer$EIyqM5zn",
   "fields":[{"name":"invocationTarget$d9p6491"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
@@ -2866,8 +3283,28 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity$HibernateAccessOptimizer$XVyuklpa",
+  "fields":[{"name":"invocationTarget$hnrqjj0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity$HibernateAccessOptimizer$Yd6Ipqxh",
+  "fields":[{"name":"invocationTarget$mdjd3l1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity$HibernateAccessOptimizer$YuaU8tzA",
+  "fields":[{"name":"invocationTarget$dvov2v1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity$HibernateAccessOptimizer$Z2CBxI8Q",
   "fields":[{"name":"invocationTarget$06imhb0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity$HibernateAccessOptimizer$bOGv3ZFB",
+  "fields":[{"name":"invocationTarget$86dlo01"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2891,6 +3328,10 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity$HibernateInstantiator$1GtridwL",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity$HibernateInstantiator$8nVWPD8y",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -2899,7 +3340,15 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity$HibernateInstantiator$C1HZEmhp",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity$HibernateInstantiator$HacM55F9",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity$HibernateInstantiator$IKT06Ltk",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2915,11 +3364,19 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity$HibernateInstantiator$Y3eCVISP",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity$HibernateInstantiator$Zzgkwker",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity$HibernateInstantiator$a0uODnto",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity$HibernateInstantiator$bKN2yNEY",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2969,8 +3426,18 @@
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"<init>","parameterTypes":["java.util.UUID","int","long","long","long","long","double"] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"getAvailableBytes","parameterTypes":[] }, {"name":"getId","parameterTypes":[] }, {"name":"getNumberOfProcesses","parameterTypes":[] }, {"name":"getSwapTotalBytes","parameterTypes":[] }, {"name":"getSwapUsedBytes","parameterTypes":[] }, {"name":"getTotalBytes","parameterTypes":[] }, {"name":"getUsedPercent","parameterTypes":[] }, {"name":"hashCode","parameterTypes":[] }, {"name":"toString","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.MemoryLoad$HibernateAccessOptimizer$00ZGJqxM",
+  "fields":[{"name":"invocationTarget$b5fp6s1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.MemoryLoad$HibernateAccessOptimizer$00jDeXpp",
   "fields":[{"name":"invocationTarget$8d18sn1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.MemoryLoad$HibernateAccessOptimizer$0KBbHdhw",
+  "fields":[{"name":"invocationTarget$2c6ls71"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -2996,6 +3463,16 @@
 {
   "name":"com.krillsson.sysapi.core.history.db.MemoryLoad$HibernateAccessOptimizer$H0JK1THH",
   "fields":[{"name":"invocationTarget$ju0b861"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.MemoryLoad$HibernateAccessOptimizer$HTUQXIjx",
+  "fields":[{"name":"invocationTarget$b5fp6s1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.MemoryLoad$HibernateAccessOptimizer$XhbJbCk3",
+  "fields":[{"name":"invocationTarget$vovnps1"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -3029,6 +3506,11 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.MemoryLoad$HibernateAccessOptimizer$mb7TNkVr",
+  "fields":[{"name":"invocationTarget$md3s7g0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.MemoryLoad$HibernateAccessOptimizer$upRYYpEs",
   "fields":[{"name":"invocationTarget$31ns3b1"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
@@ -3039,7 +3521,19 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.MemoryLoad$HibernateInstantiator$1ZffPu8z",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.MemoryLoad$HibernateInstantiator$5ogjmMI7",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.MemoryLoad$HibernateInstantiator$7hCBYxVw",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.MemoryLoad$HibernateInstantiator$9cVRtXKN",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -3067,7 +3561,15 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.MemoryLoad$HibernateInstantiator$R9EULFtz",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.MemoryLoad$HibernateInstantiator$RAfVShel",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.MemoryLoad$HibernateInstantiator$U4JElIWn",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -3121,8 +3623,18 @@
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"<init>","parameterTypes":["java.util.UUID","com.krillsson.sysapi.core.history.db.HistorySystemLoadEntity","java.util.UUID","java.lang.String","java.lang.String","boolean","com.krillsson.sysapi.core.history.db.NetworkInterfaceValues","com.krillsson.sysapi.core.history.db.NetworkInterfaceSpeed"] }, {"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"getHistory","parameterTypes":[] }, {"name":"getHistoryId","parameterTypes":[] }, {"name":"getId","parameterTypes":[] }, {"name":"getMac","parameterTypes":[] }, {"name":"getName","parameterTypes":[] }, {"name":"getSpeed","parameterTypes":[] }, {"name":"getValues","parameterTypes":[] }, {"name":"hashCode","parameterTypes":[] }, {"name":"isUp","parameterTypes":[] }, {"name":"toString","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.NetworkInterfaceLoad$HibernateAccessOptimizer$2Wo1JJUU",
+  "fields":[{"name":"invocationTarget$7707pm1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.NetworkInterfaceLoad$HibernateAccessOptimizer$59e5BGXF",
   "fields":[{"name":"invocationTarget$u6jijl1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.NetworkInterfaceLoad$HibernateAccessOptimizer$Daugh3lx",
+  "fields":[{"name":"invocationTarget$ahg5od0"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -3133,6 +3645,11 @@
 {
   "name":"com.krillsson.sysapi.core.history.db.NetworkInterfaceLoad$HibernateAccessOptimizer$QmEy9Umj",
   "fields":[{"name":"invocationTarget$3tfv6l0"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.NetworkInterfaceLoad$HibernateAccessOptimizer$We7ULkon",
+  "fields":[{"name":"invocationTarget$8qives0"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -3163,6 +3680,16 @@
 {
   "name":"com.krillsson.sysapi.core.history.db.NetworkInterfaceLoad$HibernateAccessOptimizer$tbv2QIop",
   "fields":[{"name":"invocationTarget$7fdfd90"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.NetworkInterfaceLoad$HibernateAccessOptimizer$tcSCtbog",
+  "fields":[{"name":"invocationTarget$7707pm1"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.NetworkInterfaceLoad$HibernateAccessOptimizer$tirEFF6h",
+  "fields":[{"name":"invocationTarget$umepf01"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -3215,6 +3742,22 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.krillsson.sysapi.core.history.db.NetworkInterfaceLoad$HibernateInstantiator$J3aIwqAu",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.NetworkInterfaceLoad$HibernateInstantiator$ObXWtaox",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.NetworkInterfaceLoad$HibernateInstantiator$P8BaSX9Q",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.NetworkInterfaceLoad$HibernateInstantiator$Pql2SBGN",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.krillsson.sysapi.core.history.db.NetworkInterfaceLoad$HibernateInstantiator$UINjebCp",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -3236,6 +3779,10 @@
 },
 {
   "name":"com.krillsson.sysapi.core.history.db.NetworkInterfaceLoad$HibernateInstantiator$srTNTSAY",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.krillsson.sysapi.core.history.db.NetworkInterfaceLoad$HibernateInstantiator$un0X6sQP",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -5574,7 +6121,7 @@
   "name":"jakarta.servlet.Filter",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[{"name":"<init>","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000501eab738"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801e79720"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801f4aef8"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801f532b0"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000002001f05370"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000006001e679a0"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001eccd08"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001efcab0"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f1a5e0"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f20a60"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000008801f62c88"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000009801e68468"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000000c801e6a7e0"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000000e001f04870"] }, {"name":"from","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000501eab738"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801e79720"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801f4aef8"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801f532b0"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000002001f05370"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000006001e679a0"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001eccd08"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001efcab0"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f1a5e0"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f20a60"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000008801f62c88"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000009801e68468"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000000c801e6a7e0"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000000e001f04870"] }, {"name":"of","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000501eab738"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801e79720"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801f4aef8"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801f532b0"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000002001f05370"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000006001e679a0"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001eccd08"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001efcab0"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f1a5e0"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f20a60"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000008801f62c88"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000009801e68468"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000000c801e6a7e0"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000000e001f04870"] }, {"name":"valueOf","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000501eab738"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801e79720"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801f4aef8"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801f532b0"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000002001f05370"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000006001e679a0"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001eccd08"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001efcab0"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f1a5e0"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f20a60"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000008801f62c88"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000009801e68468"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000000c801e6a7e0"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000000e001f04870"] }]
+  "methods":[{"name":"<init>","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000301f18a60"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000501eab738"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801e79720"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801f19720"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801f4aef8"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801f532b0"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000002001f05370"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000006001e679a0"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001eccd08"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001efcab0"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f1a5e0"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f20a60"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f2d7b8"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f30a60"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000008801f62c88"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000009801e68468"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000000c801e6a7e0"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000000e001f04870"] }, {"name":"<init>","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000000f801f332b0"] }, {"name":"from","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000301f18a60"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000501eab738"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801e79720"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801f19720"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801f4aef8"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801f532b0"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000002001f05370"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000006001e679a0"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001eccd08"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001efcab0"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f1a5e0"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f20a60"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f2d7b8"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f30a60"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000008801f62c88"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000009801e68468"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000000c801e6a7e0"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000000e001f04870"] }, {"name":"from","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000000f801f332b0"] }, {"name":"of","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000301f18a60"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000501eab738"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801e79720"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801f19720"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801f4aef8"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801f532b0"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000002001f05370"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000006001e679a0"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001eccd08"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001efcab0"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f1a5e0"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f20a60"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f2d7b8"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f30a60"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000008801f62c88"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000009801e68468"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000000c801e6a7e0"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000000e001f04870"] }, {"name":"of","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000000f801f332b0"] }, {"name":"valueOf","parameterTypes":["org.springframework.security.web.FilterChainProxy"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000301f18a60"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000501eab738"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801e79720"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801f19720"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801f4aef8"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000000801f532b0"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000002001f05370"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000006001e679a0"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001eccd08"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001efcab0"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f1a5e0"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f20a60"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f2d7b8"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000007001f30a60"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000008801f62c88"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x0000009801e68468"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000000c801e6a7e0"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000000e001f04870"] }, {"name":"valueOf","parameterTypes":["org.springframework.web.servlet.handler.HandlerMappingIntrospector$$Lambda/0x000000f801f332b0"] }]
 },
 {
   "name":"jakarta.servlet.FilterChain"
@@ -8231,6 +8778,10 @@
 },
 {
   "name":"org.hibernate.boot.model.naming.PhysicalNamingStrategy"
+},
+{
+  "name":"org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"org.hibernate.boot.model.process.spi.MetadataBuildingProcess"
@@ -12103,10 +12654,14 @@
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"getNaming","parameterTypes":[] }]
 },
 {
-  "name":"org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties$Naming"
+  "name":"org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties$Naming",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"setPhysicalStrategy","parameterTypes":["java.lang.String"] }]
 },
 {
   "name":"org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer"
@@ -15138,6 +15693,9 @@
   "queryAllDeclaredMethods":true
 },
 {
+  "name":"org.springframework.graphql.GraphQlResponse"
+},
+{
   "name":"org.springframework.graphql.data.method.HandlerMethod"
 },
 {
@@ -17342,6 +17900,9 @@
 },
 {
   "name":"org.springframework.web.servlet.function.ServerResponse"
+},
+{
+  "name":"org.springframework.web.servlet.function.ServerResponse$HeadersBuilder$WriteFunction"
 },
 {
   "name":"org.springframework.web.servlet.function.ServerResponse$SseBuilder"
