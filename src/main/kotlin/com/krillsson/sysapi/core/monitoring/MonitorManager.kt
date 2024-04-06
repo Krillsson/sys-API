@@ -27,14 +27,6 @@ class MonitorManager(
 
     val logger by logger()
 
-    /*
-*
-* often: 5s
-lessOften: 15s
-seldom:5min
-verySeldom:30min
-*
-* */
     @Scheduled(fixedRate = 15, timeUnit = TimeUnit.SECONDS)
     fun run() {
         val input = monitorInputCreator.createInput(

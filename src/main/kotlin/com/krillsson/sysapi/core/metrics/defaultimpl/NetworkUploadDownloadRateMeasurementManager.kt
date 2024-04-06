@@ -10,14 +10,6 @@ import java.util.concurrent.TimeUnit
 class NetworkUploadDownloadRateMeasurementManager(clock: Clock) :
     SpeedMeasurementManager(clock) {
 
-    /*
-*
-* often: 5s
-lessOften: 15s
-seldom:5min
-verySeldom:30min
-*
-* */
     @Scheduled(fixedRate = 15, timeUnit = TimeUnit.SECONDS)
     fun runMeasurement() {
         run()
