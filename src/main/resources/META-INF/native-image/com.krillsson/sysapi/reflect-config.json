@@ -740,7 +740,8 @@
   "name":"com.github.dockerjava.api.command.HealthStateLog",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"com.github.dockerjava.api.command.InspectContainerResponse",
@@ -769,7 +770,8 @@
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "queryAllPublicConstructors":true
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"com.github.dockerjava.api.model.AccessMode",
