@@ -25,14 +25,6 @@ class ConnectivityCheckManager(
 
     private var _connectivity: Connectivity = defaultConnectivity
 
-    /*
-*
-* often: 5s
-lessOften: 15s
-seldom:5min
-verySeldom:30min
-*
-* */
     @Scheduled(fixedRate = 5, timeUnit = TimeUnit.MINUTES)
     fun run() {
         if (config.connectivityCheck.enabled) {
@@ -50,6 +42,7 @@ verySeldom:30min
         val storedExternalIp = repository.get(externalIpStoreKey)
         val newExternalIp = response.body()
         return if (response.isSuccessful && newExternalIp != null) {
+            logger.info("Connected - external IP $newExternalIp (old: $storedExternalIp)")
             repository.put(externalIpStoreKey, newExternalIp)
             Connectivity(
                 externalIp = newExternalIp,
@@ -58,6 +51,7 @@ verySeldom:30min
                 connected = true
             )
         } else {
+            logger.info("Disconnected - got ${response.code()}/${response.body().orEmpty()} from ${config.connectivityCheck.address}. stored ip: $storedExternalIp")
             Connectivity(
                 externalIp = null,
                 previousExternalIp = storedExternalIp,
