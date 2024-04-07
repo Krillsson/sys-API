@@ -3,6 +3,9 @@ package com.krillsson.sysapi
 import com.github.dockerjava.api.model.AuthConfig
 import com.github.dockerjava.core.DockerConfigFile
 import com.krillsson.sysapi.config.*
+import com.krillsson.sysapi.core.genericevents.GenericEventStore
+import com.krillsson.sysapi.core.monitoring.MonitorStore
+import com.krillsson.sysapi.core.monitoring.event.EventStore
 import com.krillsson.sysapi.tls.CertificateNamesCreator
 import com.krillsson.sysapi.tls.SelfSignedCertificateManager
 import com.krillsson.sysapi.util.FileSystem
@@ -42,6 +45,10 @@ import kotlin.io.path.absolutePathString
         WindowsConfiguration::class,
         YAMLConfigFile::class,
         DockerConfigFile::class,
+        GenericEventStore.StoredGenericEvent.UpdateAvailable::class,
+        GenericEventStore.StoredGenericEvent.MonitoredItemMissing::class,
+        EventStore.StoredEvent::class,
+        MonitorStore.StoredMonitor::class,
         AuthConfig::class
 )
 // https://www.graalvm.org/latest/reference-manual/native-image/dynamic-features/JNI/
