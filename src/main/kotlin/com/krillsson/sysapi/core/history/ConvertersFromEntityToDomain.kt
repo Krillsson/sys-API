@@ -156,7 +156,7 @@ fun ContainerStatisticsEntity.asContainerStatisticsHistoryEntry(): ContainerMetr
 
 fun ContainerStatisticsEntity.asContainerStatistics(): ContainerMetrics {
     return ContainerMetrics(
-        id = id,
+        id = containerId,
         cpuUsage = cpuUsage.asCpuUsage(),
         memoryUsage = memoryUsage.asMemoryUsage(),
         currentPid = currentPid,

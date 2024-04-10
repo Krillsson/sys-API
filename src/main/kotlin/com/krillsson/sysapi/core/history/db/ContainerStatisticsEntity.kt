@@ -1,15 +1,11 @@
 package com.krillsson.sysapi.core.history.db
 
-import jakarta.persistence.Embeddable
-import jakarta.persistence.Embedded
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityManager
-import jakarta.persistence.Id
-import jakarta.persistence.PersistenceContext
+import jakarta.persistence.*
 import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Root
 import org.springframework.stereotype.Repository
 import java.time.Instant
+import java.util.*
 
 @Repository
 class ContainerStatisticsDAO {
@@ -17,12 +13,12 @@ class ContainerStatisticsDAO {
     @PersistenceContext
     lateinit var em: EntityManager
 
-    fun insert(entity: ContainerStatisticsEntity): String {
+    fun insert(entity: ContainerStatisticsEntity): UUID {
         em.persist(entity)
         return entity.id
     }
 
-    fun insertAll(entities: List<ContainerStatisticsEntity>): List<String> {
+    fun insertAll(entities: List<ContainerStatisticsEntity>): List<UUID> {
         return entities.map {
             val createdId = insert(it)
             createdId
@@ -34,7 +30,7 @@ class ContainerStatisticsDAO {
         val query: CriteriaQuery<ContainerStatisticsEntity> = builder.createQuery(ContainerStatisticsEntity::class.java)
         val root: Root<ContainerStatisticsEntity> = query.from(ContainerStatisticsEntity::class.java)
         val between = builder
-            .between(root.get("timestamp"), from, to)
+                .between(root.get("timestamp"), from, to)
         val equal = builder.equal(root.get<String>("id"), id)
         val condition = builder.and(between, equal)
         return em.createQuery(query.where(condition)).resultList
@@ -48,8 +44,8 @@ class ContainerStatisticsDAO {
         query.where(idPredicate)
         query.orderBy(cb.desc(root.get<Instant>("timestamp")))
         val results = em.createQuery(query)
-            .setMaxResults(1) // Limit to only the first result
-            .resultList
+                .setMaxResults(1) // Limit to only the first result
+                .resultList
         return results.firstOrNull()
     }
 
@@ -59,56 +55,57 @@ class ContainerStatisticsDAO {
         val table = delete.from(ContainerStatisticsEntity::class.java)
         val lessThan = builder.lessThan(table.get("timestamp"), maxAge)
         return em
-            .createQuery(delete.where(lessThan))
-            .executeUpdate()
+                .createQuery(delete.where(lessThan))
+                .executeUpdate()
     }
 }
 
 @Entity
 class ContainerStatisticsEntity(
-    @Id
-    val id: String,
-    val timestamp: Instant,
-    val currentPid: Long,
-    @Embedded
-    val cpuUsage: CpuUsage,
-    @Embedded
-    val memoryUsage: MemoryUsage,
-    @Embedded
-    val networkUsage: NetworkUsage,
-    @Embedded
-    val blockIOUsage: BlockIOUsage
+        @Id
+        val id: UUID,
+        val containerId: String,
+        val timestamp: Instant,
+        val currentPid: Long,
+        @Embedded
+        val cpuUsage: CpuUsage,
+        @Embedded
+        val memoryUsage: MemoryUsage,
+        @Embedded
+        val networkUsage: NetworkUsage,
+        @Embedded
+        val blockIOUsage: BlockIOUsage
 )
 
 @Embeddable
 data class CpuUsage(
-    val usagePercentPerCore: Double,
-    val usagePercentTotal: Double,
-    val throttlingData: ThrottlingData
+        val usagePercentPerCore: Double,
+        val usagePercentTotal: Double,
+        val throttlingData: ThrottlingData
 )
 
 @Embeddable
 data class ThrottlingData(
-    val periods: Long,
-    val throttledPeriods: Long,
-    val throttledTime: Long
+        val periods: Long,
+        val throttledPeriods: Long,
+        val throttledTime: Long
 )
 
 @Embeddable
 data class NetworkUsage(
-    val bytesReceived: Long,
-    val bytesTransferred: Long,
+        val bytesReceived: Long,
+        val bytesTransferred: Long,
 )
 
 @Embeddable
 data class BlockIOUsage(
-    val bytesWritten: Long,
-    val bytesRead: Long
+        val bytesWritten: Long,
+        val bytesRead: Long
 )
 
 @Embeddable
 data class MemoryUsage(
-    val usageBytes: Long,
-    val usagePercent: Double,
-    val limitBytes: Long
+        val usageBytes: Long,
+        val usagePercent: Double,
+        val limitBytes: Long
 )
