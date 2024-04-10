@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.github.jengelman.gradle.plugins.shadow.transformers.*
 
 buildscript {
     dependencies {
@@ -8,6 +9,7 @@ buildscript {
 
 plugins {
     id 'java'
+    id 'application'
     // https://github.com/spring-projects/spring-graphql/issues/924
     id 'org.springframework.boot' version '3.3.0-M3'
     id 'io.spring.dependency-management' version '1.1.4'
@@ -19,10 +21,11 @@ plugins {
     id 'com.github.gmazzo.buildconfig' version '5.3.5'
     id "org.jetbrains.kotlin.plugin.allopen" version "1.9.22"
     id "com.google.cloud.tools.jib" version "3.4.1"
+    id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
 group = 'com.krillsson'
-version = '0.0.1-SNAPSHOT'
+version = '0.20.0'
 
 buildConfig {
     buildConfigField("String", "APP_VERSION", provider { "\"${project.version}\"" })
@@ -102,6 +105,39 @@ jib {
                     imageName: 'sysapi'
             ]
         }
+    }
+}
+
+shadowJar {
+    mergeServiceFiles()
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+    append 'META-INF/spring.handlers'
+    append 'META-INF/spring.schemas'
+    append 'META-INF/spring.tooling'
+    transform(PropertiesFileTransformer) {
+        paths = ['META-INF/spring.factories' ]
+        mergeStrategy = "append"
+    }
+}
+
+mainClassName = 'com.krillsson.sysapi.SysAPIApplication'
+
+run {
+
+}
+
+jar {
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+    manifest {
+        attributes('Main-Class': mainClassName, "Implementation-Version": project.version)
+    }
+}
+
+shadowDistZip {
+    from("$rootDir/config/") {
+        into "sysapi-shadow-${project.version}/config/"
+        include '**'
     }
 }
 

@@ -1,2 +1,2 @@
 #!/bin/sh
-./bin/server server config/configuration.yml
+./bin/sysapi --spring.config.location=file:config/application.properties
