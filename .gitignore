@@ -38,3 +38,11 @@ out/
 
 ### Kotlin ###
 .kotlin
+/data/database.sqlite
+/data/events.json
+/data/generic_events.json
+/data/key_values.json
+/data/keystorewww.jks
+/data/monitors.json
+/data/self_signed_ca.crt
+/data/self_signed_server.crt
