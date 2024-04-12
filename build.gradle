@@ -121,7 +121,9 @@ shadowJar {
     }
 }
 
-mainClassName = 'com.krillsson.sysapi.SysAPIApplication'
+application {
+    mainClass.set('com.krillsson.sysapi.SysAPIApplicationKt')
+}
 
 run {
 
@@ -130,7 +132,7 @@ run {
 jar {
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
     manifest {
-        attributes('Main-Class': mainClassName, "Implementation-Version": project.version)
+        attributes('Main-Class': 'com.krillsson.sysapi.SysAPIApplicationKt', "Implementation-Version": project.version)
     }
 }
 
