@@ -10,6 +10,7 @@ import com.krillsson.sysapi.tls.CertificateNamesCreator
 import com.krillsson.sysapi.tls.SelfSignedCertificateManager
 import com.krillsson.sysapi.util.FileSystem
 import com.krillsson.sysapi.util.logger
+import org.slf4j.LoggerFactory
 import org.springframework.aot.hint.annotation.RegisterReflectionForBinding
 import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -17,6 +18,10 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ImportRuntimeHints
 import oshi.util.GlobalConfig
+import java.nio.file.Files
+import java.nio.file.attribute.PosixFilePermission
+import kotlin.io.path.Path
+import kotlin.io.path.absolutePathString
 
 @SpringBootApplication(scanBasePackages = ["com.krillsson.sysapi"])
 @ImportRuntimeHints(RuntimeHint::class)
@@ -66,12 +71,8 @@ class SysAPIApplication {
                 }
                 selfSignedCertificateManager.start(certificateNamesCreator, config.selfSignedCertificates)
             }
+}
 
-    companion object {
-        @Throws(Exception::class)
-        @JvmStatic
-        fun main(args: Array<String>) {
-            runApplication<SysAPIApplication>(*args)
-        }
-    }
+fun main(args: Array<String>) {
+    runApplication<SysAPIApplication>(*args)
 }
