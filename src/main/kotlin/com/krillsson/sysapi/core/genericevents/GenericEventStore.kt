@@ -24,12 +24,10 @@ class GenericEventStore(objectMapper: ObjectMapper) :
         val type: String
             @JsonProperty("@type")
             get
-        val id: UUID
-        val dateTime: OffsetDateTime
 
         data class UpdateAvailable(
-            override val id: UUID,
-            override val dateTime: OffsetDateTime,
+            val id: UUID,
+            val dateTime: OffsetDateTime,
             val currentVersion: String,
             val newVersion: String,
             val changeLogMarkdown: String,
@@ -40,8 +38,8 @@ class GenericEventStore(objectMapper: ObjectMapper) :
         }
 
         data class MonitoredItemMissing(
-            override val id: UUID,
-            override val dateTime: OffsetDateTime,
+            val id: UUID,
+            val dateTime: OffsetDateTime,
             val monitorType: Monitor.Type,
             val monitorId: UUID,
             val monitoredItemId: String?
