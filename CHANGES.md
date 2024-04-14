@@ -1,13 +1,21 @@
 ### Unreleased
-- Major architectural update: the project now uses the [spring](https://spring.io) framework instead of Dropwizard.
-  - Spring introduced a second config file, application.properties. The ports is now edited from that file.
-- Native image: moving to Spring enabled to build the project as a [Graal Native Image](https://www.graalvm.org/latest/reference-manual/native-image/)
-  - The main benefit for is less RAM usage: around **200 MB** compared to **750 MB** running the standard way
-  - Native images are distributed under the krillsson/sys-api:native tag
-  - Consider this new feature experimental and sys-API may fail to start with obscure errors. If you encounter this, open an issue.
-  - No Raspberry PI support: only builds for amd64 can be provided at this time, as [GitHub does not support building for arm64v8 yet](https://github.com/actions/runner-images/issues/5631)
+- Migrated to [spring](https://spring.io) framework instead of Dropwizard.
+- [Graal Native Image](https://www.graalvm.org/latest/reference-manual/native-image/) Docker image option. Significant reduction in RAM usage.
 - Memory monitor now operates based on "used bytes goes above threshold" compared to the old "available bytes goes below threshold" as this is more intuitive.
-- Removed deprecated Disks (Drives still remain) 
+- Removed deprecated Disks (Drives still remain)
+- Fixed issue with container statistics history
+- Removed REST-API
+
+#### Spring
+- Introduces an additional config file: _application.properties_.
+  - Only required if you want to change ports. Sample config is available in /config in the repository.
+- The user _configuration.yml_ from Dropwizard is still compatible. Look in /config for an up-to-date version.
+
+#### Graal Native Image
+- RAM usage reduced to around **120-200 MB** compared to **600-800 MB** running the standard way
+- Native images are distributed under the _krillsson/sys-api:native_ tag on Docker Hub
+- Consider this new variant experimental and sys-API may fail to start with obscure errors. If you encounter this, open an issue.
+- No Raspberry PI support: only builds for amd64 can be provided at this time, as [GitHub does not support building for arm64 yet](https://github.com/actions/runner-images/issues/5631)
 
 ### 0.20.0
 - added `deletePastEventsForMonitor`, `closeOngoingEventForMonitor` to the GraphQL-API
