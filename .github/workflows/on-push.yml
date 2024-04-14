@@ -1,6 +1,9 @@
 name: Build nightly Docker images
 run-name: Build and push nightly native and jvm images to Docker Hub
-on: [ push ]
+on:
+  push:
+    tags-ignore:
+      - '**'
 jobs:
   build:
     name: Build nightly container
