@@ -1,5 +1,5 @@
-name: Native docker image
-run-name: Build and push native image to Docker Hub
+name: Build nightly Docker images
+run-name: Build and push nightly native and jvm images to Docker Hub
 on: [ push ]
 jobs:
   build:
@@ -22,9 +22,8 @@ jobs:
           distribution: 'graalvm-community'
           cache: 'gradle'
           set-java-home: 'true'
-          # github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
-      - name: Compile native image
-        run: ./gradlew nativeCompile
-      - name: Upload using jib
-        run: ./gradlew jib
+      - name: Upload JVM build to Docker Hub
+        run: ./gradlew jibJvm
+      - name: Upload Graal native build to Docker Hub
+        run: ./gradlew jibNativeImage
