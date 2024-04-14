@@ -1,10 +1,8 @@
 version: "3"
 services:
   sys-api:
-    command:
-      - server
-      - /config/configuration.yml
     container_name: sys-api
+    # krillsson/sys-api:native to try the native build
     image: krillsson/sys-api:latest
     # exposes NIC's for sys-API to read
     network_mode: host

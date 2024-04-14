@@ -3,14 +3,12 @@
 [![Coverage Status](https://coveralls.io/repos/github/Krillsson/sys-api/badge.svg?branch=develop)](https://coveralls.io/github/Krillsson/sys-api?branch=develop)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=com.krillsson%3Asys-api&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=com.krillsson%3Asys-api)
 
-System API (sys-API) provide both GraphQL and RESTful API's to your computers hardware.
+System API (sys-API) provide a [GraphQL API](https://graphql.org/) to your computers hardware.
 
-It publishes and monitors values from [OSHI](https://github.com/oshi/oshi) with the help of [Dropwizard](https://github.com/dropwizard/dropwizard). On Windows the information is supplemented with
+It publishes and monitors values from [OSHI](https://github.com/oshi/oshi) with the help of [Spring](https://spring.io/). On Windows the information is supplemented with
 [OpenHardwareMonitor](https://github.com/openhardwaremonitor/openhardwaremonitor) with a bit of help from [OhmJni4Net](https://github.com/Krillsson/ohmjni4net).
 
 >This is the server backend for the Android app Monitee.
->
->:warning: Latest compatible version is [0.19.2](https://github.com/Krillsson/sys-API/releases/tag/0.19.2) :warning:
 >
 ><a href="https://play.google.com/store/apps/details?id=com.krillsson.monitee"><img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" alt="Get it on Play Store" height="80"></a>
 
@@ -23,8 +21,10 @@ Query for:
 - List all network interfaces
 - Show info from sensors and fans
 - Motherboard information
-- List docker containers
-- Start/stop docker containers
+- Manage docker containers
+- Manage systemd services
+- Manage windows services
+- Read logs from files, systemd journal and Windows events 
 
 ### Monitoring
 
@@ -44,9 +44,9 @@ Currently, you can monitor
 
 ### GraphQL
 
-GraphQL is available through the `/graphql` endpoint. Checkout the [schema](server/src/main/resources/schema.graphqls). There's also a set of sample queries in the _sample-queries_ directory
+GraphQL is available through the `/graphql` endpoint. Checkout the [schema](src/main/resources/). There's also a set of sample queries in the _sample-queries_ directory
 
-A web-UI for trying out the GraphQL-API is also available at `<IP>:8080/`. If you don't want to expose this functionality. It can be disabled via the configuration.
+A web-UI for trying out the GraphQL-API is also available at `<IP>:8080/graphiql`. If you don't want to expose this functionality. It can be disabled via the configuration.
 
 ```yaml
 graphQLPlayGround:
@@ -60,11 +60,6 @@ If the server is protected by Basic Auth, you need to configure GraphQL Playgrou
   "authorization": "Basic dXNlcjpwYXNzd29yZA=="
 }
 ```
-
-## REST-API
-
-The `/system` endpoint contains accumulated information about the whole system. Then if you want information for just a specific part of the system you can use the part specific endpoint.
-So for example the cpu temperature and usage is under `/cpu`. Some things are excluded from `/system`, such as `/system/jvm` and `/processes` since they contain so much information.
 
 ## Running
 Download the [latest release](https://github.com/Krillsson/sys-api/releases/latest).
@@ -91,13 +86,8 @@ Make sure you have [docker compose](https://docs.docker.com/compose/install/) in
    - `$ docker compose -f docker-compose.yml up`
 
 ## Configuration
-The configuration.yml file is a [Dropwizard configuration file](https://www.dropwizard.io/en/latest/manual/configuration.html).
-
-Basic Authentication:
-
-    user:
-        username: [change me]
-        password: [change me]
+The application expects a user config file (_configuration.yml_) and a spring configuration file (_application.properties_) in the _/config_ directory.
+See the sample files in the [/config](/config) repository directory.
 
 ### Self-signed certificates
 By default, sys-API will generate a self-signed certificate to enable HTTPS. This is to lower the barrier for encrypted traffic between the client and the server.
@@ -111,18 +101,13 @@ Setup
 git clone [this repo] sys-api
 ```
 ```sh
-./gradlew :server:run
-```
-Test
-
-```sh
-curl -i --user user:password -H "Accept: application/json" -X GET http://localhost:8080/api/system
+./gradlew run
 ```
 
 Package for distribution in a *.zip*:
 
 ```sh
-./gradlew :server:shadowDistZip
+./gradlew shadowDistZip
 ```
 
 And the resulting files should be located in */server/target/*

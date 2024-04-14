@@ -12,36 +12,36 @@ import com.krillsson.sysapi.core.history.db.*
 
 fun HistorySystemLoadEntity.asSystemHistoryEntry(): SystemHistoryEntry {
     return SystemHistoryEntry(
-        id,
-        date,
-        HistorySystemLoad(
-            uptime,
-            systemLoadAverage,
-            cpuLoad.asCpuLoad(),
-            networkInterfaceLoads.map { it.asNetworkInterfaceLoad() },
-            connectivity.asConnectivity(),
-            diskLoads?.map { it.asDiskLoad() }.orEmpty(),
-            fileSystemLoads?.map { it.asFileSystemLoad() }.orEmpty(),
-            memory.asMemoryLoad(),
-            gpuLoads.map { it.asGpuLoad() },
-            motherboardHealth.map { it.asHealthData() }
-        )
+            id,
+            date,
+            HistorySystemLoad(
+                    uptime,
+                    systemLoadAverage,
+                    cpuLoad.asCpuLoad(),
+                    networkInterfaceLoads.map { it.asNetworkInterfaceLoad() },
+                    connectivity.asConnectivity(),
+                    diskLoads?.map { it.asDiskLoad() }.orEmpty(),
+                    fileSystemLoads?.map { it.asFileSystemLoad() }.orEmpty(),
+                    memory.asMemoryLoad(),
+                    gpuLoads.map { it.asGpuLoad() },
+                    motherboardHealth.map { it.asHealthData() }
+            )
     )
 }
 
 fun FileSystemLoad.asFileSystemLoad(): com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad {
     return com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad(
-        name,
-        fsId.orEmpty(),
-        freeSpaceBytes,
-        usableSpaceBytes,
-        totalSpaceBytes
+            name,
+            fsId.orEmpty(),
+            freeSpaceBytes,
+            usableSpaceBytes,
+            totalSpaceBytes
     )
 }
 
 fun DiskLoad.asDiskLoad(): com.krillsson.sysapi.core.domain.disk.DiskLoad {
     return com.krillsson.sysapi.core.domain.disk.DiskLoad(
-        name, serial, values.asValues(), speed.asSpeed()
+            name, serial, values.asValues(), speed.asSpeed()
     )
 }
 
@@ -55,30 +55,30 @@ private fun DiskValues.asValues(): com.krillsson.sysapi.core.domain.disk.DiskVal
 
 fun com.krillsson.sysapi.core.history.db.HealthData.asHealthData(): HealthData {
     return HealthData(
-        description, data, dataType.asDataType()
+            description, data, dataType.asDataType()
     )
 }
 
 fun GpuLoad.asGpuLoad(): com.krillsson.sysapi.core.domain.gpu.GpuLoad {
     return com.krillsson.sysapi.core.domain.gpu.GpuLoad(
-        name, coreLoad, memoryLoad, health.asHealth()
+            name, coreLoad, memoryLoad, health.asHealth()
     )
 }
 
 fun GpuHealth.asHealth(): com.krillsson.sysapi.core.domain.gpu.GpuHealth {
     return com.krillsson.sysapi.core.domain.gpu.GpuHealth(
-        fanRpm, fanPercent, temperature
+            fanRpm, fanPercent, temperature
     )
 }
 
 fun MemoryLoad.asMemoryLoad(): com.krillsson.sysapi.core.domain.memory.MemoryLoad {
     return com.krillsson.sysapi.core.domain.memory.MemoryLoad(
-        numberOfProcesses,
-        swapTotalBytes,
-        swapUsedBytes,
-        totalBytes,
-        availableBytes,
-        usedPercent
+            numberOfProcesses,
+            swapTotalBytes,
+            swapUsedBytes,
+            totalBytes,
+            availableBytes,
+            usedPercent
     )
 }
 
@@ -95,17 +95,17 @@ fun DataType.asDataType(): com.krillsson.sysapi.core.domain.sensors.DataType {
 
 fun Connectivity.asConnectivity(): com.krillsson.sysapi.core.domain.network.Connectivity {
     return com.krillsson.sysapi.core.domain.network.Connectivity(
-        externalIp, previousExternalIp, localIp, connected
+            externalIp, previousExternalIp, localIp, connected
     )
 }
 
 fun NetworkInterfaceLoad.asNetworkInterfaceLoad(): com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad {
     return com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad(
-        name,
-        mac,
-        isUp,
-        values.asNetworkInterfaceValues(),
-        speed.asNetworkInterfaceSpeed()
+            name,
+            mac,
+            isUp,
+            values.asNetworkInterfaceValues(),
+            speed.asNetworkInterfaceSpeed()
     )
 }
 
@@ -115,19 +115,19 @@ fun NetworkInterfaceSpeed.asNetworkInterfaceSpeed(): com.krillsson.sysapi.core.d
 
 fun NetworkInterfaceValues.asNetworkInterfaceValues(): com.krillsson.sysapi.core.domain.network.NetworkInterfaceValues {
     return com.krillsson.sysapi.core.domain.network.NetworkInterfaceValues(
-        speed, bytesReceived, bytesSent, packetsReceived, packetsSent, inErrors, outErrors
+            speed, bytesReceived, bytesSent, packetsReceived, packetsSent, inErrors, outErrors
     )
 }
 
 fun com.krillsson.sysapi.core.history.db.CpuLoad.asCpuLoad(): CpuLoad {
     return CpuLoad(
-        usagePercentage,
-        systemLoadAverage,
-        loadAverages.asLoadAverages(),
-        coreLoads.map { it.asCoreLoad() },
-        cpuHealth.asCpuHealth(),
-        processCount,
-        threadCount
+            usagePercentage,
+            systemLoadAverage,
+            loadAverages.asLoadAverages(),
+            coreLoads.map { it.asCoreLoad() },
+            cpuHealth.asCpuHealth(),
+            processCount,
+            threadCount
     )
 }
 
@@ -137,68 +137,69 @@ private fun LoadAverages.asLoadAverages(): com.krillsson.sysapi.core.domain.cpu.
 
 fun com.krillsson.sysapi.core.history.db.CpuHealth.asCpuHealth(): CpuHealth {
     return CpuHealth(
-        temperatures, voltage, fanRpm, fanPercent
+            temperatures, voltage, fanRpm, fanPercent
     )
 }
 
 fun com.krillsson.sysapi.core.history.db.CoreLoad.asCoreLoad(): CoreLoad {
     return CoreLoad(
-        percentage
+            percentage
     )
 }
 
 fun ContainerStatisticsEntity.asContainerStatisticsHistoryEntry(): ContainerMetricsHistoryEntry {
     return ContainerMetricsHistoryEntry(
-        timestamp,
-        asContainerStatistics()
+            containerId,
+            timestamp,
+            asContainerStatistics()
     )
 }
 
 fun ContainerStatisticsEntity.asContainerStatistics(): ContainerMetrics {
     return ContainerMetrics(
-        id = containerId,
-        cpuUsage = cpuUsage.asCpuUsage(),
-        memoryUsage = memoryUsage.asMemoryUsage(),
-        currentPid = currentPid,
-        networkUsage = networkUsage.asNetworkUsage(),
-        blockIOUsage = blockIOUsage.asBlockIOUsage()
+            id = containerId,
+            cpuUsage = cpuUsage.asCpuUsage(),
+            memoryUsage = memoryUsage.asMemoryUsage(),
+            currentPid = currentPid,
+            networkUsage = networkUsage.asNetworkUsage(),
+            blockIOUsage = blockIOUsage.asBlockIOUsage()
     )
 }
 
 private fun BlockIOUsage.asBlockIOUsage(): com.krillsson.sysapi.core.domain.docker.BlockIOUsage {
     return com.krillsson.sysapi.core.domain.docker.BlockIOUsage(
-        bytesWritten = bytesWritten,
-        bytesRead = bytesRead
+            bytesWritten = bytesWritten,
+            bytesRead = bytesRead
     )
 }
 
 private fun NetworkUsage.asNetworkUsage(): com.krillsson.sysapi.core.domain.docker.NetworkUsage {
     return com.krillsson.sysapi.core.domain.docker.NetworkUsage(
-        bytesReceived = bytesReceived,
-        bytesTransferred = bytesTransferred
+            bytesReceived = bytesReceived,
+            bytesTransferred = bytesTransferred
     )
 }
 
 private fun MemoryUsage.asMemoryUsage(): com.krillsson.sysapi.core.domain.docker.MemoryUsage {
     return com.krillsson.sysapi.core.domain.docker.MemoryUsage(
-        usageBytes = usageBytes,
-        usagePercent = usagePercent,
-        limitBytes = limitBytes
+            usageBytes = usageBytes,
+            usagePercent = usagePercent,
+            limitBytes = limitBytes
     )
 }
 
 private fun CpuUsage.asCpuUsage(): com.krillsson.sysapi.core.domain.docker.CpuUsage {
     return com.krillsson.sysapi.core.domain.docker.CpuUsage(
-        usagePercentPerCore = usagePercentPerCore,
-        usagePercentTotal = usagePercentTotal,
-        throttlingData = throttlingData.asThrottlingData()
+            usagePercentPerCore = usagePercentPerCore,
+            usagePercentTotal = usagePercentTotal,
+            throttlingData = throttlingData.asThrottlingData()
     )
 }
 
 private fun ThrottlingData.asThrottlingData(): com.krillsson.sysapi.core.domain.docker.ThrottlingData {
     return com.krillsson.sysapi.core.domain.docker.ThrottlingData(
-        periods = periods,
-        throttledPeriods = throttledPeriods,
-        throttledTime = throttledTime
+            periods = periods,
+            throttledPeriods = throttledPeriods,
+            throttledTime = throttledTime
     )
 }

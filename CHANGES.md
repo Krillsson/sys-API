@@ -1,4 +1,11 @@
 ### Unreleased
+- Major architectural update: the project now uses the [spring](https://spring.io) framework instead of Dropwizard.
+  - Spring introduced a second config file, application.properties. The ports is now edited from that file.
+- Native image: moving to Spring enabled to build the project as a [Graal Native Image](https://www.graalvm.org/latest/reference-manual/native-image/)
+  - The main benefit for is less RAM usage: around **200 MB** compared to **750 MB** running the standard way
+  - Native images are distributed under the krillsson/sys-api:native tag
+  - Consider this new feature experimental and sys-API may fail to start with obscure errors. If you encounter this, open an issue.
+  - No Raspberry PI support: only builds for amd64 can be provided at this time, as [GitHub does not support building for arm64v8 yet](https://github.com/actions/runner-images/issues/5631)
 - Memory monitor now operates based on "used bytes goes above threshold" compared to the old "available bytes goes below threshold" as this is more intuitive.
 - Removed deprecated Disks (Drives still remain) 
 
