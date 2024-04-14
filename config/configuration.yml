@@ -1,5 +1,5 @@
 #########################################
-### System-Api configuration          ###
+### sys-API user configuration        ###
 #########################################
 metricsConfig:
   monitor:
@@ -17,8 +17,6 @@ metricsConfig:
     enabled: false
     duration: 5
     unit: SECONDS
-#processes:
-#  enabled: true
 user:
   username: user
   password: password
