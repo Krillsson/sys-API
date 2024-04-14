@@ -25,7 +25,7 @@ plugins {
 }
 
 group = 'com.krillsson'
-version = '0.20.0'
+version = '0.30.0'
 
 buildConfig {
     buildConfigField("String", "APP_VERSION", provider { "\"${project.version}\"" })

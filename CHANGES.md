@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 0.30.0
 - Migrated to [spring](https://spring.io) framework instead of Dropwizard.
 - [Graal Native Image](https://www.graalvm.org/latest/reference-manual/native-image/) Docker image option. Significant reduction in RAM usage.
 - Memory monitor now operates based on "used bytes goes above threshold" compared to the old "available bytes goes below threshold" as this is more intuitive.
