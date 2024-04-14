@@ -1,5 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.transformers.PropertiesFileTransformer
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import com.github.jengelman.gradle.plugins.shadow.transformers.*
 
 buildscript {
     dependencies {
@@ -49,20 +49,19 @@ repositories {
     }
 }
 
-// https://github.com/GoogleContainerTools/jib-extensions/tree/master/first-party/jib-native-image-extension-gradle
+/**
+ Gradle plugin doc: https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#configuration-options
+ */
 graalvmNative {
     metadataRepository {
         enabled = true
     }
     binaries {
-        //https://www.graalvm.org/latest/reference-manual/native-image/metadata/AutomaticMetadataCollection/#tracing-agent
-        // -agentlib:native-image-agent=config-merge-dir=META-INF/native-image
+        // https://www.graalvm.org/latest/reference-manual/native-image/metadata/AutomaticMetadataCollection/#tracing-agent
+        // Add this in run configuration VM options: -agentlib:native-image-agent=config-merge-dir=META-INF/native-image
         main {
-            buildArgs.add('--no-server')
             buildArgs.add('--no-fallback')
             buildArgs.add('--report-unsupported-elements-at-runtime')
-            // buildArgs.add('--initialize-at-run-time=com.sun.jna')
-            buildArgs.add('--allow-incomplete-classpath')
             buildArgs.add('-H:+JNI')
             buildArgs.add('-H:+ReportExceptionStackTraces')
             buildArgs.add('-H:+PrintAnalysisCallTree')
@@ -70,40 +69,64 @@ graalvmNative {
             buildArgs.add('--trace-object-instantiation=ch.qos.logback.core.AsyncAppenderBase$Worker')
             buildArgs.add('--initialize-at-build-time=org.slf4j.LoggerFactory,ch.qos.logback')
             buildArgs.add('--initialize-at-run-time=io.netty')
-            /**
-            //https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#configuration-options
-             */
         }
     }
 }
 
-jib {
-    to.image = "krillsson/sys-api:nightly"
-    container {
-        //appRoot = "/"
-        ports = ["8080", "8443", "2375"]
-        volumes = ["/config", "/data", "/var/run/docker.sock"]
-        creationTime = "USE_CURRENT_TIMESTAMP"
+task jibJvm (type: com.google.cloud.tools.jib.gradle.BuildImageTask) {
+    group = 'Docker'
+    description = 'Creates image with jvm build'
+    jibExtension = project.extensions.getByName('jib')
+    dependsOn 'jar'
+    doFirst {
+        jib {
+            container {
+                ports = ["8080", "8443", "2375"]
+                volumes = ["/config", "/data", "/var/run/docker.sock"]
+            }
+            from {
+                image = 'krillsson/openjdk21-ubuntu-systemd:latest'
+                platforms {
+                    platform {
+                        architecture = 'amd64'
+                        os = 'linux'
+                    }
+                    platform {
+                        architecture = 'arm64'
+                        os = 'linux'
+                    }
+                }
+            }
+            def tag = findProperty("buildType") == "release" ? "latest" : "nightly"
+            to.image = "krillsson/sys-api:$tag"
+        }
     }
-    jib.from {
-        image = 'krillsson/openjdk21-ubuntu-systemd:latest'
-//        platforms {
-//            platform {
-//                architecture = 'amd64'
-//                os = 'linux'
-//            }
-//            platform {
-//                architecture = 'arm64'
-//                os = 'linux'
-//            }
-//        }
-    }
-    pluginExtensions {
-        pluginExtension {
-            implementation = 'com.google.cloud.tools.jib.gradle.extension.nativeimage.JibNativeImageExtension'
-            properties = [
-                    imageName: 'sysapi'
-            ]
+}
+
+task jibNativeImage (type: com.google.cloud.tools.jib.gradle.BuildImageTask) {
+    group = 'Docker'
+    description = 'Creates image with native build'
+    jibExtension = project.extensions.getByName('jib')
+    dependsOn 'nativeCompile'
+    doFirst {
+        jib {
+            container {
+                ports = ["8080", "8443", "2375"]
+                volumes = ["/config", "/data", "/var/run/docker.sock"]
+            }
+            jib.from {
+                image = 'krillsson/openjdk21-ubuntu-systemd:latest'
+            }
+            def tag = findProperty("buildType") == "release" ? "native" : "native-nightly"
+            to.image = "krillsson/sys-api:$tag"
+            pluginExtensions {
+                pluginExtension {
+                    implementation = 'com.google.cloud.tools.jib.gradle.extension.nativeimage.JibNativeImageExtension'
+                    properties = [
+                            imageName: 'sysapi'
+                    ]
+                }
+            }
         }
     }
 }
@@ -116,17 +139,21 @@ shadowJar {
     append 'META-INF/spring.schemas'
     append 'META-INF/spring.tooling'
     transform(PropertiesFileTransformer) {
-        paths = ['META-INF/spring.factories' ]
+        paths = ['META-INF/spring.factories']
         mergeStrategy = "append"
+    }
+}
+
+// put the config file in resource dir so supplying it becomes optional. Easing migration.
+processResources {
+    from("$rootDir/config") {
+        into "/config"
+        include '*.properties'
     }
 }
 
 application {
     mainClass.set('com.krillsson.sysapi.SysAPIApplicationKt')
-}
-
-run {
-
 }
 
 jar {
