@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.krillsson.sysapi.config.YAMLConfigFile
-import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
+import com.krillsson.sysapi.core.connectivity.ConnectivityCheckService
 import com.krillsson.sysapi.core.connectivity.ExternalIpAddressService
 import com.krillsson.sysapi.core.domain.system.Platform
 import com.krillsson.sysapi.core.metrics.Metrics
@@ -39,7 +39,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.File
-import java.security.KeyStore
 import java.time.Clock
 
 
@@ -100,7 +99,7 @@ class SysApiConfiguration {
             platform: Platform,
             diskReadWriteRateMeasurementManager: DiskReadWriteRateMeasurementManager,
             networkUploadDownloadRateMeasurementManager: NetworkUploadDownloadRateMeasurementManager,
-            connectivityCheckManager: ConnectivityCheckManager
+            connectivityCheckService: ConnectivityCheckService
     ): Metrics {
         return MetricsFactory(
                 hal,
@@ -108,7 +107,7 @@ class SysApiConfiguration {
                 platform,
                 diskReadWriteRateMeasurementManager,
                 networkUploadDownloadRateMeasurementManager,
-                connectivityCheckManager
+                connectivityCheckService
         ).get(configuration)
     }
 

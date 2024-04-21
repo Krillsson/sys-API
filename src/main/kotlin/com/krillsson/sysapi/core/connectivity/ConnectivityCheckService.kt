@@ -15,7 +15,7 @@ import java.net.Socket
 import java.util.concurrent.TimeUnit
 
 @Service
-class ConnectivityCheckManager(
+class ConnectivityCheckService(
     private val externalIpAddressService: ExternalIpAddressService,
     private val repository: KeyValueRepository,
     private val config: YAMLConfigFile

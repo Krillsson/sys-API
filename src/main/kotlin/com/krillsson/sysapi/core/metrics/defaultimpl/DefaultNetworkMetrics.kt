@@ -20,7 +20,7 @@
  */
 package com.krillsson.sysapi.core.metrics.defaultimpl
 
-import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
+import com.krillsson.sysapi.core.connectivity.ConnectivityCheckService
 import com.krillsson.sysapi.core.domain.network.*
 import com.krillsson.sysapi.core.metrics.NetworkMetrics
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager.CurrentSpeed
@@ -34,7 +34,7 @@ import java.util.*
 open class DefaultNetworkMetrics(
     private val hal: HardwareAbstractionLayer,
     private val speedMeasurementManager: NetworkUploadDownloadRateMeasurementManager,
-    private val connectivityCheckManager: ConnectivityCheckManager
+    private val connectivityCheckService: ConnectivityCheckService
 ) : NetworkMetrics {
 
     private val networkInterfaces: MutableList<NetworkIF> = hal.networkIFs
@@ -66,7 +66,7 @@ open class DefaultNetworkMetrics(
     }
 
     override fun connectivity(): Connectivity {
-        return connectivityCheckManager.getConnectivity()
+        return connectivityCheckService.getConnectivity()
     }
 
     override fun networkInterfaces(): List<NetworkInterface> {

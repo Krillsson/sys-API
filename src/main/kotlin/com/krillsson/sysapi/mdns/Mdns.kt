@@ -1,7 +1,7 @@
 package com.krillsson.sysapi.mdns
 
 import com.krillsson.sysapi.config.YAMLConfigFile
-import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
+import com.krillsson.sysapi.core.connectivity.ConnectivityCheckService
 import com.krillsson.sysapi.util.EnvironmentUtils
 import com.krillsson.sysapi.util.logger
 import jakarta.annotation.PostConstruct
@@ -16,7 +16,7 @@ import javax.jmdns.ServiceInfo
 @Service
 class Mdns(
     private val configuration: YAMLConfigFile,
-    private val connectivityCheckManager: ConnectivityCheckManager
+    private val connectivityCheckService: ConnectivityCheckService
 ) {
 
     private val logger by logger()
@@ -29,7 +29,7 @@ class Mdns(
     @PostConstruct
     fun start() {
         if (configuration.mDNS.enabled) {
-            val address = connectivityCheckManager.findLocalIp()
+            val address = connectivityCheckService.findLocalIp()
             jmdns = JmDNS.create(address)
             listOf(
                 "http" to env.getProperty<Int>("http.port", 8080),

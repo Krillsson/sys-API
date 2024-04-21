@@ -20,11 +20,10 @@
  */
 package com.krillsson.sysapi.core.metrics.windows;
 
-import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager;
+import com.krillsson.sysapi.core.connectivity.ConnectivityCheckService;
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultNetworkMetrics;
 import com.krillsson.sysapi.core.metrics.defaultimpl.NetworkUploadDownloadRateMeasurementManager;
-import com.krillsson.sysapi.periodictasks.TaskManager;
 import ohmwrapper.NetworkMonitor;
 import ohmwrapper.NicInfo;
 import org.jetbrains.annotations.NotNull;
@@ -44,8 +43,8 @@ public class WindowsNetworkMetrics extends DefaultNetworkMetrics {
     private HardwareAbstractionLayer hal;
 
 
-    public WindowsNetworkMetrics(TaskManager taskManager, HardwareAbstractionLayer hal, NetworkUploadDownloadRateMeasurementManager speedMeasurementManager, ConnectivityCheckManager connectivityCheckManager, DelegatingOHMManager monitorManager) {
-        super(hal, speedMeasurementManager, connectivityCheckManager);
+    public WindowsNetworkMetrics(HardwareAbstractionLayer hal, NetworkUploadDownloadRateMeasurementManager speedMeasurementManager, ConnectivityCheckService connectivityCheckService, DelegatingOHMManager monitorManager) {
+        super(hal, speedMeasurementManager, connectivityCheckService);
         this.hal = hal;
         this.monitorManager = monitorManager;
     }

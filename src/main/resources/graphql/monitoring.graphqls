@@ -7,6 +7,7 @@ extend type Query {
     pastEvents: [PastEvent!]!
     ongoingEvents: [OngoingEvent!]!
     monitorableItemsForType(input: MonitorableItemsInput): MonitorableItemsOutput!
+    websiteChecks: [WebServerCheck!]!
 }
 
 extend type Mutation {
@@ -22,6 +23,8 @@ extend type Mutation {
     deletePastEventsForMonitor(input: DeleteEventsForMonitorInput): DeleteEventOutput
     closeOngoingEventForMonitor(input: DeleteEventsForMonitorInput): DeleteEventOutput
     deleteGenericEvent(input: DeleteGenericEventInput): DeleteGenericEventOutput
+    addWebServerCheck(input: AddWebServerCheckInput): AddWebServerCheckOutput
+    deleteWebServerCheck(input: DeleteWebServerCheckInput): DeleteWebServerCheckOutput
 }
 
 input CreateNumericalMonitorInput {
@@ -123,6 +126,32 @@ type DeleteGenericEventOutput {
 
 input DeleteGenericEventInput{
     eventId: UUID!
+}
+
+type AddWebServerCheckOutput {
+    id: UUID!
+}
+
+union AddWebServerCheckOutput = AddWebServerCheckOutputSuccess | AddWebServerCheckOutputFailed
+
+type AddWebServerCheckOutputSuccess {
+    id: UUID!
+}
+
+type AddWebServerCheckOutputFailed {
+    reason: String!
+}
+
+input AddWebServerCheckInput {
+    url: String!
+}
+
+input DeleteWebServerCheckInput {
+    id: UUID!
+}
+
+type DeleteWebServerCheckOutput{
+    removed: Boolean!
 }
 
 
@@ -249,4 +278,20 @@ type MonitoredItemMissing implements GenericEvent {
     monitorType: MonitorType!
     monitorId: UUID!
     monitoredItemId: String
+}
+
+type WebServerCheck {
+    id: UUID!
+    url: String!
+    status: WebServerCheckHistoryEntry
+    history: [WebServerCheckHistoryEntry!]!
+}
+
+type WebServerCheckHistoryEntry {
+    id: UUID!
+    websiteCheckId: UUID!
+    timeStamp: Instant!
+    responseCode: Int!
+    message: String!
+    errorBody: String
 }
