@@ -31,6 +31,7 @@ abstract class Monitor<out T : MonitoredValue> {
         PROCESS_CPU_LOAD(ValueType.Fractional),
         PROCESS_EXISTS(ValueType.Conditional),
         CONNECTIVITY(ValueType.Conditional),
+        WEBSITE_UP(ValueType.Conditional),
         EXTERNAL_IP_CHANGED(ValueType.Conditional)
     }
 

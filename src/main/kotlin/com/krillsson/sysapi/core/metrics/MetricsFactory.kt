@@ -21,7 +21,7 @@
 package com.krillsson.sysapi.core.metrics
 
 import com.krillsson.sysapi.config.YAMLConfigFile
-import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
+import com.krillsson.sysapi.core.connectivity.ConnectivityCheckService
 import com.krillsson.sysapi.core.domain.system.Platform
 import com.krillsson.sysapi.core.metrics.cache.Cache
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetricsFactory
@@ -40,7 +40,7 @@ class MetricsFactory(
     private val platform: Platform,
     private val diskReadWriteRateMeasurementManager: DiskReadWriteRateMeasurementManager,
     private val networkUploadDownloadRateMeasurementManager: NetworkUploadDownloadRateMeasurementManager,
-    private val connectivityCheckManager: ConnectivityCheckManager
+    private val connectivityCheckService: ConnectivityCheckService
 ) {
     fun get(configuration: YAMLConfigFile): Metrics {
 
@@ -67,7 +67,7 @@ class MetricsFactory(
                     platform,
                     diskReadWriteRateMeasurementManager,
                     networkUploadDownloadRateMeasurementManager,
-                    connectivityCheckManager
+                    connectivityCheckService
                 )
                 if (metrics != null) {
                     metrics
@@ -80,7 +80,7 @@ class MetricsFactory(
                         platform,
                         diskReadWriteRateMeasurementManager,
                         networkUploadDownloadRateMeasurementManager,
-                        connectivityCheckManager
+                        connectivityCheckService
                     )
                 }
             }
@@ -95,7 +95,7 @@ class MetricsFactory(
                     platform,
                     diskReadWriteRateMeasurementManager,
                     networkUploadDownloadRateMeasurementManager,
-                    connectivityCheckManager
+                    connectivityCheckService
                 )
             }
 
@@ -106,7 +106,7 @@ class MetricsFactory(
                 platform,
                 diskReadWriteRateMeasurementManager,
                 networkUploadDownloadRateMeasurementManager,
-                connectivityCheckManager
+                connectivityCheckService
             )
         }
     }

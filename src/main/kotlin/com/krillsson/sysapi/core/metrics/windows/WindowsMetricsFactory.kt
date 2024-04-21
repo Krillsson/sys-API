@@ -1,7 +1,7 @@
 package com.krillsson.sysapi.core.metrics.windows
 
 import com.krillsson.sysapi.config.YAMLConfigFile
-import com.krillsson.sysapi.core.connectivity.ConnectivityCheckManager
+import com.krillsson.sysapi.core.connectivity.ConnectivityCheckService
 import com.krillsson.sysapi.core.domain.system.Platform
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuLoadMetrics
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultDiskMetrics
@@ -13,20 +13,18 @@ import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultSystemMetrics
 import com.krillsson.sysapi.core.metrics.defaultimpl.DiskReadWriteRateMeasurementManager
 import com.krillsson.sysapi.core.metrics.defaultimpl.NetworkUploadDownloadRateMeasurementManager
 import com.krillsson.sysapi.util.asOperatingSystem
-import com.krillsson.sysapi.util.asPlatform
-import oshi.PlatformEnum
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.software.os.OperatingSystem
 
 object WindowsMetricsFactory {
     fun create(
-        configuration: YAMLConfigFile,
-        os: OperatingSystem,
-        hal: HardwareAbstractionLayer,
-        platformEnum: Platform,
-        diskReadWriteRateMeasurementManager: DiskReadWriteRateMeasurementManager,
-        networkUploadDownloadRateMeasurementManager: NetworkUploadDownloadRateMeasurementManager,
-        connectivityCheckManager: ConnectivityCheckManager
+            configuration: YAMLConfigFile,
+            os: OperatingSystem,
+            hal: HardwareAbstractionLayer,
+            platformEnum: Platform,
+            diskReadWriteRateMeasurementManager: DiskReadWriteRateMeasurementManager,
+            networkUploadDownloadRateMeasurementManager: NetworkUploadDownloadRateMeasurementManager,
+            connectivityCheckService: ConnectivityCheckService
     ): WindowsMetrics? {
         val ohmFactory = OHMManagerFactory()
         if (ohmFactory.prerequisitesFilled() && ohmFactory.initialize()) {
@@ -37,7 +35,7 @@ object WindowsMetricsFactory {
             val networkMetrics = DefaultNetworkMetrics(
                 hal,
                 networkUploadDownloadRateMeasurementManager,
-                connectivityCheckManager
+                connectivityCheckService
             )
             val gpuMetrics = WindowsGpuMetrics(hal, monitorManager)
             val diskMetrics = DefaultDiskMetrics(hal, diskReadWriteRateMeasurementManager)
