@@ -1,14 +1,14 @@
-CREATE TABLE WebServerCheckEntity
+CREATE TABLE WebserverCheckEntity
 (
     id  char(36)     NOT NULL,
     url VARCHAR(255) NOT NULL,
     CONSTRAINT pk_websitecheckentity PRIMARY KEY (id)
 );
 
-CREATE TABLE WebServerCheckHistoryEntity
+CREATE TABLE WebserverCheckHistoryEntity
 (
     id             char(36)     NOT NULL,
-    websiteCheckId char(36)     NOT NULL,
+    webserverCheckId char(36)     NOT NULL,
     timestamp      datetime     NOT NULL,
     responseCode   INT          NOT NULL,
     message        VARCHAR(255) NOT NULL,
@@ -16,4 +16,4 @@ CREATE TABLE WebServerCheckHistoryEntity
     CONSTRAINT pk_websitecheckhistoryentry PRIMARY KEY (id)
 );
 
-create index if not exists WebServerCheckHistoryEntry on WebServerCheckHistoryEntity (websiteCheckId, timestamp);
+create index if not exists WebserverCheckHistoryEntry on WebserverCheckHistoryEntity (webserverCheckId, timestamp);

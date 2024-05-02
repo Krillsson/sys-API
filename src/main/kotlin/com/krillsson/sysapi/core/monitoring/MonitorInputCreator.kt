@@ -7,13 +7,16 @@ import com.krillsson.sysapi.core.domain.monitor.toNumericalValue
 import com.krillsson.sysapi.core.domain.processes.ProcessSort
 import com.krillsson.sysapi.core.domain.system.SystemLoad
 import com.krillsson.sysapi.core.metrics.Metrics
+import com.krillsson.sysapi.core.webservicecheck.WebServerCheckService
 import com.krillsson.sysapi.docker.ContainerManager
 import org.springframework.stereotype.Component
+import java.util.*
 
 @Component
 class MonitorInputCreator(
     private val metrics: Metrics,
-    private val containerManager: ContainerManager
+    private val containerManager: ContainerManager,
+    private val webServerCheckService: WebServerCheckService
 ) {
 
     private val networkTypes = listOf(
@@ -37,6 +40,10 @@ class MonitorInputCreator(
 
     private val containerTypes = listOf<Monitor.Type>(
         Monitor.Type.CONTAINER_RUNNING
+    )
+
+    private val webserverCheckTypes = listOf<Monitor.Type>(
+        Monitor.Type.WEBSERVER_UP
     )
 
     private val containerStatisticsTypes = listOf<Monitor.Type>(
@@ -63,6 +70,9 @@ class MonitorInputCreator(
                 metrics.processesMetrics().getProcessByPid(pid).orElse(null)
             }
         }
+        val webserverChecks = activeTypes.filter { webserverCheckTypes.contains(it.type) }.mapNotNull {
+            webServerCheckService.getStatusForWebServer(UUID.fromString(it.config.monitoredItemId))
+        }
 
         val load = SystemLoad(
             uptime = metrics.cpuMetrics().uptime(),
@@ -84,7 +94,8 @@ class MonitorInputCreator(
         return MonitorInput(
             load,
             containers,
-            containersStats
+            containersStats,
+            webserverChecks
         )
     }
 
@@ -409,6 +420,19 @@ class MonitorInputCreator(
                         type = type
                     )
                 )
+            }
+
+            Monitor.Type.WEBSERVER_UP -> {
+                webServerCheckService.getAll().map {
+                    MonitorableItem(
+                        id = it.id.toString(),
+                        name = it.url,
+                        description = "Returns status 200 on a GET request",
+                        maxValue = false.toConditionalValue(),
+                        currentValue = false.toConditionalValue(),
+                        type = type
+                    )
+                }
             }
         }
     }

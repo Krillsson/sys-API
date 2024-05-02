@@ -93,6 +93,11 @@ object MonitorFactory {
                 id,
                 config as MonitorConfig<MonitoredValue.FractionalValue>
             )
+
+            Monitor.Type.WEBSERVER_UP -> WebServerUpMonitor(
+                id,
+                config as MonitorConfig<MonitoredValue.ConditionalValue>
+            )
         }
     }
 }
