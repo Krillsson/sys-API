@@ -7,6 +7,8 @@ import com.krillsson.sysapi.core.domain.monitor.toNumericalValue
 import com.krillsson.sysapi.core.genericevents.GenericEventRepository
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.event.EventManager
+import com.krillsson.sysapi.core.webservicecheck.AddWebServerResult
+import com.krillsson.sysapi.core.webservicecheck.WebServerCheckService
 import com.krillsson.sysapi.docker.ContainerManager
 import com.krillsson.sysapi.graphql.mutations.*
 import com.krillsson.sysapi.logaccess.windowseventlog.WindowsManager
@@ -26,6 +28,7 @@ class MutationResolver(
         private val containerManager: ContainerManager,
         private val systemDaemonManager: SystemDaemonManager,
         private val windowsManager: WindowsManager,
+        private val webServerCheckService: WebServerCheckService
 ) {
 
     @MutationMapping
@@ -185,5 +188,19 @@ class MutationResolver(
     fun closeOngoingEventForMonitor(@Argument input: DeleteEventsForMonitorInput): DeleteEventOutput {
         val removed = eventManager.removeOngoingEventsForMonitorId(input.monitorId)
         return DeleteEventOutput(removed)
+    }
+
+    @MutationMapping
+    fun addWebServerCheck(@Argument input: AddWebServerCheckInput): AddWebServerCheckOutput {
+        return when (val result = webServerCheckService.addWebServer(input.url)) {
+            is AddWebServerResult.Success -> AddWebServerCheckOutputSuccess(result.id)
+            is AddWebServerResult.Fail -> AddWebServerCheckOutputFailed(result.reason)
+        }
+    }
+
+    @MutationMapping
+    fun deleteWebServerCheck(@Argument input: DeleteWebServerCheckInput): DeleteWebServerCheckOutput {
+        val result = webServerCheckService.removeWebServerById(input.id)
+        return DeleteWebServerCheckOutput(result)
     }
 }

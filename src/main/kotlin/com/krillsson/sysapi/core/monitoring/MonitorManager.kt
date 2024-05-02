@@ -151,6 +151,7 @@ class MonitorManager(
             MonitorInput(
                 metrics.systemMetrics().systemLoad(),
                 emptyList(),
+                emptyList(),
                 emptyList()
             )
         ) != null

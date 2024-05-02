@@ -8,19 +8,19 @@ import com.krillsson.sysapi.core.domain.system.Platform
 import com.krillsson.sysapi.core.genericevents.GenericEventRepository
 import com.krillsson.sysapi.core.history.HistoryRepository
 import com.krillsson.sysapi.core.history.db.BasicHistorySystemLoadEntity
-import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.event.EventManager
+import com.krillsson.sysapi.core.webservicecheck.OneOffWebserverResult
+import com.krillsson.sysapi.core.webservicecheck.WebServerCheck
+import com.krillsson.sysapi.core.webservicecheck.WebServerCheckService
 import com.krillsson.sysapi.docker.ContainerManager
 import com.krillsson.sysapi.docker.Status
 import com.krillsson.sysapi.graphql.domain.*
-import com.krillsson.sysapi.logaccess.file.LogFilesManager
 import com.krillsson.sysapi.logaccess.windowseventlog.WindowsManager
 import com.krillsson.sysapi.systemd.SystemDaemonManager
 import com.krillsson.sysapi.util.EnvironmentUtils
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
-import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
 import java.time.Instant
 import java.time.OffsetDateTime
@@ -36,7 +36,7 @@ class QueryResolver(
         private val platform: Platform,
         private val meta: Meta,
         private val containerManager: ContainerManager,
-        private val logFilesManager: LogFilesManager,
+        private val webServerCheckService: WebServerCheckService,
         private val windowsEventLogManager: WindowsManager,
         private val systemDaemonManager: SystemDaemonManager,
 ) {
@@ -98,11 +98,20 @@ class QueryResolver(
 
     @QueryMapping
     fun genericEvents() = genericEventRepository.read()
-    @QueryMapping
-    fun pastEvents() = eventManager.getAll().filterIsInstance(PastEvent::class.java)
-    @QueryMapping
-    fun ongoingEvents() = eventManager.getAll().filterIsInstance(OngoingEvent::class.java)
 
+    @QueryMapping
+    fun pastEvents() = eventManager.getAll().filterIsInstance<PastEvent>()
+
+    @QueryMapping
+    fun ongoingEvents() = eventManager.getAll().filterIsInstance<OngoingEvent>()
+
+    @QueryMapping
+    fun webServerChecks(): List<WebServerCheck> = webServerCheckService.getAll()
+
+    @QueryMapping
+    fun oneOffWebserverCheck(@Argument url: String): OneOffWebserverResult {
+        return webServerCheckService.checkNow(url)
+    }
 
     @QueryMapping
     fun docker(): Docker {

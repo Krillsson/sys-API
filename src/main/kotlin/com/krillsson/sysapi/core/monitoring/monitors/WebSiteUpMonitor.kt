@@ -1,6 +1,5 @@
 package com.krillsson.sysapi.core.monitoring.monitors
 
-import com.krillsson.sysapi.core.domain.docker.State
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.domain.monitor.toConditionalValue
@@ -10,30 +9,17 @@ import com.krillsson.sysapi.core.monitoring.MonitorInput
 import java.util.*
 
 class WebServerUpMonitor(
-        override val id: UUID,
-        override val config: MonitorConfig<MonitoredValue.ConditionalValue>
+    override val id: UUID,
+    override val config: MonitorConfig<MonitoredValue.ConditionalValue>
 ) : Monitor<MonitoredValue.ConditionalValue>() {
-    override val type: Type = Type.WEBSITE_UP
-
-    companion object {
-        val selector: ContainerConditionalValueSelector = { containers, containerMetrics, monitoredItemId ->
-            containers.filter {
-                it.id.equals(monitoredItemId, ignoreCase = true)
-            }.map {
-                if (it.state == State.RUNNING) {
-                    true.toConditionalValue()
-                } else {
-                    false.toConditionalValue()
-                }
-            }.firstOrNull()
-        }
-    }
+    override val type: Type = Type.WEBSERVER_UP
 
     override fun selectValue(event: MonitorInput): MonitoredValue.ConditionalValue? {
-        return selector(event.containers, event.containerStats, config.monitoredItemId)
+        val check = event.webServerChecks.firstOrNull { it.webserverCheckId.toString() == config.monitoredItemId }
+        return (check?.responseCode == 200).toConditionalValue()
     }
 
-    override fun maxValue(info: SystemInfo): MonitoredValue.ConditionalValue? {
+    override fun maxValue(info: SystemInfo): MonitoredValue.ConditionalValue {
         return MonitoredValue.ConditionalValue(true)
     }
 
