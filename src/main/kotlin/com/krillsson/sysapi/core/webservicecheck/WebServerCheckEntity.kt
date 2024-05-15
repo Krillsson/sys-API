@@ -19,6 +19,7 @@ class WebServerCheckHistoryEntity(
         val webServerCheckId: UUID,
         val timeStamp: Instant,
         val responseCode: Int,
+        val latencyMs: Long,
         val message: String,
         val errorBody: String?
 )

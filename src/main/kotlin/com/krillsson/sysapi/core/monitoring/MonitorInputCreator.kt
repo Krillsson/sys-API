@@ -1,6 +1,7 @@
 package com.krillsson.sysapi.core.monitoring
 
 import com.krillsson.sysapi.core.domain.docker.State
+import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.domain.monitor.toConditionalValue
 import com.krillsson.sysapi.core.domain.monitor.toFractionalValue
 import com.krillsson.sysapi.core.domain.monitor.toNumericalValue
@@ -18,6 +19,10 @@ class MonitorInputCreator(
     private val containerManager: ContainerManager,
     private val webServerCheckService: WebServerCheckService
 ) {
+
+    companion object {
+        const val THEORETICAL_DRIVE_READ_SPEED_LIMIT_BYTES_PER_SECOND = 14_000L * 1024 * 1024
+    }
 
     private val networkTypes = listOf(
         Monitor.Type.NETWORK_DOWNLOAD_RATE,
@@ -109,7 +114,7 @@ class MonitorInputCreator(
                         null,
                         cpuInfo.centralProcessor.name ?: cpuInfo.centralProcessor.model ?: "",
                         null,
-                        100f.toFractionalValue(),
+                        cpuInfo.centralProcessor.logicalProcessorCount.toFloat().toFractionalValue(),
                         cpuMetrics.loadAverages.oneMinute.toFractionalValue(),
                         type
                     )
@@ -169,8 +174,8 @@ class MonitorInputCreator(
                         null,
                         cpuInfo.centralProcessor.name ?: cpuInfo.centralProcessor.model ?: "",
                         null,
-                        100f.toFractionalValue(),
-                        cpuMetrics.cpuHealth.temperatures.average().toFractionalValue(),
+                        MonitoredValue.NumericalValue(120),
+                        cpuMetrics.cpuHealth.temperatures.average().toNumericalValue(),
                         type
                     )
                 )
@@ -200,7 +205,7 @@ class MonitorInputCreator(
                             id = it.name,
                             name = it.name,
                             description = it.serial,
-                            maxValue = Long.MAX_VALUE.toNumericalValue(),
+                            maxValue = THEORETICAL_DRIVE_READ_SPEED_LIMIT_BYTES_PER_SECOND.toNumericalValue(),
                             currentValue = load.speed.readBytesPerSecond.toNumericalValue(),
                             type = type
                         )
@@ -216,7 +221,7 @@ class MonitorInputCreator(
                             id = it.name,
                             name = it.name,
                             description = it.serial,
-                            maxValue = Long.MAX_VALUE.toNumericalValue(),
+                            maxValue = THEORETICAL_DRIVE_READ_SPEED_LIMIT_BYTES_PER_SECOND.toNumericalValue(),
                             currentValue = load.speed.writeBytesPerSecond.toNumericalValue(),
                             type = type
                         )
@@ -428,8 +433,8 @@ class MonitorInputCreator(
                         id = it.id.toString(),
                         name = it.url,
                         description = "Returns status 200 on a GET request",
-                        maxValue = false.toConditionalValue(),
-                        currentValue = false.toConditionalValue(),
+                        maxValue = true.toConditionalValue(),
+                        currentValue = (webServerCheckService.getStatusForWebServer(it.id)?.responseCode == 200).toConditionalValue(),
                         type = type
                     )
                 }

@@ -195,7 +195,7 @@ enum MonitorType {
     FILE_SYSTEM_SPACE,
     DISK_READ_RATE,
     DISK_WRITE_RATE,
-    @deprecated(reason: "Replaced by MEMORY_USED 2024-03-12") MEMORY_SPACE,
+    MEMORY_SPACE @deprecated(reason: "Replaced by MEMORY_USED 2024-03-12"),
     MEMORY_USED,
     NETWORK_UP,
     NETWORK_UPLOAD_RATE,
@@ -207,7 +207,11 @@ enum MonitorType {
     PROCESS_CPU_LOAD,
     PROCESS_EXISTS,
     CONNECTIVITY,
-    EXTERNAL_IP_CHANGED
+    EXTERNAL_IP_CHANGED,
+    WEBSERVER_UP,
+    LOAD_AVERAGE_ONE_MINUTE,
+    LOAD_AVERAGE_FIVE_MINUTES,
+    LOAD_AVERAGE_FIFTEEN_MINUTES
 }
 
 type MonitorableItem {
@@ -281,7 +285,28 @@ type WebserverCheck {
     id: UUID!
     url: String!
     status: WebserverCheckHistoryEntry
+    uptimeMetrics: UptimeMetrics
     historyBetweenTimestamps(from: Instant!, to: Instant!): [WebserverCheckHistoryEntry!]!
+}
+
+type UptimeMetrics {
+    total: UptimePeriod!
+    perDay: [UptimeDay!]!
+}
+
+type UptimePeriod {
+    periodStart: Instant!
+    periodEnd: Instant!
+    totalDownTimeSeconds: Long
+    totalUptimePercent: Float
+    totalSeconds: Long
+}
+
+type UptimeDay {
+    timestampAtStartOfDay: Instant!
+    uptimePercent: Float
+    downTimeSeconds: Long
+    totalSeconds: Long
 }
 
 type WebserverCheckHistoryEntry {
@@ -289,6 +314,7 @@ type WebserverCheckHistoryEntry {
     webserverCheckId: UUID!
     timeStamp: Instant!
     responseCode: Int!
+    latencyMs: Long!
     message: String!
     errorBody: String
 }
@@ -296,6 +322,7 @@ type WebserverCheckHistoryEntry {
 type OneOffWebserverCheck {
     timeStamp: Instant!
     responseCode: Int!
+    latencyMs: Long!
     message: String!
     errorBody: String
 }

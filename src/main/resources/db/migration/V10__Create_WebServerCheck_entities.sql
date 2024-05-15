@@ -7,12 +7,13 @@ CREATE TABLE WebserverCheckEntity
 
 CREATE TABLE WebserverCheckHistoryEntity
 (
-    id             char(36)     NOT NULL,
+    id               char(36)     NOT NULL,
     webserverCheckId char(36)     NOT NULL,
-    timestamp      datetime     NOT NULL,
-    responseCode   INT          NOT NULL,
-    message        VARCHAR(255) NOT NULL,
-    errorBody      VARCHAR(255) NULL,
+    timestamp        datetime     NOT NULL,
+    responseCode     INT          NOT NULL,
+    latencyMs        INT          NOT NULL,
+    message          VARCHAR(255) NOT NULL,
+    errorBody        VARCHAR(255) NULL,
     CONSTRAINT pk_websitecheckhistoryentry PRIMARY KEY (id)
 );
 

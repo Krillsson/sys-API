@@ -23,6 +23,7 @@ sealed class MonitoredValue {
 fun Long.toNumericalValue() = MonitoredValue.NumericalValue(this)
 fun Boolean.toConditionalValue() = MonitoredValue.ConditionalValue(this)
 fun Float.toFractionalValue() = MonitoredValue.FractionalValue(this)
+fun Float.toNumericalValue() = MonitoredValue.NumericalValue(this.toLong())
 fun Double.toFractionalValue() = MonitoredValue.FractionalValue(this.toFloat())
 fun Double.toConditionalValue() = if (this == 1.0) true.toConditionalValue() else false.toConditionalValue()
 fun Double.toNumericalValue() = this.roundToLong().toNumericalValue()
