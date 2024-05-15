@@ -10,6 +10,7 @@ import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URISyntaxException
 import java.net.URL
+import java.time.Duration
 import java.time.Instant
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -20,6 +21,7 @@ import kotlin.jvm.optionals.getOrNull
 @Transactional
 class WebServerCheckService(
     private val repository: WebServerCheckRepository,
+    private val webServerUptimeCalculator: WebServerUptimeCalculator,
     private val historyRepository: WebServerHistoryEntryRepository,
     yamlConfigFile: YAMLConfigFile,
 ) {
@@ -38,26 +40,33 @@ class WebServerCheckService(
     }
 
     fun checkNow(url: String): OneOffWebserverResult {
+        val start = Instant.now()
         return try {
             val request: Request = Request.Builder()
                 .url(url)
                 .build()
             val call = client.newCall(request)
             val response = call.execute()
-            logger.debug("Request ${if (response.isSuccessful) "SUCCESS" else "FAIL"} $url: ${response.code} - ${response.message}")
+            val end = Instant.now()
+            val latencyMs = Duration.between(start, end).toMillis()
+            logger.debug("Request ${if (response.isSuccessful) "SUCCESS" else "FAIL"} $url: ${response.code} - ${response.message} (${latencyMs}ms)")
             OneOffWebserverResult(
                 Instant.now(),
                 response.code,
                 response.message,
-                if (response.isSuccessful) response.readLimitedBody() else null
+                latencyMs,
+                response.readLimitedBody()
             )
         } catch (e: Exception) {
             val errorMessage = e.message ?: e::class.java.simpleName
-            logger.warn("Request FAIL ${url}: $errorMessage")
+            val end = Instant.now()
+            val latencyMs = Duration.between(start, end).toMillis()
+            logger.warn("Request FAIL ${url}: $errorMessage (${latencyMs}ms)")
             OneOffWebserverResult(
                 Instant.now(),
                 -1,
                 errorMessage,
+                latencyMs,
                 null
             )
         }
@@ -112,6 +121,14 @@ class WebServerCheckService(
             }
     }
 
+    fun getUptimeMetricsForWebServer(webserverId: UUID): UptimeMetrics? {
+        val now = Instant.now()
+        val beginningOfPeriod = now.minus(purgeConfig.olderThan, purgeConfig.unit)
+        val historyThisMonth: List<WebServerCheckHistoryEntry> = getHistoryForWebServerBetweenTimestamps(webserverId, beginningOfPeriod, now)
+        return webServerUptimeCalculator.metricsForHistory(historyThisMonth)
+    }
+
+
     private fun checkAvailabilities() {
         repository.findAll()
             .forEach {
@@ -133,16 +150,20 @@ class WebServerCheckService(
             .build()
 
         val call: Call = client.newCall(request)
+        val start = Instant.now()
         call.enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
-                logger.debug("Request ${if (response.isSuccessful) "SUCCESS" else "FAIL"} ${entity.url}: ${response.code} - ${response.message}")
+                val end = Instant.now()
+                val latencyMs = Duration.between(start, end).toMillis()
+                logger.debug("Request ${if (response.isSuccessful) "SUCCESS" else "FAIL"} ${entity.url}: ${response.code} - ${response.message} (${latencyMs}ms)")
                 val entity = WebServerCheckHistoryEntity(
                     UUID.randomUUID(),
                     entity.id,
                     Instant.now(),
                     response.code,
+                    latencyMs,
                     response.message,
-                    if (response.isSuccessful) response.readLimitedBody() else null
+                    response.readLimitedBody()
                 )
                 historyRepository.save(
                     entity
@@ -151,12 +172,15 @@ class WebServerCheckService(
 
             override fun onFailure(call: Call, e: IOException) {
                 val errorMessage = e.message ?: e::class.java.simpleName
-                logger.warn("Request FAIL ${entity.url}: $errorMessage")
+                val end = Instant.now()
+                val latencyMs = Duration.between(start, end).toMillis()
+                logger.warn("Request FAIL ${entity.url}: $errorMessage (${latencyMs}ms)")
                 val entity = WebServerCheckHistoryEntity(
                     UUID.randomUUID(),
                     entity.id,
                     Instant.now(),
                     -1,
+                    latencyMs,
                     errorMessage,
                     null
                 )
@@ -168,14 +192,22 @@ class WebServerCheckService(
     }
 
     private fun Response.readLimitedBody() = try {
-        peekBody(256).string()
+        peekBody(512).string()
     } catch (exception: Exception) {
         "${exception::class.simpleName}: ${exception.message}"
     }
 
     fun WebServerCheckHistoryEntity.asDomain(): WebServerCheckHistoryEntry {
         return with(this) {
-            WebServerCheckHistoryEntry(id, webServerCheckId, timeStamp, responseCode, message, errorBody)
+            WebServerCheckHistoryEntry(
+                id = id,
+                webserverCheckId = webServerCheckId,
+                timeStamp = timeStamp,
+                responseCode = responseCode,
+                latencyMs = latencyMs,
+                message = message,
+                errorBody = errorBody
+            )
         }
     }
 

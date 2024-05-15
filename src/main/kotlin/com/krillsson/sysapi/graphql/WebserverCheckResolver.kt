@@ -12,6 +12,8 @@ import java.time.Instant
 class WebserverCheckResolver(val webServerCheckService: WebServerCheckService) {
     @SchemaMapping
     fun status(check: WebServerCheck) = webServerCheckService.getStatusForWebServer(check.id)
+    @SchemaMapping
+    fun uptimeMetrics(check: WebServerCheck) = webServerCheckService.getUptimeMetricsForWebServer(check.id)
 
     @SchemaMapping
     fun historyBetweenTimestamps(check: WebServerCheck, @Argument from: Instant, @Argument to: Instant) = webServerCheckService.getHistoryForWebServerBetweenTimestamps(check.id, from, to)
