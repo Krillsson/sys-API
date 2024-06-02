@@ -72,6 +72,53 @@ class WebServerCheckService(
         }
     }
 
+    fun runWebServerCheckNow(id: UUID): WebServerCheckHistoryEntry? {
+        val start = Instant.now()
+        val entity = repository.findById(id).getOrNull()
+        val status = entity?.let { check ->
+            try {
+                val request: Request = Request.Builder()
+                    .url(check.url)
+                    .build()
+                val call = client.newCall(request)
+                val response = call.execute()
+                val end = Instant.now()
+                val latencyMs = Duration.between(start, end).toMillis()
+                logger.debug("Request ${if (response.isSuccessful) "SUCCESS" else "FAIL"} $check.url: ${response.code} - ${response.message} (${latencyMs}ms)")
+                WebServerCheckHistoryEntity(
+                    UUID.randomUUID(),
+                    entity.id,
+                    Instant.now(),
+                    response.code,
+                    latencyMs,
+                    response.message,
+                    response.readLimitedBody()
+                )
+            } catch (e: Exception) {
+                val errorMessage = e.message ?: e::class.java.simpleName
+                val end = Instant.now()
+                val latencyMs = Duration.between(start, end).toMillis()
+                logger.warn("Request FAIL ${check.url}: $errorMessage (${latencyMs}ms)")
+                WebServerCheckHistoryEntity(
+                    UUID.randomUUID(),
+                    entity.id,
+                    Instant.now(),
+                    -1,
+                    latencyMs,
+                    errorMessage,
+                    null
+                )
+            }
+        }
+        return if (status != null) {
+            historyRepository.save(status)
+            status.asDomain()
+        } else {
+            logger.warn("No webserver check with id $id was found")
+            null
+        }
+    }
+
     fun addWebServer(url: String): AddWebServerResult {
         return when (val validationResult = validateUrl(url)) {
             URLValidationResult.Valid -> {
@@ -105,6 +152,10 @@ class WebServerCheckService(
 
     fun getAll(): List<WebServerCheck> {
         return repository.findAll().map { it.asDomain() }
+    }
+
+    fun getById(id: UUID): WebServerCheck? {
+        return repository.findById(id).map { it.asDomain() }.getOrNull()
     }
 
     fun getStatusForWebServer(id: UUID): WebServerCheckHistoryEntry? {
@@ -191,10 +242,16 @@ class WebServerCheckService(
         })
     }
 
-    private fun Response.readLimitedBody() = try {
-        peekBody(512).string()
-    } catch (exception: Exception) {
-        "${exception::class.simpleName}: ${exception.message}"
+    private fun Response.readLimitedBody(): String {
+        val bodyString = try {
+            peekBody(512).use {
+                it.string()
+            }
+        } catch (exception: Exception) {
+            "${exception::class.simpleName}: ${exception.message}"
+        }
+        body?.close()
+        return bodyString
     }
 
     fun WebServerCheckHistoryEntity.asDomain(): WebServerCheckHistoryEntry {
