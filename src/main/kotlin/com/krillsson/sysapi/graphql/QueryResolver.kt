@@ -12,6 +12,7 @@ import com.krillsson.sysapi.core.monitoring.MonitorManager
 import com.krillsson.sysapi.core.monitoring.event.EventManager
 import com.krillsson.sysapi.core.webservicecheck.OneOffWebserverResult
 import com.krillsson.sysapi.core.webservicecheck.WebServerCheck
+import com.krillsson.sysapi.core.webservicecheck.WebServerCheckHistoryEntry
 import com.krillsson.sysapi.core.webservicecheck.WebServerCheckService
 import com.krillsson.sysapi.docker.ContainerManager
 import com.krillsson.sysapi.docker.Status
@@ -63,15 +64,18 @@ class QueryResolver(
     }
 
     @QueryMapping
-    fun monitors(): List<com.krillsson.sysapi.graphql.domain.Monitor> {
+    fun monitors(): List<Monitor> {
         return monitorManager.getAll().map { it.asMonitor() }
     }
 
     @QueryMapping
-    fun monitorById(@Argument id: String): com.krillsson.sysapi.graphql.domain.Monitor? {
+    fun monitorById(@Argument id: String): Monitor? {
         return monitorManager.getById(UUID.fromString(id))?.asMonitor()
     }
-
+    @QueryMapping
+    fun monitorOfTypeByMonitoredItemId(@Argument type: com.krillsson.sysapi.core.monitoring.Monitor.Type, @Argument monitoredItemId: String): Monitor? {
+        return monitorManager.monitorOfTypeByMonitoredItemId(type, monitoredItemId)?.asMonitor()
+    }
 
     @QueryMapping
     fun events() = eventManager.getAll().toList()
@@ -109,8 +113,16 @@ class QueryResolver(
     fun webServerChecks(): List<WebServerCheck> = webServerCheckService.getAll()
 
     @QueryMapping
+    fun webServerCheckById(@Argument id: UUID): WebServerCheck? = webServerCheckService.getById(id)
+
+    @QueryMapping
     fun oneOffWebserverCheck(@Argument url: String): OneOffWebserverResult {
         return webServerCheckService.checkNow(url)
+    }
+
+    @QueryMapping
+    fun runWebServerCheckNow(@Argument webserverCheckId: UUID): WebServerCheckHistoryEntry? {
+        return webServerCheckService.runWebServerCheckNow(webserverCheckId)
     }
 
     @QueryMapping
@@ -151,4 +163,6 @@ class QueryResolver(
             is SystemDaemonManager.Status.Unavailable -> SystemDaemonAccessUnavailable(status.error.message.orEmpty())
         }
     }
+
+
 }

@@ -1,6 +1,7 @@
 extend type Query {
     monitors: [Monitor!]!
     monitorById(id: String!): Monitor
+    monitorOfTypeByMonitoredItemId(type: MonitorType!, monitoredItemId: String!): Monitor
     events: [Event!]!
     eventById(id: String!): Event
     genericEvents: [GenericEvent!]!
@@ -8,7 +9,9 @@ extend type Query {
     ongoingEvents: [OngoingEvent!]!
     monitorableItemsForType(input: MonitorableItemsInput): MonitorableItemsOutput!
     webServerChecks: [WebserverCheck!]!
+    webServerCheckById(id: UUID!): WebserverCheck
     oneOffWebserverCheck(url: String!): OneOffWebserverCheck!
+    runWebServerCheckNow(webserverCheckId: UUID!): WebserverCheckHistoryEntry
 }
 
 extend type Mutation {
@@ -297,16 +300,16 @@ type UptimeMetrics {
 type UptimePeriod {
     periodStart: Instant!
     periodEnd: Instant!
-    totalDownTimeSeconds: Long
-    totalUptimePercent: Float
-    totalSeconds: Long
+    totalDownTimeSeconds: Long!
+    totalUptimePercent: Float!
+    totalSeconds: Long!
 }
 
 type UptimeDay {
     timestampAtStartOfDay: Instant!
-    uptimePercent: Float
-    downTimeSeconds: Long
-    totalSeconds: Long
+    uptimePercent: Float!
+    downTimeSeconds: Long!
+    totalSeconds: Long!
 }
 
 type WebserverCheckHistoryEntry {

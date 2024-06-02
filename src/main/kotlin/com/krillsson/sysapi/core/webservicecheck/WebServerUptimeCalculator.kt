@@ -41,7 +41,7 @@ class WebServerUptimeCalculator {
     }
 
     private fun calculateDownTimePercent(secondsElapsedAtDay: Long, downTimeSeconds: Long): Double {
-        return (downTimeSeconds.toDouble() / secondsElapsedAtDay.toDouble()).round(4)
+        return (100.0 * (downTimeSeconds.toDouble() / secondsElapsedAtDay.toDouble())).round(4)
     }
 
     private fun List<UptimeDay>.asTotal(): UptimePeriod {

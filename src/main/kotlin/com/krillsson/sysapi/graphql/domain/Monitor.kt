@@ -3,7 +3,6 @@ package com.krillsson.sysapi.graphql.domain
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.monitoring.monitors.*
 import com.krillsson.sysapi.util.toOffsetDateTime
-import org.springframework.graphql.data.method.annotation.SchemaMapping
 import java.time.Instant
 import java.util.*
 

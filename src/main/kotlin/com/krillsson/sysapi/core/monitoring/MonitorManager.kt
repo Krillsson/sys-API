@@ -80,6 +80,14 @@ class MonitorManager(
         return activeMonitors[id]?.second
     }
 
+    fun getMonitorableItemForType(type: Monitor.Type): List<MonitorableItem> {
+        return monitorInputCreator.getMonitorableItemForType(type)
+    }
+
+    fun monitorOfTypeByMonitoredItemId(type: Monitor.Type, monitoredItemId: String): Monitor<MonitoredValue>? {
+        return activeMonitors.values.firstOrNull { it.second.type == type && it.second.config.monitoredItemId == monitoredItemId }?.second
+    }
+
     fun add(inertia: Duration, type: Monitor.Type, threshold: MonitoredValue, itemId: String?): UUID {
         val config = MonitorConfig(itemId, threshold, inertia)
         val monitor = createMonitor(type, UUID.randomUUID(), config)
@@ -155,10 +163,6 @@ class MonitorManager(
                 emptyList()
             )
         ) != null
-    }
-
-    fun getMonitorableItemForType(type: Monitor.Type): List<MonitorableItem> {
-        return monitorInputCreator.getMonitorableItemForType(type)
     }
 }
 
