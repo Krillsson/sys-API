@@ -1,5 +1,12 @@
 ### Unreleased
 
+### 0.31.0
+- Support webserver checks
+  - Calls a webserver endpoint using GET and checks if response is 200 / OK
+  - Calculates uptime based on non-200 responses
+  - Added monitor type `WEBSERVER_UP`
+  - API: Check out the `WebserverCheck` types in **monitoring.graphqls** 
+
 ### 0.30.0
 - Migrated to [spring](https://spring.io) framework instead of Dropwizard.
 - [Graal Native Image](https://www.graalvm.org/latest/reference-manual/native-image/) Docker image option. Significant reduction in RAM usage.
@@ -7,6 +14,7 @@
 - Removed deprecated Disks (Drives still remain)
 - Fixed issue with container statistics history
 - Removed REST-API
+- This release require version 21 of Java
 
 #### Spring
 - Introduces an additional config file: _application.properties_.
