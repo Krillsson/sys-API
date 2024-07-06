@@ -29,7 +29,7 @@ object WindowsMetricsFactory {
         val ohmFactory = OHMManagerFactory()
         if (ohmFactory.prerequisitesFilled() && ohmFactory.initialize()) {
 
-            val monitorManager = ohmFactory.monitorManager
+            val monitorManager = ohmFactory.getMonitorManager()
             val defaultCpuLoadMetrics = DefaultCpuLoadMetrics(hal.processor)
             val cpuMetrics = WindowsCpuMetrics(hal, os, defaultCpuLoadMetrics, monitorManager)
             val networkMetrics = DefaultNetworkMetrics(

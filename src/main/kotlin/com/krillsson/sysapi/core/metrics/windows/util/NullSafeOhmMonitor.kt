@@ -18,47 +18,33 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.metrics.windows.util;
+package com.krillsson.sysapi.core.metrics.windows.util
 
-import ohmwrapper.OHMSensor;
+import ohmwrapper.OHMSensor
+import java.util.*
 
-import java.util.Optional;
+object NullSafeOhmMonitor {
+    val DEFAULT_SENSOR: NullSafeOHMSensor = NullSafeOHMSensor()
 
-public class NullSafeOhmMonitor {
-
-    public static final NullSafeOHMSensor DEFAULT_SENSOR = new NullSafeOHMSensor();
-
-    public static OHMSensor nullSafe(OHMSensor sensor) {
-        if (sensor != null) {
-            return sensor;
-        } else return new NullSafeOHMSensor();
+    fun nullSafe(sensor: OHMSensor?): OHMSensor {
+        return sensor ?: NullSafeOHMSensor()
     }
 
-    public static OHMSensor[] nullSafe(OHMSensor[] arr) {
-        if (arr != null) {
-            return arr;
-        } else {
-            return new OHMSensor[0];
-        }
+    fun nullSafe(arr: Array<OHMSensor?>?): Array<OHMSensor?> {
+        return arr ?: arrayOfNulls(0)
     }
 
-    public static double nullSafeGetValue(OHMSensor sensor) {
-        return Optional.ofNullable(sensor).orElse(DEFAULT_SENSOR).getValue();
+    fun nullSafeGetValue(sensor: OHMSensor?): Double {
+        return Optional.ofNullable(sensor).orElse(DEFAULT_SENSOR).value
     }
 
-    public static class NullSafeOHMSensor extends OHMSensor {
-        public NullSafeOHMSensor() {
-            super(null, null, null, false);
+    class NullSafeOHMSensor : OHMSensor(null, null, null, false) {
+        override fun Text(): String {
+            return "N/A"
         }
 
-        @Override
-        public String Text() {
-            return "N/A";
-        }
-
-        @Override
-        public double getValue() {
-            return -1;
+        override fun getValue(): Double {
+            return (-1).toDouble()
         }
     }
 }
