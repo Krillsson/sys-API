@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 0.31.1
+- Fixes for running on windows
+- Fixed issue with serialization when using docker-java client
+
 ### 0.31.0
 - Support webserver checks
   - Calls a webserver endpoint using GET and checks if response is 200 / OK
