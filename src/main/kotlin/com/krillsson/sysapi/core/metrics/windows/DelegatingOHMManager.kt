@@ -1,43 +1,35 @@
-package com.krillsson.sysapi.core.metrics.windows;
+package com.krillsson.sysapi.core.metrics.windows
 
-import ohmwrapper.*;
+import ohmwrapper.*
 
-public class DelegatingOHMManager {
-    private final MonitorManager monitorManager;
-
-    public DelegatingOHMManager(MonitorManager monitorManager) {
-        this.monitorManager = monitorManager;
+class DelegatingOHMManager(private val monitorManager: MonitorManager) {
+    fun OHMMonitors(): Array<OHMMonitor> {
+        return monitorManager.OHMMonitors()
     }
 
-    public OHMMonitor[] OHMMonitors() {
-        return monitorManager.OHMMonitors();
+    fun gpuMonitors(): Array<GpuMonitor> {
+        return monitorManager.GpuMonitors()
     }
 
-    public GpuMonitor[] GpuMonitors() {
-        return monitorManager.GpuMonitors();
+    fun cpuMonitors(): Array<CpuMonitor> {
+        return monitorManager.CpuMonitors()
     }
 
-    public CpuMonitor[] CpuMonitors() {
-        return monitorManager.CpuMonitors();
+    fun driveMonitors(): Array<DriveMonitor> {
+        return monitorManager.DriveMonitors()
     }
 
-    public DriveMonitor[] DriveMonitors() {
-        return monitorManager.DriveMonitors();
-    }
+    val mainboardMonitor: MainboardMonitor
+        get() = monitorManager.mainboardMonitor
 
-    public MainboardMonitor getMainboardMonitor() {
-        return monitorManager.getMainboardMonitor();
-    }
+    val ramMonitor: RamMonitor
+        get() = monitorManager.ramMonitor
 
-    public RamMonitor getRamMonitor() {
-        return monitorManager.getRamMonitor();
-    }
+    val networkMonitor: NetworkMonitor
+        get() = monitorManager.networkMonitor
 
-    public NetworkMonitor getNetworkMonitor() {
-        return monitorManager.getNetworkMonitor();
-    }
-
-    public void update() {
-        monitorManager.Update();
+    fun update() {
+        monitorManager.Update()
     }
 }
+

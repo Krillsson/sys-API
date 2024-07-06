@@ -1,50 +1,42 @@
-package com.krillsson.sysapi.core.metrics.windows;
+package com.krillsson.sysapi.core.metrics.windows
 
-import com.krillsson.sysapi.core.domain.gpu.Gpu;
-import com.krillsson.sysapi.core.domain.gpu.GpuHealth;
-import com.krillsson.sysapi.core.domain.gpu.GpuLoad;
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultGpuMetrics;
-import com.krillsson.sysapi.util.Streams;
-import oshi.hardware.HardwareAbstractionLayer;
+import com.krillsson.sysapi.core.domain.gpu.Gpu
+import com.krillsson.sysapi.core.domain.gpu.GpuHealth
+import com.krillsson.sysapi.core.domain.gpu.GpuLoad
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultGpuMetrics
+import com.krillsson.sysapi.core.metrics.windows.util.NullSafeOhmMonitor
+import oshi.hardware.HardwareAbstractionLayer
+import java.util.stream.Collectors
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.krillsson.sysapi.core.metrics.windows.util.NullSafeOhmMonitor.nullSafeGetValue;
-
-public class WindowsGpuMetrics extends DefaultGpuMetrics {
-
-    private final DelegatingOHMManager monitorManager;
-
-
-    public WindowsGpuMetrics(HardwareAbstractionLayer hal, DelegatingOHMManager monitorManager) {
-        super(hal);
-        this.monitorManager = monitorManager;
+class WindowsGpuMetrics(hal: HardwareAbstractionLayer?, private val monitorManager: DelegatingOHMManager) :
+    DefaultGpuMetrics(
+        hal!!
+    ) {
+    override fun gpus(): List<Gpu> {
+        monitorManager.update()
+        return monitorManager.gpuMonitors().map { monitor ->
+            Gpu(
+                monitor.getVendor(),
+                monitor.getName(),
+                NullSafeOhmMonitor.nullSafeGetValue(monitor.getCoreClock()),
+                NullSafeOhmMonitor.nullSafeGetValue(monitor.getMemoryClock())
+            )
+        }
     }
 
-    @Override
-    public List<Gpu> gpus() {
-        monitorManager.update();
-        return Streams.ofNullable(monitorManager.GpuMonitors()).map(m -> new Gpu(
-                m.getVendor(),
-                m.getName(),
-                nullSafeGetValue(m.getCoreClock()),
-                nullSafeGetValue(m.getMemoryClock())
-        )).collect(Collectors.toList());
-    }
+    override fun gpuLoads(): List<GpuLoad> {
+        monitorManager.update()
+        return monitorManager.gpuMonitors().map { monitor ->
+            GpuLoad(
+                monitor.getName(), NullSafeOhmMonitor.nullSafeGetValue(monitor.getCoreLoad()),
+                NullSafeOhmMonitor.nullSafeGetValue(monitor.getMemoryLoad()),
+                GpuHealth(
+                    NullSafeOhmMonitor.nullSafeGetValue(monitor.getFanRPM()),
+                    NullSafeOhmMonitor.nullSafeGetValue(monitor.getFanPercent()),
+                    NullSafeOhmMonitor.nullSafeGetValue(monitor.getTemperature())
+                )
+            )
+        }
 
-    @Override
-    public List<GpuLoad> gpuLoads() {
-        monitorManager.update();
-        return Streams.ofNullable(monitorManager.GpuMonitors())
-                .map(g -> new GpuLoad(
-                        g.getName(), nullSafeGetValue(g.getCoreLoad()),
-                        nullSafeGetValue(g.getMemoryLoad()),
-                        new GpuHealth(
-                                nullSafeGetValue(g.getFanRPM()),
-                                nullSafeGetValue(g.getFanPercent()),
-                                nullSafeGetValue(g.getTemperature())
-                        )
-                )).collect(Collectors.toList());
     }
 }

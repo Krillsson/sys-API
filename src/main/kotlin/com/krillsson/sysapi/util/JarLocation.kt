@@ -18,34 +18,37 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.util;
+package com.krillsson.sysapi.util
 
-import com.krillsson.sysapi.SysAPIApplication;
-import java.io.File;
-import java.net.URISyntaxException;
+import com.krillsson.sysapi.SysAPIApplication
+import java.io.File
+import java.net.URISyntaxException
 
+object JarLocation {
+    val SEPARATOR: String = System.getProperty("file.separator")
+    private val JAR = jarLocation()
+    private val IS_JAR = JAR.isFile && JAR.name.endsWith(".jar")
+    private val JAR_LIB_LOCATION = JAR.parentFile.parent + SEPARATOR + "lib" + SEPARATOR
+    private val JAR_INSTALLATION_LOCATION = JAR.parentFile.parent + SEPARATOR
+    private val SOURCE_INSTALLATION_LOCATION =
+        JAR.parentFile.parentFile.parentFile.parentFile.parentFile.toString() + SEPARATOR
 
-public class JarLocation {
-    public static final String SEPARATOR = System.getProperty("file.separator");
-    private static final File JAR = jarLocation();
-    private static final boolean IS_JAR = JAR.isFile() && JAR.getName().endsWith(".jar");
-    private static final String JAR_LIB_LOCATION = JAR.getParentFile().getParent() + SEPARATOR + "lib" + SEPARATOR;
-    private static final String JAR_INSTALLATION_LOCATION = JAR.getParentFile().getParent() + SEPARATOR;
-    private static final String SOURCE_INSTALLATION_LOCATION = JAR.getParentFile().getParentFile().getParentFile().getParentFile().getParentFile() + SEPARATOR;
+    val SOURCE_LIB_LOCATION: String =
+        JAR.parentFile.parentFile.parentFile.parentFile.toString() + SEPARATOR + "src" + SEPARATOR + "dist" + SEPARATOR + "lib"
+    val LIB_LOCATION: String = if (IS_JAR) JAR_LIB_LOCATION else SOURCE_LIB_LOCATION
+    val INSTALLATION_LOCATION: String = if (IS_JAR) JAR_INSTALLATION_LOCATION else SOURCE_INSTALLATION_LOCATION
 
-    public static final String SOURCE_LIB_LOCATION = JAR.getParentFile().getParentFile().getParentFile().getParentFile() + SEPARATOR + "src" + SEPARATOR + "dist" + SEPARATOR + "lib";
-    public static final String LIB_LOCATION = IS_JAR ? JAR_LIB_LOCATION : SOURCE_LIB_LOCATION;
-    public static final String INSTALLATION_LOCATION = IS_JAR ? JAR_INSTALLATION_LOCATION : SOURCE_INSTALLATION_LOCATION;
-
-    private static File jarLocation() {
-        try {
-            return new File(SysAPIApplication.class.getProtectionDomain()
-                    .getCodeSource()
-                    .getLocation()
+    private fun jarLocation(): File {
+        return try {
+            File(
+                SysAPIApplication::class.java.protectionDomain
+                    .codeSource
+                    .location
                     .toURI()
-                    .getPath());
-        } catch (URISyntaxException e) {
-            return new File(SysAPIApplication.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+                    .path
+            )
+        } catch (e: URISyntaxException) {
+            File(SysAPIApplication::class.java.protectionDomain.codeSource.location.path)
         }
     }
 }

@@ -1,76 +1,83 @@
-package com.krillsson.sysapi.core.metrics.windows;
+package com.krillsson.sysapi.core.metrics.windows
 
-import net.sf.jni4net.Bridge;
-import org.slf4j.Logger;
+import com.krillsson.sysapi.util.JarLocation
+import net.sf.jni4net.Bridge
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import java.io.File
 
-import java.io.File;
+class OHMManagerFactory {
+    private var monitorManager: DelegatingOHMManager? = null
 
-import static com.krillsson.sysapi.util.JarLocation.*;
-
-public class OHMManagerFactory {
-
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(OHMManagerFactory.class);
-
-    private static final File OHM_JNI_WRAPPER_DLL = new File(LIB_LOCATION + SEPARATOR + "OhmJniWrapper.dll");
-    private static final File OPEN_HARDWARE_MONITOR_LIB_DLL = new File(LIB_LOCATION + SEPARATOR + "OpenHardwareMonitorLib.dll");
-    private static final File OHM_JNI_WRAPPER_J4N_DLL = new File(LIB_LOCATION + SEPARATOR + "OhmJniWrapper.j4n.dll");
-
-    private DelegatingOHMManager monitorManager;
-
-    public boolean prerequisitesFilled() {
-        LOGGER.info("Checking if {} exists: {}", OHM_JNI_WRAPPER_DLL, OHM_JNI_WRAPPER_DLL.exists() ? "YES" : "NO");
-        LOGGER.info("Checking if {} exists: {}", OPEN_HARDWARE_MONITOR_LIB_DLL, OPEN_HARDWARE_MONITOR_LIB_DLL.exists() ? "YES" : "NO");
-        LOGGER.info("Checking if {} exists: {}", OHM_JNI_WRAPPER_J4N_DLL, OHM_JNI_WRAPPER_J4N_DLL.exists() ? "YES" : "NO");
+    fun prerequisitesFilled(): Boolean {
+        LOGGER.info("Checking if {} exists: {}", OHM_JNI_WRAPPER_DLL, if (OHM_JNI_WRAPPER_DLL.exists()) "YES" else "NO")
+        LOGGER.info(
+            "Checking if {} exists: {}",
+            OPEN_HARDWARE_MONITOR_LIB_DLL,
+            if (OPEN_HARDWARE_MONITOR_LIB_DLL.exists()) "YES" else "NO"
+        )
+        LOGGER.info(
+            "Checking if {} exists: {}",
+            OHM_JNI_WRAPPER_J4N_DLL,
+            if (OHM_JNI_WRAPPER_J4N_DLL.exists()) "YES" else "NO"
+        )
         return OHM_JNI_WRAPPER_DLL.exists() &&
                 OPEN_HARDWARE_MONITOR_LIB_DLL.exists() &&
-                OHM_JNI_WRAPPER_J4N_DLL.exists();
+                OHM_JNI_WRAPPER_J4N_DLL.exists()
     }
 
-    public DelegatingOHMManager getMonitorManager() {
-        if (monitorManager == null) {
-            throw new IllegalStateException("MonitorManager requires initialization. Call initialize");
-        }
-        return monitorManager;
+    fun getMonitorManager(): DelegatingOHMManager {
+        checkNotNull(monitorManager) { "MonitorManager requires initialization. Call initialize" }
+        return monitorManager!!
     }
 
-    public boolean initialize() {
-        LOGGER.info("Enabling OHMJNIWrapper impl. This functionality is EXPERIMENTAL and can be disabled in the configuration.yml (see README.md)");
-        Bridge.setDebug(true);
+    fun initialize(): Boolean {
+        LOGGER.info("Enabling OHMJNIWrapper impl. This functionality is EXPERIMENTAL and can be disabled in the configuration.yml (see README.md)")
+        Bridge.setDebug(true)
         try {
-            Bridge.init(new File(LIB_LOCATION));
-        } catch (Exception e) {
-            LOGGER.error("Trouble while initializing JNI4Net Bridge. Do I have admin privileges?", e);
-            return false;
+            Bridge.init(File(JarLocation.LIB_LOCATION))
+        } catch (e: Exception) {
+            LOGGER.error("Trouble while initializing JNI4Net Bridge. Do I have admin privileges?", e)
+            return false
         }
 
-        ohmwrapper.OHMManagerFactory factory = loadFromInstallDir();
+        val factory = loadFromInstallDir()
         if (factory != null) {
             try {
-                factory.init();
-                this.monitorManager = new DelegatingOHMManager(factory.GetManager());
-                return true;
-            } catch (Exception e) {
-                LOGGER.error("Trouble while initializing JNI4Net Bridge. Do I have admin privileges?", e);
-                return false;
+                factory.init()
+                this.monitorManager = DelegatingOHMManager(factory.GetManager())
+                return true
+            } catch (e: Exception) {
+                LOGGER.error("Trouble while initializing JNI4Net Bridge. Do I have admin privileges?", e)
+                return false
             }
         }
-        return false;
+        return false
     }
 
 
-    private ohmwrapper.OHMManagerFactory loadFromInstallDir() {
+    private fun loadFromInstallDir(): ohmwrapper.OHMManagerFactory? {
         try {
-            LOGGER.debug("Attempting to load {}", OHM_JNI_WRAPPER_DLL);
-            Bridge.LoadAndRegisterAssemblyFrom(OHM_JNI_WRAPPER_DLL);
-            LOGGER.debug("Attempting to load {}", OHM_JNI_WRAPPER_J4N_DLL);
-            Bridge.LoadAndRegisterAssemblyFrom(OHM_JNI_WRAPPER_J4N_DLL);
-            LOGGER.debug("Attempting to load {}", OPEN_HARDWARE_MONITOR_LIB_DLL);
-            Bridge.LoadAndRegisterAssemblyFrom(OPEN_HARDWARE_MONITOR_LIB_DLL);
-            return new ohmwrapper.OHMManagerFactory();
-        } catch (Exception e) {
-            LOGGER.error("Unable to load OHM from installation directory {}", SOURCE_LIB_LOCATION, e);
-            return null;
+            LOGGER.debug("Attempting to load {}", OHM_JNI_WRAPPER_DLL)
+            Bridge.LoadAndRegisterAssemblyFrom(OHM_JNI_WRAPPER_DLL)
+            LOGGER.debug("Attempting to load {}", OHM_JNI_WRAPPER_J4N_DLL)
+            Bridge.LoadAndRegisterAssemblyFrom(OHM_JNI_WRAPPER_J4N_DLL)
+            LOGGER.debug("Attempting to load {}", OPEN_HARDWARE_MONITOR_LIB_DLL)
+            Bridge.LoadAndRegisterAssemblyFrom(OPEN_HARDWARE_MONITOR_LIB_DLL)
+            return ohmwrapper.OHMManagerFactory()
+        } catch (e: Exception) {
+            LOGGER.error("Unable to load OHM from installation directory {}", JarLocation.SOURCE_LIB_LOCATION, e)
+            return null
         }
+    }
 
+    companion object {
+        private val LOGGER: Logger = LoggerFactory.getLogger(OHMManagerFactory::class.java)
+
+        private val OHM_JNI_WRAPPER_DLL = File(JarLocation.LIB_LOCATION + JarLocation.SEPARATOR + "OhmJniWrapper.dll")
+        private val OPEN_HARDWARE_MONITOR_LIB_DLL =
+            File(JarLocation.LIB_LOCATION + JarLocation.SEPARATOR + "OpenHardwareMonitorLib.dll")
+        private val OHM_JNI_WRAPPER_J4N_DLL =
+            File(JarLocation.LIB_LOCATION + JarLocation.SEPARATOR + "OhmJniWrapper.j4n.dll")
     }
 }

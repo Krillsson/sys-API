@@ -177,7 +177,7 @@ open class DefaultNetworkMetrics(
 
     companion object {
         @JvmField
-        protected val EMPTY_INTERFACE_SPEED = NetworkInterfaceSpeed(0, 0)
+        val EMPTY_INTERFACE_SPEED = NetworkInterfaceSpeed(0, 0)
         private val LOGGER = LoggerFactory.getLogger(
             DefaultNetworkMetrics::class.java
         )

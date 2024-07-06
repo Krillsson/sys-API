@@ -18,62 +18,54 @@
  * Maintainers:
  * contact[at]christian-jensen[dot]se
  */
-package com.krillsson.sysapi.core.metrics.windows;
+package com.krillsson.sysapi.core.metrics.windows
 
-import com.krillsson.sysapi.core.connectivity.ConnectivityCheckService;
-import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed;
-import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultNetworkMetrics;
-import com.krillsson.sysapi.core.metrics.defaultimpl.NetworkUploadDownloadRateMeasurementManager;
-import ohmwrapper.NetworkMonitor;
-import ohmwrapper.NicInfo;
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import oshi.hardware.HardwareAbstractionLayer;
-import oshi.hardware.NetworkIF;
+import com.krillsson.sysapi.core.connectivity.ConnectivityCheckService
+import com.krillsson.sysapi.core.domain.network.NetworkInterfaceSpeed
+import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultNetworkMetrics
+import com.krillsson.sysapi.core.metrics.defaultimpl.NetworkUploadDownloadRateMeasurementManager
+import ohmwrapper.NicInfo
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import oshi.hardware.HardwareAbstractionLayer
+import oshi.hardware.NetworkIF
+import java.util.*
 
-import java.util.Arrays;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+class WindowsNetworkMetrics(
+    private val hal: HardwareAbstractionLayer,
+    speedMeasurementManager: NetworkUploadDownloadRateMeasurementManager?,
+    connectivityCheckService: ConnectivityCheckService?,
+    private val monitorManager: DelegatingOHMManager
+) : DefaultNetworkMetrics(
+    hal, speedMeasurementManager!!, connectivityCheckService!!
+) {
+    override fun speedForInterfaceWithName(name: String): NetworkInterfaceSpeed {
+        val networkOptional = hal.networkIFs.stream()
+            .filter { n: NetworkIF -> name == n.name }
+            .findAny()
+        if (!networkOptional.isPresent) {
+            throw NoSuchElementException(String.format("No NIC with id %s was found", name))
+        }
+        val networkIF = networkOptional.get()
 
-public class WindowsNetworkMetrics extends DefaultNetworkMetrics {
+        monitorManager.update()
+        val networkMonitor = monitorManager.networkMonitor
+        val nics = networkMonitor.nics
+        val nicInfoOptional = Arrays.stream(nics)
+            .filter { n: NicInfo -> networkIF.macaddr.equals(n.physicalAddress, ignoreCase = true) }
+            .findAny()
 
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(WindowsNetworkMetrics.class);
-
-    private DelegatingOHMManager monitorManager;
-    private HardwareAbstractionLayer hal;
-
-
-    public WindowsNetworkMetrics(HardwareAbstractionLayer hal, NetworkUploadDownloadRateMeasurementManager speedMeasurementManager, ConnectivityCheckService connectivityCheckService, DelegatingOHMManager monitorManager) {
-        super(hal, speedMeasurementManager, connectivityCheckService);
-        this.hal = hal;
-        this.monitorManager = monitorManager;
+        if (!nicInfoOptional.isPresent) {
+            return EMPTY_INTERFACE_SPEED
+        }
+        val nicInfo = nicInfoOptional.get()
+        return NetworkInterfaceSpeed(
+            nicInfo.inBandwidth.value.toLong(),
+            nicInfo.outBandwidth.value.toLong()
+        )
     }
 
-    @NotNull
-    @Override
-    protected NetworkInterfaceSpeed speedForInterfaceWithName(@NotNull String name) {
-        Optional<NetworkIF> networkOptional = hal.getNetworkIFs().stream()
-                .filter(n -> name.equals(n.getName()))
-                .findAny();
-        if (!networkOptional.isPresent()) {
-            throw new NoSuchElementException(String.format("No NIC with id %s was found", name));
-        }
-        NetworkIF networkIF = networkOptional.get();
-
-        monitorManager.update();
-        NetworkMonitor networkMonitor = monitorManager.getNetworkMonitor();
-        NicInfo[] nics = networkMonitor.getNics();
-        Optional<NicInfo> nicInfoOptional = Arrays.stream(nics)
-                .filter(n -> networkIF.getMacaddr().equalsIgnoreCase(n.getPhysicalAddress()))
-                .findAny();
-
-        if (!nicInfoOptional.isPresent()) {
-            return EMPTY_INTERFACE_SPEED;
-        }
-        NicInfo nicInfo = nicInfoOptional.get();
-        return new NetworkInterfaceSpeed(
-                (long) (nicInfo.getInBandwidth().getValue()),
-                (long) (nicInfo.getOutBandwidth().getValue())
-        );
+    companion object {
+        private val LOGGER: Logger = LoggerFactory.getLogger(WindowsNetworkMetrics::class.java)
     }
 }

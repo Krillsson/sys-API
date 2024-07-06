@@ -23,21 +23,21 @@ class WindowsCpuMetrics(
         }
 
         override fun cpuTemperatures(): List<Double> {
-            return monitorManager.CpuMonitors().firstOrNull()?.temperatures?.map { it.value }
-                ?: listOf(monitorManager.CpuMonitors().firstOrNull()?.packageTemperature?.value ?: -1.0)
+            return monitorManager.cpuMonitors().firstOrNull()?.temperatures?.map { it.value }
+                ?: listOf(monitorManager.cpuMonitors().firstOrNull()?.packageTemperature?.value ?: -1.0)
         }
 
         override fun cpuFanRpm(): Double {
-            return monitorManager.CpuMonitors().firstOrNull()?.fanRPM?.value ?: -1.0
+            return monitorManager.cpuMonitors().firstOrNull()?.fanRPM?.value ?: -1.0
         }
 
         override fun cpuFanPercent(): Double {
-            return monitorManager.CpuMonitors().firstOrNull()?.fanPercent?.value ?: -1.0
+            return monitorManager.cpuMonitors().firstOrNull()?.fanPercent?.value ?: -1.0
 
         }
 
         override fun cpuVoltage(): Double {
-            return monitorManager.CpuMonitors().firstOrNull()?.voltage?.value ?: -1.0
+            return monitorManager.cpuMonitors().firstOrNull()?.voltage?.value ?: -1.0
         }
     }
 }
