@@ -9,6 +9,10 @@
   "name":"[Z"
 },
 {
+  "name":"com.krillsson.sysapi.SysAPIApplicationKt",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
   "name":"com.krillsson.sysapi.SysApiApplicationKt",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
@@ -32,6 +36,10 @@
 },
 {
   "name":"com.sun.jna.JNIEnv"
+},
+{
+  "name":"com.sun.jna.LastErrorException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },
 {
   "name":"com.sun.jna.Native",
@@ -142,6 +150,10 @@
 {
   "name":"java.lang.Object",
   "methods":[{"name":"toString","parameterTypes":[] }]
+},
+{
+  "name":"java.lang.SecurityManager",
+  "fields":[{"name":"initialized"}]
 },
 {
   "name":"java.lang.Short",
