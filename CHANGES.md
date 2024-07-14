@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 0.31.2
 - Properly opt-in to OSHIs load average handling on Windows
 - More robust handling of data directory and fix error in JarLocation
 
