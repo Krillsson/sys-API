@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.persistence
 
+import com.krillsson.sysapi.util.FileSystem
 import jakarta.annotation.PostConstruct
 import jakarta.annotation.PreDestroy
 import org.springframework.stereotype.Component
@@ -28,6 +29,7 @@ class KeyValueRepository(private val keyValueStore: KeyValueStore)  {
 
     @PostConstruct
     fun start() {
+        FileSystem.assertDataDirectory()
         restore()
     }
 

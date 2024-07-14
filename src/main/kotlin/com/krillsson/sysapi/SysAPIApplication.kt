@@ -8,15 +8,12 @@ import com.krillsson.sysapi.core.monitoring.MonitorStore
 import com.krillsson.sysapi.core.monitoring.event.EventStore
 import com.krillsson.sysapi.tls.CertificateNamesCreator
 import com.krillsson.sysapi.tls.SelfSignedCertificateManager
-import com.krillsson.sysapi.util.FileSystem
-import com.krillsson.sysapi.util.logger
 import org.springframework.aot.hint.annotation.RegisterReflectionForBinding
 import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ImportRuntimeHints
-import oshi.util.GlobalConfig
 
 
 @SpringBootApplication(scanBasePackages = ["com.krillsson.sysapi"])
@@ -51,8 +48,6 @@ import oshi.util.GlobalConfig
 // Failed to parse docker config.json
 class SysAPIApplication {
 
-    val logger by logger()
-
     @Bean
     fun postStartupHook(
         selfSignedCertificateManager: SelfSignedCertificateManager,
@@ -60,11 +55,6 @@ class SysAPIApplication {
         config: YAMLConfigFile
     ): ApplicationRunner =
         ApplicationRunner {
-            GlobalConfig.set("oshi.os.windows.loadaverage", true)
-            if (!FileSystem.data.isDirectory) {
-                logger.info("Attempting to create {}", FileSystem.data)
-                assert(FileSystem.data.mkdir()) { "Unable to create ${FileSystem.data}" }
-            }
             selfSignedCertificateManager.start(certificateNamesCreator, config.selfSignedCertificates)
         }
 }

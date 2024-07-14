@@ -28,15 +28,11 @@ object JarLocation {
     val SEPARATOR: String = System.getProperty("file.separator")
     private val JAR = jarLocation()
     private val IS_JAR = JAR.isFile && JAR.name.endsWith(".jar")
-    private val JAR_LIB_LOCATION = JAR.parentFile.parent + SEPARATOR + "lib" + SEPARATOR
-    private val JAR_INSTALLATION_LOCATION = JAR.parentFile.parent + SEPARATOR
-    private val SOURCE_INSTALLATION_LOCATION =
-        JAR.parentFile.parentFile.parentFile.parentFile.parentFile.toString() + SEPARATOR
+    private val JAR_LIB_LOCATION = "${JAR.parentFile?.parent}${SEPARATOR}lib$SEPARATOR"
 
     val SOURCE_LIB_LOCATION: String =
-        JAR.parentFile.parentFile.parentFile.parentFile.toString() + SEPARATOR + "src" + SEPARATOR + "dist" + SEPARATOR + "lib"
+        "${JAR.parentFile?.parentFile?.parentFile?.parentFile?.toString()}${SEPARATOR}src${SEPARATOR}dist${SEPARATOR}lib"
     val LIB_LOCATION: String = if (IS_JAR) JAR_LIB_LOCATION else SOURCE_LIB_LOCATION
-    val INSTALLATION_LOCATION: String = if (IS_JAR) JAR_INSTALLATION_LOCATION else SOURCE_INSTALLATION_LOCATION
 
     private fun jarLocation(): File {
         return try {
