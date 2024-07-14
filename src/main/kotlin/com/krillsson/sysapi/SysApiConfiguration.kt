@@ -39,11 +39,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 import oshi.SystemInfo
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.software.os.OperatingSystem
+import oshi.util.GlobalConfig
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.File
-import java.lang.reflect.Method
 import java.time.Clock
 import java.util.concurrent.Executor
 
@@ -108,6 +108,7 @@ class SysApiConfiguration : AsyncConfigurer {
             networkUploadDownloadRateMeasurementManager: NetworkUploadDownloadRateMeasurementManager,
             connectivityCheckService: ConnectivityCheckService
     ): Metrics {
+        GlobalConfig.set("oshi.os.windows.loadaverage", true)
         return MetricsFactory(
                 hal,
                 operatingSystem,
