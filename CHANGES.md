@@ -1,4 +1,5 @@
 ### Unreleased
+- Properly opt-in to OSHIs load average handling on Windows
 
 ### 0.31.1
 - Fixes for running on windows
