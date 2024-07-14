@@ -2,6 +2,7 @@ name: Build nightly Docker images
 run-name: Build and push nightly native and jvm images to Docker Hub
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - master
