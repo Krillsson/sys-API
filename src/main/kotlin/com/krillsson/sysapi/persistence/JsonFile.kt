@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.util.StdDateFormat
+import com.krillsson.sysapi.util.FileSystem
 import com.krillsson.sysapi.util.measureTimeMillis
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -14,12 +15,12 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 abstract class JsonFile<T>(
-    private val fileName: String,
+    fileName: String,
     private val typeToken: TypeReference<T>,
     objectMapperBase: ObjectMapper
 ) : Store<T> {
 
-    private val filePath = "data${System.getProperty("file.separator")}$fileName"
+    private val filePath = File(FileSystem.data, fileName)
 
     private val objectMapper = objectMapperBase.copy()
         .apply {
@@ -28,8 +29,7 @@ abstract class JsonFile<T>(
         }
 
     fun existsWithContent(): Boolean {
-        val file = File(filePath)
-        return file.exists() && Files.size(Paths.get(file.path)) > 0
+        return filePath.exists() && Files.size(Paths.get(filePath.path)) > 0
     }
 
     override fun update(action: (T?) -> T) {
@@ -93,13 +93,12 @@ abstract class JsonFile<T>(
     }
 
     private fun getFile(): File {
-        val file = File(filePath)
         try { //does not create a file if it already exists
-            file.createNewFile()
+            filePath.createNewFile()
         } catch (e: IOException) {
             LOGGER.error("Unable to create file {}", filePath, e)
         }
-        return file
+        return filePath
     }
 
     companion object {
