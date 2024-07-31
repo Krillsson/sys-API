@@ -7,16 +7,19 @@ import com.krillsson.sysapi.core.domain.system.SystemInfo
 import com.krillsson.sysapi.core.domain.system.SystemLoad
 import com.krillsson.sysapi.core.metrics.*
 import com.krillsson.sysapi.util.EnvironmentUtils
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.stereotype.Component
 
+@Component
 open class DefaultSystemMetrics(
-    private val cpuMetrics: CpuMetrics,
+    @Qualifier("defaultCpuMetrics") private val cpuMetrics: CpuMetrics,
     private val networkMetrics: NetworkMetrics,
     private val diskMetrics: DiskMetrics,
     private val fileSystemMetrics: FileSystemMetrics,
     private val memoryMetrics: MemoryMetrics,
     private val processesMetrics: ProcessesMetrics,
-    private val motherboardMetrics: MotherboardMetrics,
-    private val gpuMetrics: GpuMetrics,
+    @Qualifier("defaultMotherboardMetrics") private val motherboardMetrics: MotherboardMetrics,
+    @Qualifier("defaultGpuMetrics") private val gpuMetrics: GpuMetrics,
     private val operatingSystem: OperatingSystem,
     private val platform: Platform
 ) : SystemMetrics {

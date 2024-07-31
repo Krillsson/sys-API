@@ -6,13 +6,16 @@ import com.krillsson.sysapi.core.domain.cpu.CpuLoad
 import com.krillsson.sysapi.core.domain.cpu.LoadAverages
 import com.krillsson.sysapi.core.metrics.CpuMetrics
 import com.krillsson.sysapi.util.round
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.stereotype.Component
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.software.os.OperatingSystem
 
+@Component
 open class DefaultCpuMetrics(
     private val hal: HardwareAbstractionLayer,
     private val operatingSystem: OperatingSystem,
-    private val cpuSensors: DefaultCpuSensors,
+    @Qualifier("defaultCpuSensors") private val cpuSensors: DefaultCpuSensors,
     private val cpuLoadMetrics: DefaultCpuLoadMetrics
 ) : CpuMetrics {
 

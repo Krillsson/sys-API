@@ -1,15 +1,18 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl
 
 import com.krillsson.sysapi.core.metrics.*
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.stereotype.Component
 
+@Component
 open class DefaultMetrics(
-    private val cpuMetrics: DefaultCpuMetrics,
+    @Qualifier("defaultCpuMetrics") private val cpuMetrics: DefaultCpuMetrics,
     private val networkMetrics: DefaultNetworkMetrics,
-    private val gpuMetrics: GpuMetrics,
+    @Qualifier("defaultGpuMetrics") private val gpuMetrics: GpuMetrics,
     private val diskMetrics: DefaultDiskMetrics,
     private val fileSystemMetrics: DefaultFileSystemMetrics,
     private val processesMetrics: DefaultProcessesMetrics,
-    private val motherboardMetrics: MotherboardMetrics,
+    @Qualifier("defaultMotherboardMetrics") private val motherboardMetrics: MotherboardMetrics,
     private val memoryMetrics: MemoryMetrics,
     private val systemMetrics: SystemMetrics,
 ) : Metrics {

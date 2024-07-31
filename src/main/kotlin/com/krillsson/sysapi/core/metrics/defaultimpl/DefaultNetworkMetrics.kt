@@ -26,11 +26,13 @@ import com.krillsson.sysapi.core.metrics.NetworkMetrics
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager.CurrentSpeed
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager.SpeedSource
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.hardware.NetworkIF
 import java.net.SocketException
 import java.util.*
 
+@Component
 open class DefaultNetworkMetrics(
     private val hal: HardwareAbstractionLayer,
     private val speedMeasurementManager: NetworkUploadDownloadRateMeasurementManager,
