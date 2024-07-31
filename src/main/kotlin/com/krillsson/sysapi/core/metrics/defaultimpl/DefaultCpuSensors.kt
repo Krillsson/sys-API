@@ -1,8 +1,10 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl
 
 import com.krillsson.sysapi.core.domain.cpu.CpuHealth
+import org.springframework.stereotype.Component
 import oshi.hardware.HardwareAbstractionLayer
 
+@Component
 open class DefaultCpuSensors(private val hal: HardwareAbstractionLayer) {
     open fun cpuHealth(): CpuHealth {
         return CpuHealth(

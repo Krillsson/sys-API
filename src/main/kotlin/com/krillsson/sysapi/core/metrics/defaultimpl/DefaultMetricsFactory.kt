@@ -4,10 +4,12 @@ import com.krillsson.sysapi.config.YAMLConfigFile
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckService
 import com.krillsson.sysapi.core.domain.system.Platform
 import com.krillsson.sysapi.util.asOperatingSystem
+import org.springframework.stereotype.Component
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.software.os.OperatingSystem
 
-object DefaultMetricsFactory {
+@Component
+class DefaultMetricsFactory {
     fun create(
             config: YAMLConfigFile,
             os: OperatingSystem,

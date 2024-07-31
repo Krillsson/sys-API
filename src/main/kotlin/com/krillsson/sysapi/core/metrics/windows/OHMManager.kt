@@ -2,12 +2,15 @@ package com.krillsson.sysapi.core.metrics.windows
 
 import com.krillsson.sysapi.util.JarLocation
 import net.sf.jni4net.Bridge
+import ohmwrapper.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 import java.io.File
 
-class OHMManagerFactory {
-    private var monitorManager: DelegatingOHMManager? = null
+@Component
+class OHMManager {
+    private var monitorManager: MonitorManager? = null
 
     fun prerequisitesFilled(): Boolean {
         LOGGER.info("Checking if {} exists: {}", OHM_JNI_WRAPPER_DLL, if (OHM_JNI_WRAPPER_DLL.exists()) "YES" else "NO")
@@ -22,11 +25,11 @@ class OHMManagerFactory {
             if (OHM_JNI_WRAPPER_J4N_DLL.exists()) "YES" else "NO"
         )
         return OHM_JNI_WRAPPER_DLL.exists() &&
-                OPEN_HARDWARE_MONITOR_LIB_DLL.exists() &&
-                OHM_JNI_WRAPPER_J4N_DLL.exists()
+            OPEN_HARDWARE_MONITOR_LIB_DLL.exists() &&
+            OHM_JNI_WRAPPER_J4N_DLL.exists()
     }
 
-    fun getMonitorManager(): DelegatingOHMManager {
+    fun getMonitorManager(): MonitorManager {
         checkNotNull(monitorManager) { "MonitorManager requires initialization. Call initialize" }
         return monitorManager!!
     }
@@ -45,7 +48,7 @@ class OHMManagerFactory {
         if (factory != null) {
             try {
                 factory.init()
-                this.monitorManager = DelegatingOHMManager(factory.GetManager())
+                this.monitorManager = factory.GetManager()
                 return true
             } catch (e: Exception) {
                 LOGGER.error("Trouble while initializing JNI4Net Bridge. Do I have admin privileges?", e)
@@ -71,8 +74,41 @@ class OHMManagerFactory {
         }
     }
 
+    fun OHMMonitors(): Array<OHMMonitor> {
+        return initializedMonitorManager().OHMMonitors()
+    }
+
+    fun gpuMonitors(): Array<GpuMonitor> {
+        return initializedMonitorManager().GpuMonitors()
+    }
+
+    fun cpuMonitors(): Array<CpuMonitor> {
+        return initializedMonitorManager().CpuMonitors()
+    }
+
+    fun driveMonitors(): Array<DriveMonitor> {
+        return initializedMonitorManager().DriveMonitors()
+    }
+
+    val mainboardMonitor: MainboardMonitor
+        get() = initializedMonitorManager().mainboardMonitor
+
+    val ramMonitor: RamMonitor
+        get() = initializedMonitorManager().ramMonitor
+
+    val networkMonitor: NetworkMonitor
+        get() = initializedMonitorManager().networkMonitor
+
+    fun update() {
+        initializedMonitorManager().Update()
+    }
+
+    private fun initializedMonitorManager(): MonitorManager {
+        return requireNotNull(monitorManager) { "MonitorManager requires initialization. Call initialize" }
+    }
+
     companion object {
-        private val LOGGER: Logger = LoggerFactory.getLogger(OHMManagerFactory::class.java)
+        private val LOGGER: Logger = LoggerFactory.getLogger(OHMManager::class.java)
 
         private val OHM_JNI_WRAPPER_DLL = File(JarLocation.LIB_LOCATION + JarLocation.SEPARATOR + "OhmJniWrapper.dll")
         private val OPEN_HARDWARE_MONITOR_LIB_DLL =

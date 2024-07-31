@@ -2,15 +2,18 @@ package com.krillsson.sysapi.core.metrics.rasbian
 
 import com.krillsson.sysapi.core.metrics.SystemMetrics
 import com.krillsson.sysapi.core.metrics.defaultimpl.*
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.stereotype.Component
 
+@Component
 class RaspbianMetrics(
-    cpuMetrics: DefaultCpuMetrics,
+    @Qualifier("defaultCpuMetrics") cpuMetrics: DefaultCpuMetrics,
     networkMetrics: DefaultNetworkMetrics,
-    gpuMetrics: DefaultGpuMetrics,
+    @Qualifier("defaultGpuMetrics") gpuMetrics: DefaultGpuMetrics,
     diskMetrics: DefaultDiskMetrics,
     fileSystemMetrics: DefaultFileSystemMetrics,
     processesMetrics: DefaultProcessesMetrics,
-    motherboardMetrics: DefaultMotherboardMetrics,
+    @Qualifier("defaultMotherboardMetrics") motherboardMetrics: DefaultMotherboardMetrics,
     memoryMetrics: DefaultMemoryMetrics,
     systemMetrics: SystemMetrics,
 ) : DefaultMetrics(

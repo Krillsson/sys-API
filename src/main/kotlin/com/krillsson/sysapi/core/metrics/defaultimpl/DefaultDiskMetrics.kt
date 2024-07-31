@@ -4,11 +4,13 @@ import com.krillsson.sysapi.core.domain.disk.*
 import com.krillsson.sysapi.core.metrics.DiskMetrics
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
 import org.apache.commons.lang3.StringUtils
+import org.springframework.stereotype.Component
 import oshi.hardware.HWDiskStore
 import oshi.hardware.HWPartition
 import oshi.hardware.HardwareAbstractionLayer
 import java.util.*
 
+@Component
 open class DefaultDiskMetrics(
     private val hal: HardwareAbstractionLayer,
     private val speedMeasurementManager: DiskReadWriteRateMeasurementManager

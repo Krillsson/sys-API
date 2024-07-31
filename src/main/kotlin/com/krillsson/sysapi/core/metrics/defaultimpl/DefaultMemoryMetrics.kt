@@ -3,11 +3,13 @@ package com.krillsson.sysapi.core.metrics.defaultimpl
 import com.krillsson.sysapi.core.domain.memory.MemoryInfo
 import com.krillsson.sysapi.core.domain.memory.MemoryLoad
 import com.krillsson.sysapi.core.metrics.MemoryMetrics
+import org.springframework.stereotype.Component
 import oshi.hardware.GlobalMemory
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.hardware.PhysicalMemory
 import oshi.software.os.OperatingSystem
 
+@Component
 class DefaultMemoryMetrics(
     private val hal: HardwareAbstractionLayer,
     private val operatingSystem: OperatingSystem

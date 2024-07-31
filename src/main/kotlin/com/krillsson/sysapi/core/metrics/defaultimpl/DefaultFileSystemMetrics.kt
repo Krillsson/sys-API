@@ -4,10 +4,11 @@ import com.krillsson.sysapi.core.domain.filesystem.FileSystem
 import com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad
 import com.krillsson.sysapi.core.metrics.FileSystemMetrics
 import com.krillsson.sysapi.util.asHex
+import org.springframework.stereotype.Component
 import oshi.software.os.OSFileStore
 import oshi.software.os.OperatingSystem
 
-
+@Component
 open class DefaultFileSystemMetrics(
     private val operatingSystem: OperatingSystem
 ) : FileSystemMetrics {

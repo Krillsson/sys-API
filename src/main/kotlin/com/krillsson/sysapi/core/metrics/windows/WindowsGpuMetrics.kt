@@ -5,13 +5,13 @@ import com.krillsson.sysapi.core.domain.gpu.GpuHealth
 import com.krillsson.sysapi.core.domain.gpu.GpuLoad
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultGpuMetrics
 import com.krillsson.sysapi.core.metrics.windows.util.NullSafeOhmMonitor
+import org.springframework.stereotype.Component
 import oshi.hardware.HardwareAbstractionLayer
 import java.util.stream.Collectors
 
-class WindowsGpuMetrics(hal: HardwareAbstractionLayer?, private val monitorManager: DelegatingOHMManager) :
-    DefaultGpuMetrics(
-        hal!!
-    ) {
+@Component
+class WindowsGpuMetrics(hal: HardwareAbstractionLayer, private val monitorManager: OHMManager) :
+    DefaultGpuMetrics(hal) {
     override fun gpus(): List<Gpu> {
         monitorManager.update()
         return monitorManager.gpuMonitors().map { monitor ->

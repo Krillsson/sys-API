@@ -3,9 +3,11 @@ package com.krillsson.sysapi.core.metrics.windows
 import com.krillsson.sysapi.core.domain.sensors.DataType
 import com.krillsson.sysapi.core.domain.sensors.HealthData
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMotherboardMetrics
+import org.springframework.stereotype.Component
 import oshi.hardware.HardwareAbstractionLayer
 
-class WindowsMotherboardMetrics(hal: HardwareAbstractionLayer, private val monitorManager: DelegatingOHMManager) :
+@Component
+class WindowsMotherboardMetrics(hal: HardwareAbstractionLayer, private val monitorManager: OHMManager) :
     DefaultMotherboardMetrics(hal) {
     override fun motherboardHealth(): List<HealthData> {
         return monitorManager.mainboardMonitor?.let { mm ->

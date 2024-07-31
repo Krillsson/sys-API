@@ -2,11 +2,13 @@ package com.krillsson.sysapi.core.metrics.rasbian
 
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultCpuSensors
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.util.ExecutingCommand
 import oshi.util.FileUtil
 
-open class RaspbianCpuSensors(hal: HardwareAbstractionLayer) : DefaultCpuSensors(hal) {
+@Component
+class RaspbianCpuSensors(hal: HardwareAbstractionLayer) : DefaultCpuSensors(hal) {
 
     companion object {
         private val LOGGER = LoggerFactory.getLogger(
