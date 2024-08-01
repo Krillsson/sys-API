@@ -113,7 +113,7 @@ class SysApiConfiguration : AsyncConfigurer {
         networkUploadDownloadRateMeasurementManager: NetworkUploadDownloadRateMeasurementManager,
         connectivityCheckService: ConnectivityCheckService
     ): Metrics {
-        GlobalConfig.set("oshi.os.windows.loadaverage", true)
+
         val platformSpecific =  when {
             platform == Platform.WINDOWS && (configuration.windows.enableOhmJniWrapper) -> {
                 logger.info("Windows detected")
@@ -126,7 +126,7 @@ class SysApiConfiguration : AsyncConfigurer {
                 }
             }
 
-            platform == Platform.LINUX && (operatingSystem.family.toLowerCase()
+            platform == Platform.LINUX && (operatingSystem.family.lowercase()
                 .contains(RASPBIAN_QUALIFIER)) -> {
                 logger.info("Raspberry Pi detected")
                 raspbianMetrics
@@ -148,18 +148,24 @@ class SysApiConfiguration : AsyncConfigurer {
 
     @Bean
     fun clock(): Clock = Clock.systemUTC()
+    @Bean
+    fun systemInfo(): SystemInfo {
+        GlobalConfig.set("oshi.os.windows.loadaverage", true)
+        return SystemInfo()
+    }
+
 
     @Bean
-    fun hal() = SystemInfo().hardware
+    fun hal(systemInfo: SystemInfo) = systemInfo.hardware
 
     @Bean
-    fun os() = SystemInfo().operatingSystem
+    fun os(systemInfo: SystemInfo) = systemInfo.operatingSystem
 
     @Bean
     fun centralProcessor(hal: HardwareAbstractionLayer) = hal.processor
 
     @Bean
-    fun operatingSystem() = SystemInfo().operatingSystem.asOperatingSystem()
+    fun operatingSystem(systemInfo: SystemInfo) = systemInfo.operatingSystem.asOperatingSystem()
 
     @Bean
     fun meta(os: OperatingSystem) = Meta(
