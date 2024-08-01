@@ -1,8 +1,8 @@
 ### Unreleased
-- Fix native build
 
 ### 0.31.3
 - Fix CPU load not updating properly
+- Fix native build
 
 ### 0.31.2
 - Properly opt-in to OSHIs load average handling on Windows
