@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Root
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.util.*
 
@@ -13,11 +14,13 @@ class ContainerStatisticsDAO {
     @PersistenceContext
     lateinit var em: EntityManager
 
+    @Transactional
     fun insert(entity: ContainerStatisticsEntity): UUID {
         em.persist(entity)
         return entity.id
     }
 
+    @Transactional
     fun insertAll(entities: List<ContainerStatisticsEntity>): List<UUID> {
         return entities.map {
             val createdId = insert(it)
@@ -25,6 +28,7 @@ class ContainerStatisticsDAO {
         }
     }
 
+    @Transactional(readOnly = true)
     fun findAllBetween(containerId: String, from: Instant, to: Instant): List<ContainerStatisticsEntity> {
         val builder = em.criteriaBuilder
         val query: CriteriaQuery<ContainerStatisticsEntity> = builder.createQuery(ContainerStatisticsEntity::class.java)
@@ -36,6 +40,8 @@ class ContainerStatisticsDAO {
         return em.createQuery(query.where(condition)).resultList
     }
 
+
+    @Transactional(readOnly = true)
     fun findLatest(containerId: String): ContainerStatisticsEntity? {
         val cb = em.criteriaBuilder
         val query: CriteriaQuery<ContainerStatisticsEntity> = cb.createQuery(ContainerStatisticsEntity::class.java)
@@ -49,6 +55,7 @@ class ContainerStatisticsDAO {
         return results.firstOrNull()
     }
 
+    @Transactional
     fun purge(maxAge: Instant): Int {
         val builder = em.criteriaBuilder
         val delete = builder.createCriteriaDelete(ContainerStatisticsEntity::class.java)

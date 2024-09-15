@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.monitoring.monitors
 
+import com.krillsson.sysapi.core.domain.disk.DiskLoad
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.domain.monitor.toNumericalValue
@@ -14,13 +15,17 @@ class DiskReadRateMonitor(override val id: UUID, override val config: MonitorCon
 
     companion object {
         val selector: NumericalValueSelector = { load, monitoredItemId ->
-            load.diskLoads.firstOrNull { i ->
+            val diskLoads = load.diskLoads
+            value(diskLoads, monitoredItemId)
+        }
+
+        fun value(diskLoads: List<DiskLoad>, monitoredItemId: String?) =
+            diskLoads.firstOrNull { i ->
                 i.serial.equals(monitoredItemId, ignoreCase = true) || i.name.equals(
                     monitoredItemId,
                     ignoreCase = true
                 )
             }?.speed?.readBytesPerSecond?.toNumericalValue()
-        }
     }
 
     override fun selectValue(event: MonitorInput): MonitoredValue.NumericalValue? =

@@ -15,13 +15,17 @@ class DiskWriteRateMonitor(override val id: UUID, override val config: MonitorCo
 
     companion object {
         val selector: NumericalValueSelector = { load, monitoredItemId ->
-            load.diskLoads.firstOrNull { i: DiskLoad ->
+            val diskLoads = load.diskLoads
+            value(diskLoads, monitoredItemId)
+        }
+
+        fun value(diskLoads: List<DiskLoad>, monitoredItemId: String?) =
+            diskLoads.firstOrNull { i: DiskLoad ->
                 i.serial.equals(monitoredItemId, ignoreCase = true) || i.name.equals(
                     monitoredItemId,
                     ignoreCase = true
                 )
             }?.speed?.writeBytesPerSecond?.toNumericalValue()
-        }
     }
 
     override fun selectValue(event: MonitorInput): MonitoredValue.NumericalValue? =

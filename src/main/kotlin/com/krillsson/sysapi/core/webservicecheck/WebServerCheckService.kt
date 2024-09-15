@@ -18,7 +18,6 @@ import kotlin.jvm.optionals.getOrNull
 
 
 @Service
-@Transactional
 class WebServerCheckService(
     private val repository: WebServerCheckRepository,
     private val webServerUptimeCalculator: WebServerUptimeCalculator,
@@ -34,6 +33,7 @@ class WebServerCheckService(
     private val purgeConfig = yamlConfigFile.metricsConfig.history.purging
 
     @Scheduled(fixedRate = 30, timeUnit = TimeUnit.SECONDS)
+    @Transactional
     fun run() {
         checkAvailabilities()
         purgeOutOfDateEntries()
@@ -135,6 +135,7 @@ class WebServerCheckService(
         }
     }
 
+    @Transactional
     fun removeWebServerById(id: UUID): Boolean {
         val entity = repository.findById(id)
         entity.ifPresent {

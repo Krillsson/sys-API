@@ -19,7 +19,6 @@ class ContainersHistoryRepository(
 
     val logger by logger()
 
-    @Transactional(readOnly = true)
     fun getHistoryLimitedToDates(
         containerId: String,
         fromDate: Instant,
@@ -36,7 +35,6 @@ class ContainersHistoryRepository(
         return result.second.map { it.asContainerStatisticsHistoryEntry() }
     }
 
-    @Transactional(readOnly = true)
     fun getLatestHistoryEntry(
         containerId: String
     ): ContainerMetricsHistoryEntry? {
@@ -50,13 +48,11 @@ class ContainersHistoryRepository(
         return result.second?.asContainerStatisticsHistoryEntry()
     }
 
-    @Transactional
     fun recordContainerStatistics(statistics: List<ContainerMetrics>) {
         val entries = statistics.map { it.asEntity() }
         containerStatisticsDAO.insertAll(entries)
     }
 
-    @Transactional
     fun purgeContainerStatistics(olderThan: Long, unit: ChronoUnit) {
         val maxAge = clock.instant().minus(olderThan, unit)
         val deletedCount = containerStatisticsDAO.purge(maxAge)

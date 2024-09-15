@@ -49,7 +49,9 @@ import java.io.File
 import java.time.Clock
 import java.util.concurrent.Executor
 
+
 const val RASPBIAN_QUALIFIER = "raspbian"
+
 @Configuration
 @EnableTransactionManagement
 @EnableScheduling
@@ -114,7 +116,7 @@ class SysApiConfiguration : AsyncConfigurer {
         connectivityCheckService: ConnectivityCheckService
     ): Metrics {
 
-        val platformSpecific =  when {
+        val platformSpecific = when {
             platform == Platform.WINDOWS && (configuration.windows.enableOhmJniWrapper) -> {
                 logger.info("Windows detected")
 
@@ -135,7 +137,7 @@ class SysApiConfiguration : AsyncConfigurer {
             else -> defaultMetrics
         }
         platformSpecific.initialize()
-        return if(configuration.metricsConfig.cache.enabled){
+        return if (configuration.metricsConfig.cache.enabled) {
             Cache.wrap(
                 platformSpecific,
                 configuration.metricsConfig.cache,
@@ -148,6 +150,7 @@ class SysApiConfiguration : AsyncConfigurer {
 
     @Bean
     fun clock(): Clock = Clock.systemUTC()
+
     @Bean
     fun systemInfo(): SystemInfo {
         GlobalConfig.set("oshi.os.windows.loadaverage", true)
