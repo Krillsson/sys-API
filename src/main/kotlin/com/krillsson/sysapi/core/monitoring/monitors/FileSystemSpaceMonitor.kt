@@ -16,10 +16,14 @@ class FileSystemSpaceMonitor(override val id: UUID, override val config: Monitor
 
     companion object {
         val selector: NumericalValueSelector = { load, monitoredItemId ->
-            load.fileSystemLoads.firstOrNull { i: FileSystemLoad ->
+            val fileSystemLoads = load.fileSystemLoads
+            value(fileSystemLoads, monitoredItemId)
+        }
+
+        fun value(fileSystemLoads: List<FileSystemLoad>, monitoredItemId: String?) =
+            fileSystemLoads.firstOrNull { i: FileSystemLoad ->
                 i.id.equals(monitoredItemId, ignoreCase = true)
             }?.usableSpaceBytes?.toNumericalValue()
-        }
 
         val maxValueSelector: MaxValueNumericalSelector = { info, id ->
             info.fileSystems.firstOrNull { i: FileSystem ->

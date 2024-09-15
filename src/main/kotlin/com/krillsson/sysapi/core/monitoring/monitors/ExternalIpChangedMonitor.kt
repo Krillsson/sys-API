@@ -3,6 +3,7 @@ package com.krillsson.sysapi.core.monitoring.monitors
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.domain.monitor.toConditionalValue
+import com.krillsson.sysapi.core.domain.network.Connectivity
 import com.krillsson.sysapi.core.domain.system.SystemInfo
 import com.krillsson.sysapi.core.monitoring.Monitor
 import com.krillsson.sysapi.core.monitoring.MonitorInput
@@ -15,10 +16,15 @@ class ExternalIpChangedMonitor(
 
     companion object {
         val selector: ConditionalValueSelector = { load, _ ->
-            val externalIp = load.connectivity.externalIp
-            val previousExternalIp = load.connectivity.previousExternalIp
+            val connectivity = load.connectivity
+            value(connectivity)
+        }
 
-            if (externalIp == null || previousExternalIp == null) {
+        fun value(connectivity: Connectivity): MonitoredValue.ConditionalValue? {
+            val externalIp = connectivity.externalIp
+            val previousExternalIp = connectivity.previousExternalIp
+
+            return if (externalIp == null || previousExternalIp == null) {
                 true.toConditionalValue()
             } else if (externalIp != previousExternalIp) {
                 false.toConditionalValue()

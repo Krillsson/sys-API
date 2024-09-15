@@ -16,10 +16,15 @@ class NetworkDownloadRateMonitor(
 
     companion object {
         val selector: NumericalValueSelector = { load, monitoredItemId ->
-            load.networkInterfaceLoads.firstOrNull { n: NetworkInterfaceLoad ->
+            val networkInterfaceLoads = load.networkInterfaceLoads
+            value(networkInterfaceLoads, monitoredItemId)
+        }
+
+        fun value(networkInterfaceLoads: List<NetworkInterfaceLoad>, monitoredItemId: String?) =
+            networkInterfaceLoads.firstOrNull { n: NetworkInterfaceLoad ->
                 n.name.equals(monitoredItemId, ignoreCase = true) || n.mac.equals(monitoredItemId, ignoreCase = true)
             }?.speed?.receiveBytesPerSecond?.toNumericalValue()
-        }
+
         val maxValueSelector: MaxValueNumericalSelector = { info, monitoredItemId ->
             val nic = info.networkInterfaces.firstOrNull { n ->
                 n.name.equals(

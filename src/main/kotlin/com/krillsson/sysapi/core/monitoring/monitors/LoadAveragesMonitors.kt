@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.monitoring.monitors
 
+import com.krillsson.sysapi.core.domain.cpu.CpuLoad
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.domain.system.SystemInfo
@@ -14,8 +15,12 @@ class LoadAverageMonitorOneMinute(
 
     companion object {
         val selector: FractionalValueSelector = { load, _ ->
-            MonitoredValue.FractionalValue(load.cpuLoad.loadAverages.oneMinute.toFloat())
+            val cpuLoad = load.cpuLoad
+            value(cpuLoad)
         }
+
+        fun value(cpuLoad: CpuLoad) =
+            MonitoredValue.FractionalValue(cpuLoad.loadAverages.oneMinute.toFloat())
 
         val maxValueSelector: MaxValueFractionalSelector = { info, _ ->
             MonitoredValue.FractionalValue(info.cpuInfo.centralProcessor.logicalProcessorCount.toFloat())
@@ -44,8 +49,12 @@ class LoadAverageMonitorFiveMinutes(
 
     companion object {
         val selector: FractionalValueSelector = { load, _ ->
-            MonitoredValue.FractionalValue(load.cpuLoad.loadAverages.fiveMinutes.toFloat())
+            val cpuLoad = load.cpuLoad
+            value(cpuLoad)
         }
+
+        fun value(cpuLoad: CpuLoad) =
+            MonitoredValue.FractionalValue(cpuLoad.loadAverages.fiveMinutes.toFloat())
 
         val maxValueSelector: MaxValueFractionalSelector = { info, _ ->
             MonitoredValue.FractionalValue(info.cpuInfo.centralProcessor.logicalProcessorCount.toFloat())
@@ -74,8 +83,12 @@ class LoadAverageMonitorFifteenMinutes(
 
     companion object {
         val selector: FractionalValueSelector = { load, _ ->
-            MonitoredValue.FractionalValue(load.cpuLoad.loadAverages.fifteenMinutes.toFloat())
+            val cpuLoad = load.cpuLoad
+            value(cpuLoad)
         }
+
+        fun value(cpuLoad: CpuLoad) =
+            MonitoredValue.FractionalValue(cpuLoad.loadAverages.fifteenMinutes.toFloat())
 
         val maxValueSelector: MaxValueFractionalSelector = { info, _ ->
             MonitoredValue.FractionalValue(info.cpuInfo.centralProcessor.logicalProcessorCount.toFloat())

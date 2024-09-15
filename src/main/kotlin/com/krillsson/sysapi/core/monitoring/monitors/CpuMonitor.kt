@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.monitoring.monitors
 
+import com.krillsson.sysapi.core.domain.cpu.CpuLoad
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.domain.system.SystemInfo
@@ -12,8 +13,13 @@ class CpuMonitor(override val id: UUID, override val config: MonitorConfig<Monit
 
     companion object {
         val selector: FractionalValueSelector = { load, _ ->
-            MonitoredValue.FractionalValue(load.cpuLoad.usagePercentage.toFloat())
+            val cpuLoad = load.cpuLoad
+            value(cpuLoad)
         }
+
+        fun value(cpuLoad: CpuLoad) =
+            MonitoredValue.FractionalValue(cpuLoad.usagePercentage.toFloat())
+
         val maxValueSelector: MaxValueFractionalSelector = { info, _ ->
             MonitoredValue.FractionalValue(info.cpuInfo.centralProcessor.logicalProcessorCount.toFloat() * 100f)
         }

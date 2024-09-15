@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.monitoring.monitors
 
+import com.krillsson.sysapi.core.domain.memory.MemoryLoad
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.domain.monitor.toNumericalValue
@@ -12,8 +13,12 @@ class MemorySpaceMonitor(override val id: UUID, override val config: MonitorConf
     Monitor<MonitoredValue.NumericalValue>() {
     companion object {
         val selector: NumericalValueSelector = { load, _ ->
-            load.memory.availableBytes.toNumericalValue()
+            val memory = load.memory
+            value(memory)
         }
+
+        fun value(memory: MemoryLoad) =
+            memory.availableBytes.toNumericalValue()
 
         val maxValueSelector: MaxValueNumericalSelector = { info, _ ->
             info.memory.totalBytes.toNumericalValue()

@@ -17,10 +17,14 @@ class NetworkUpMonitor(
 
     companion object {
         val selector: ConditionalValueSelector = { load, monitoredItemId ->
-            load.networkInterfaceLoads.firstOrNull { n: NetworkInterfaceLoad ->
+            val networkInterfaceLoads = load.networkInterfaceLoads
+            value(networkInterfaceLoads, monitoredItemId)
+        }
+
+        fun value(networkInterfaceLoads: List<NetworkInterfaceLoad>, monitoredItemId: String?) =
+            networkInterfaceLoads.firstOrNull { n: NetworkInterfaceLoad ->
                 n.name.equals(monitoredItemId, ignoreCase = true) || n.mac.equals(monitoredItemId, ignoreCase = true)
             }?.isUp?.toConditionalValue()
-        }
     }
 
     override fun selectValue(event: MonitorInput): MonitoredValue.ConditionalValue? {

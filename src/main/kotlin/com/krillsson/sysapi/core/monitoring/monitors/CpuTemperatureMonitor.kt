@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.core.monitoring.monitors
 
+import com.krillsson.sysapi.core.domain.cpu.CpuLoad
 import com.krillsson.sysapi.core.domain.monitor.MonitorConfig
 import com.krillsson.sysapi.core.domain.monitor.MonitoredValue
 import com.krillsson.sysapi.core.domain.system.SystemInfo
@@ -12,8 +13,12 @@ class CpuTemperatureMonitor(override val id: UUID, override val config: MonitorC
 
     companion object {
         val selector: NumericalValueSelector = { load, _ ->
-            MonitoredValue.NumericalValue(load.cpuLoad.cpuHealth.temperatures.firstOrNull()?.toLong() ?: 0)
+            val cpuLoad = load.cpuLoad
+            value(cpuLoad)
         }
+
+        fun value(cpuLoad: CpuLoad) =
+            MonitoredValue.NumericalValue(cpuLoad.cpuHealth.temperatures.firstOrNull()?.toLong() ?: 0)
     }
 
     override val type: Type = Type.CPU_TEMP
