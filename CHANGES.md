@@ -1,4 +1,5 @@
 ### Unreleased
+- Fix long response time while querying monitor history
 - Fix right-click "Run as Administrator" in Windows
 
 ### 0.31.3
