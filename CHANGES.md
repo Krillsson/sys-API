@@ -1,4 +1,5 @@
 ### Unreleased
+- Fix right-click "Run as Administrator" in Windows
 
 ### 0.31.3
 - Fix CPU load not updating properly
