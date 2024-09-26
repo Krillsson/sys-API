@@ -23,11 +23,70 @@ plugins {
     id "org.jetbrains.kotlin.plugin.allopen" version "1.9.22"
     id "com.google.cloud.tools.jib" version "3.4.1"
     id "com.github.johnrengelman.shadow" version "8.1.1"
+    id "com.netflix.nebula.ospackage" version "11.10.0"
 }
 apply plugin: 'io.github.fvarrui.javapackager.plugin'
 
 group = 'com.krillsson'
 version = '0.31.3'
+
+ospackage {
+    os = org.redline_rpm.header.Os.LINUX
+    packageName 'sysapi'
+    packageGroup 'utils'
+    maintainer 'Krillsson'
+    summary 'GraphQL API to your computers hardware'
+    packageDescription '''
+    Reference documentation can be found at
+    https://github.com/Krillsson/sys-API
+  '''.stripIndent().trim()
+    url 'https://github.com/Krillsson/sys-API'
+
+    user 'root'
+    permissionGroup 'root'
+
+    requires('daemon')
+    requires('openjdk-21-jre')
+}
+
+task packageDeb(type: Deb) {
+    postInstall file('src/deb/scripts/postinst')
+    preUninstall file('src/deb/scripts/prerm')
+    postUninstall file('src/deb/scripts/postrm')
+
+    into('etc/init.d') {
+        from('src/deb/etc/init.d') {
+            include 'sys-api.init'
+        }
+    }
+
+    into('/opt/sysapi/bin') {
+        from('src/deb/opt/sys-api/bin') {
+            include 'sys-api-server'
+        }
+    }
+
+    into('lib/systemd/system') {
+        from('src/deb/lib/systemd/system') {
+            include 'sys-api.service'
+        }
+    }
+
+    from(shadowJar.outputs.files) {
+        into '/opt/sysapi/lib'
+    }
+
+    from('config') {
+        fileType CONFIG | NOREPLACE
+        into '/opt/sysapi/config'
+    }
+
+    from('src/deb/opt/sys-api/data') {
+        createDirectoryEntry = true
+        fileMode 0500
+        into '/opt/sysapi/data'
+    }
+}
 
 buildConfig {
     buildConfigField("String", "APP_VERSION", provider { "\"${project.version}\"" })
@@ -106,7 +165,7 @@ graalvmNative {
     }
 }
 
-task jibJvm (type: com.google.cloud.tools.jib.gradle.BuildImageTask) {
+task jibJvm(type: com.google.cloud.tools.jib.gradle.BuildImageTask) {
     group = 'Docker'
     description = 'Creates image with jvm build'
     jibExtension = project.extensions.getByName('jib')
@@ -136,7 +195,7 @@ task jibJvm (type: com.google.cloud.tools.jib.gradle.BuildImageTask) {
     }
 }
 
-task jibNativeImage (type: com.google.cloud.tools.jib.gradle.BuildImageTask) {
+task jibNativeImage(type: com.google.cloud.tools.jib.gradle.BuildImageTask) {
     group = 'Docker'
     description = 'Creates image with native build'
     jibExtension = project.extensions.getByName('jib')
@@ -171,6 +230,7 @@ shadowJar {
     append 'META-INF/spring.handlers'
     append 'META-INF/spring.schemas'
     append 'META-INF/spring.tooling'
+    archiveVersion.set('')
     transform(PropertiesFileTransformer) {
         paths = ['META-INF/spring.factories']
         mergeStrategy = "append"

@@ -1,0 +1,3 @@
+#!/bin/bash
+systemctl daemon-reload
+rm -f /usr/bin/sys-api-server /etc/application.properties /var/run/sys-api.pid

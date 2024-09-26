@@ -1,0 +1,14 @@
+[Unit]
+Description=System API daemon
+After=network.target syslog.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/sys-api-server --spring.config.location=file:/etc/application.properties
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=always
+RestartPreventExitStatus=23
+
+[Install]
+WantedBy=multi-user.target
