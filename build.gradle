@@ -1,5 +1,6 @@
 import com.github.jengelman.gradle.plugins.shadow.transformers.PropertiesFileTransformer
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.redline_rpm.header.Flags
 
 buildscript {
     dependencies {
@@ -45,14 +46,15 @@ ospackage {
     user 'root'
     permissionGroup 'root'
 
+    requires('openjdk-21-jre-headless').or('java-sdk-headless', "21", Flags.GREATER | Flags.EQUAL)
+
     requires('daemon')
-    requires('openjdk-21-jre')
 }
 
 task packageDeb(type: Deb) {
-    postInstall file('src/deb/scripts/postinst')
-    preUninstall file('src/deb/scripts/prerm')
-    postUninstall file('src/deb/scripts/postrm')
+    postInstallFile file('src/deb/scripts/postinst')
+    preUninstallFile file('src/deb/scripts/prerm')
+    postUninstallFile file('src/deb/scripts/postrm')
 
     into('etc/init.d') {
         from('src/deb/etc/init.d') {
@@ -60,7 +62,7 @@ task packageDeb(type: Deb) {
         }
     }
 
-    into('/opt/sysapi/bin') {
+    into('/opt/sys-api/bin') {
         from('src/deb/opt/sys-api/bin') {
             include 'sys-api-server'
         }
@@ -73,18 +75,18 @@ task packageDeb(type: Deb) {
     }
 
     from(shadowJar.outputs.files) {
-        into '/opt/sysapi/lib'
+        into '/opt/sys-api/lib'
     }
 
     from('config') {
         fileType CONFIG | NOREPLACE
-        into '/opt/sysapi/config'
+        into '/opt/sys-api/config'
     }
 
     from('src/deb/opt/sys-api/data') {
         createDirectoryEntry = true
-        fileMode 0500
-        into '/opt/sysapi/data'
+        fileMode 0777
+        into '/opt/sys-api/data'
     }
 }
 

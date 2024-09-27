@@ -1,4 +1,5 @@
 #!/bin/bash
+chmod -R 777 /opt/sys-api
 systemctl daemon-reload
 echo "Enabling System API daemon service."
 if [[ -f "/lib/systemd/system/sys-api.service" ]]; then

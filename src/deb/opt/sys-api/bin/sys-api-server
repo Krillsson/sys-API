@@ -35,9 +35,9 @@ while [ -h "$PRG" ] ; do
         PRG=`dirname "$PRG"`"/$link"
     fi
 done
-SAVED="/opt/sysapi"
+SAVED="/opt/sys-api"
 cd "`dirname \"$PRG\"`/.." >/dev/null
-APP_HOME="/opt/sysapi"
+APP_HOME="/opt/sys-api"
 cd "$SAVED" >/dev/null
 
 APP_NAME="sysapi"
