@@ -26,15 +26,21 @@ import java.net.URISyntaxException
 
 object JarLocation {
     val SEPARATOR: String = System.getProperty("file.separator")
-    private val JAR = jarLocation()
-    private val IS_JAR = JAR.isFile && JAR.name.endsWith(".jar")
-    private val JAR_LIB_LOCATION = "${JAR.parentFile?.parent}${SEPARATOR}lib$SEPARATOR"
+    private val executionLocation = executionLocation()
+    private val IS_JAR = executionLocation.isFile && executionLocation.name.endsWith(".jar")
+    private val IS_EXE_WRAPPER = executionLocation.isFile && executionLocation.name.endsWith(".exe")
+    private val JAR_LIB_LOCATION = "${executionLocation.parentFile?.parent}${SEPARATOR}lib$SEPARATOR"
+    private val EXE_LIB_LOCATION = "${executionLocation.parent}${SEPARATOR}lib$SEPARATOR"
 
     val SOURCE_LIB_LOCATION: String =
-        "${JAR.parentFile?.parentFile?.parentFile?.parentFile?.toString()}${SEPARATOR}src${SEPARATOR}dist${SEPARATOR}lib"
-    val LIB_LOCATION: String = if (IS_JAR) JAR_LIB_LOCATION else SOURCE_LIB_LOCATION
+        "${executionLocation.parentFile?.parentFile?.parentFile?.parentFile?.toString()}${SEPARATOR}src${SEPARATOR}dist${SEPARATOR}lib"
+    val LIB_LOCATION: String = when {
+        IS_JAR -> JAR_LIB_LOCATION
+        IS_EXE_WRAPPER -> EXE_LIB_LOCATION
+        else -> SOURCE_LIB_LOCATION
+    }
 
-    private fun jarLocation(): File {
+    private fun executionLocation(): File {
         return try {
             File(
                 SysAPIApplication::class.java.protectionDomain
