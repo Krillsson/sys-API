@@ -31,99 +31,9 @@ apply plugin: 'io.github.fvarrui.javapackager.plugin'
 group = 'com.krillsson'
 version = '0.31.3'
 
-ospackage {
-    os = org.redline_rpm.header.Os.LINUX
-    packageName 'sysapi'
-    packageGroup 'utils'
-    maintainer 'Krillsson'
-    summary 'GraphQL API to your computers hardware'
-    packageDescription '''
-    Reference documentation can be found at
-    https://github.com/Krillsson/sys-API
-  '''.stripIndent().trim()
-    url 'https://github.com/Krillsson/sys-API'
-
-    user 'root'
-    permissionGroup 'root'
-
-    requires('openjdk-21-jre-headless').or('java-sdk-headless', "21", Flags.GREATER | Flags.EQUAL)
-
-    requires('daemon')
-}
-
-task packageDeb(type: Deb) {
-    postInstallFile file('src/deb/scripts/postinst')
-    preUninstallFile file('src/deb/scripts/prerm')
-    postUninstallFile file('src/deb/scripts/postrm')
-
-    into('etc/init.d') {
-        from('src/deb/etc/init.d') {
-            include 'sys-api.init'
-        }
-    }
-
-    into('/opt/sys-api/bin') {
-        from('src/deb/opt/sys-api/bin') {
-            include 'sys-api-server'
-        }
-    }
-
-    into('lib/systemd/system') {
-        from('src/deb/lib/systemd/system') {
-            include 'sys-api.service'
-        }
-    }
-
-    from(shadowJar.outputs.files) {
-        into '/opt/sys-api/lib'
-    }
-
-    from('config') {
-        fileType CONFIG | NOREPLACE
-        into '/opt/sys-api/config'
-    }
-
-    from('src/deb/opt/sys-api/data') {
-        createDirectoryEntry = true
-        fileMode 0777
-        into '/opt/sys-api/data'
-    }
-}
-
 buildConfig {
     buildConfigField("String", "APP_VERSION", provider { "\"${project.version}\"" })
     buildConfigField("java.util.Date", "BUILD_TIME", "java.util.Date(" + System.currentTimeMillis() + "L)")
-}
-
-task packageWindowsInstaller(type: io.github.fvarrui.javapackager.gradle.PackageTask, dependsOn: shadowJar) {
-    displayName = "sys-API"
-    organizationName = "Krillsson"
-    mainClass = 'com.krillsson.sysapi.SysAPIApplicationKt'
-    bundleJre = false
-    customizedJre = false
-    runnableJar = shadowJar.outputs.files.first()
-    copyDependencies = false
-    generateInstaller = true
-    administratorRequired = true
-    platform = "windows"
-    additionalResources = [
-            file("$rootDir/src/dist/lib"),
-            file("$rootDir/src/dist/sample-queries"),
-            file("$rootDir/config"),
-            file("$rootDir/src/win/bin/sys-API-servicew.exe"),
-            file("$rootDir/src/win/config/sys-API-servicew.xml"),
-            file("$rootDir/src/win/scripts/install-service.bat"),
-            file("$rootDir/src/win/scripts/start-service.bat"),
-            file("$rootDir/src/win/scripts/stop-service.bat"),
-            file("$rootDir/src/win/scripts/uninstall-service.bat")
-    ]
-    winConfig {
-        headerType = "console"
-        generateMsi = false
-        generateMsm = false
-        setupMode = "installForAllUsers"
-        icoFile = file("$rootDir/src/win/assets/icon.ico")
-    }
 }
 
 java {
@@ -297,6 +207,95 @@ dependencies {
     testImplementation 'org.springframework:spring-webflux'
     testImplementation 'org.springframework.graphql:spring-graphql-test'
     testImplementation 'org.springframework.security:spring-security-test'
+}
+
+ospackage {
+    os = org.redline_rpm.header.Os.LINUX
+    packageName 'sysapi'
+    packageGroup 'utils'
+    maintainer 'Krillsson'
+    summary 'GraphQL API to your computers hardware'
+    packageDescription '''
+    Reference documentation can be found at
+    https://github.com/Krillsson/sys-API
+  '''.stripIndent().trim()
+    url 'https://github.com/Krillsson/sys-API'
+
+    user 'root'
+    permissionGroup 'root'
+
+    requires('openjdk-21-jre-headless').or('java-sdk-headless', "21", Flags.GREATER | Flags.EQUAL)
+
+    requires('daemon')
+}
+
+task packageDeb(type: Deb) {
+    postInstallFile file('src/deb/scripts/postinst')
+    preUninstallFile file('src/deb/scripts/prerm')
+    postUninstallFile file('src/deb/scripts/postrm')
+
+    into('etc/init.d') {
+        from('src/deb/etc/init.d') {
+            include 'sys-api.init'
+        }
+    }
+
+    into('/opt/sys-api/bin') {
+        from('src/deb/opt/sys-api/bin') {
+            include 'sys-api-server'
+        }
+    }
+
+    into('lib/systemd/system') {
+        from('src/deb/lib/systemd/system') {
+            include 'sys-api.service'
+        }
+    }
+
+    from(shadowJar.outputs.files) {
+        into '/opt/sys-api/lib'
+    }
+
+    from('config') {
+        fileType CONFIG | NOREPLACE
+        into '/opt/sys-api/config'
+    }
+
+    from('src/deb/opt/sys-api/data') {
+        createDirectoryEntry = true
+        into '/opt/sys-api/data'
+    }
+}
+
+task packageWindowsInstaller(type: io.github.fvarrui.javapackager.gradle.PackageTask, dependsOn: shadowJar) {
+    displayName = "sys-API"
+    organizationName = "Krillsson"
+    mainClass = 'com.krillsson.sysapi.SysAPIApplicationKt'
+    bundleJre = false
+    customizedJre = false
+    runnableJar = shadowJar.outputs.files.first()
+    copyDependencies = false
+    generateInstaller = true
+    administratorRequired = true
+    platform = "windows"
+    additionalResources = [
+            file("$rootDir/src/dist/lib"),
+            file("$rootDir/src/dist/sample-queries"),
+            file("$rootDir/config"),
+            file("$rootDir/src/win/bin/sys-API-servicew.exe"),
+            file("$rootDir/src/win/config/sys-API-servicew.xml"),
+            file("$rootDir/src/win/scripts/install-service.bat"),
+            file("$rootDir/src/win/scripts/start-service.bat"),
+            file("$rootDir/src/win/scripts/stop-service.bat"),
+            file("$rootDir/src/win/scripts/uninstall-service.bat")
+    ]
+    winConfig {
+        headerType = "console"
+        generateMsi = false
+        generateMsm = false
+        setupMode = "installForAllUsers"
+        icoFile = file("$rootDir/src/win/assets/icon.ico")
+    }
 }
 
 tasks.withType(KotlinCompile) {
