@@ -8,7 +8,6 @@ ExecStart=/usr/bin/sys-api-server --spring.config.location=file:/etc/application
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process
 Restart=always
-RestartPreventExitStatus=23
 
 [Install]
 WantedBy=multi-user.target
