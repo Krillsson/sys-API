@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 buildscript {
     dependencies {
         classpath('com.google.cloud.tools:jib-native-image-extension-gradle:0.1.0')
+        classpath 'io.github.fvarrui:javapackager:1.7.6'
     }
 }
 
@@ -11,7 +12,7 @@ plugins {
     id 'java'
     id 'application'
     // https://github.com/spring-projects/spring-graphql/issues/924
-    id 'org.springframework.boot' version '3.3.0-M3'
+    id 'org.springframework.boot' version '3.3.0'
     id 'io.spring.dependency-management' version '1.1.4'
     id 'org.hibernate.orm' version '6.4.10.Final'
     id 'org.graalvm.buildtools.native' version '0.10.1'
@@ -23,6 +24,7 @@ plugins {
     id "com.google.cloud.tools.jib" version "3.4.1"
     id "com.github.johnrengelman.shadow" version "8.1.1"
 }
+apply plugin: 'io.github.fvarrui.javapackager.plugin'
 
 group = 'com.krillsson'
 version = '0.31.3'
@@ -30,6 +32,37 @@ version = '0.31.3'
 buildConfig {
     buildConfigField("String", "APP_VERSION", provider { "\"${project.version}\"" })
     buildConfigField("java.util.Date", "BUILD_TIME", "java.util.Date(" + System.currentTimeMillis() + "L)")
+}
+
+task packageWindowsInstaller(type: io.github.fvarrui.javapackager.gradle.PackageTask, dependsOn: shadowJar) {
+    displayName = "sys-API"
+    organizationName = "Krillsson"
+    mainClass = 'com.krillsson.sysapi.SysAPIApplicationKt'
+    bundleJre = false
+    customizedJre = false
+    runnableJar = shadowJar.outputs.files.first()
+    copyDependencies = false
+    generateInstaller = true
+    administratorRequired = true
+    platform = "windows"
+    additionalResources = [
+            file("$rootDir/src/dist/lib"),
+            file("$rootDir/src/dist/sample-queries"),
+            file("$rootDir/config"),
+            file("$rootDir/src/win/bin/sys-API-servicew.exe"),
+            file("$rootDir/src/win/config/sys-API-servicew.xml"),
+            file("$rootDir/src/win/scripts/install-service.bat"),
+            file("$rootDir/src/win/scripts/start-service.bat"),
+            file("$rootDir/src/win/scripts/stop-service.bat"),
+            file("$rootDir/src/win/scripts/uninstall-service.bat")
+    ]
+    winConfig {
+        headerType = "console"
+        generateMsi = false
+        generateMsm = false
+        setupMode = "installForAllUsers"
+        icoFile = file("$rootDir/src/win/assets/icon.ico")
+    }
 }
 
 java {

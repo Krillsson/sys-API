@@ -1,0 +1,10 @@
+query HistoryQuery {
+    history {
+        date
+        processorMetrics {
+            coreLoads {
+                percentage
+            }
+        }
+    }
+}

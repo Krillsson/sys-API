@@ -1,0 +1,8 @@
+<service>
+  <id>sys-api</id>
+  <name>sys-API</name>
+  <description>System API (sys-API) provide a GraphQL API to your computers hardware.</description>
+  <executable>%BASE%\sysapi.exe</executable>
+  <log mode="roll" />
+  <onfailure action="restart" />
+</service>
