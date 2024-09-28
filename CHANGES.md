@@ -1,4 +1,10 @@
 ### Unreleased
+
+- Distribution: Project now packaged as a .deb file for easier installation on Debian based systems
+  - .deb file depends on openjdk-21-jre-headless and daemon apt packages
+- Distribution: Windows installer with bundled jre for easier installation on Windows
+- Systemd service definition is included in .deb file
+- Run sys-API as a Windows service (using [winsw](https://github.com/winsw/winsw))
 - Fix long response time while querying monitor history
 - Fix right-click "Run as Administrator" in Windows
 
