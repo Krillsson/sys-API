@@ -51,7 +51,8 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: @pwall2222/inno-setup-download
+      - name: inno-setup-download
+        uses: pwall2222/inno-setup-download@v0.0.4
       - name: Set Up JDK
         uses: actions/setup-java@v3
         with:
