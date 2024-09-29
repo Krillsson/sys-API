@@ -271,7 +271,7 @@ task packageWindowsInstaller(type: io.github.fvarrui.javapackager.gradle.Package
     displayName = "sys-API"
     organizationName = "Krillsson"
     mainClass = 'com.krillsson.sysapi.SysAPIApplicationKt'
-    bundleJre = false
+    bundleJre = true
     customizedJre = false
     runnableJar = shadowJar.outputs.files.first()
     copyDependencies = false
