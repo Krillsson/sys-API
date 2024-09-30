@@ -60,28 +60,8 @@ If the server is protected by Basic Auth, you need to configure GraphQL Playgrou
 ```
 
 ## Running
-Download the [latest release](https://github.com/Krillsson/sys-api/releases/latest).
 
-- Windows: unzip the package somewhere convenient and then right click the `.bat` file and choose _Run as administrator_
-- *nix: untar or unzip the package and run the `.sh` file from a terminal
-  - Use `nohup` to run the process disconnected from the terminal:
-  - `$ nohup ./run.sh &`
-  - press CTRL+C
-  - Verify that it started successfully:
-  - `$ tail -f nohup.out`
-
-## Running using docker
-Make sure you have [docker compose](https://docs.docker.com/compose/install/) installed.
-
- - Navigate to a directory on your machine that you want to install sys-API docker container in
- - Create the two directories so sys-API can persist your environment specific stuff outside the container
-   - `$ mkdir data`
-   - `$ mkdir config`
- - Download the compose file to your root directory
-   - For example: `$ wget https://raw.githubusercontent.com/Krillsson/sys-API/master/docker-compose.yml`
- - Make the appropriate edits to the docker-compose file. See the comments in there.
- - Start the container
-   - `$ docker compose -f docker-compose.yml up`
+Referr to [monitee.app/get-started](https://monitee.app/get-started/) for how to run it on your system.
 
 ## Configuration
 The application expects a user config file (_configuration.yml_) and a spring configuration file (_application.properties_) in the _/config_ directory.
