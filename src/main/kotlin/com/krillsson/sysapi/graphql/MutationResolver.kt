@@ -13,6 +13,7 @@ import com.krillsson.sysapi.docker.ContainerManager
 import com.krillsson.sysapi.graphql.mutations.*
 import com.krillsson.sysapi.logaccess.windowseventlog.WindowsManager
 import com.krillsson.sysapi.logaccess.windowseventlog.WindowsServiceCommandResult
+import com.krillsson.sysapi.core.pkill.ProcessKillerService
 import com.krillsson.sysapi.systemd.CommandResult
 import com.krillsson.sysapi.systemd.SystemDaemonManager
 import org.springframework.graphql.data.method.annotation.Argument
@@ -22,24 +23,25 @@ import java.time.Duration
 
 @Controller
 class MutationResolver(
-        private val monitorManager: MonitorManager,
-        private val eventManager: EventManager,
-        private val genericEventRepository: GenericEventRepository,
-        private val containerManager: ContainerManager,
-        private val systemDaemonManager: SystemDaemonManager,
-        private val windowsManager: WindowsManager,
-        private val webServerCheckService: WebServerCheckService
+    private val monitorManager: MonitorManager,
+    private val eventManager: EventManager,
+    private val genericEventRepository: GenericEventRepository,
+    private val containerManager: ContainerManager,
+    private val systemDaemonManager: SystemDaemonManager,
+    private val windowsManager: WindowsManager,
+    private val processKiller: ProcessKillerService,
+    private val webServerCheckService: WebServerCheckService
 ) {
 
     @MutationMapping
     fun performDockerContainerCommand(@Argument input: PerformDockerContainerCommandInput): PerformDockerContainerCommandOutput {
         val result = containerManager.performCommandWithContainer(
-                Command(input.containerId, input.command)
+            Command(input.containerId, input.command)
         )
 
         return when (result) {
             is com.krillsson.sysapi.docker.CommandResult.Failed -> PerformDockerContainerCommandOutputFailed(
-                    "Message: ${result.error.message ?: "Unknown reason"} Type: ${requireNotNull(result.error::class.simpleName)}",
+                "Message: ${result.error.message ?: "Unknown reason"} Type: ${requireNotNull(result.error::class.simpleName)}",
             )
 
             com.krillsson.sysapi.docker.CommandResult.Success -> PerformDockerContainerCommandOutputSucceeded(input.containerId)
@@ -53,7 +55,7 @@ class MutationResolver(
 
         return when (result) {
             is WindowsServiceCommandResult.Failed -> PerformWindowsServiceCommandOutputFailed(
-                    "Message: ${result.error.message ?: "Unknown reason"} Type: ${requireNotNull(result.error::class.simpleName)}",
+                "Message: ${result.error.message ?: "Unknown reason"} Type: ${requireNotNull(result.error::class.simpleName)}",
             )
 
             WindowsServiceCommandResult.Success -> PerformWindowsServiceCommandOutputSucceeded(input.serviceName)
@@ -65,12 +67,12 @@ class MutationResolver(
     @MutationMapping
     fun performSystemDaemonCommand(@Argument input: PerformSystemDaemonCommandInput): PerformSystemDaemonCommandOutput {
         val result = systemDaemonManager.performCommandWithService(
-                input.serviceName, input.command
+            input.serviceName, input.command
         )
 
         return when (result) {
             is CommandResult.Failed -> PerformSystemDaemonCommandOutputFailed(
-                    "Message: ${result.error.message ?: "Unknown reason"} Type: ${requireNotNull(result.error::class.simpleName)}",
+                "Message: ${result.error.message ?: "Unknown reason"} Type: ${requireNotNull(result.error::class.simpleName)}",
             )
 
             CommandResult.Success -> PerformSystemDaemonCommandOutputSucceeded(input.serviceName)
@@ -82,10 +84,10 @@ class MutationResolver(
     @MutationMapping
     fun createNumericalValueMonitor(@Argument input: CreateNumericalMonitorInput): CreateMonitorOutput {
         val createdId = monitorManager.add(
-                Duration.ofSeconds(input.inertiaInSeconds.toLong()),
-                input.type,
-                input.threshold.toNumericalValue(),
-                input.monitoredItemId
+            Duration.ofSeconds(input.inertiaInSeconds.toLong()),
+            input.type,
+            input.threshold.toNumericalValue(),
+            input.monitoredItemId
         )
         return CreateMonitorOutput(createdId)
     }
@@ -93,10 +95,10 @@ class MutationResolver(
     @MutationMapping
     fun createFractionalValueMonitor(@Argument input: CreateFractionMonitorInput): CreateMonitorOutput {
         val createdId = monitorManager.add(
-                Duration.ofSeconds(input.inertiaInSeconds.toLong()),
-                input.type,
-                input.threshold.toFractionalValue(),
-                input.monitoredItemId
+            Duration.ofSeconds(input.inertiaInSeconds.toLong()),
+            input.type,
+            input.threshold.toFractionalValue(),
+            input.monitoredItemId
         )
         return CreateMonitorOutput(createdId)
     }
@@ -104,10 +106,10 @@ class MutationResolver(
     @MutationMapping
     fun createConditionalValueMonitor(@Argument input: CreateConditionalMonitorInput): CreateMonitorOutput {
         val createdId = monitorManager.add(
-                Duration.ofSeconds(input.inertiaInSeconds.toLong()),
-                input.type,
-                input.threshold.toConditionalValue(),
-                input.monitoredItemId
+            Duration.ofSeconds(input.inertiaInSeconds.toLong()),
+            input.type,
+            input.threshold.toConditionalValue(),
+            input.monitoredItemId
         )
         return CreateMonitorOutput(createdId)
     }
@@ -122,9 +124,9 @@ class MutationResolver(
     fun updateNumericalValueMonitor(@Argument input: UpdateNumericalMonitorInput): UpdateMonitorOutput {
         return try {
             val updatedMonitorId = monitorManager.update(
-                    input.monitorId,
-                    input.inertiaInSeconds?.toLong()?.let { Duration.ofSeconds(it) },
-                    input.threshold?.toNumericalValue()
+                input.monitorId,
+                input.inertiaInSeconds?.toLong()?.let { Duration.ofSeconds(it) },
+                input.threshold?.toNumericalValue()
             )
             UpdateMonitorOutputSucceeded(updatedMonitorId)
         } catch (exception: Exception) {
@@ -136,9 +138,9 @@ class MutationResolver(
     fun updateFractionalValueMonitor(@Argument input: UpdateFractionMonitorInput): UpdateMonitorOutput {
         return try {
             val updatedMonitorId = monitorManager.update(
-                    input.monitorId,
-                    input.inertiaInSeconds?.toLong()?.let { Duration.ofSeconds(it) },
-                    input.threshold?.toFractionalValue()
+                input.monitorId,
+                input.inertiaInSeconds?.toLong()?.let { Duration.ofSeconds(it) },
+                input.threshold?.toFractionalValue()
             )
             UpdateMonitorOutputSucceeded(updatedMonitorId)
         } catch (exception: Exception) {
@@ -150,9 +152,9 @@ class MutationResolver(
     fun updateConditionalValueMonitor(@Argument input: UpdateConditionalMonitorInput): UpdateMonitorOutput {
         return try {
             val updatedMonitorId = monitorManager.update(
-                    input.monitorId,
-                    input.inertiaInSeconds?.toLong()?.let { Duration.ofSeconds(it) },
-                    input.threshold?.toConditionalValue()
+                input.monitorId,
+                input.inertiaInSeconds?.toLong()?.let { Duration.ofSeconds(it) },
+                input.threshold?.toConditionalValue()
             )
             UpdateMonitorOutputSucceeded(updatedMonitorId)
         } catch (exception: Exception) {
@@ -203,4 +205,10 @@ class MutationResolver(
         val result = webServerCheckService.removeWebServerById(input.id)
         return DeleteWebServerCheckOutput(result)
     }
+
+    @MutationMapping
+    fun killProcess(@Argument pid: Int, @Argument forcibly: Boolean): ProcessKillerService.ProcessKillResult {
+        return processKiller.kill(pid.toLong(), forcibly)
+    }
+
 }

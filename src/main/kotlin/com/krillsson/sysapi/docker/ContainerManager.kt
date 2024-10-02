@@ -132,20 +132,12 @@ class ContainerManager(
             else -> {
                 when (val result = dockerClient.checkAvailability()) {
                     is DockerClient.PingResult.Fail -> {
-                        logger.error("Docker is unavailable because of an error", result.throwable)
+                        logger.error("Docker is unavailable because of an error ${result.throwable.message}")
                         Status.Unavailable(result.throwable)
                     }
                     DockerClient.PingResult.Success -> Status.Available
                 }
             }
-        }
-    }
-
-    private fun listContainers(): List<Container> {
-        return if (status == Status.Available) {
-            dockerClient.listContainers()
-        } else {
-            emptyList()
         }
     }
 }
