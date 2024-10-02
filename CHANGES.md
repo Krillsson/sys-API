@@ -1,4 +1,6 @@
 ### Unreleased
+- New API: Support killing process `killProcess(pid: Int, forcibly: Boolean)`
+  - Note: sys-API likely needs to run as root/admin to kill anything other than the current users processes
 
 ### 0.32.0
 - Distribution: Project now packaged as a .deb file for easier installation on Debian based systems

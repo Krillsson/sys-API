@@ -5,6 +5,10 @@ extend type Query {
     historyBetweenTimestamps(from: Instant!, to: Instant!): [SystemMetricsHistoryEntry!]!
 }
 
+extend type Mutation {
+    killProcess(pid: Int, forcibly: Boolean): ProcessKillResult!
+}
+
 type System {
     operatingSystem: OperatingSystem!
     uptime: Long!
@@ -240,6 +244,7 @@ type Process {
     group: String!
     groupID: String!
     state: String!
+    id: Int!
     processID: Int!
     parentProcessID: Int!
     threadCount: Int!
@@ -289,4 +294,13 @@ type PhysicalMemory {
     clockSpeedHertz: Long!
     manufacturer: String!
     memoryType: String!
+}
+
+enum ProcessKillResult{
+    RequestSuccess,
+    RequestDenied,
+    NotAllowed,
+    UnableToKillOwnProcess,
+    ProcessNotFound,
+    UnknownError,
 }
