@@ -56,7 +56,10 @@ class DefaultProcessesMetrics(
     }
 
     override fun getProcessByPid(pid: Int): Optional<Process> {
-        val process: OSProcess? = priorSnapshotMap[pid]
+        val process: OSProcess? = operatingSystem.getProcess(pid)
+        process?.let {
+            priorSnapshotMap[process.processID] = process
+        }
         return Optional.ofNullable(
             process?.asProcess(
                 currentLoad.getOrDefault(pid, 0.0),

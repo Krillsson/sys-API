@@ -13,6 +13,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
 import oshi.hardware.UsbDevice
+import kotlin.jvm.optionals.getOrNull
 
 @Controller
 @SchemaMapping(typeName = "System")
@@ -66,6 +67,11 @@ class SystemResolver(val metrics: Metrics) {
         return metrics.processesMetrics()
                 .processesInfo(sortBy, limit).processes
     }
+
+    @SchemaMapping
+    fun processByPid(system: System,
+                     @Argument pid: Int
+    ) = metrics.processesMetrics().getProcessByPid(pid).getOrNull()
 
     @SchemaMapping
     fun networkInterfaces(system: System) = metrics.networkMetrics().networkInterfaces()
