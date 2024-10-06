@@ -26,6 +26,7 @@ type System {
     networkInterfaceById(id: String!): NetworkInterface
     # 0 means no limitation
     processes(limit: Int = 0, sortBy: ProcessSortMethod = MEMORY): [Process!]!
+    processByPid(pid: Int!): Process
     memory: Memory!
 }
 
