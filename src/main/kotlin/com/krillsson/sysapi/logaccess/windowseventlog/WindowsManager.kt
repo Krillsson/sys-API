@@ -1,6 +1,5 @@
 package com.krillsson.sysapi.logaccess.windowseventlog
 
-import com.krillsson.sysapi.config.WindowsConfiguration
 import com.krillsson.sysapi.config.YAMLConfigFile
 import com.krillsson.sysapi.graphql.domain.WindowsManagementAccessAvailable
 import org.springframework.stereotype.Service

@@ -17,9 +17,9 @@ class WindowsServiceManager(private val configuration: ServiceManagement) {
             manager.open(SC_MANAGER_ENUMERATE_SERVICE or SC_MANAGER_CONNECT)
             manager.use { manager ->
                 for (essp in manager.enumServicesStatusExProcess(SERVICE_WIN32, SERVICE_STATE_ALL, null)) {
-                    val type = WindowsServiceType.fromIntegerConstant(essp.ServiceStatusProcess.dwServiceType)
-                    val state: WindowsServiceState =
-                        WindowsServiceState.fromIntegerConstant(essp.ServiceStatusProcess.dwCurrentState)
+                    val type = WindowsService.Type.fromIntegerConstant(essp.ServiceStatusProcess.dwServiceType)
+                    val state: WindowsService.State =
+                        WindowsService.State.fromIntegerConstant(essp.ServiceStatusProcess.dwCurrentState)
                     val pid = essp.ServiceStatusProcess.dwProcessId
                     services.add(
                         WindowsService(essp.lpServiceName, essp.lpDisplayName, type, state, pid)

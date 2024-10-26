@@ -1,10 +1,10 @@
 ### Unreleased
 
 ### 0.33.0
+
 - New API: Support killing process `killProcess(pid: Int, forcibly: Boolean)`
   - Note: sys-API likely needs to run as root/admin to kill anything other than the current users processes
 - New API: `processByPid(pid: Int!)` to support the above. Note that the API will return null if the process is dead.
-
 - Past events are now trimmed to max 100 and according to configured history retention time
 
 ### 0.32.0
