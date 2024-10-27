@@ -43,6 +43,22 @@ type DockerAvailable {
     containerMetricsHistoryBetweenTimestamps(containerId: String!, from: Instant!, to: Instant!): [DockerContainerMetricsHistoryEntry!]!
 }
 
+type DockerLogLine {
+    line: String!
+}
+
+type DockerLogLineEdge {
+    node: DockerLogLine!
+    cursor: String!
+}
+
+type DockerLogLineConnection {
+    totalCount: Int!
+    edges: [DockerLogLineEdge!]!
+    pageInfo: PageInfo!
+}
+
+
 type DockerUnavailable{
     reason: String!
     isDisabled: Boolean
