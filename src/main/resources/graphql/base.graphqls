@@ -11,6 +11,7 @@ type Subscription {
 type Query {
     meta: Meta!
 }
+
 type Mutation {}
 
 scalar UUID
@@ -23,4 +24,11 @@ type Meta {
     buildDate: String!
     processId: Int!
     endpoints: [String!]!
+}
+
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String!
+    endCursor: String!
 }
