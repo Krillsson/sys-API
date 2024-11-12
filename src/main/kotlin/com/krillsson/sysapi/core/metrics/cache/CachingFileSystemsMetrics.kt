@@ -9,9 +9,10 @@ import com.krillsson.sysapi.config.CacheConfiguration
 import com.krillsson.sysapi.core.domain.filesystem.FileSystem
 import com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad
 import com.krillsson.sysapi.core.metrics.FileSystemMetrics
+import reactor.core.publisher.Flux
 import java.util.*
 
-class CachingFileSystemMetrics(fileSystemMetrics: FileSystemMetrics, cacheConfiguration: CacheConfiguration) :
+class CachingFileSystemMetrics(private val fileSystemMetrics: FileSystemMetrics, cacheConfiguration: CacheConfiguration) :
     FileSystemMetrics {
     private val fileSystemsCache: Supplier<List<FileSystem>> = Suppliers.memoizeWithExpiration(
         { fileSystemMetrics.fileSystems() },
@@ -53,5 +54,13 @@ class CachingFileSystemMetrics(fileSystemMetrics: FileSystemMetrics, cacheConfig
 
     override fun fileSystemLoadById(id: String): FileSystemLoad? {
         return fileSystemLoadsQueryCache.getUnchecked(id)
+    }
+
+    override fun fileSystemEvents(): Flux<List<FileSystemLoad>> {
+        return fileSystemMetrics.fileSystemEvents()
+    }
+
+    override fun fileSystemEventsById(id: String): Flux<FileSystemLoad> {
+        return fileSystemMetrics.fileSystemEventsById(id)
     }
 }

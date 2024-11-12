@@ -4,11 +4,15 @@ import com.krillsson.sysapi.core.domain.disk.*
 import com.krillsson.sysapi.core.metrics.DiskMetrics
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
 import org.apache.commons.lang3.StringUtils
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import oshi.hardware.HWDiskStore
 import oshi.hardware.HWPartition
 import oshi.hardware.HardwareAbstractionLayer
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Sinks
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 @Component
 open class DefaultDiskMetrics(
@@ -16,8 +20,18 @@ open class DefaultDiskMetrics(
     private val speedMeasurementManager: DiskReadWriteRateMeasurementManager
 ) : DiskMetrics {
 
+    private val diskMetric = Sinks.many()
+        .replay()
+        .latest<List<DiskLoad>>()
+
     fun register() {
         speedMeasurementManager.registerStores()
+    }
+
+    @Scheduled(fixedRate = 15, timeUnit = TimeUnit.SECONDS)
+    fun runMeasurement() {
+        speedMeasurementManager.run()
+        diskMetric.tryEmitNext(diskLoads())
     }
 
     override fun disks(): List<Disk> {
@@ -35,6 +49,17 @@ open class DefaultDiskMetrics(
             .filter { n: HWDiskStore -> n.name.equals(name, ignoreCase = true) }
             .map { d: HWDiskStore -> createDiskLoad(d) }
             .firstOrNull()
+    }
+
+    override fun diskLoadEvents(): Flux<List<DiskLoad>> {
+        return diskMetric.asFlux()
+    }
+
+    override fun diskLoadEventsByName(name: String): Flux<DiskLoad> {
+        return diskMetric.asFlux()
+            .mapNotNull { list: List<DiskLoad> ->
+                list.firstOrNull { n -> n.name.equals(name, ignoreCase = true) }
+            }
     }
 
     private fun diskMetrics(
@@ -72,7 +97,7 @@ open class DefaultDiskMetrics(
 
     private fun createDiskLoad(diskStore: HWDiskStore): DiskLoad {
         val metrics = diskMetrics(diskStore)
-        val speed: DiskSpeed = requireNotNull( diskSpeedForStore(diskStore).orElse(DiskSpeed(-1, -1)))
+        val speed: DiskSpeed = requireNotNull(diskSpeedForStore(diskStore).orElse(DiskSpeed(-1, -1)))
         return DiskLoad(diskStore.name, getSerial(diskStore), metrics, speed)
     }
 
