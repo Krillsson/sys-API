@@ -10,10 +10,11 @@ import com.krillsson.sysapi.core.domain.network.Connectivity
 import com.krillsson.sysapi.core.domain.network.NetworkInterface
 import com.krillsson.sysapi.core.domain.network.NetworkInterfaceLoad
 import com.krillsson.sysapi.core.metrics.NetworkMetrics
+import reactor.core.publisher.Flux
 import java.util.*
 
 class CachingNetworkMetrics(
-    networkMetrics: NetworkMetrics,
+    private val networkMetrics: NetworkMetrics,
     cacheConfiguration: CacheConfiguration
 ) : NetworkMetrics {
     private val networkInterfacesCache: Supplier<List<NetworkInterface>> =
@@ -63,6 +64,14 @@ class CachingNetworkMetrics(
 
     override fun networkInterfaceLoads(): List<NetworkInterfaceLoad> {
         return networkInterfaceLoadsCache.get()
+    }
+
+    override fun networkInterfaceLoadEvents(): Flux<List<NetworkInterfaceLoad>> {
+        return networkMetrics.networkInterfaceLoadEvents()
+    }
+
+    override fun networkInterfaceLoadEventsById(id: String): Flux<NetworkInterfaceLoad> {
+        return networkMetrics.networkInterfaceLoadEventsById(id)
     }
 
     override fun networkInterfaceLoadById(id: String): Optional<NetworkInterfaceLoad> {

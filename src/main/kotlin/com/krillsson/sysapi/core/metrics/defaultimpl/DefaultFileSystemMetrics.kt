@@ -4,14 +4,22 @@ import com.krillsson.sysapi.core.domain.filesystem.FileSystem
 import com.krillsson.sysapi.core.domain.filesystem.FileSystemLoad
 import com.krillsson.sysapi.core.metrics.FileSystemMetrics
 import com.krillsson.sysapi.util.asHex
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import oshi.software.os.OSFileStore
 import oshi.software.os.OperatingSystem
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Sinks
+import java.util.concurrent.TimeUnit
 
 @Component
 open class DefaultFileSystemMetrics(
     private val operatingSystem: OperatingSystem
 ) : FileSystemMetrics {
+
+    private val fileSystemMetric = Sinks.many()
+        .replay()
+        .latest<List<FileSystemLoad>>()
 
     override fun fileSystems(): List<FileSystem> {
         return operatingSystem.fileSystem
@@ -19,6 +27,11 @@ open class DefaultFileSystemMetrics(
                 it.asFileSystem()
             }
             .distinctBy { it.id }
+    }
+
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.MINUTES)
+    fun runMeasurement() {
+        fileSystemMetric.tryEmitNext(fileSystemLoads())
     }
 
     override fun fileSystemById(id: String): FileSystem? {
@@ -41,6 +54,17 @@ open class DefaultFileSystemMetrics(
             .fileStores
             .map { it.asFileSystemLoad() }
             .firstOrNull { it.id.equals(id, ignoreCase = true) }
+    }
+
+    override fun fileSystemEvents(): Flux<List<FileSystemLoad>> {
+        return fileSystemMetric.asFlux()
+    }
+
+    override fun fileSystemEventsById(id: String): Flux<FileSystemLoad> {
+        return fileSystemMetric.asFlux()
+            .mapNotNull { list: List<FileSystemLoad> ->
+                list.firstOrNull { n -> n.id.equals(id, ignoreCase = true) }
+            }
     }
 
     private fun OSFileStore.asFileSystemLoad(): FileSystemLoad {

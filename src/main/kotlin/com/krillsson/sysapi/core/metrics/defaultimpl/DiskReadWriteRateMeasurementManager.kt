@@ -1,12 +1,10 @@
 package com.krillsson.sysapi.core.metrics.defaultimpl
 
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import oshi.hardware.HWDiskStore
 import oshi.hardware.HardwareAbstractionLayer
 import java.time.Clock
-import java.util.concurrent.TimeUnit
 
 @Component
 class DiskReadWriteRateMeasurementManager(
@@ -19,11 +17,6 @@ class DiskReadWriteRateMeasurementManager(
         for (store in hal.diskStores) {
             register(DiskSpeedSource(store.name))
         }
-    }
-
-    @Scheduled(fixedRate = 15, timeUnit = TimeUnit.SECONDS)
-    fun runMeasurement() {
-        run()
     }
 
     override fun onUpdateStarted() {

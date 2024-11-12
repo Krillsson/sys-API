@@ -3,20 +3,18 @@ package com.krillsson.sysapi.core.metrics.defaultimpl
 import com.krillsson.sysapi.core.domain.cpu.CentralProcessor
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad
-import com.krillsson.sysapi.core.domain.cpu.LoadAverages
 import com.krillsson.sysapi.core.metrics.CpuMetrics
-import com.krillsson.sysapi.util.round
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.software.os.OperatingSystem
+import reactor.core.publisher.Flux
 
 @Component
-open class DefaultCpuMetrics(
+class DefaultCpuMetrics(
     private val hal: HardwareAbstractionLayer,
     private val operatingSystem: OperatingSystem,
-    @Qualifier("defaultCpuSensors") private val cpuSensors: DefaultCpuSensors,
-    private val cpuLoadMetrics: DefaultCpuLoadMetrics
+    @Qualifier("defaultCpuLoadMetrics") private val cpuLoadMetrics: DefaultCpuLoadMetrics
 ) : CpuMetrics {
 
     override fun cpuInfo(): CpuInfo {
@@ -38,18 +36,11 @@ open class DefaultCpuMetrics(
     }
 
     override fun cpuLoad(): CpuLoad {
-        val processor = hal.processor
-        val systemLoadAverage = processor.getSystemLoadAverage(3)
-        val loadAverages = LoadAverages(systemLoadAverage[0], systemLoadAverage[1], systemLoadAverage[2])
-        return CpuLoad(
-            cpuLoadMetrics.systemUsage,
-            (systemLoadAverage[0] * 100.0).round(2),
-            loadAverages,
-            cpuLoadMetrics.coreLoads,
-            cpuSensors.cpuHealth(),
-            operatingSystem.processCount,
-            operatingSystem.threadCount
-        )
+        return cpuLoadMetrics.createCpuLoad()
+    }
+
+    override fun cpuLoadEvents(): Flux<CpuLoad> {
+        return cpuLoadMetrics.cpuLoadEvents()
     }
 
     override fun uptime(): Long {

@@ -12,7 +12,6 @@ import com.krillsson.sysapi.core.metrics.cache.Cache
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetrics
 import com.krillsson.sysapi.core.metrics.defaultimpl.DiskReadWriteRateMeasurementManager
 import com.krillsson.sysapi.core.metrics.defaultimpl.NetworkUploadDownloadRateMeasurementManager
-import com.krillsson.sysapi.core.metrics.rasbian.RaspbianMetrics
 import com.krillsson.sysapi.core.metrics.windows.WindowsMetrics
 import com.krillsson.sysapi.graphql.domain.Meta
 import com.krillsson.sysapi.graphql.scalars.ScalarTypes
@@ -25,6 +24,7 @@ import com.krillsson.sysapi.util.asPlatform
 import com.krillsson.sysapi.util.logger
 import org.apache.catalina.connector.Connector
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler
+import org.springframework.beans.factory.ObjectProvider
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory
 import org.springframework.boot.web.server.WebServerFactoryCustomizer
@@ -48,9 +48,6 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.File
 import java.time.Clock
 import java.util.concurrent.Executor
-
-
-const val RASPBIAN_QUALIFIER = "raspbian"
 
 @Configuration
 @EnableTransactionManagement
@@ -105,8 +102,7 @@ class SysApiConfiguration : AsyncConfigurer {
     @Bean
     fun metrics(
         configuration: YAMLConfigFile,
-        raspbianMetrics: RaspbianMetrics,
-        windowsMetrics: WindowsMetrics,
+        windowsMetricsProvider: ObjectProvider<WindowsMetrics>,
         defaultMetrics: DefaultMetrics,
         hal: HardwareAbstractionLayer,
         operatingSystem: OperatingSystem,
@@ -119,19 +115,13 @@ class SysApiConfiguration : AsyncConfigurer {
         val platformSpecific = when {
             platform == Platform.WINDOWS && (configuration.windows.enableOhmJniWrapper) -> {
                 logger.info("Windows detected")
-
+                val windowsMetrics = windowsMetricsProvider.getObject()
                 if (windowsMetrics.prerequisitesFilled()) {
                     windowsMetrics
                 } else {
                     logger.error("Unable to use Windows specific implementation: falling through to default one")
                     defaultMetrics
                 }
-            }
-
-            platform == Platform.LINUX && (operatingSystem.family.lowercase()
-                .contains(RASPBIAN_QUALIFIER)) -> {
-                logger.info("Raspberry Pi detected")
-                raspbianMetrics
             }
 
             else -> defaultMetrics

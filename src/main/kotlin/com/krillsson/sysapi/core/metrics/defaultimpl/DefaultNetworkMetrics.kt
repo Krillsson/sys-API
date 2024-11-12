@@ -26,11 +26,15 @@ import com.krillsson.sysapi.core.metrics.NetworkMetrics
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager.CurrentSpeed
 import com.krillsson.sysapi.core.speed.SpeedMeasurementManager.SpeedSource
 import org.slf4j.LoggerFactory
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import oshi.hardware.HardwareAbstractionLayer
 import oshi.hardware.NetworkIF
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Sinks
 import java.net.SocketException
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 @Component
 open class DefaultNetworkMetrics(
@@ -40,6 +44,10 @@ open class DefaultNetworkMetrics(
 ) : NetworkMetrics {
 
     private val networkInterfaces: MutableList<NetworkIF> = hal.networkIFs
+
+    private val networkInterfaceMetric = Sinks.many()
+        .replay()
+        .latest<List<NetworkInterfaceLoad>>()
 
     class NetworkSpeedSource(private val networkIF: NetworkIF) : SpeedSource {
 
@@ -65,6 +73,12 @@ open class DefaultNetworkMetrics(
                 NetworkSpeedSource(it)
             }
         )
+    }
+
+    @Scheduled(fixedRate = 15, timeUnit = TimeUnit.SECONDS)
+    fun runMeasurement() {
+        speedMeasurementManager.run()
+        networkInterfaceMetric.tryEmitNext(networkInterfaceLoads())
     }
 
     override fun connectivity(): Connectivity {
@@ -114,6 +128,17 @@ open class DefaultNetworkMetrics(
             }
             it.asNetworkInterfaceLoad(up, speedForInterfaceWithName(it.name))
         }.toList()
+    }
+
+    override fun networkInterfaceLoadEvents(): Flux<List<NetworkInterfaceLoad>> {
+        return networkInterfaceMetric.asFlux()
+    }
+
+    override fun networkInterfaceLoadEventsById(id: String): Flux<NetworkInterfaceLoad> {
+        return networkInterfaceMetric.asFlux()
+            .mapNotNull { list: List<NetworkInterfaceLoad> ->
+                list.firstOrNull { n -> n.name.equals(id, ignoreCase = true) }
+            }
     }
 
     override fun networkInterfaceLoadById(id: String): Optional<NetworkInterfaceLoad> {

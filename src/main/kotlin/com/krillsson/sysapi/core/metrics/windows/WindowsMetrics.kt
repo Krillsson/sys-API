@@ -3,9 +3,11 @@ package com.krillsson.sysapi.core.metrics.windows
 import com.krillsson.sysapi.core.metrics.MemoryMetrics
 import com.krillsson.sysapi.core.metrics.SystemMetrics
 import com.krillsson.sysapi.core.metrics.defaultimpl.*
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
 @Component
+@Lazy
 class WindowsMetrics(
     cpuMetrics: WindowsCpuMetrics,
     networkMetrics: DefaultNetworkMetrics,
@@ -30,7 +32,7 @@ class WindowsMetrics(
 ) {
     override fun initialize() {
         super.initialize()
-        if(ohmManagerFactory.prerequisitesFilled()){
+        if (ohmManagerFactory.prerequisitesFilled()) {
             ohmManagerFactory.initialize()
         }
     }

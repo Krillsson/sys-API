@@ -9,6 +9,17 @@ extend type Mutation {
     killProcess(pid: Int, forcibly: Boolean): ProcessKillResult!
 }
 
+extend type Subscription {
+    processorMetrics: ProcessorMetrics!
+    memoryMetrics: MemoryMetrics!
+    diskMetrics: [DiskMetrics!]!
+    fileSystemMetrics: [FileSystemMetrics!]!
+    fileSystemMetricsById(id: String!): FileSystemMetrics
+    diskMetricsById(id: String!): DiskMetrics
+    networkInterfaceMetrics: [NetworkInterfaceMetrics!]!
+    networkInterfaceMetricsById(id: String!): NetworkInterfaceMetrics
+}
+
 type System {
     operatingSystem: OperatingSystem!
     uptime: Long!
@@ -278,10 +289,11 @@ type Memory {
     swapTotalBytes: Long!
     totalBytes: Long!
     physicalMemory: [PhysicalMemory!]!
-    metrics: MemoryMetrics
+    metrics: MemoryMetrics!
 }
 
 type MemoryMetrics {
+    totalBytes: Long!
     numberOfProcesses: Int!
     swapUsedBytes: Long!
     availableBytes: Long!

@@ -6,9 +6,10 @@ import com.krillsson.sysapi.config.CacheConfiguration
 import com.krillsson.sysapi.core.domain.cpu.CpuInfo
 import com.krillsson.sysapi.core.domain.cpu.CpuLoad
 import com.krillsson.sysapi.core.metrics.CpuMetrics
+import reactor.core.publisher.Flux
 
 class CachingCpuMetrics internal constructor(
-    cpuMetrics: CpuMetrics,
+    private val cpuMetrics: CpuMetrics,
     cacheConfiguration: CacheConfiguration
 ) : CpuMetrics {
 
@@ -34,6 +35,10 @@ class CachingCpuMetrics internal constructor(
 
     override fun cpuLoad(): CpuLoad {
         return cpuLoadCache.get()
+    }
+
+    override fun cpuLoadEvents(): Flux<CpuLoad> {
+        return cpuMetrics.cpuLoadEvents()
     }
 
     override fun uptime(): Long {

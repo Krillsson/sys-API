@@ -9,8 +9,9 @@ import com.krillsson.sysapi.config.CacheConfiguration
 import com.krillsson.sysapi.core.domain.disk.Disk
 import com.krillsson.sysapi.core.domain.disk.DiskLoad
 import com.krillsson.sysapi.core.metrics.DiskMetrics
+import reactor.core.publisher.Flux
 
-class CachingDiskMetrics(diskMetrics: DiskMetrics, cacheConfiguration: CacheConfiguration) :
+class CachingDiskMetrics(private val diskMetrics: DiskMetrics, cacheConfiguration: CacheConfiguration) :
     DiskMetrics {
     private val disksCache: Supplier<List<Disk>> = Suppliers.memoizeWithExpiration(
         { diskMetrics.disks() },
@@ -52,5 +53,13 @@ class CachingDiskMetrics(diskMetrics: DiskMetrics, cacheConfiguration: CacheConf
 
     override fun diskLoadByName(name: String): DiskLoad? {
         return diskLoadsQueryCache.getUnchecked(name)
+    }
+
+    override fun diskLoadEvents(): Flux<List<DiskLoad>> {
+        return diskMetrics.diskLoadEvents()
+    }
+
+    override fun diskLoadEventsByName(name: String): Flux<DiskLoad> {
+        return diskMetrics.diskLoadEventsByName(name)
     }
 }
