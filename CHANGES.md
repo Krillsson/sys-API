@@ -1,4 +1,7 @@
 ### Unreleased
+- New feature: GraphQL Subscriptions
+  - Subscriptions enable server-side push of messages to the client
+  - All metrics are now available for subscription, see system.graphqls
 
 ### 0.33.0
 - New API: Support killing process `killProcess(pid: Int, forcibly: Boolean)`
