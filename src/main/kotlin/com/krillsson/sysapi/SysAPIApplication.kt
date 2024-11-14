@@ -60,5 +60,6 @@ class SysAPIApplication {
 }
 
 fun main(args: Array<String>) {
+    System.setProperty("spring.graphql.websocket.path", "/graphql");
     runApplication<SysAPIApplication>(*args)
 }
