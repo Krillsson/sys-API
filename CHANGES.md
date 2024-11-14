@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 0.34.0
 - New feature: GraphQL Subscriptions
   - Subscriptions enable server-side push of messages to the client
   - All metrics are now available for subscription, see system.graphqls
