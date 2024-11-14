@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.mdns
 
+import com.krillsson.sysapi.BuildConfig
 import com.krillsson.sysapi.config.YAMLConfigFile
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckService
 import com.krillsson.sysapi.util.EnvironmentUtils
@@ -9,8 +10,6 @@ import jakarta.annotation.PreDestroy
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.env.Environment
 import org.springframework.core.env.getProperty
-import org.springframework.core.task.TaskExecutor
-import org.springframework.scheduling.annotation.Async
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.stereotype.Service
 import javax.jmdns.JmDNS
@@ -50,7 +49,7 @@ class Mdns(
                 .sortedByDescending { it.first.length }
                 .forEach { (scheme, port) ->
                     val serviceType = "_$scheme._tcp.local"
-                    val serviceName = "${EnvironmentUtils.hostName} - sys-API $scheme"
+                    val serviceName = "${EnvironmentUtils.hostName} - sys-API v${BuildConfig.APP_VERSION}"
                     val result = measureTime {
                         val serviceInfo = ServiceInfo.create(serviceType, serviceName, port, "GraphQL at /graphql")
                         jmdns.registerService(serviceInfo)
