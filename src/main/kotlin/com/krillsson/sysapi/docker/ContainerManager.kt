@@ -12,6 +12,9 @@ import com.krillsson.sysapi.core.domain.docker.Container
 import com.krillsson.sysapi.core.domain.docker.ContainerMetrics
 import com.krillsson.sysapi.core.domain.docker.ContainerMetricsHistoryEntry
 import com.krillsson.sysapi.core.history.ContainersHistoryRepository
+import com.krillsson.sysapi.graphql.domain.DockerLogMessageConnection
+import com.krillsson.sysapi.graphql.domain.DockerLogMessageEdge
+import com.krillsson.sysapi.graphql.domain.PageInfo
 import com.krillsson.sysapi.util.logger
 import org.springframework.stereotype.Service
 import java.time.Instant
@@ -122,6 +125,60 @@ class ContainerManager(
         }
         return ReadLogsCommandResult.Unavailable
     }
+
+    fun openContainerLogsConnection(
+        containerId: String,
+        after: String?,
+        before: String?,
+        first: Int?,
+        last: Int?
+    ): DockerLogMessageConnection {
+
+        val beforeTimestamp = before?.let { decodeCursor(it) }
+        val afterTimestamp = after?.let { decodeCursor(it) }
+
+        // Filter logs based on the cursor.
+        val filteredLogs = dockerClient.readLogLinesForContainer(
+            containerId = containerId,
+            from = afterTimestamp,
+            to = beforeTimestamp
+        )
+
+        // Apply pagination (first or last).
+        val paginatedLogs = if (first != null) {
+            filteredLogs.take(first)
+        } else if (last != null) {
+            filteredLogs.takeLast(last)
+        } else {
+            filteredLogs.take(10) // Default page size.
+        }
+
+        val edges = paginatedLogs.map {
+            DockerLogMessageEdge(
+                cursor = encodeCursor(it.timestamp),
+                node = it
+            )
+        }
+
+        return DockerLogMessageConnection(
+            edges = edges,
+            pageInfo = PageInfo(
+                hasNextPage = filteredLogs.size > paginatedLogs.size,
+                hasPreviousPage = before != null || after != null,
+                startCursor = edges.firstOrNull()?.cursor,
+                endCursor = edges.lastOrNull()?.cursor
+            )
+        )
+    }
+
+    fun encodeCursor(timestamp: Instant): String {
+        return Base64.getEncoder().encodeToString(timestamp.toString().toByteArray())
+    }
+
+    fun decodeCursor(encodedCursor: String): Instant {
+        return Instant.parse(String(Base64.getDecoder().decode(encodedCursor)))
+    }
+
 
     private fun checkAvailability(): Status {
         return when {

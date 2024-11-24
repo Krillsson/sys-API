@@ -7,38 +7,38 @@ import com.krillsson.sysapi.docker.ContainerManager
 import com.krillsson.sysapi.docker.ReadLogsCommandResult
 import com.krillsson.sysapi.graphql.domain.*
 import org.springframework.graphql.data.method.annotation.Argument
-import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
 import java.time.Instant
 import java.time.OffsetDateTime
 
 @Controller
+@SchemaMapping(typeName = "DockerAvailable")
 class DockerResolver(val containerManager: ContainerManager) {
 
     @SchemaMapping
-    fun containers(docker: DockerAvailable) = containerManager.containers()
+    fun containers() = containerManager.containers()
     @SchemaMapping
-    fun container(docker: DockerAvailable, @Argument id: String) = containerManager.container(id)
+    fun container(@Argument id: String) = containerManager.container(id)
+
     @SchemaMapping
-    fun runningContainers(docker: DockerAvailable) =
-            containerManager.containers().filter { it.state == State.RUNNING }
+    fun runningContainers() =
+        containerManager.containers().filter { it.state == State.RUNNING }
 
     @SchemaMapping
     fun readLogsForContainer(
-            docker: DockerAvailable,
-            @Argument
-            containerId: String,
-            @Argument
-            from: OffsetDateTime?,
-            @Argument
-            to: OffsetDateTime?
+        @Argument
+        containerId: String,
+        @Argument
+        from: OffsetDateTime?,
+        @Argument
+        to: OffsetDateTime?
     ): ReadLogsForContainerOutput {
         return when (val result =
-                containerManager.readLogsForContainer(containerId, from?.toInstant(), to?.toInstant())) {
+            containerManager.readLogsForContainer(containerId, from?.toInstant(), to?.toInstant())) {
             is ReadLogsCommandResult.Success -> ReadLogsForContainerOutputSucceeded(result.lines)
             is ReadLogsCommandResult.Failed -> ReadLogsForContainerOutputFailed(
-                    result.error.message ?: result.error.toString()
+                result.error.message ?: result.error.toString()
             )
 
             is ReadLogsCommandResult.TimedOut -> ReadLogsForContainerOutputFailed("Operation timed out after ${result.timeoutSeconds} seconds")
@@ -48,18 +48,17 @@ class DockerResolver(val containerManager: ContainerManager) {
 
     @SchemaMapping
     fun readLogsForContainerBetweenTimestamps(
-            docker: DockerAvailable,
-            @Argument
-            containerId: String,
-            @Argument
-            from: Instant?,
-            @Argument
-            to: Instant?
+        @Argument
+        containerId: String,
+        @Argument
+        from: Instant?,
+        @Argument
+        to: Instant?
     ): ReadLogsForContainerOutput {
         return when (val result = containerManager.readLogsForContainer(containerId, from, to)) {
             is ReadLogsCommandResult.Success -> ReadLogsForContainerOutputSucceeded(result.lines)
             is ReadLogsCommandResult.Failed -> ReadLogsForContainerOutputFailed(
-                    result.error.message ?: result.error.toString()
+                result.error.message ?: result.error.toString()
             )
 
             is ReadLogsCommandResult.TimedOut -> ReadLogsForContainerOutputFailed("Operation timed out after ${result.timeoutSeconds} seconds")
@@ -68,19 +67,35 @@ class DockerResolver(val containerManager: ContainerManager) {
     }
 
     @SchemaMapping
-    fun metricsForContainer(docker: DockerAvailable, @Argument containerId: String): ContainerMetrics? {
+    fun openDockerLogMessageConnection(
+        @Argument containerId: String,
+        @Argument after: String?,
+        @Argument before: String?,
+        @Argument first: Int?,
+        @Argument last: Int?
+    ): DockerLogMessageConnection {
+        return containerManager.openContainerLogsConnection(
+            containerId = containerId,
+            after = after,
+            before = before,
+            first = first,
+            last = last
+        )
+    }
+
+    @SchemaMapping
+    fun metricsForContainer(@Argument containerId: String): ContainerMetrics? {
         return containerManager.statsForContainer(containerId)
     }
 
     @SchemaMapping
     fun containerMetricsHistoryBetweenTimestamps(
-            docker: DockerAvailable,
-            @Argument containerId: String,
-            @Argument from: Instant,
-            @Argument to: Instant
+        @Argument containerId: String,
+        @Argument from: Instant,
+        @Argument to: Instant
     ): List<ContainerMetricsHistoryEntry> {
         return containerManager.containerMetricsHistoryBetweenTimestamps(
-                containerId, from, to
+            containerId, from, to
         )
     }
 }

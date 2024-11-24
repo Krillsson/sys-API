@@ -11,7 +11,6 @@ import com.github.dockerjava.core.DockerClientImpl
 import com.github.dockerjava.core.InvocationBuilder.AsyncResultCallback
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient
 import com.github.dockerjava.transport.DockerHttpClient
-import com.krillsson.sysapi.config.DockerConfiguration
 import com.krillsson.sysapi.config.YAMLConfigFile
 import com.krillsson.sysapi.core.domain.docker.Command
 import com.krillsson.sysapi.core.domain.docker.CommandType
@@ -173,9 +172,9 @@ class DockerClient(
         containerId: String,
         from: Instant?,
         to: Instant?
-    ): List<DockerLogLine> {
+    ): List<DockerLogMessage> {
         val timedResult = measureTimeMillis {
-            val result = mutableListOf<DockerLogLine>()
+            val result = mutableListOf<DockerLogMessage>()
             client.logContainerCmd(containerId)
                 .withFollowStream(false)
                 .withStdErr(true)

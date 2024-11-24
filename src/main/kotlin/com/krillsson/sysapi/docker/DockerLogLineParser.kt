@@ -8,7 +8,7 @@ import java.time.Instant
 
 @Component
 class DockerLogLineParser(private val logLineParser: LogLineParser) {
-    fun parseFrame(frame: Frame): DockerLogLine {
+    fun parseFrame(frame: Frame): DockerLogMessage {
         val line = String(frame.payload).trim()
         val timestamp = logLineParser.detectAndParseTimestamp(line)
         val logLevel = logLineParser.detectLogLevel(line)
@@ -22,7 +22,7 @@ class DockerLogLineParser(private val logLineParser: LogLineParser) {
         val messageStartIndex = listOfNotNull(timestamp?.second?.last, logLevel?.second?.last).maxOrNull()?.let { highestEndIndex -> highestEndIndex + 1 }
 
         val message = messageStartIndex?.let { line.substring(messageStartIndex).trim() } ?: line
-        return DockerLogLine(
+        return DockerLogMessage(
             streamType = streamType,
             message = message,
             level = logLevel?.first ?: LogMessage.Level.UNKNOWN,
