@@ -5,6 +5,7 @@ extend type Query {
 type LogFilesAccess {
     files: [LogFile!]!
     openLogFile(path: String): [String!]!
+    openLogFileConnection(path: String! after: String, before: String, first: Int, last: Int): LogMessageConnection!
 }
 
 type LogFile{
@@ -14,4 +15,24 @@ type LogFile{
     createdAt: Instant
     updatedAt: Instant
     count: Int!
+}
+
+type LogMessage {
+    timestamp: Instant
+    level: LogMessageLevel
+    message: String!
+}
+
+type LogMessageEdge {
+    cursor: String!
+    node: LogMessage!
+}
+
+type LogMessageConnection {
+    edges: [LogMessageEdge!]!
+    pageInfo: PageInfo!
+}
+
+enum LogMessageLevel{
+    TRACE, DEBUG, INFO, WARN, ERROR, FATAL, UNKNOWN
 }

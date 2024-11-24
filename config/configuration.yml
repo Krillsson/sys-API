@@ -31,6 +31,10 @@ linux:
     enabled: true
   systemDaemonServiceManagement:
     enabled: true
+logReader:
+  files: []
+  directories:
+    - /Users/cjensen2@volvocars.com/Downloads
 # web interface for running queries
 graphQLPlayGround:
   enabled: false
