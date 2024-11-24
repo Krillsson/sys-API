@@ -19,7 +19,7 @@ type LogFile{
 
 type LogMessage {
     timestamp: Instant
-    level: LogMessageLevel
+    level: LogMessageLevel!
     message: String!
 }
 

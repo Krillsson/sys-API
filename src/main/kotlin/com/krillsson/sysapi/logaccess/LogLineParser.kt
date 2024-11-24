@@ -1,11 +1,7 @@
 package com.krillsson.sysapi.logaccess
 
 import org.springframework.stereotype.Component
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
+import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
@@ -20,7 +16,7 @@ class LogLineParser {
         val message = messageStartIndex?.let { line.substring(messageStartIndex).trim() } ?: line
         return LogMessage(
             message,
-            logLevel?.first,
+            logLevel?.first ?: LogMessage.Level.UNKNOWN,
             timestamp?.first
         )
     }
@@ -30,14 +26,14 @@ class LogLineParser {
         val matchResult = timestampRegex.find(logLine) ?: return null
         var result: Pair<Instant, IntRange>? = null
         val parsers = listOf<(MatchResult) -> Pair<Instant, IntRange>?>(
-            {it.attemptParseAsZonedDateTime()},
-            {it.attemptParseAsOffsetDateTime()},
-            {it.attemptParseAsLocalDateTime()}
+            { it.attemptParseAsZonedDateTime() },
+            { it.attemptParseAsOffsetDateTime() },
+            { it.attemptParseAsLocalDateTime() }
         )
 
-        for (parser in parsers){
+        for (parser in parsers) {
             result = parser(matchResult)
-            if(result != null){
+            if (result != null) {
                 break
             }
         }
@@ -81,11 +77,10 @@ class LogLineParser {
     }
 
 
-
     fun detectLogLevel(logLine: String): Pair<LogMessage.Level, IntRange>? {
         val matchResult = logLevelRegex.find(logLine)
         return matchResult?.value?.uppercase()?.let {
-            when{
+            when {
                 it.contains("err", ignoreCase = true) -> LogMessage.Level.ERROR to matchResult.range
                 it.contains("warn", ignoreCase = true) -> LogMessage.Level.WARN to matchResult.range
                 else -> LogMessage.Level.valueOf(it) to matchResult.range
