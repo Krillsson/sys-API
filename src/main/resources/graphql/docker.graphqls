@@ -41,7 +41,7 @@ type DockerAvailable {
     readLogsForContainerBetweenTimestamps(containerId: String!, from: Instant, to: Instant): ReadLogsForContainerOutput
     metricsForContainer(containerId: String!): DockerContainerMetrics
     containerMetricsHistoryBetweenTimestamps(containerId: String!, from: Instant!, to: Instant!): [DockerContainerMetricsHistoryEntry!]!
-    openDockerLogFileConnection(path: String! after: String, before: String, first: Int, last: Int): DockerLogMessageConnection!
+    openDockerLogMessageConnection(containerId: String! after: String, before: String, first: Int, last: Int): DockerLogMessageConnection!
 }
 
 type DockerLogLine {

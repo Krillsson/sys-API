@@ -3,7 +3,7 @@ package com.krillsson.sysapi.docker
 import com.krillsson.sysapi.logaccess.LogMessage
 import java.time.Instant
 
-data class DockerLogLine(
+data class DockerLogMessage(
     val streamType: StreamType,
     val level: LogMessage.Level,
     val timestamp: Instant,
