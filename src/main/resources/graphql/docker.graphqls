@@ -41,6 +41,7 @@ type DockerAvailable {
     readLogsForContainerBetweenTimestamps(containerId: String!, from: Instant, to: Instant): ReadLogsForContainerOutput
     metricsForContainer(containerId: String!): DockerContainerMetrics
     containerMetricsHistoryBetweenTimestamps(containerId: String!, from: Instant!, to: Instant!): [DockerContainerMetricsHistoryEntry!]!
+    openDockerLogFileConnection(path: String! after: String, before: String, first: Int, last: Int): DockerLogMessageConnection!
 }
 
 type DockerLogLine {
@@ -225,4 +226,24 @@ enum ContainerCommand {
     RESTART,
     PAUSE,
     UNPAUSE,
+}
+
+type DockerLogMessage {
+    timestamp: Instant!
+    level: DockerLogMessageLevel!
+    message: String!
+}
+
+type DockerLogMessageEdge {
+    cursor: String!
+    node: DockerLogMessage!
+}
+
+type DockerLogMessageConnection {
+    edges: [DockerLogMessageEdge!]!
+    pageInfo: PageInfo!
+}
+
+enum DockerLogMessageLevel {
+    TRACE, DEBUG, INFO, WARN, ERROR, FATAL, UNKNOWN
 }

@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit
 class DockerClient(
     private val dockerConfiguration: YAMLConfigFile,
     private val applicationObjectMapper: ObjectMapper,
+    private val logLineParser: DockerLogLineParser,
     private val platform: Platform
 ) {
 
@@ -143,7 +144,7 @@ class DockerClient(
         containerId: String,
         from: Instant?,
         to: Instant?
-    ): MutableList<String> {
+    ): List<String> {
         val timedResult = measureTimeMillis {
             val result = mutableListOf<String>()
             client.logContainerCmd(containerId)
@@ -156,6 +157,35 @@ class DockerClient(
                 .exec(object : ResultCallback.Adapter<Frame>() {
                     override fun onNext(frame: Frame?) {
                         result.add(frame.toString())
+                    }
+                }).awaitCompletion(READ_LOGS_COMMAND_TIMEOUT_SEC, TimeUnit.SECONDS)
+            result
+        }
+        LOGGER.debug(
+            "Took {} to fetch {} log lines",
+            "${timedResult.first.toInt()}ms",
+            timedResult.second.size
+        )
+        return timedResult.second
+    }
+
+    fun readLogLinesForContainer(
+        containerId: String,
+        from: Instant?,
+        to: Instant?
+    ): List<DockerLogLine> {
+        val timedResult = measureTimeMillis {
+            val result = mutableListOf<DockerLogLine>()
+            client.logContainerCmd(containerId)
+                .withFollowStream(false)
+                .withStdErr(true)
+                .withStdOut(true)
+                .withTimestamps(true)
+                .apply { from?.let { withSince(from.toEpochMilli().div(1000).toInt()) } }
+                .apply { to?.let { withUntil(to.toEpochMilli().div(1000).toInt()) } }
+                .exec(object : ResultCallback.Adapter<Frame>() {
+                    override fun onNext(frame: Frame) {
+                        result.add(logLineParser.parseFrame(frame))
                     }
                 }).awaitCompletion(READ_LOGS_COMMAND_TIMEOUT_SEC, TimeUnit.SECONDS)
             result
@@ -181,7 +211,6 @@ class DockerClient(
             PingResult.Fail(err)
         }
     }
-
 
 }
 
