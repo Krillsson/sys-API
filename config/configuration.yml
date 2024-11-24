@@ -31,6 +31,10 @@ linux:
     enabled: true
   systemDaemonServiceManagement:
     enabled: true
+logReader:
+  files: []
+  directories:
+    - /Users/asdf/Downloads
 # web interface for running queries
 graphQLPlayGround:
   enabled: false

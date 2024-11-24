@@ -16,6 +16,7 @@ type Mutation {}
 
 scalar UUID
 scalar OffsetDateTime
+scalar LocalDateTime
 scalar Instant
 scalar Long
 
