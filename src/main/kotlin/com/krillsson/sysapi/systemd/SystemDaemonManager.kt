@@ -10,7 +10,7 @@ import java.util.*
 
 @Service
 class SystemDaemonManager(
-    private val mapper: ObjectMapper,
+    mapper: ObjectMapper,
     private val config: YAMLConfigFile
 ) : SystemDaemonAccessAvailable {
 
@@ -53,14 +53,12 @@ class SystemDaemonManager(
         val beforeTimestamp = before?.let { decodeCursor(it) }
         val afterTimestamp = after?.let { decodeCursor(it) }
 
-        // Filter logs based on the cursor.
         val filteredLogs = journalCtl.lines(
             serviceUnitName = name,
             since = afterTimestamp,
             until = beforeTimestamp
         )
 
-        // Apply pagination (first or last).
         val paginatedLogs = if (first != null) {
             filteredLogs.take(first)
         } else if (last != null) {
