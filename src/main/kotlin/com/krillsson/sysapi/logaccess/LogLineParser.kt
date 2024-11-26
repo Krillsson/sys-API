@@ -63,7 +63,7 @@ class LogLineParser {
         var result: Pair<Instant, IntRange>? = null
         for (format in timestampFormats) {
             result = try {
-                LocalDateTime.parse(value, DateTimeFormatter.ofPattern(format)).toInstant(defaultTimeZone) to range
+                LocalDateTime.parse(value, DateTimeFormatter.ofPattern(format)).atZone(ZoneId.systemDefault()).toInstant() to range
             } catch (e: DateTimeParseException) {
                 // Ignore and try the next format
                 null
@@ -106,7 +106,5 @@ class LogLineParser {
         )
 
         private val logLevelRegex = Regex("""\b(TRACE|DEBUG|INFO|WARN|WARNING|ERROR|ERR|FATAL)\b""", RegexOption.IGNORE_CASE)
-
-        private val defaultTimeZone = ZoneOffset.UTC
     }
 }
