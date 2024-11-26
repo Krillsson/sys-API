@@ -12,6 +12,7 @@ type SystemDaemonAccessAvailable {
     services: [SystemDaemonService!]!
     openJournal(serviceName: String, limit: Int = -1): [SystemDaemonJournalEntry!]!
     serviceDetails(serviceName: String!): SystemDaemonServiceDetails
+    openJournalConnection(serviceName: String! after: String, before: String, first: Int, last: Int): SystemDaemonJournalEntryConnection!
 }
 
 type SystemDaemonAccessUnavailable {
@@ -54,6 +55,7 @@ type SystemDaemonServiceMetrics {
 
 type SystemDaemonJournalEntry {
     timestamp: Instant!
+    level: SystemDaemonJournalEntryLevel!
     message: String!
 }
 
@@ -78,3 +80,17 @@ type PerformSystemDaemonCommandOutputSucceeded {
 }
 
 union PerformSystemDaemonCommandOutput = PerformSystemDaemonCommandOutputSucceeded | PerformSystemDaemonCommandOutputFailed
+
+type SystemDaemonJournalEntryEdge {
+    cursor: String!
+    node: SystemDaemonJournalEntry!
+}
+
+type SystemDaemonJournalEntryConnection {
+    edges: [SystemDaemonJournalEntryEdge!]!
+    pageInfo: PageInfo!
+}
+
+enum SystemDaemonJournalEntryLevel {
+    TRACE, DEBUG, INFO, WARN, ERROR, FATAL, UNKNOWN
+}

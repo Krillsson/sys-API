@@ -11,6 +11,14 @@ interface SystemDaemonJournalAccess
 interface SystemDaemonAccessAvailable : SystemDaemonJournalAccess {
     fun services(): List<SystemCtl.ListServicesOutput.Item>
     fun openJournal(name: String, limit: Int): List<SystemDaemonJournalEntry>
+
+    fun openJournalConnection(
+        name: String,
+        after: String?,
+        before: String?,
+        first: Int?,
+        last: Int?
+    ): SystemDaemonJournalEntryConnection
     fun serviceDetails(name: String): SystemCtl.ServiceDetailsOutput?
 }
 

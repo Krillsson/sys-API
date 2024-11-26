@@ -2,6 +2,7 @@ package com.krillsson.sysapi.graphql.domain
 
 import com.krillsson.sysapi.docker.DockerLogMessage
 import com.krillsson.sysapi.logaccess.LogMessage
+import com.krillsson.sysapi.systemd.SystemDaemonJournalEntry
 
 
 object LogFileAccess
@@ -23,6 +24,16 @@ data class DockerLogMessageEdge(
 
 data class DockerLogMessageConnection(
     val edges: List<DockerLogMessageEdge>,
+    val pageInfo: PageInfo
+)
+
+data class SystemDaemonJournalEntryEdge(
+    val cursor: String,
+    val node: SystemDaemonJournalEntry
+)
+
+data class SystemDaemonJournalEntryConnection(
+    val edges: List<SystemDaemonJournalEntryEdge>,
     val pageInfo: PageInfo
 )
 

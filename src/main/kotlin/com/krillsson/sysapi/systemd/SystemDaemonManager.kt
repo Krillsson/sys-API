@@ -2,9 +2,11 @@ package com.krillsson.sysapi.systemd
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.krillsson.sysapi.config.YAMLConfigFile
-import com.krillsson.sysapi.graphql.domain.SystemDaemonAccessAvailable
+import com.krillsson.sysapi.graphql.domain.*
 import com.krillsson.sysapi.util.logger
 import org.springframework.stereotype.Service
+import java.time.Instant
+import java.util.*
 
 @Service
 class SystemDaemonManager(
@@ -39,6 +41,58 @@ class SystemDaemonManager(
         } else {
             emptyList()
         }
+    }
+
+    override fun openJournalConnection(
+        name: String,
+        after: String?,
+        before: String?,
+        first: Int?,
+        last: Int?
+    ): SystemDaemonJournalEntryConnection {
+        val beforeTimestamp = before?.let { decodeCursor(it) }
+        val afterTimestamp = after?.let { decodeCursor(it) }
+
+        // Filter logs based on the cursor.
+        val filteredLogs = journalCtl.lines(
+            serviceUnitName = name,
+            since = afterTimestamp,
+            until = beforeTimestamp
+        )
+
+        // Apply pagination (first or last).
+        val paginatedLogs = if (first != null) {
+            filteredLogs.take(first)
+        } else if (last != null) {
+            filteredLogs.takeLast(last)
+        } else {
+            filteredLogs.take(10) // Default page size.
+        }
+
+        val edges = paginatedLogs.map {
+            SystemDaemonJournalEntryEdge(
+                cursor = encodeCursor(it.timestamp),
+                node = it
+            )
+        }
+
+        return SystemDaemonJournalEntryConnection(
+            edges = edges,
+            pageInfo = PageInfo(
+                hasNextPage = filteredLogs.size > paginatedLogs.size,
+                hasPreviousPage = before != null || after != null,
+                startCursor = edges.firstOrNull()?.cursor,
+                endCursor = edges.lastOrNull()?.cursor
+            )
+        )
+    }
+
+    fun encodeCursor(timestamp: Instant): String {
+        return Base64.getEncoder().encodeToString(timestamp.toString().toByteArray())
+    }
+
+    fun decodeCursor(encodedCursor: String): Instant {
+        return Instant.parse(String(Base64.getDecoder().decode(encodedCursor)))
     }
 
     override fun services(): List<SystemCtl.ListServicesOutput.Item> {
