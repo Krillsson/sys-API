@@ -55,7 +55,6 @@ type SystemDaemonServiceMetrics {
 
 type SystemDaemonJournalEntry {
     timestamp: Instant!
-    level: SystemDaemonJournalEntryLevel!
     message: String!
 }
 
@@ -89,8 +88,4 @@ type SystemDaemonJournalEntryEdge {
 type SystemDaemonJournalEntryConnection {
     edges: [SystemDaemonJournalEntryEdge!]!
     pageInfo: PageInfo!
-}
-
-enum SystemDaemonJournalEntryLevel {
-    TRACE, DEBUG, INFO, WARN, ERROR, FATAL, UNKNOWN
 }
