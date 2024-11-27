@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.logaccess.windowseventlog
+package com.krillsson.sysapi.windows.services
 
 enum class WindowsServiceCommand {
     START,

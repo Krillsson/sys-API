@@ -1,5 +1,6 @@
 package com.krillsson.sysapi.graphql
 
+import com.krillsson.sysapi.graphql.domain.WindowsEventLogRecordConnection
 import com.krillsson.sysapi.graphql.domain.WindowsManagementAccessAvailable
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.SchemaMapping
@@ -28,4 +29,70 @@ class WindowsManagementAccessResolver {
 
     @SchemaMapping
     fun openSecurityEventLog(windowsManagementAccessAvailable: WindowsManagementAccessAvailable) = windowsManagementAccessAvailable.openSecurityEventLog()
+
+    @SchemaMapping
+    fun openEventLogBySourceConnection(
+        windowsManagementAccessAvailable: WindowsManagementAccessAvailable,
+        @Argument source: String,
+        @Argument after: String?,
+        @Argument before: String?,
+        @Argument first: Int?,
+        @Argument last: Int?
+    ): WindowsEventLogRecordConnection {
+        return windowsManagementAccessAvailable.openEventLogBySourceConnection(
+            source,
+            after = after,
+            before = before,
+            first = first,
+            last = last
+        )
+    }
+
+    @SchemaMapping
+    fun openSystemEventLogConnection(
+        windowsManagementAccessAvailable: WindowsManagementAccessAvailable,
+        @Argument after: String?,
+        @Argument before: String?,
+        @Argument first: Int?,
+        @Argument last: Int?
+    ): WindowsEventLogRecordConnection {
+        return windowsManagementAccessAvailable.openSystemEventLogConnection(
+            after = after,
+            before = before,
+            first = first,
+            last = last
+        )
+    }
+
+    @SchemaMapping
+    fun openSecurityEventLogConnection(
+        windowsManagementAccessAvailable: WindowsManagementAccessAvailable,
+        @Argument after: String?,
+        @Argument before: String?,
+        @Argument first: Int?,
+        @Argument last: Int?
+    ): WindowsEventLogRecordConnection {
+        return windowsManagementAccessAvailable.openSecurityEventLogConnection(
+            after = after,
+            before = before,
+            first = first,
+            last = last
+        )
+    }
+
+    @SchemaMapping
+    fun openApplicationEventLogConnection(
+        windowsManagementAccessAvailable: WindowsManagementAccessAvailable,
+        @Argument after: String?,
+        @Argument before: String?,
+        @Argument first: Int?,
+        @Argument last: Int?
+    ): WindowsEventLogRecordConnection {
+        return windowsManagementAccessAvailable.openApplicationEventLogConnection(
+            after = after,
+            before = before,
+            first = first,
+            last = last
+        )
+    }
 }

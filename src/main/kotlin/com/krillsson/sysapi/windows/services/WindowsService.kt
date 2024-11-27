@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.logaccess.windowseventlog
+package com.krillsson.sysapi.windows.services
 
 data class WindowsService(
     val name: String,

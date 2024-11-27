@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.logaccess.windowseventlog
+package com.krillsson.sysapi.windows.eventlog
 
 import com.krillsson.sysapi.config.WindowsEventLogConfiguration
 import com.sun.jna.platform.win32.Advapi32Util
@@ -13,11 +13,6 @@ class WindowsEventLogReader(private val config: WindowsEventLogConfiguration) {
         private const val EVENT_LOG_SOURCE_APPLICATION = "Application"
         private const val EVENT_LOG_SOURCE_SECURITY = "Security"
         private const val EVENT_LOG_SOURCE_SYSTEM = "System"
-    }
-
-    fun readAll(): List<WindowsEventLogRecord> {
-        val iter = EventLogIterator(EVENT_LOG_SOURCE_APPLICATION)
-        return readRecords(iter)
     }
 
     fun readAllApplication(): List<WindowsEventLogRecord> {
