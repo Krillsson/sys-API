@@ -17,7 +17,7 @@ import com.krillsson.sysapi.core.webservicecheck.WebServerCheckService
 import com.krillsson.sysapi.docker.ContainerManager
 import com.krillsson.sysapi.docker.Status
 import com.krillsson.sysapi.graphql.domain.*
-import com.krillsson.sysapi.logaccess.windowseventlog.WindowsManager
+import com.krillsson.sysapi.windows.WindowsManager
 import com.krillsson.sysapi.systemd.SystemDaemonManager
 import com.krillsson.sysapi.util.EnvironmentUtils
 import org.springframework.graphql.data.method.annotation.Argument
@@ -29,17 +29,17 @@ import java.util.*
 
 @Controller
 class QueryResolver(
-        private val monitorManager: MonitorManager,
-        private val eventManager: EventManager,
-        private val historyRepository: HistoryRepository,
-        private val genericEventRepository: GenericEventRepository,
-        private val operatingSystem: OperatingSystem,
-        private val platform: Platform,
-        private val meta: Meta,
-        private val containerManager: ContainerManager,
-        private val webServerCheckService: WebServerCheckService,
-        private val windowsEventLogManager: WindowsManager,
-        private val systemDaemonManager: SystemDaemonManager,
+    private val monitorManager: MonitorManager,
+    private val eventManager: EventManager,
+    private val historyRepository: HistoryRepository,
+    private val genericEventRepository: GenericEventRepository,
+    private val operatingSystem: OperatingSystem,
+    private val platform: Platform,
+    private val meta: Meta,
+    private val containerManager: ContainerManager,
+    private val webServerCheckService: WebServerCheckService,
+    private val windowsEventLogManager: WindowsManager,
+    private val systemDaemonManager: SystemDaemonManager,
 ) {
 
     @QueryMapping

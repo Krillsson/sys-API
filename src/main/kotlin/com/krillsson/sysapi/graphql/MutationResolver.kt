@@ -11,8 +11,8 @@ import com.krillsson.sysapi.core.webservicecheck.AddWebServerResult
 import com.krillsson.sysapi.core.webservicecheck.WebServerCheckService
 import com.krillsson.sysapi.docker.ContainerManager
 import com.krillsson.sysapi.graphql.mutations.*
-import com.krillsson.sysapi.logaccess.windowseventlog.WindowsManager
-import com.krillsson.sysapi.logaccess.windowseventlog.WindowsServiceCommandResult
+import com.krillsson.sysapi.windows.WindowsManager
+import com.krillsson.sysapi.windows.services.WindowsServiceCommandResult
 import com.krillsson.sysapi.core.pkill.ProcessKillerService
 import com.krillsson.sysapi.systemd.CommandResult
 import com.krillsson.sysapi.systemd.SystemDaemonManager

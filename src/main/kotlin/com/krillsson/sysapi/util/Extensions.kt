@@ -13,6 +13,8 @@ import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.Comparator
 
 fun oshi.software.os.OperatingSystem.asOperatingSystem(): OperatingSystem {
     return OperatingSystem(
@@ -27,6 +29,14 @@ fun oshi.software.os.OperatingSystem.asOperatingSystem(): OperatingSystem {
 }
 
 fun Instant.toOffsetDateTime() = atZone(ZoneId.systemDefault()).toOffsetDateTime()
+
+fun Instant.encodeAsCursor(): String {
+    return Base64.getEncoder().encodeToString(toString().toByteArray())
+}
+
+fun String.decodeAsInstantCursor(): Instant {
+    return Instant.parse(String(Base64.getDecoder().decode(this)))
+}
 
 fun PlatformEnum.asPlatform(): Platform {
     return Platform.values().first { this.name == it.name }

@@ -15,6 +15,8 @@ import com.krillsson.sysapi.core.history.ContainersHistoryRepository
 import com.krillsson.sysapi.graphql.domain.DockerLogMessageConnection
 import com.krillsson.sysapi.graphql.domain.DockerLogMessageEdge
 import com.krillsson.sysapi.graphql.domain.PageInfo
+import com.krillsson.sysapi.util.decodeAsInstantCursor
+import com.krillsson.sysapi.util.encodeAsCursor
 import com.krillsson.sysapi.util.logger
 import org.springframework.stereotype.Service
 import java.time.Instant
@@ -134,8 +136,8 @@ class ContainerManager(
         last: Int?
     ): DockerLogMessageConnection {
 
-        val beforeTimestamp = before?.let { decodeCursor(it) }
-        val afterTimestamp = after?.let { decodeCursor(it) }
+        val beforeTimestamp = before?.decodeAsInstantCursor()
+        val afterTimestamp = after?.decodeAsInstantCursor()
 
         // Filter logs based on the cursor.
         val filteredLogs = dockerClient.readLogLinesForContainer(
@@ -155,7 +157,7 @@ class ContainerManager(
 
         val edges = paginatedLogs.map {
             DockerLogMessageEdge(
-                cursor = encodeCursor(it.timestamp),
+                cursor = it.timestamp.encodeAsCursor(),
                 node = it
             )
         }
@@ -171,14 +173,6 @@ class ContainerManager(
         )
     }
 
-    fun encodeCursor(timestamp: Instant): String {
-        return Base64.getEncoder().encodeToString(timestamp.toString().toByteArray())
-    }
-
-    fun decodeCursor(encodedCursor: String): Instant {
-        return Instant.parse(String(Base64.getDecoder().decode(encodedCursor)))
-    }
-
 
     private fun checkAvailability(): Status {
         return when {
@@ -192,6 +186,7 @@ class ContainerManager(
                         logger.error("Docker is unavailable because of an error ${result.throwable.message}")
                         Status.Unavailable(result.throwable)
                     }
+
                     DockerClient.PingResult.Success -> Status.Available
                 }
             }

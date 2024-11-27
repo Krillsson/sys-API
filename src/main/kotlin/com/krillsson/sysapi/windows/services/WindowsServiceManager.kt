@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.logaccess.windowseventlog
+package com.krillsson.sysapi.windows.services
 
 import com.krillsson.sysapi.config.ServiceManagement
 import com.krillsson.sysapi.util.logger

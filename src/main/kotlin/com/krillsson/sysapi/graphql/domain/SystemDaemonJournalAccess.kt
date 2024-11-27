@@ -1,8 +1,8 @@
 package com.krillsson.sysapi.graphql.domain
 
-import com.krillsson.sysapi.logaccess.windowseventlog.WindowsEventLogRecord
-import com.krillsson.sysapi.logaccess.windowseventlog.WindowsEventLogSourceInfo
-import com.krillsson.sysapi.logaccess.windowseventlog.WindowsService
+import com.krillsson.sysapi.windows.eventlog.WindowsEventLogRecord
+import com.krillsson.sysapi.windows.eventlog.WindowsEventLogSourceInfo
+import com.krillsson.sysapi.windows.services.WindowsService
 import com.krillsson.sysapi.systemd.SystemCtl
 import com.krillsson.sysapi.systemd.SystemDaemonJournalEntry
 
@@ -36,6 +36,10 @@ interface WindowsManagementAccessAvailable : WindowsManagementAccess {
     fun eventLogs(): List<WindowsEventLogSourceInfo>
     fun services(): List<WindowsService>
     fun service(name: String): WindowsService?
+    fun openApplicationEventLogConnection(after: String?, before: String?, first: Int?, last: Int?): WindowsEventLogRecordConnection
+    fun openSystemEventLogConnection(after: String?, before: String?, first: Int?, last: Int?): WindowsEventLogRecordConnection
+    fun openSecurityEventLogConnection(after: String?, before: String?, first: Int?, last: Int?): WindowsEventLogRecordConnection
+    fun openEventLogBySourceConnection(source: String, after: String?, before: String?, first: Int?, last: Int?): WindowsEventLogRecordConnection
 }
 
 data class WindowsManagementAccessUnavailable(

@@ -68,6 +68,11 @@ type WindowsManagementAccessAvailable {
     openApplicationEventLog: [WindowsEventLogRecord!]!
     openSystemEventLog: [WindowsEventLogRecord!]!
     openSecurityEventLog: [WindowsEventLogRecord!]!
+
+    openEventLogBySourceConnection(source: String! after: String, before: String, first: Int, last: Int): WindowsEventLogRecordConnection!
+    openSystemEventLogConnection(after: String, before: String, first: Int, last: Int): WindowsEventLogRecordConnection!
+    openSecurityEventLogConnection(after: String, before: String, first: Int, last: Int): WindowsEventLogRecordConnection!
+    openApplicationEventLogConnection(after: String, before: String, first: Int, last: Int): WindowsEventLogRecordConnection!
 }
 
 type WindowsEventLog {
@@ -85,6 +90,16 @@ type WindowsEventLogRecord {
 
 enum WindowsEventLogRecordType {
     Error, Warning, Informational, AuditSuccess, AuditFailure
+}
+
+type WindowsEventLogRecordEdge {
+    cursor: String!
+    node: WindowsEventLogRecord!
+}
+
+type WindowsEventLogRecordConnection {
+    edges: [WindowsEventLogRecordEdge!]!
+    pageInfo: PageInfo!
 }
 
 type WindowsManagementAccessUnavailable {

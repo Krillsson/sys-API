@@ -3,6 +3,7 @@ package com.krillsson.sysapi.graphql.domain
 import com.krillsson.sysapi.docker.DockerLogMessage
 import com.krillsson.sysapi.logaccess.LogMessage
 import com.krillsson.sysapi.systemd.SystemDaemonJournalEntry
+import com.krillsson.sysapi.windows.eventlog.WindowsEventLogRecord
 
 
 object LogFileAccess
@@ -34,6 +35,16 @@ data class SystemDaemonJournalEntryEdge(
 
 data class SystemDaemonJournalEntryConnection(
     val edges: List<SystemDaemonJournalEntryEdge>,
+    val pageInfo: PageInfo
+)
+
+data class WindowsEventLogRecordEdge(
+    val cursor: String,
+    val node: WindowsEventLogRecord
+)
+
+data class WindowsEventLogRecordConnection(
+    val edges: List<WindowsEventLogRecordEdge>,
     val pageInfo: PageInfo
 )
 

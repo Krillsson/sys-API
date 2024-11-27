@@ -3,6 +3,8 @@ package com.krillsson.sysapi.systemd
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.krillsson.sysapi.config.YAMLConfigFile
 import com.krillsson.sysapi.graphql.domain.*
+import com.krillsson.sysapi.util.decodeAsInstantCursor
+import com.krillsson.sysapi.util.encodeAsCursor
 import com.krillsson.sysapi.util.logger
 import org.springframework.stereotype.Service
 import java.time.Instant
@@ -50,8 +52,8 @@ class SystemDaemonManager(
         first: Int?,
         last: Int?
     ): SystemDaemonJournalEntryConnection {
-        val beforeTimestamp = before?.let { decodeCursor(it) }
-        val afterTimestamp = after?.let { decodeCursor(it) }
+        val beforeTimestamp = before?.decodeAsInstantCursor()
+        val afterTimestamp = after?.decodeAsInstantCursor()
 
         val filteredLogs = journalCtl.lines(
             serviceUnitName = name,
@@ -69,7 +71,7 @@ class SystemDaemonManager(
 
         val edges = paginatedLogs.map {
             SystemDaemonJournalEntryEdge(
-                cursor = encodeCursor(it.timestamp),
+                cursor = it.timestamp.encodeAsCursor(),
                 node = it
             )
         }
@@ -83,14 +85,6 @@ class SystemDaemonManager(
                 endCursor = edges.lastOrNull()?.cursor
             )
         )
-    }
-
-    fun encodeCursor(timestamp: Instant): String {
-        return Base64.getEncoder().encodeToString(timestamp.toString().toByteArray())
-    }
-
-    fun decodeCursor(encodedCursor: String): Instant {
-        return Instant.parse(String(Base64.getDecoder().decode(encodedCursor)))
     }
 
     override fun services(): List<SystemCtl.ListServicesOutput.Item> {

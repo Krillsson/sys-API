@@ -1,4 +1,4 @@
-package com.krillsson.sysapi.logaccess.windowseventlog
+package com.krillsson.sysapi.windows.eventlog
 
 import java.time.Instant
 

@@ -1,6 +1,6 @@
 package com.krillsson.sysapi.graphql.mutations
 
-import com.krillsson.sysapi.logaccess.windowseventlog.WindowsServiceCommand
+import com.krillsson.sysapi.windows.services.WindowsServiceCommand
 
 interface PerformWindowsServiceCommandOutput
 
