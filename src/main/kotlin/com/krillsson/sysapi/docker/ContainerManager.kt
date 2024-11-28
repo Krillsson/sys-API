@@ -19,6 +19,7 @@ import com.krillsson.sysapi.util.decodeAsInstantCursor
 import com.krillsson.sysapi.util.encodeAsCursor
 import com.krillsson.sysapi.util.logger
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Flux
 import java.time.Instant
 import java.util.*
 
@@ -126,6 +127,14 @@ class ContainerManager(
             }
         }
         return ReadLogsCommandResult.Unavailable
+    }
+
+    fun tailContainerLogs(
+        containerId: String,
+        after: String?
+    ): Flux<DockerLogMessage> {
+        val afterTimestamp = after?.decodeAsInstantCursor()
+        return dockerClient.tailLogsForContainer(containerId, afterTimestamp)
     }
 
     fun openContainerLogsConnection(

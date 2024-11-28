@@ -6,6 +6,15 @@ extend type Mutation {
     performDockerContainerCommand(input: PerformDockerContainerCommandInput) : PerformDockerContainerCommandOutput
 }
 
+extend type Subscription {
+    # Tail a log file at the given path
+    # Use the after parameter to pass the cursor from openLogFileConnection
+    # Read the log file using openLogFileConnection, up until hasNextPage is false
+    # Then pass the endCursor into after here, this ensures no lines are skipped between read + tail
+    # If no after is passed, only new lines will be returned
+    tailContainerLogs(containerId: String!, after: String): DockerLogMessage!
+}
+
 input PerformDockerContainerCommandInput{
     containerId: String!
     command: ContainerCommand
