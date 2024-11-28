@@ -198,6 +198,7 @@ dependencies {
     implementation 'org.bitlet:weupnp:0.1.4'
     implementation 'org.jmdns:jmdns:3.5.1'
     implementation 'org.apache.commons:commons-exec:1.3'
+    implementation 'commons-io:commons-io:2.18.0'
     implementation('com.github.oshi:oshi-core:6.4.12') {
         exclude group: "org.slf4j"
     }

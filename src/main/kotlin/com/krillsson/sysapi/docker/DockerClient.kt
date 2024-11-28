@@ -20,6 +20,7 @@ import com.krillsson.sysapi.core.domain.system.Platform
 import com.krillsson.sysapi.util.logger
 import com.krillsson.sysapi.util.measureTimeMillis
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Flux
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.TimeUnit
@@ -166,6 +167,32 @@ class DockerClient(
             timedResult.second.size
         )
         return timedResult.second
+    }
+
+    fun tailLogsForContainer(
+        containerId: String,
+        from: Instant?,
+    ): Flux<DockerLogMessage> {
+        return Flux.create<DockerLogMessage> { emitter ->
+            val cmd = client.logContainerCmd(containerId)
+                .withStdErr(true)
+                .withStdOut(true)
+                .withFollowStream(true)
+                .withTimestamps(true)
+                .apply { from?.let { withSince(from.toEpochMilli().div(1000).toInt()) } }
+                .exec(object : ResultCallback.Adapter<Frame>() {
+                    override fun onNext(frame: Frame) {
+                        emitter.next(logLineParser.parseFrame(frame))
+                    }
+                })
+            emitter.onDispose {
+                try {
+                    cmd.close()
+                } catch (e: Exception) {
+                    emitter.error(e)
+                }
+            }
+        }
     }
 
     fun readLogLinesForContainer(
