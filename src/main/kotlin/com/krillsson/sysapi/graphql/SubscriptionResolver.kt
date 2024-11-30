@@ -9,6 +9,7 @@ import com.krillsson.sysapi.core.metrics.Metrics
 import com.krillsson.sysapi.docker.ContainerManager
 import com.krillsson.sysapi.graphql.domain.Meta
 import com.krillsson.sysapi.logaccess.file.LogFileService
+import com.krillsson.sysapi.systemd.SystemDaemonManager
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.SubscriptionMapping
 import org.springframework.stereotype.Controller
@@ -19,7 +20,8 @@ class SubscriptionResolver(
     val metrics: Metrics,
     val meta: Meta,
     val logFileService: LogFileService,
-    val containerManager: ContainerManager
+    val containerManager: ContainerManager,
+    val systemDaemonManager: SystemDaemonManager
 ) {
     @SubscriptionMapping
     fun processorMetrics(): Flux<CpuLoad> {
@@ -63,4 +65,7 @@ class SubscriptionResolver(
 
     @SubscriptionMapping
     fun tailContainerLogs(@Argument containerId: String, @Argument after: String?) = containerManager.tailContainerLogs(containerId, after)
+
+    @SubscriptionMapping
+    fun tailJournalLogs(@Argument serviceName: String, @Argument after: String?) = systemDaemonManager.openAndTailJournal(serviceName, after)
 }

@@ -5,17 +5,17 @@ import com.krillsson.sysapi.graphql.domain.LogMessageEdge
 import com.krillsson.sysapi.graphql.domain.PageInfo
 import com.krillsson.sysapi.logaccess.LogLineParser
 import com.krillsson.sysapi.logaccess.LogMessage
-import org.apache.commons.io.monitor.FileAlterationListenerAdaptor
-import org.apache.commons.io.monitor.FileAlterationMonitor
-import org.apache.commons.io.monitor.FileAlterationObserver
+import org.apache.commons.io.input.Tailer
+import org.apache.commons.io.input.TailerListenerAdapter
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.time.Duration
 import java.util.*
-import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.atomic.AtomicBoolean
 
 
 @Service
@@ -73,48 +73,53 @@ class LogFileService(private val logLineParser: LogLineParser) {
     fun tailLogFile(path: String, after: String?): Flux<LogMessage> {
         return Flux.create { emitter ->
             val logFile = Paths.get(path).toFile()
-            val startPosition = after?.let { decodeCursor(after).toLong() } ?: logFile.length()
-            val lastReadPosition = AtomicLong(startPosition)
 
-            val observer = FileAlterationObserver(logFile.parentFile)
-            val listener = object : FileAlterationListenerAdaptor() {
-                override fun onFileChange(file: File) {
-                    if (file == logFile) {
-                        val newLength = file.length()
-                        if (newLength > lastReadPosition.get()) {
-                            val newLines = readLinesFromPosition(file, lastReadPosition.get(), newLength)
-                            newLines.forEach { emitter.next(logLineParser.parseLine(it)) }
-                            lastReadPosition.set(newLength) // Update the position
-                        }
+            // Decode the `after` parameter or default to the current file length
+            val startPosition = after?.let { decodeCursor(it).toLong() } ?: 0L
+
+            // Emit historical lines from the after position
+            if (startPosition > 0) {
+                val historicalLines = readLinesFromPosition(logFile, startPosition)
+                historicalLines.forEach { emitter.next(logLineParser.parseLine(it)) }
+            }
+
+            val running = AtomicBoolean(true)
+
+            val listener = object : TailerListenerAdapter() {
+                override fun handle(line: String) {
+                    if (running.get()) {
+                        emitter.next(logLineParser.parseLine(line)) // Emit new log lines
                     }
+                }
+
+                override fun handle(ex: Exception) {
+                    emitter.error(ex) // Handle errors in tailing
                 }
             }
 
-            observer.addListener(listener)
+            val tailer = Tailer.builder()
+                .setPath(path)
+                .setCharset(StandardCharsets.UTF_8)
+                .setDelayDuration(Duration.ofMillis(500))
+                .setTailerListener(listener)
+                .setTailFromEnd(true)
+                .setStartThread(true)
+                .get()
 
-            val monitor = FileAlterationMonitor(500, observer)
-            monitor.start()
 
             emitter.onDispose {
-                try {
-                    monitor.stop()
-                } catch (e: Exception) {
-                    emitter.error(e)
-                }
+                running.set(false)
+                tailer.close()
             }
         }
     }
 
-    private fun readLinesFromPosition(file: File, startPosition: Long, endPosition: Long): List<String> {
+    private fun readLinesFromPosition(file: File, startPosition: Long): List<String> {
         val lines = mutableListOf<String>()
         file.inputStream().use { stream ->
             stream.channel.position(startPosition)
             stream.reader(StandardCharsets.UTF_8).useLines { sequence ->
-                sequence.forEach { line ->
-                    if (stream.channel.position() <= endPosition) {
-                        lines.add(line)
-                    }
-                }
+                sequence.forEach { line -> lines.add(line) }
             }
         }
         return lines

@@ -5,6 +5,7 @@ import com.krillsson.sysapi.windows.eventlog.WindowsEventLogSourceInfo
 import com.krillsson.sysapi.windows.services.WindowsService
 import com.krillsson.sysapi.systemd.SystemCtl
 import com.krillsson.sysapi.systemd.SystemDaemonJournalEntry
+import reactor.core.publisher.Flux
 
 interface SystemDaemonJournalAccess
 
@@ -19,6 +20,8 @@ interface SystemDaemonAccessAvailable : SystemDaemonJournalAccess {
         first: Int?,
         last: Int?
     ): SystemDaemonJournalEntryConnection
+
+    fun openAndTailJournal(name: String, after: String?): Flux<SystemDaemonJournalEntry>
     fun serviceDetails(name: String): SystemCtl.ServiceDetailsOutput?
 }
 
