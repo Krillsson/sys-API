@@ -2,13 +2,15 @@ package com.krillsson.sysapi.systemd
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.krillsson.sysapi.config.YAMLConfigFile
-import com.krillsson.sysapi.graphql.domain.*
+import com.krillsson.sysapi.graphql.domain.PageInfo
+import com.krillsson.sysapi.graphql.domain.SystemDaemonAccessAvailable
+import com.krillsson.sysapi.graphql.domain.SystemDaemonJournalEntryConnection
+import com.krillsson.sysapi.graphql.domain.SystemDaemonJournalEntryEdge
 import com.krillsson.sysapi.util.decodeAsInstantCursor
 import com.krillsson.sysapi.util.encodeAsCursor
 import com.krillsson.sysapi.util.logger
 import org.springframework.stereotype.Service
-import java.time.Instant
-import java.util.*
+import reactor.core.publisher.Flux
 
 @Service
 class SystemDaemonManager(
@@ -85,6 +87,11 @@ class SystemDaemonManager(
                 endCursor = edges.lastOrNull()?.cursor
             )
         )
+    }
+
+    override fun openAndTailJournal(name: String, after: String?): Flux<SystemDaemonJournalEntry> {
+        val afterTimestamp = after?.decodeAsInstantCursor()
+        return journalCtl.tailLines(name, afterTimestamp)
     }
 
     override fun services(): List<SystemCtl.ListServicesOutput.Item> {
