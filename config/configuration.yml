@@ -33,8 +33,8 @@ linux:
     enabled: true
 logReader:
   files: []
-  directories:
-    - /Users/cjensen2@volvocars.com/Downloads
+  #directories:
+  #  - /var/log
 # web interface for running queries
 graphQLPlayGround:
   enabled: false
