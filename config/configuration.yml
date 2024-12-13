@@ -32,9 +32,10 @@ linux:
   systemDaemonServiceManagement:
     enabled: true
 logReader:
-  files: []
-  #directories:
-  #  - /var/log
+  files: [ ]
+  directories:
+  # - data # sys-API data directory. You can enable log to file in application.properties
+  # - /var/log # Linux log directory
 # web interface for running queries
 graphQLPlayGround:
   enabled: false

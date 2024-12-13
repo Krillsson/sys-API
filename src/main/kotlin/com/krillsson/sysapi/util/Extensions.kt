@@ -9,12 +9,13 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import oshi.PlatformEnum
 import oshi.software.os.OSProcess
+import java.io.File
+import java.io.FileInputStream
 import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.Comparator
 
 fun oshi.software.os.OperatingSystem.asOperatingSystem(): OperatingSystem {
     return OperatingSystem(
@@ -26,6 +27,22 @@ fun oshi.software.os.OperatingSystem.asOperatingSystem(): OperatingSystem {
             versionInfo.buildNumber
         )
     )
+}
+
+fun File.lineCount(): Long {
+    var lines = 0L
+    val fis = FileInputStream(this)
+    val buffer = ByteArray(
+        8 * 1024
+    )
+    var read: Int
+    while (fis.read(buffer).also { read = it } != -1) {
+        for (i in 0 until read) {
+            if (buffer[i] == '\n'.code.toByte()) lines++
+        }
+    }
+    fis.close()
+    return lines
 }
 
 fun Instant.toOffsetDateTime() = atZone(ZoneId.systemDefault()).toOffsetDateTime()

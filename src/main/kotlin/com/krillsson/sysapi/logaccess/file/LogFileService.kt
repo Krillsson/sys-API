@@ -4,7 +4,8 @@ import com.krillsson.sysapi.graphql.domain.LogMessageConnection
 import com.krillsson.sysapi.graphql.domain.LogMessageEdge
 import com.krillsson.sysapi.graphql.domain.PageInfo
 import com.krillsson.sysapi.logaccess.LogLineParser
-import com.krillsson.sysapi.logaccess.LogMessage
+import com.krillsson.sysapi.util.lineCount
+import com.krillsson.sysapi.util.logger
 import org.apache.commons.io.input.Tailer
 import org.apache.commons.io.input.TailerListenerAdapter
 import org.springframework.stereotype.Service
@@ -15,20 +16,22 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.Duration
 import java.util.*
-import java.util.concurrent.atomic.AtomicBoolean
 
 
 @Service
 class LogFileService(private val logLineParser: LogLineParser) {
+
+    val logger by logger()
 
     fun getLogs(
         logFilePath: String,
         after: String?,
         before: String?,
         first: Int?,
-        last: Int?
+        last: Int?,
+        reverse: Boolean?,
     ): LogMessageConnection {
-        val allLogs = Files.readAllLines(Paths.get(logFilePath))
+        val allLogs = Files.readAllLines(Paths.get(logFilePath)).let { if (reverse == true) it.reversed() else it }
 
         // Convert "cursor" into a line index.
         val afterLine = after?.let { decodeCursor(it) } ?: -1
@@ -70,29 +73,38 @@ class LogFileService(private val logLineParser: LogLineParser) {
         )
     }
 
-    fun tailLogFile(path: String, after: String?): Flux<LogMessage> {
+    fun tailLogFile(path: String, after: String?): Flux<LogMessageEdge> {
         return Flux.create { emitter ->
             val logFile = Paths.get(path).toFile()
+            var lastIndex = (logFile.lineCount() - 1).coerceAtLeast(0)
 
             // Decode the `after` parameter or default to the current file length
             val startPosition = after?.let { decodeCursor(it).toLong() } ?: 0L
 
             // Emit historical lines from the after position
-            if (startPosition > 0) {
+            if (startPosition in 1..lastIndex) {
                 val historicalLines = readLinesFromPosition(logFile, startPosition)
-                historicalLines.forEach { emitter.next(logLineParser.parseLine(it)) }
+                historicalLines.forEachIndexed { index, line ->
+                    val message = logLineParser.parseLine(line)
+                    val cursor = encodeCursor(startPosition.toInt() + index)
+                    emitter.next(LogMessageEdge(cursor, message))
+                }
             }
-
-            val running = AtomicBoolean(true)
 
             val listener = object : TailerListenerAdapter() {
                 override fun handle(line: String) {
-                    if (running.get()) {
-                        emitter.next(logLineParser.parseLine(line)) // Emit new log lines
-                    }
+                    lastIndex++
+                    val message = logLineParser.parseLine(line)
+                    val cursor = encodeCursor(lastIndex.toInt())
+                    emitter.next(LogMessageEdge(cursor, message))
+                }
+
+                override fun fileRotated() {
+
                 }
 
                 override fun handle(ex: Exception) {
+                    logger.error("Error while tailing $path", ex)
                     emitter.error(ex) // Handle errors in tailing
                 }
             }
@@ -108,7 +120,6 @@ class LogFileService(private val logLineParser: LogLineParser) {
 
 
             emitter.onDispose {
-                running.set(false)
                 tailer.close()
             }
         }
@@ -116,11 +127,9 @@ class LogFileService(private val logLineParser: LogLineParser) {
 
     private fun readLinesFromPosition(file: File, startPosition: Long): List<String> {
         val lines = mutableListOf<String>()
-        file.inputStream().use { stream ->
-            stream.channel.position(startPosition)
-            stream.reader(StandardCharsets.UTF_8).useLines { sequence ->
-                sequence.forEach { line -> lines.add(line) }
-            }
+        file.bufferedReader(StandardCharsets.UTF_8).useLines { sequence ->
+            sequence.drop(startPosition.toInt())
+                .forEach { line -> lines.add(line) }
         }
         return lines
     }

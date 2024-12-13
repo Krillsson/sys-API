@@ -26,9 +26,17 @@ class LogFileAccessResolver(
         @Argument after: String?,
         @Argument before: String?,
         @Argument first: Int?,
-        @Argument last: Int?
+        @Argument last: Int?,
+        @Argument reversed: Boolean?,
     ): LogMessageConnection {
-        return service.getLogs(path, after, before, first, last)
+        return service.getLogs(
+            logFilePath = path,
+            after = after,
+            before = before,
+            first = first,
+            last = last,
+            reverse = reversed
+        )
     }
 }
 
