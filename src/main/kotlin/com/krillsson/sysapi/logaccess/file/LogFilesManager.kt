@@ -28,7 +28,7 @@ class LogFilesManager(private val configuration: YAMLConfigFile) {
         configuration.logReader.directories.orEmpty().map { path ->
             val directory = File(path)
             if (directory.isDirectory) {
-                directory.listFiles { file -> VALID_EXTENSIONS.contains(file.extension) }
+                directory.listFiles { file -> file.isFile && VALID_EXTENSIONS.contains(file.extension) }
                     .forEach { file ->
                         if (file.canRead()) {
                             list.add(LogFileReader(file))
