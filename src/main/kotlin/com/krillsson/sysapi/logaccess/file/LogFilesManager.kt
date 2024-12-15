@@ -10,6 +10,14 @@ class LogFilesManager(private val configuration: YAMLConfigFile) {
 
     val logger by logger()
 
+    companion object {
+        private val VALID_EXTENSIONS = listOf(
+            "log",
+            "txt",
+            ""
+        )
+    }
+
     fun openLogFile(path: String): List<String> {
         val file = files().firstOrNull() { it.path() == path }
         return file?.lines().orEmpty()
@@ -17,10 +25,10 @@ class LogFilesManager(private val configuration: YAMLConfigFile) {
 
     fun files(): List<LogFileReader> {
         val list = mutableListOf<LogFileReader>()
-        configuration.logReader.directories.map { path ->
+        configuration.logReader.directories.orEmpty().map { path ->
             val directory = File(path)
             if (directory.isDirectory) {
-                directory.listFiles { dir -> dir.extension == "log" }
+                directory.listFiles { file -> VALID_EXTENSIONS.contains(file.extension) }
                     .forEach { file ->
                         if (file.canRead()) {
                             list.add(LogFileReader(file))
@@ -29,8 +37,7 @@ class LogFilesManager(private val configuration: YAMLConfigFile) {
             }
         }
 
-
-        configuration.logReader.files.mapNotNull { path ->
+        configuration.logReader.files.orEmpty().mapNotNull { path ->
             val file = File(path)
             when {
                 file.exists() && file.isFile && file.canRead() -> LogFileReader(file)
