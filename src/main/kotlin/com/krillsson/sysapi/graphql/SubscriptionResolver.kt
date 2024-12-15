@@ -61,7 +61,7 @@ class SubscriptionResolver(
     fun meta(): Flux<Meta> = Flux.just(meta)
 
     @SubscriptionMapping
-    fun tailLogFile(@Argument path: String, @Argument after: String?) = logFileService.tailLogFile(path, after)
+    fun tailLogFile(@Argument path: String, @Argument after: String?, @Argument reverse: Boolean?) = logFileService.tailLogFile(path, after, reverse)
 
     @SubscriptionMapping
     fun tailContainerLogs(@Argument containerId: String, @Argument after: String?) = containerManager.tailContainerLogs(containerId, after)

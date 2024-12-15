@@ -4,6 +4,7 @@ import com.krillsson.sysapi.graphql.domain.LogMessageConnection
 import com.krillsson.sysapi.graphql.domain.LogMessageEdge
 import com.krillsson.sysapi.graphql.domain.PageInfo
 import com.krillsson.sysapi.logaccess.LogLineParser
+import com.krillsson.sysapi.logaccess.LogMessage
 import com.krillsson.sysapi.util.lineCount
 import com.krillsson.sysapi.util.logger
 import org.apache.commons.io.input.Tailer
@@ -38,10 +39,7 @@ class LogFileService(private val logLineParser: LogLineParser) {
         val beforeLine = before?.let { decodeCursor(it) } ?: allLogs.size
 
         // Filter logs based on the cursors.
-        val filteredLogs = allLogs.subList(
-            (afterLine + 1).coerceAtLeast(0),
-            beforeLine.coerceAtMost(allLogs.size)
-        )
+        val filteredLogs = allLogs.subList((afterLine + 1).coerceAtLeast(0), beforeLine.coerceAtMost(allLogs.size))
 
         // Apply pagination (first or last).
         val paginatedLogs = if (first != null) {
@@ -56,47 +54,35 @@ class LogFileService(private val logLineParser: LogLineParser) {
         val endIndex = allLogs.indexOf(paginatedLogs.lastOrNull())
 
         val edges = paginatedLogs.mapIndexed { index, logLine ->
-            LogMessageEdge(
-                cursor = encodeCursor(startIndex + index),
-                node = logLineParser.parseLine(logLine)
-            )
+            LogMessageEdge(cursor = encodeCursor(startIndex + index), node = logLineParser.parseLine(logLine))
         }
 
-        return LogMessageConnection(
-            edges = edges,
-            pageInfo = PageInfo(
-                hasNextPage = endIndex < allLogs.lastIndex,
-                hasPreviousPage = startIndex > 0,
-                startCursor = edges.firstOrNull()?.cursor,
-                endCursor = edges.lastOrNull()?.cursor
-            )
-        )
+        return LogMessageConnection(edges = edges, pageInfo = PageInfo(hasNextPage = endIndex < allLogs.lastIndex, hasPreviousPage = startIndex > 0, startCursor = edges.firstOrNull()?.cursor, endCursor = edges.lastOrNull()?.cursor))
     }
 
-    fun tailLogFile(path: String, after: String?): Flux<LogMessageEdge> {
+    fun tailLogFile(path: String, startPosition: String?, reverse: Boolean?): Flux<LogMessage> {
         return Flux.create { emitter ->
             val logFile = Paths.get(path).toFile()
-            var lastIndex = (logFile.lineCount() - 1).coerceAtLeast(0)
+            val lastIndex = (logFile.lineCount() - 1).coerceAtLeast(0)
 
-            // Decode the `after` parameter or default to the current file length
-            val startPosition = after?.let { decodeCursor(it).toLong() } ?: 0L
+            val decodedStartPosition = startPosition?.let { decodeCursor(it).toLong() }
 
-            // Emit historical lines from the after position
-            if (startPosition in 1..lastIndex) {
-                val historicalLines = readLinesFromPosition(logFile, startPosition)
-                historicalLines.forEachIndexed { index, line ->
-                    val message = logLineParser.parseLine(line)
-                    val cursor = encodeCursor(startPosition.toInt() + index)
-                    emitter.next(LogMessageEdge(cursor, message))
-                }
+            val historicalLines = if (reverse == true && decodedStartPosition != null && decodedStartPosition in 0..lastIndex) {
+                readLineFromStartUntilPosition(logFile, decodedStartPosition)
+            } else if (decodedStartPosition in 0..lastIndex && decodedStartPosition != null) {
+                readLinesFromPositionUntilEnd(logFile, decodedStartPosition)
+            } else {
+                emptyList()
+            }
+            historicalLines.forEach { line ->
+                val message = logLineParser.parseLine(line)
+                emitter.next(message)
             }
 
             val listener = object : TailerListenerAdapter() {
                 override fun handle(line: String) {
-                    lastIndex++
                     val message = logLineParser.parseLine(line)
-                    val cursor = encodeCursor(lastIndex.toInt())
-                    emitter.next(LogMessageEdge(cursor, message))
+                    emitter.next(message)
                 }
 
                 override fun fileRotated() {
@@ -109,14 +95,7 @@ class LogFileService(private val logLineParser: LogLineParser) {
                 }
             }
 
-            val tailer = Tailer.builder()
-                .setPath(path)
-                .setCharset(StandardCharsets.UTF_8)
-                .setDelayDuration(Duration.ofMillis(500))
-                .setTailerListener(listener)
-                .setTailFromEnd(true)
-                .setStartThread(true)
-                .get()
+            val tailer = Tailer.builder().setPath(path).setCharset(StandardCharsets.UTF_8).setDelayDuration(Duration.ofMillis(500)).setTailerListener(listener).setTailFromEnd(true).setStartThread(true).get()
 
 
             emitter.onDispose {
@@ -125,18 +104,23 @@ class LogFileService(private val logLineParser: LogLineParser) {
         }
     }
 
-    private fun readLinesFromPosition(file: File, startPosition: Long): List<String> {
+    private fun readLinesFromPositionUntilEnd(file: File, startPosition: Long): List<String> {
         val lines = mutableListOf<String>()
         file.bufferedReader(StandardCharsets.UTF_8).useLines { sequence ->
-            sequence.drop(startPosition.toInt())
-                .forEach { line -> lines.add(line) }
+            sequence.drop(startPosition.toInt()).forEach { line -> lines.add(line) }
         }
         return lines
     }
 
-    private fun encodeCursor(lineIndex: Int): String =
-        Base64.getEncoder().encodeToString(lineIndex.toString().toByteArray())
+    private fun readLineFromStartUntilPosition(file: File, endPosition: Long): List<String> {
+        val lines = mutableListOf<String>()
+        file.bufferedReader(StandardCharsets.UTF_8).useLines { sequence ->
+            sequence.take(endPosition.toInt()).forEach { line -> lines.add(line) }
+        }
+        return lines
+    }
 
-    private fun decodeCursor(cursor: String): Int =
-        String(Base64.getDecoder().decode(cursor)).toIntOrNull() ?: -1
+    private fun encodeCursor(lineIndex: Int): String = Base64.getEncoder().encodeToString(lineIndex.toString().toByteArray())
+
+    private fun decodeCursor(cursor: String): Int = String(Base64.getDecoder().decode(cursor)).toIntOrNull() ?: -1
 }

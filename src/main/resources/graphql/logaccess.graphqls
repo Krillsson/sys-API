@@ -8,7 +8,7 @@ extend type Subscription {
     # Read the log file using openLogFileConnection, up until hasNextPage is false
     # Then pass the endCursor into after here, this ensures no lines are skipped between read + tail
     # If no after is passed, only new lines will be returned
-    tailLogFile(path: String! after: String): LogMessageEdge!
+    tailLogFile(path: String! after: String, reverse: Boolean): LogMessage!
 }
 
 type LogFilesAccess {
