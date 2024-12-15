@@ -57,6 +57,8 @@ class LogFileService(private val logLineParser: LogLineParser) {
             LogMessageEdge(cursor = encodeCursor(startIndex + index), node = logLineParser.parseLine(logLine))
         }
 
+
+        logger.debug("Returning ${paginatedLogs.size} from startIndex: $startIndex to endIndex: $endIndex. afterLine: $afterLine beforeLine: $beforeLine first: $first last: $last reversed: $reverse file: $logFilePath")
         return LogMessageConnection(edges = edges, pageInfo = PageInfo(hasNextPage = endIndex < allLogs.lastIndex, hasPreviousPage = startIndex > 0, startCursor = edges.firstOrNull()?.cursor, endCursor = edges.lastOrNull()?.cursor))
     }
 
@@ -78,6 +80,7 @@ class LogFileService(private val logLineParser: LogLineParser) {
                 val message = logLineParser.parseLine(line)
                 emitter.next(message)
             }
+            logger.debug("Returning ${historicalLines.size} from startPosition: $decodedStartPosition reversed: $reverse file: $path")
 
             val listener = object : TailerListenerAdapter() {
                 override fun handle(line: String) {
