@@ -131,10 +131,25 @@ class ContainerManager(
 
     fun tailContainerLogs(
         containerId: String,
-        after: String?
+        startPosition: String?,
+        reverse: Boolean?
     ): Flux<DockerLogMessage> {
-        val afterTimestamp = after?.decodeAsInstantCursor()
-        return dockerClient.tailLogsForContainer(containerId, afterTimestamp)
+        val historicalLines = if (startPosition != null) {
+            val timestamp = startPosition.decodeAsInstantCursor()
+            dockerClient.readLogLinesForContainer(
+                containerId,
+                from = timestamp,
+                to = Instant.now()
+            )
+                .let { list -> if (reverse == true) list.sortedByDescending { it.timestamp } else list }
+                .filter { it.timestamp.isAfter(timestamp) }
+        } else {
+            emptyList()
+        }
+
+        return dockerClient
+            .tailLogsForContainer(containerId)
+            .startWith(Flux.fromIterable(historicalLines))
     }
 
     fun openContainerLogsConnection(
@@ -142,26 +157,43 @@ class ContainerManager(
         after: String?,
         before: String?,
         first: Int?,
-        last: Int?
+        last: Int?,
+        reverse: Boolean?
     ): DockerLogMessageConnection {
 
-        val beforeTimestamp = before?.decodeAsInstantCursor()
-        val afterTimestamp = after?.decodeAsInstantCursor()
 
-        // Filter logs based on the cursor.
-        val filteredLogs = dockerClient.readLogLinesForContainer(
-            containerId = containerId,
-            from = afterTimestamp,
-            to = beforeTimestamp
-        )
-
-        // Apply pagination (first or last).
-        val paginatedLogs = if (first != null) {
-            filteredLogs.take(first)
-        } else if (last != null) {
-            filteredLogs.takeLast(last)
+        val (fromTimestamp, toTimestamp) = if (reverse == true) {
+            before?.decodeAsInstantCursor() to after?.decodeAsInstantCursor()
         } else {
-            filteredLogs.take(10) // Default page size.
+            after?.decodeAsInstantCursor() to before?.decodeAsInstantCursor()
+        }
+        val pageSize = first ?: last ?: 10
+
+        val filteredLogs = when {
+            reverse == true && fromTimestamp == null && toTimestamp == null -> {
+                dockerClient.readLogLinesForContainer(containerId, tail = pageSize)
+                    .sortedByDescending { it.timestamp }
+            }
+
+            else -> {
+                dockerClient.readLogLinesForContainer(
+                    containerId = containerId,
+                    from = fromTimestamp,
+                    to = toTimestamp
+                )
+            }
+        }
+
+        val sortedLogs = if (reverse == true) {
+            filteredLogs.sortedByDescending { it.timestamp }
+        } else {
+            filteredLogs
+        }
+
+        val paginatedLogs = when {
+            first != null -> sortedLogs.take(first)
+            last != null -> sortedLogs.takeLast(last)
+            else -> sortedLogs.take(10)
         }
 
         val edges = paginatedLogs.map {
@@ -171,14 +203,17 @@ class ContainerManager(
             )
         }
 
+        val pageInfo = PageInfo(
+            hasNextPage = sortedLogs.size > paginatedLogs.size && reverse != true,
+            hasPreviousPage = sortedLogs.size > paginatedLogs.size && reverse == true,
+            startCursor = edges.firstOrNull()?.cursor,
+            endCursor = edges.lastOrNull()?.cursor
+        )
+        logger.info("Container: $containerId, after: $after, before: $before, first: $first, last: $last, reverse: $reverse")
+        logger.info("Returning info: $pageInfo and ${edges.size} edges")
         return DockerLogMessageConnection(
             edges = edges,
-            pageInfo = PageInfo(
-                hasNextPage = filteredLogs.size > paginatedLogs.size,
-                hasPreviousPage = before != null || after != null,
-                startCursor = edges.firstOrNull()?.cursor,
-                endCursor = edges.lastOrNull()?.cursor
-            )
+            pageInfo = pageInfo
         )
     }
 

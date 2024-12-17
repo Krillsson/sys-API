@@ -64,7 +64,7 @@ class SubscriptionResolver(
     fun tailLogFile(@Argument path: String, @Argument startPosition: String?, @Argument reverse: Boolean?) = logFileService.tailLogFile(path, startPosition, reverse)
 
     @SubscriptionMapping
-    fun tailContainerLogs(@Argument containerId: String, @Argument after: String?) = containerManager.tailContainerLogs(containerId, after)
+    fun tailContainerLogs(@Argument containerId: String, @Argument after: String?, @Argument reverse: Boolean) = containerManager.tailContainerLogs(containerId, after, reverse)
 
     @SubscriptionMapping
     fun tailJournalLogs(@Argument serviceName: String, @Argument after: String?) = systemDaemonManager.openAndTailJournal(serviceName, after)

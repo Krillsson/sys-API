@@ -72,14 +72,16 @@ class DockerResolver(val containerManager: ContainerManager) {
         @Argument after: String?,
         @Argument before: String?,
         @Argument first: Int?,
-        @Argument last: Int?
+        @Argument last: Int?,
+        @Argument reverse: Boolean?
     ): DockerLogMessageConnection {
         return containerManager.openContainerLogsConnection(
             containerId = containerId,
             after = after,
             before = before,
             first = first,
-            last = last
+            last = last,
+            reverse = reverse
         )
     }
 

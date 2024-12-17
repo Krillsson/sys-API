@@ -98,8 +98,15 @@ class LogFileService(private val logLineParser: LogLineParser) {
                 }
             }
 
-            val tailer = Tailer.builder().setPath(path).setCharset(StandardCharsets.UTF_8).setDelayDuration(Duration.ofMillis(500)).setTailerListener(listener).setTailFromEnd(true).setStartThread(true).get()
-
+            val tailer = Tailer
+                .builder()
+                .setPath(path)
+                .setCharset(StandardCharsets.UTF_8)
+                .setDelayDuration(Duration.ofMillis(500))
+                .setTailerListener(listener)
+                .setTailFromEnd(true)
+                .setStartThread(true)
+                .get()
 
             emitter.onDispose {
                 tailer.close()

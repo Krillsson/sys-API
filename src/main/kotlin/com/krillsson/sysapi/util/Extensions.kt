@@ -2,6 +2,7 @@ package com.krillsson.sysapi.util
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.google.common.primitives.Longs
 import com.krillsson.sysapi.core.domain.processes.ProcessSort
 import com.krillsson.sysapi.core.domain.system.OperatingSystem
 import com.krillsson.sysapi.core.domain.system.Platform
@@ -48,11 +49,11 @@ fun File.lineCount(): Long {
 fun Instant.toOffsetDateTime() = atZone(ZoneId.systemDefault()).toOffsetDateTime()
 
 fun Instant.encodeAsCursor(): String {
-    return Base64.getEncoder().encodeToString(toString().toByteArray())
+    return Base64.getEncoder().encodeToString(Longs.toByteArray(toEpochMilli()))
 }
 
 fun String.decodeAsInstantCursor(): Instant {
-    return Instant.parse(String(Base64.getDecoder().decode(this)))
+    return Instant.ofEpochMilli(Longs.fromByteArray(Base64.getDecoder().decode(this)))
 }
 
 fun PlatformEnum.asPlatform(): Platform {
