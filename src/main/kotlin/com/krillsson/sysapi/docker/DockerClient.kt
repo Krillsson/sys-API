@@ -170,16 +170,15 @@ class DockerClient(
     }
 
     fun tailLogsForContainer(
-        containerId: String,
-        from: Instant?,
+        containerId: String
     ): Flux<DockerLogMessage> {
-        return Flux.create<DockerLogMessage> { emitter ->
+        return Flux.create { emitter ->
             val cmd = client.logContainerCmd(containerId)
                 .withStdErr(true)
                 .withStdOut(true)
                 .withFollowStream(true)
+                .withTail(0)
                 .withTimestamps(true)
-                .apply { from?.let { withSince(from.toEpochMilli().div(1000).toInt()) } }
                 .exec(object : ResultCallback.Adapter<Frame>() {
                     override fun onNext(frame: Frame) {
                         emitter.next(logLineParser.parseFrame(frame))
@@ -197,8 +196,9 @@ class DockerClient(
 
     fun readLogLinesForContainer(
         containerId: String,
-        from: Instant?,
-        to: Instant?
+        from: Instant? = null,
+        to: Instant? = null,
+        tail: Int? = null
     ): List<DockerLogMessage> {
         val timedResult = measureTimeMillis {
             val result = mutableListOf<DockerLogMessage>()
@@ -207,6 +207,7 @@ class DockerClient(
                 .withStdErr(true)
                 .withStdOut(true)
                 .withTimestamps(true)
+                .apply { tail?.let { withTail(tail) } }
                 .apply { from?.let { withSince(from.toEpochMilli().div(1000).toInt()) } }
                 .apply { to?.let { withUntil(to.toEpochMilli().div(1000).toInt()) } }
                 .exec(object : ResultCallback.Adapter<Frame>() {

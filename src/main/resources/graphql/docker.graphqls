@@ -12,7 +12,7 @@ extend type Subscription {
     # Read the log file using openLogFileConnection, up until hasNextPage is false
     # Then pass the endCursor into after here, this ensures no lines are skipped between read + tail
     # If no after is passed, only new lines will be returned
-    tailContainerLogs(containerId: String!, after: String): DockerLogMessage!
+    tailContainerLogs(containerId: String!, after: String, reverse: Boolean): DockerLogMessage!
 }
 
 input PerformDockerContainerCommandInput{
@@ -50,7 +50,7 @@ type DockerAvailable {
     readLogsForContainerBetweenTimestamps(containerId: String!, from: Instant, to: Instant): ReadLogsForContainerOutput
     metricsForContainer(containerId: String!): DockerContainerMetrics
     containerMetricsHistoryBetweenTimestamps(containerId: String!, from: Instant!, to: Instant!): [DockerContainerMetricsHistoryEntry!]!
-    openDockerLogMessageConnection(containerId: String! after: String, before: String, first: Int, last: Int): DockerLogMessageConnection!
+    openDockerLogMessageConnection(containerId: String! after: String, before: String, first: Int, last: Int, reverse: Boolean): DockerLogMessageConnection!
 }
 
 type DockerLogLine {
