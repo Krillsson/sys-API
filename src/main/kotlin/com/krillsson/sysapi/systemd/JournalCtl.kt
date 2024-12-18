@@ -22,11 +22,10 @@ class JournalCtl(
         private const val GET_LOG_ENTRIES_FILTER_UNTIL = "--until \"%s\""
         private const val GET_LOG_ENTRIES_LIMIT = "-n %d"
 
-        private const val derpderp = "journalctl -u serviceName -f"
         private const val GET_LOG_LINES_FOLLOW = "--lines=all --follow"
     }
 
-    val logger by logger()
+    private val logger by logger()
 
     class JournalForServiceOutput : ArrayList<JournalForServiceOutput.Line>() {
         @JsonIgnoreProperties(ignoreUnknown = true)
@@ -43,17 +42,12 @@ class JournalCtl(
     }
 
     fun tailLines(
-        serviceUnitName: String,
-        since: Instant? = null
+        serviceUnitName: String
     ): Flux<SystemDaemonJournalEntry> {
         return if (journalLogsConfiguration.enabled) {
             val command =
                 buildString {
                     append(GET_LOG_ENTRIES_COMMAND.format(serviceUnitName))
-                    if (since != null) {
-                        append(" ")
-                        append(GET_LOG_ENTRIES_FILTER_SINCE.format(DateTimeFormatter.ISO_DATE_TIME.format(since)))
-                    }
                     append(" ")
                     append(GET_LOG_LINES_FOLLOW)
                 }

@@ -24,14 +24,16 @@ class SystemDaemonJournalAccessResolver {
         @Argument after: String?,
         @Argument before: String?,
         @Argument first: Int?,
-        @Argument last: Int?
+        @Argument last: Int?,
+        @Argument reverse: Boolean?
     ): SystemDaemonJournalEntryConnection {
         return systemDaemonAccessAvailable.openJournalConnection(
             name = serviceName,
             after = after,
             before = before,
             first = first,
-            last = last
+            last = last,
+            reverse = reverse
         )
     }
 }
