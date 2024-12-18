@@ -160,8 +160,6 @@ class ContainerManager(
         last: Int?,
         reverse: Boolean?
     ): DockerLogMessageConnection {
-
-
         val (fromTimestamp, toTimestamp) = if (reverse == true) {
             before?.decodeAsInstantCursor() to after?.decodeAsInstantCursor()
         } else {

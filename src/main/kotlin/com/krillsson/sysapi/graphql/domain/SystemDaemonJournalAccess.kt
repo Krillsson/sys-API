@@ -1,10 +1,10 @@
 package com.krillsson.sysapi.graphql.domain
 
+import com.krillsson.sysapi.systemd.SystemCtl
+import com.krillsson.sysapi.systemd.SystemDaemonJournalEntry
 import com.krillsson.sysapi.windows.eventlog.WindowsEventLogRecord
 import com.krillsson.sysapi.windows.eventlog.WindowsEventLogSourceInfo
 import com.krillsson.sysapi.windows.services.WindowsService
-import com.krillsson.sysapi.systemd.SystemCtl
-import com.krillsson.sysapi.systemd.SystemDaemonJournalEntry
 import reactor.core.publisher.Flux
 
 interface SystemDaemonJournalAccess
@@ -18,15 +18,21 @@ interface SystemDaemonAccessAvailable : SystemDaemonJournalAccess {
         after: String?,
         before: String?,
         first: Int?,
-        last: Int?
+        last: Int?,
+        reverse: Boolean?
     ): SystemDaemonJournalEntryConnection
 
-    fun openAndTailJournal(name: String, after: String?): Flux<SystemDaemonJournalEntry>
+    fun openAndTailJournal(
+        name: String,
+        startPosition: String?,
+        reverse: Boolean?
+    ): Flux<SystemDaemonJournalEntry>
+
     fun serviceDetails(name: String): SystemCtl.ServiceDetailsOutput?
 }
 
 data class SystemDaemonAccessUnavailable(
-        val reason: String
+    val reason: String
 ) : SystemDaemonJournalAccess
 
 interface WindowsManagementAccess
@@ -46,5 +52,5 @@ interface WindowsManagementAccessAvailable : WindowsManagementAccess {
 }
 
 data class WindowsManagementAccessUnavailable(
-        val reason: String
+    val reason: String
 ) : WindowsManagementAccess

@@ -11,6 +11,7 @@ import com.krillsson.sysapi.util.encodeAsCursor
 import com.krillsson.sysapi.util.logger
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
+import java.time.Instant
 
 @Service
 class SystemDaemonManager(
@@ -52,23 +53,46 @@ class SystemDaemonManager(
         after: String?,
         before: String?,
         first: Int?,
-        last: Int?
+        last: Int?,
+        reverse: Boolean?
     ): SystemDaemonJournalEntryConnection {
-        val beforeTimestamp = before?.decodeAsInstantCursor()
-        val afterTimestamp = after?.decodeAsInstantCursor()
+        val (fromTimestamp, toTimestamp) = if (reverse == true) {
+            before?.decodeAsInstantCursor() to after?.decodeAsInstantCursor()
+        } else {
+            after?.decodeAsInstantCursor() to before?.decodeAsInstantCursor()
+        }
+        val pageSize = first ?: last ?: 10
 
-        val filteredLogs = journalCtl.lines(
-            serviceUnitName = name,
-            since = afterTimestamp,
-            until = beforeTimestamp
-        )
+        val filteredLogs = when {
+            reverse == true && fromTimestamp == null && toTimestamp == null -> {
+                journalCtl.lines(
+                    name,
+                    limit = pageSize
+                )
+                    .sortedByDescending { it.timestamp }
+            }
+
+            else -> {
+                journalCtl.lines(
+                    name,
+                    since = fromTimestamp,
+                    until = toTimestamp
+                )
+            }
+        }
+
+        val sortedLogs = if (reverse == true) {
+            filteredLogs.sortedByDescending { it.timestamp }
+        } else {
+            filteredLogs
+        }
 
         val paginatedLogs = if (first != null) {
-            filteredLogs.take(first)
+            sortedLogs.take(first)
         } else if (last != null) {
-            filteredLogs.takeLast(last)
+            sortedLogs.takeLast(last)
         } else {
-            filteredLogs.take(10) // Default page size.
+            sortedLogs.take(10) // Default page size.
         }
 
         val edges = paginatedLogs.map {
@@ -77,21 +101,37 @@ class SystemDaemonManager(
                 node = it
             )
         }
-
+        val pageInfo = PageInfo(
+            hasNextPage = sortedLogs.size > paginatedLogs.size && reverse != true,
+            hasPreviousPage = sortedLogs.size > paginatedLogs.size && reverse == true,
+            startCursor = edges.firstOrNull()?.cursor,
+            endCursor = edges.lastOrNull()?.cursor
+        )
+        logger.info("Container: $name, after: $after, before: $before, first: $first, last: $last, reverse: $reverse")
+        logger.info("Returning info: $pageInfo and ${edges.size} edges")
         return SystemDaemonJournalEntryConnection(
             edges = edges,
-            pageInfo = PageInfo(
-                hasNextPage = filteredLogs.size > paginatedLogs.size,
-                hasPreviousPage = before != null || after != null,
-                startCursor = edges.firstOrNull()?.cursor,
-                endCursor = edges.lastOrNull()?.cursor
-            )
+            pageInfo = pageInfo
         )
     }
 
-    override fun openAndTailJournal(name: String, after: String?): Flux<SystemDaemonJournalEntry> {
-        val afterTimestamp = after?.decodeAsInstantCursor()
-        return journalCtl.tailLines(name, afterTimestamp)
+    override fun openAndTailJournal(name: String, startPosition: String?, reverse: Boolean?): Flux<SystemDaemonJournalEntry> {
+        val historicalLines = if (startPosition != null) {
+            val timestamp = startPosition.decodeAsInstantCursor()
+            journalCtl.lines(
+                name,
+                since = timestamp,
+                until = Instant.now()
+            )
+                .let { list -> if (reverse == true) list.sortedByDescending { it.timestamp } else list }
+                .filter { it.timestamp.isAfter(timestamp) }
+        } else {
+            emptyList()
+        }
+
+        return journalCtl
+            .tailLines(name)
+            .startWith(Flux.fromIterable(historicalLines))
     }
 
     override fun services(): List<SystemCtl.ListServicesOutput.Item> {

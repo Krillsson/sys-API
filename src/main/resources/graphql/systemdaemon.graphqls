@@ -14,14 +14,14 @@ extend type Subscription {
     # Read the log file using openLogFileConnection, up until hasNextPage is false
     # Then pass the endCursor into after here, this ensures no lines are skipped between read + tail
     # If no after is passed, only new lines will be returned
-    tailJournalLogs(serviceName: String!, after: String): SystemDaemonJournalEntry!
+    tailJournalLogs(serviceName: String!, after: String, reverse: Boolean): SystemDaemonJournalEntry!
 }
 
 type SystemDaemonAccessAvailable {
     services: [SystemDaemonService!]!
     openJournal(serviceName: String, limit: Int = -1): [SystemDaemonJournalEntry!]!
     serviceDetails(serviceName: String!): SystemDaemonServiceDetails
-    openJournalConnection(serviceName: String! after: String, before: String, first: Int, last: Int): SystemDaemonJournalEntryConnection!
+    openJournalConnection(serviceName: String! after: String, before: String, first: Int, last: Int, reverse: Boolean): SystemDaemonJournalEntryConnection!
 }
 
 type SystemDaemonAccessUnavailable {
