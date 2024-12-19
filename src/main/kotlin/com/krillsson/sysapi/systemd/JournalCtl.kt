@@ -22,7 +22,7 @@ class JournalCtl(
         private const val GET_LOG_ENTRIES_FILTER_UNTIL = "--until \"%s\""
         private const val GET_LOG_ENTRIES_LIMIT = "-n %d"
 
-        private const val GET_LOG_LINES_FOLLOW = "--lines=all --follow"
+        private const val GET_LOG_LINES_FOLLOW = "--follow"
     }
 
     private val logger by logger()
@@ -48,6 +48,8 @@ class JournalCtl(
             val command =
                 buildString {
                     append(GET_LOG_ENTRIES_COMMAND.format(serviceUnitName))
+                    append(" ")
+                    append(GET_LOG_ENTRIES_LIMIT.format(0))
                     append(" ")
                     append(GET_LOG_LINES_FOLLOW)
                 }

@@ -107,8 +107,6 @@ class SystemDaemonManager(
             startCursor = edges.firstOrNull()?.cursor,
             endCursor = edges.lastOrNull()?.cursor
         )
-        logger.info("Container: $name, after: $after, before: $before, first: $first, last: $last, reverse: $reverse")
-        logger.info("Returning info: $pageInfo and ${edges.size} edges")
         return SystemDaemonJournalEntryConnection(
             edges = edges,
             pageInfo = pageInfo
