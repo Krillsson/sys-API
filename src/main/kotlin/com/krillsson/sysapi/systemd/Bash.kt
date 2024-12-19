@@ -4,8 +4,6 @@ import com.krillsson.sysapi.util.logger
 import org.apache.commons.exec.*
 import org.apache.commons.io.output.ByteArrayOutputStream
 import reactor.core.publisher.Flux
-import java.io.PipedInputStream
-import java.io.PipedOutputStream
 import java.nio.charset.Charset
 
 object Bash {
@@ -81,40 +79,39 @@ object Bash {
 
     fun executeToTextContinuously(command: String): Flux<String> {
         return Flux.create { emitter ->
-            // Command to tail the service journal
             val commandLine = createBashCommand(command)
+            logger.debug("Executing ${commandLine.toStrings().joinToString(" ")}")
 
-            // Setting up a pipe to stream logs
-            val pipedOutputStream = PipedOutputStream()
-            val pipedInputStream = PipedInputStream(pipedOutputStream)
+            // Run the command in a separate thread
+            val executionThread = Thread {
+                try {
+                    val process = ProcessBuilder(commandLine.toStrings().toList())
+                        .redirectErrorStream(true) // Combine stdout and stderr
+                        .start()
 
-            // Stream handler for real-time log capture
-            val streamHandler = PumpStreamHandler(pipedOutputStream)
-
-            // Executor to run the command
-            val executor = DefaultExecutor().apply {
-                setStreamHandler(streamHandler)
-            }
-
-            try {
-                // Execute the command
-                executor.execute(commandLine)
-
-                // Read lines from the pipe and emit them
-                pipedInputStream.bufferedReader().use { reader ->
-                    reader.lines().forEach { line ->
-                        emitter.next(line)
+                    // Read the process's output stream
+                    process.inputStream.bufferedReader().useLines { lines ->
+                        lines.forEach { line ->
+                            emitter.next(line)
+                        }
                     }
+
+                    val exitCode = process.waitFor()
+                    if (exitCode != 0) {
+                        emitter.error(IllegalStateException("Command exited with code $exitCode"))
+                    } else {
+                        emitter.complete()
+                    }
+                } catch (e: Exception) {
+                    emitter.error(e)
                 }
-            } catch (e: Exception) {
-                emitter.error(e)
             }
+            executionThread.start()
 
             // Cleanup on disposal
             emitter.onDispose {
                 try {
-                    pipedInputStream.close()
-                    pipedOutputStream.close()
+                    executionThread.interrupt()
                 } catch (e: Exception) {
                     // Suppress cleanup exceptions
                 }
