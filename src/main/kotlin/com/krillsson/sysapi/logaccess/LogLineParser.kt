@@ -91,6 +91,9 @@ class LogLineParser {
 
     companion object {
         private val timestampFormats = listOf(
+            "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSX", // Format with nanoseconds and UTC (Z)
+            "yyyy-MM-dd'T'HH:mm:ss.SSSX",      // ISO 8601 with milliseconds and UTC (Z)
+            "yyyy-MM-dd'T'HH:mm:ssX",          // ISO 8601 without fractional seconds
             "yyyy-MM-dd'T'HH:mm:ss",           // ISO 8601
             "yyyy-MM-dd HH:mm:ss",            // Standard format
             "yyyy-MM-dd HH:mm:ss.SSS",        // Standard format with milliseconds
@@ -102,7 +105,7 @@ class LogLineParser {
         )
 
         private val timestampRegex = Regex(
-            """\b(\d{4}[-/]\d{2}[-/]\d{2}[T ]\d{2}:\d{2}:\d{2}(?:\.\d{3}(?:[+-]\d{2}:\d{2})?)?)\b"""
+            """\b\d{4}-\d{2}-\d{2}[T\s]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})?\b"""
         )
 
         private val logLevelRegex = Regex("""\b(TRACE|DEBUG|INFO|WARN|WARNING|ERROR|ERR|FATAL)\b""", RegexOption.IGNORE_CASE)
