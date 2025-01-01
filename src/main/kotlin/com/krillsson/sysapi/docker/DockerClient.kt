@@ -225,6 +225,31 @@ class DockerClient(
         return timedResult.second
     }
 
+    fun readFirstLogLineForContainer(
+        containerId: String,
+    ): DockerLogMessage? {
+        val timedResult = measureTimeMillis {
+            var result: DockerLogMessage? = null
+            client.logContainerCmd(containerId)
+                .withFollowStream(false)
+                .withStdErr(true)
+                .withStdOut(true)
+                .withTimestamps(true)
+                .exec(object : ResultCallback.Adapter<Frame>() {
+                    override fun onNext(frame: Frame) {
+                        result = logLineParser.parseFrame(frame)
+                        close()
+                    }
+                }).awaitCompletion(READ_LOGS_COMMAND_TIMEOUT_SEC, TimeUnit.SECONDS)
+            result
+        }
+        LOGGER.debug(
+            "Took {} to fetch first log line",
+            "${timedResult.first.toInt()}ms"
+        )
+        return timedResult.second
+    }
+
     sealed interface PingResult {
         object Success : PingResult
         data class Fail(val throwable: Throwable) : PingResult
