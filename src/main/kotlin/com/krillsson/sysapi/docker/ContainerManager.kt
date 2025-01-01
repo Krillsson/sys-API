@@ -160,6 +160,10 @@ class ContainerManager(
         last: Int?,
         reverse: Boolean?
     ): DockerLogMessageConnection {
+
+        val latestTimestamp = dockerClient.readLogLinesForContainer(containerId, tail = 1).firstOrNull()?.timestamp
+        val firstTimestamp = dockerClient.readFirstLogLineForContainer(containerId)?.timestamp
+
         val (fromTimestamp, toTimestamp) = if (reverse == true) {
             before?.decodeAsInstantCursor() to after?.decodeAsInstantCursor()
         } else {
@@ -191,7 +195,16 @@ class ContainerManager(
         val paginatedLogs = when {
             first != null -> sortedLogs.take(first)
             last != null -> sortedLogs.takeLast(last)
-            else -> sortedLogs.take(10)
+            else -> sortedLogs.take(pageSize)
+        }
+
+        val (hasNext, hasPrevious) = when {
+            reverse == true -> {
+                latestTimestamp?.let { paginatedLogs.firstOrNull()?.timestamp?.isAfter(it) } to firstTimestamp?.let { paginatedLogs.lastOrNull()?.timestamp?.isBefore(it) }
+            }
+            else -> {
+                latestTimestamp?.let { paginatedLogs.firstOrNull()?.timestamp?.isBefore(it) } to firstTimestamp?.let { paginatedLogs.lastOrNull()?.timestamp?.isAfter(it) }
+            }
         }
 
         val edges = paginatedLogs.map {
@@ -202,8 +215,8 @@ class ContainerManager(
         }
 
         val pageInfo = PageInfo(
-            hasNextPage = sortedLogs.size > paginatedLogs.size && reverse != true,
-            hasPreviousPage = sortedLogs.size > paginatedLogs.size && reverse == true,
+            hasNextPage = hasNext ?: false,
+            hasPreviousPage = hasPrevious ?: false,
             startCursor = edges.firstOrNull()?.cursor,
             endCursor = edges.lastOrNull()?.cursor
         )
