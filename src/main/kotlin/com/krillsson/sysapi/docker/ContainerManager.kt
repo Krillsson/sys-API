@@ -200,10 +200,19 @@ class ContainerManager(
 
         val (hasNext, hasPrevious) = when {
             reverse == true -> {
-                latestTimestamp?.let { paginatedLogs.firstOrNull()?.timestamp?.isAfter(it) } to firstTimestamp?.let { paginatedLogs.lastOrNull()?.timestamp?.isBefore(it) }
+                paginatedLogs.lastOrNull()?.timestamp?.let { lastInSet ->
+                    firstTimestamp?.isBefore(lastInSet)
+                } to paginatedLogs.firstOrNull()?.timestamp?.let { firstInSet ->
+                    latestTimestamp?.isAfter(firstInSet)
+                }
             }
+
             else -> {
-                latestTimestamp?.let { paginatedLogs.firstOrNull()?.timestamp?.isBefore(it) } to firstTimestamp?.let { paginatedLogs.lastOrNull()?.timestamp?.isAfter(it) }
+                paginatedLogs.lastOrNull()?.timestamp?.let { lastInSet ->
+                    latestTimestamp?.isAfter(latestTimestamp)
+                } to paginatedLogs.firstOrNull()?.timestamp?.let { firstInSet ->
+                    firstTimestamp?.isBefore(firstInSet)
+                }
             }
         }
 
