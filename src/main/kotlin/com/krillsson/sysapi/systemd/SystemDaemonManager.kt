@@ -56,6 +56,10 @@ class SystemDaemonManager(
         last: Int?,
         reverse: Boolean?
     ): SystemDaemonJournalEntryConnection {
+        val latestTimestamp = journalCtl.lines(name, limit = 1).firstOrNull()?.timestamp
+        val firstTimestamp = journalCtl.firstLine(name)?.timestamp
+        logger.info("Latest timestamp: ${latestTimestamp.toString()} firstTimeStamp: ${firstTimestamp.toString()}")
+
         val (fromTimestamp, toTimestamp) = if (reverse == true) {
             before?.decodeAsInstantCursor() to after?.decodeAsInstantCursor()
         } else {
@@ -65,16 +69,13 @@ class SystemDaemonManager(
 
         val filteredLogs = when {
             reverse == true && fromTimestamp == null && toTimestamp == null -> {
-                journalCtl.lines(
-                    name,
-                    limit = pageSize
-                )
+                journalCtl.lines(name, limit = pageSize)
                     .sortedByDescending { it.timestamp }
             }
 
             else -> {
                 journalCtl.lines(
-                    name,
+                    serviceUnitName = name,
                     since = fromTimestamp,
                     until = toTimestamp
                 )
@@ -87,12 +88,28 @@ class SystemDaemonManager(
             filteredLogs
         }
 
-        val paginatedLogs = if (first != null) {
-            sortedLogs.take(first)
-        } else if (last != null) {
-            sortedLogs.takeLast(last)
-        } else {
-            sortedLogs.take(10) // Default page size.
+        val paginatedLogs = when {
+            first != null -> sortedLogs.take(first)
+            last != null -> sortedLogs.takeLast(last)
+            else -> sortedLogs.take(pageSize)
+        }
+
+        val (hasNext, hasPrevious) = when {
+            reverse == true -> {
+                paginatedLogs.lastOrNull()?.timestamp?.let { lastInSet ->
+                    firstTimestamp?.isBefore(lastInSet)
+                } to paginatedLogs.firstOrNull()?.timestamp?.let { firstInSet ->
+                    latestTimestamp?.isAfter(firstInSet)
+                }
+            }
+
+            else -> {
+                paginatedLogs.lastOrNull()?.timestamp?.let { lastInSet ->
+                    latestTimestamp?.isAfter(lastInSet)
+                } to paginatedLogs.firstOrNull()?.timestamp?.let { firstInSet ->
+                    firstTimestamp?.isBefore(firstInSet)
+                }
+            }
         }
 
         val edges = paginatedLogs.map {
@@ -101,12 +118,15 @@ class SystemDaemonManager(
                 node = it
             )
         }
+
         val pageInfo = PageInfo(
-            hasNextPage = sortedLogs.size > paginatedLogs.size && reverse != true,
-            hasPreviousPage = sortedLogs.size > paginatedLogs.size && reverse == true,
+            hasNextPage = hasNext ?: false,
+            hasPreviousPage = hasPrevious ?: false,
             startCursor = edges.firstOrNull()?.cursor,
             endCursor = edges.lastOrNull()?.cursor
         )
+        logger.info("Service: $name, after: $after, before: $before, first: $first, last: $last, reverse: $reverse")
+        logger.info("Returning info: $pageInfo and ${edges.size} edges")
         return SystemDaemonJournalEntryConnection(
             edges = edges,
             pageInfo = pageInfo

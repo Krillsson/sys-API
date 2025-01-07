@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.MappingIterator
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.krillsson.sysapi.config.JournalLogsConfiguration
 import com.krillsson.sysapi.util.logger
+import com.krillsson.sysapi.util.toOffsetDateTime
 import reactor.core.publisher.Flux
 import java.time.Instant
 import java.time.format.DateTimeFormatter
@@ -21,6 +22,8 @@ class JournalCtl(
         private const val GET_LOG_ENTRIES_FILTER_SINCE = "--since \"%s\""
         private const val GET_LOG_ENTRIES_FILTER_UNTIL = "--until \"%s\""
         private const val GET_LOG_ENTRIES_LIMIT = "-n %d"
+
+        private val JOURNALD_TIME_FORMAT_PATTERN = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
         private const val GET_LOG_LINES_FOLLOW = "--follow"
     }
@@ -82,11 +85,11 @@ class JournalCtl(
                         append(GET_LOG_ENTRIES_COMMAND.format(serviceUnitName))
                         if (since != null) {
                             append(" ")
-                            append(GET_LOG_ENTRIES_FILTER_SINCE.format(DateTimeFormatter.ISO_DATE_TIME.format(since)))
+                            append(GET_LOG_ENTRIES_FILTER_SINCE.format(JOURNALD_TIME_FORMAT_PATTERN.format(since.toOffsetDateTime())))
                         }
                         if (until != null) {
                             append(" ")
-                            append(GET_LOG_ENTRIES_FILTER_UNTIL.format(DateTimeFormatter.ISO_DATE_TIME.format(until)))
+                            append(GET_LOG_ENTRIES_FILTER_UNTIL.format(JOURNALD_TIME_FORMAT_PATTERN.format(until.toOffsetDateTime())))
                         }
                     }
                 }
@@ -95,6 +98,17 @@ class JournalCtl(
             result.getOrNull()?.convertJsonStringToEntries().orEmpty()
         } else {
             emptyList()
+        }
+    }
+
+    fun firstLine(
+        serviceUnitName: String
+    ): SystemDaemonJournalEntry? {
+        return if (journalLogsConfiguration.enabled) {
+            val result = Bash.executeToText(GET_LOG_ENTRIES_COMMAND.format(serviceUnitName))
+            result.getOrNull()?.convertJsonStringToEntries().orEmpty().firstOrNull()
+        } else {
+            null
         }
     }
 
