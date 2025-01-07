@@ -163,6 +163,7 @@ class ContainerManager(
 
         val latestTimestamp = dockerClient.readLogLinesForContainer(containerId, tail = 1).firstOrNull()?.timestamp
         val firstTimestamp = dockerClient.readFirstLogLineForContainer(containerId)?.timestamp
+        logger.info("Latest timestamp: ${latestTimestamp.toString()} firstTimeStamp: ${firstTimestamp.toString()}")
 
         val (fromTimestamp, toTimestamp) = if (reverse == true) {
             before?.decodeAsInstantCursor() to after?.decodeAsInstantCursor()
@@ -209,7 +210,7 @@ class ContainerManager(
 
             else -> {
                 paginatedLogs.lastOrNull()?.timestamp?.let { lastInSet ->
-                    latestTimestamp?.isAfter(latestTimestamp)
+                    latestTimestamp?.isAfter(lastInSet)
                 } to paginatedLogs.firstOrNull()?.timestamp?.let { firstInSet ->
                     firstTimestamp?.isBefore(firstInSet)
                 }

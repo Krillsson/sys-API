@@ -26,7 +26,9 @@ object Bash {
             exec.watchdog = watchdog
             exec.execute(commandLine, resultHandler)
             resultHandler.waitFor()
-            Result.success(stdout.toString(Charset.defaultCharset()))
+            val result = stdout.toString(Charset.defaultCharset())
+            logger.debug("Result: $result")
+            Result.success(result)
         } catch (throwable: Throwable) {
             logger.error("Failed to execute ${commandLine.toStrings().joinToString(" ")}", throwable)
             Result.failure(throwable)
