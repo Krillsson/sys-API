@@ -50,8 +50,14 @@ class LogFileService(private val logLineParser: LogLineParser) {
             filteredLogs.take(10) // Default page size.
         }
 
-        val startIndex = allLogs.indexOf(paginatedLogs.firstOrNull())
-        val endIndex = allLogs.indexOf(paginatedLogs.lastOrNull())
+        val startIndex = when {
+            after != null -> (afterLine + 1).coerceAtLeast(0)
+            before != null -> (beforeLine - paginatedLogs.size).coerceAtLeast(0)
+            else -> 0 // Default start index when no cursors are provided.
+        }
+
+        val endIndex = (startIndex + paginatedLogs.size - 1).coerceAtMost(allLogs.size - 1)
+
 
         val edges = paginatedLogs.mapIndexed { index, logLine ->
             LogMessageEdge(cursor = (startIndex + index).encodeAsIntCursor(), node = logLineParser.parseLine(logLine))
