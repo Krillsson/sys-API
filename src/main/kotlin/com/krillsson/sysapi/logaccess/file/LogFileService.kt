@@ -35,8 +35,8 @@ class LogFileService(private val logLineParser: LogLineParser) {
         val allLogs = Files.readAllLines(Paths.get(logFilePath)).let { if (reverse == true) it.reversed() else it }
 
         // Convert "cursor" into a line index.
-        val afterLine = after?.let { decodeCursor(it) } ?: -1
-        val beforeLine = before?.let { decodeCursor(it) } ?: allLogs.size
+        val afterLine = after?.decodeAsIntCursor() ?: -1
+        val beforeLine = before?.decodeAsIntCursor() ?: allLogs.size
 
         // Filter logs based on the cursors.
         val filteredLogs = allLogs.subList((afterLine + 1).coerceAtLeast(0), beforeLine.coerceAtMost(allLogs.size))
@@ -54,12 +54,14 @@ class LogFileService(private val logLineParser: LogLineParser) {
         val endIndex = allLogs.indexOf(paginatedLogs.lastOrNull())
 
         val edges = paginatedLogs.mapIndexed { index, logLine ->
-            LogMessageEdge(cursor = encodeCursor(startIndex + index), node = logLineParser.parseLine(logLine))
+            LogMessageEdge(cursor = (startIndex + index).encodeAsIntCursor(), node = logLineParser.parseLine(logLine))
         }
 
 
-        logger.debug("Returning ${paginatedLogs.size} from startIndex: $startIndex to endIndex: $endIndex. afterLine: $afterLine beforeLine: $beforeLine first: $first last: $last reversed: $reverse file: $logFilePath")
-        return LogMessageConnection(edges = edges, pageInfo = PageInfo(hasNextPage = endIndex < allLogs.lastIndex, hasPreviousPage = startIndex > 0, startCursor = edges.firstOrNull()?.cursor, endCursor = edges.lastOrNull()?.cursor))
+        val pageInfo = PageInfo(hasNextPage = endIndex < allLogs.lastIndex, hasPreviousPage = startIndex > 0, startCursor = edges.firstOrNull()?.cursor, endCursor = edges.lastOrNull()?.cursor)
+        logger.info("File: $logFilePath, after: $after, before: $before, first: $first, last: $last, reverse: $reverse")
+        logger.info("Returning info: PageInfo(hasNextPage=${pageInfo.hasNextPage}, hasPreviousPage=${pageInfo.hasPreviousPage}, startCursor=${pageInfo.startCursor?.decodeAsIntCursor()}, endCursor=${pageInfo.endCursor?.decodeAsIntCursor()}) and ${edges.size} edges")
+        return LogMessageConnection(edges = edges, pageInfo = pageInfo)
     }
 
     fun tailLogFile(path: String, startPosition: String?, reverse: Boolean?): Flux<LogMessage> {
@@ -67,7 +69,7 @@ class LogFileService(private val logLineParser: LogLineParser) {
             val logFile = Paths.get(path).toFile()
             val lastIndex = (logFile.lineCount() - 1).coerceAtLeast(0)
 
-            val decodedStartPosition = startPosition?.let { decodeCursor(it).toLong() }
+            val decodedStartPosition = startPosition?.decodeAsIntCursor()?.toLong()
 
             val historicalLines = if (reverse == true && decodedStartPosition != null && decodedStartPosition in 0..lastIndex) {
                 readLineFromStartUntilPosition(logFile, decodedStartPosition)
@@ -130,7 +132,7 @@ class LogFileService(private val logLineParser: LogLineParser) {
         return lines
     }
 
-    private fun encodeCursor(lineIndex: Int): String = Base64.getEncoder().encodeToString(lineIndex.toString().toByteArray())
+    private fun String.decodeAsIntCursor() = String(Base64.getDecoder().decode(this)).toIntOrNull() ?: -1
+    private fun Int.encodeAsIntCursor() = Base64.getEncoder().encodeToString(this.toString().toByteArray())
 
-    private fun decodeCursor(cursor: String): Int = String(Base64.getDecoder().decode(cursor)).toIntOrNull() ?: -1
 }

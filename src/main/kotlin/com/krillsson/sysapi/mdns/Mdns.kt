@@ -49,7 +49,7 @@ class Mdns(
                 .sortedByDescending { it.first.length }
                 .forEach { (scheme, port) ->
                     val serviceType = "_$scheme._tcp.local"
-                    val serviceName = "${EnvironmentUtils.hostName} - sys-API v${BuildConfig.APP_VERSION}"
+                    val serviceName = EnvironmentUtils.hostName
                     val result = measureTime {
                         val serviceInfo = ServiceInfo.create(serviceType, serviceName, port, "GraphQL at /graphql")
                         jmdns.registerService(serviceInfo)
