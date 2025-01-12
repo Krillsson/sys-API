@@ -34,26 +34,23 @@ class LogFileService(private val logLineParser: LogLineParser) {
     ): LogMessageConnection {
         val allLogs = Files.readAllLines(Paths.get(logFilePath)).let { if (reverse == true) it.reversed() else it }
 
-        // Convert "cursor" into a line index.
         val afterLine = after?.decodeAsIntCursor() ?: -1
         val beforeLine = before?.decodeAsIntCursor() ?: allLogs.size
 
-        // Filter logs based on the cursors.
         val filteredLogs = allLogs.subList((afterLine + 1).coerceAtLeast(0), beforeLine.coerceAtMost(allLogs.size))
 
-        // Apply pagination (first or last).
         val paginatedLogs = if (first != null) {
             filteredLogs.take(first)
         } else if (last != null) {
             filteredLogs.takeLast(last)
         } else {
-            filteredLogs.take(10) // Default page size.
+            filteredLogs.take(10)
         }
 
         val startIndex = when {
             after != null -> (afterLine + 1).coerceAtLeast(0)
             before != null -> (beforeLine - paginatedLogs.size).coerceAtLeast(0)
-            else -> 0 // Default start index when no cursors are provided.
+            else -> 0
         }
 
         val endIndex = (startIndex + paginatedLogs.size - 1).coerceAtMost(allLogs.size - 1)
