@@ -163,7 +163,7 @@ class ContainerManager(
 
         val latestTimestamp = dockerClient.readLogLinesForContainer(containerId, tail = 1).firstOrNull()?.timestamp
         val firstTimestamp = dockerClient.readFirstLogLineForContainer(containerId)?.timestamp
-        logger.info("Latest timestamp: ${latestTimestamp.toString()} firstTimeStamp: ${firstTimestamp.toString()}")
+        logger.debug("Latest timestamp: ${latestTimestamp.toString()} firstTimeStamp: ${firstTimestamp.toString()}")
 
         val (fromTimestamp, toTimestamp) = if (reverse == true) {
             before?.decodeAsInstantCursor() to after?.decodeAsInstantCursor()
