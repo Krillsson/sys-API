@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 0.35.0
 - New feature: log files, container logs & the systemd journal are now paginated
   - Read more about GraphQL pagination [here](https://graphql.org/learn/pagination/)
 - New feature: GraphQL Subscription is available for realtime updates of log content
