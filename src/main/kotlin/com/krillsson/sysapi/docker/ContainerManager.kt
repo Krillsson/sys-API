@@ -230,8 +230,8 @@ class ContainerManager(
             startCursor = edges.firstOrNull()?.cursor,
             endCursor = edges.lastOrNull()?.cursor
         )
-        logger.info("Container: $containerId, after: $after, before: $before, first: $first, last: $last, reverse: $reverse")
-        logger.info("Returning info: $pageInfo and ${edges.size} edges")
+        logger.debug("Container: $containerId, after: $after, before: $before, first: $first, last: $last, reverse: $reverse")
+        logger.debug("Returning info: $pageInfo and ${edges.size} edges")
         return DockerLogMessageConnection(
             edges = edges,
             pageInfo = pageInfo

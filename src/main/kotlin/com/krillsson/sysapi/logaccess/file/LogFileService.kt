@@ -65,8 +65,8 @@ class LogFileService(private val logLineParser: LogLineParser) {
 
 
         val pageInfo = PageInfo(hasNextPage = endIndex < allLogs.lastIndex, hasPreviousPage = startIndex > 0, startCursor = edges.firstOrNull()?.cursor, endCursor = edges.lastOrNull()?.cursor)
-        logger.info("File: $logFilePath, after: $after, before: $before, first: $first, last: $last, reverse: $reverse")
-        logger.info("Returning info: PageInfo(hasNextPage=${pageInfo.hasNextPage}, hasPreviousPage=${pageInfo.hasPreviousPage}, startCursor=${pageInfo.startCursor?.decodeAsIntCursor()}, endCursor=${pageInfo.endCursor?.decodeAsIntCursor()}) and ${edges.size} edges")
+        logger.debug("File: $logFilePath, after: $after, before: $before, first: $first, last: $last, reverse: $reverse")
+        logger.debug("Returning info: PageInfo(hasNextPage=${pageInfo.hasNextPage}, hasPreviousPage=${pageInfo.hasPreviousPage}, startCursor=${pageInfo.startCursor?.decodeAsIntCursor()}, endCursor=${pageInfo.endCursor?.decodeAsIntCursor()}) and ${edges.size} edges")
         return LogMessageConnection(edges = edges, pageInfo = pageInfo)
     }
 
