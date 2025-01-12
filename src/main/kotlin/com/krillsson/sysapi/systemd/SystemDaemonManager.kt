@@ -58,7 +58,6 @@ class SystemDaemonManager(
     ): SystemDaemonJournalEntryConnection {
         val latestTimestamp = journalCtl.lines(name, limit = 1).firstOrNull()?.timestamp
         val firstTimestamp = journalCtl.firstLine(name)?.timestamp
-        logger.info("Latest timestamp: ${latestTimestamp.toString()} firstTimeStamp: ${firstTimestamp.toString()}")
 
         val (fromTimestamp, toTimestamp) = if (reverse == true) {
             before?.decodeAsInstantCursor() to after?.decodeAsInstantCursor()
@@ -125,8 +124,8 @@ class SystemDaemonManager(
             startCursor = edges.firstOrNull()?.cursor,
             endCursor = edges.lastOrNull()?.cursor
         )
-        logger.info("Service: $name, after: $after, before: $before, first: $first, last: $last, reverse: $reverse")
-        logger.info("Returning info: $pageInfo and ${edges.size} edges")
+        logger.debug("Service: $name, after: $after, before: $before, first: $first, last: $last, reverse: $reverse")
+        logger.debug("Returning info: $pageInfo and ${edges.size} edges")
         return SystemDaemonJournalEntryConnection(
             edges = edges,
             pageInfo = pageInfo
