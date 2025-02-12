@@ -1,33 +1,27 @@
 package com.krillsson.sysapi.updatechecker
 
 import com.krillsson.sysapi.BuildConfig
-import com.krillsson.sysapi.config.UpdateCheckConfiguration
-import com.krillsson.sysapi.core.genericevents.GenericEvent
+import com.krillsson.sysapi.config.YAMLConfigFile
 import com.krillsson.sysapi.core.genericevents.GenericEventRepository
 import com.krillsson.sysapi.core.genericevents.UpdateAvailable
 import com.krillsson.sysapi.util.logger
 import org.springframework.scheduling.annotation.Scheduled
+import org.springframework.stereotype.Service
 import java.time.Instant
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+@Service
 class UpdateChecker(
-    private val updateCheckConfiguration: UpdateCheckConfiguration,
+    private val config: YAMLConfigFile,
     private val repository: GenericEventRepository,
     private val githubApiService: GithubApiService,
 ) {
     private val logger by logger()
-    /*
-*
-* often: 5s
-lessOften: 15s
-seldom:5min
-verySeldom:30min
-*
-* */
+
     @Scheduled(fixedRate = 30, timeUnit = TimeUnit.MINUTES)
     fun run() {
-        if (updateCheckConfiguration.enabled) {
+        if (config.updateCheck.enabled) {
             logger.debug("Checking for new release")
             getLatestRelease()?.let { release ->
                 val remoteVersion = Version(release.tag_name)
@@ -77,8 +71,8 @@ verySeldom:30min
     private fun getLatestRelease(): ApiResponse.Release? {
         return try {
             githubApiService.getReleases(
-                user = updateCheckConfiguration.user,
-                repo = updateCheckConfiguration.repo
+                user = config.updateCheck.user,
+                repo = config.updateCheck.repo
             )
                 .execute()
                 .body()

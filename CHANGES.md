@@ -1,4 +1,5 @@
 ### Unreleased
+- Fix UpdateChecker not being run
 
 ### 0.35.0
 - New feature: log files, container logs & the systemd journal are now paginated
