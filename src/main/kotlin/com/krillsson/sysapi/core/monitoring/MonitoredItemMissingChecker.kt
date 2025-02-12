@@ -1,6 +1,5 @@
 package com.krillsson.sysapi.core.monitoring
 
-import com.krillsson.sysapi.core.genericevents.GenericEvent
 import com.krillsson.sysapi.core.genericevents.GenericEventRepository
 import com.krillsson.sysapi.core.genericevents.MonitoredItemMissing
 import com.krillsson.sysapi.util.logger
