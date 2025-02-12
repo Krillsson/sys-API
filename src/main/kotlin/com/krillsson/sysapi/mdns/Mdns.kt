@@ -1,6 +1,5 @@
 package com.krillsson.sysapi.mdns
 
-import com.krillsson.sysapi.BuildConfig
 import com.krillsson.sysapi.config.YAMLConfigFile
 import com.krillsson.sysapi.core.connectivity.ConnectivityCheckService
 import com.krillsson.sysapi.util.EnvironmentUtils

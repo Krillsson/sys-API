@@ -49,6 +49,9 @@ import java.io.File
 import java.time.Clock
 import java.util.concurrent.Executor
 
+const val USER_CONFIG = "configuration.yml"
+const val SPRING_CONFIG = "application.properties"
+
 @Configuration
 @EnableTransactionManagement
 @EnableScheduling
@@ -59,12 +62,17 @@ class SysApiConfiguration : AsyncConfigurer {
 
     @Bean
     fun userConfigFile(): YAMLConfigFile {
-        val configFile = File(FileSystem.config, "configuration.yml")
-        check(configFile.exists()) { "Config file is missing at ${configFile.absoluteFile}" }
         val yamlParser = ObjectMapper(YAMLFactory())
         yamlParser.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         yamlParser.findAndRegisterModules()
-        return yamlParser.readValue(configFile, YAMLConfigFile::class.java)
+        val configFile = File(FileSystem.config, USER_CONFIG)
+        val fallbackConfigFile = javaClass.getResourceAsStream("/config/$USER_CONFIG")
+        return if(configFile.exists()){
+            yamlParser.readValue(configFile, YAMLConfigFile::class.java)
+        } else {
+            logger.warn("Config file is missing at ${configFile.absoluteFile}. Using default...")
+            yamlParser.readValue(fallbackConfigFile, YAMLConfigFile::class.java)
+        }
     }
 
     @Suppress("DEPRECATION")
