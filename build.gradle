@@ -153,7 +153,7 @@ shadowJar {
 processResources {
     from("$rootDir/config") {
         into "/config"
-        include '*.properties'
+        include '**'
     }
 }
 

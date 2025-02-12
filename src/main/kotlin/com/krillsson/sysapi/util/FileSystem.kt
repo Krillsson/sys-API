@@ -15,4 +15,11 @@ object FileSystem {
             assert(data.mkdir()) { "Unable to create ${data.absolutePath}" }
         }
     }
+
+    fun assertConfigDirectory(){
+        if (!config.isDirectory) {
+            logger.info("Attempting to create directory {}", config.absolutePath)
+            assert(config.mkdir()) { "Unable to create ${config.absolutePath}" }
+        }
+    }
 }
