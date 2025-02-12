@@ -1,5 +1,6 @@
 ### Unreleased
 - Fix UpdateChecker not being run
+- Application now writes default application.properties and configuration.yml to /config directory if its missing
 
 ### 0.35.0
 - New feature: log files, container logs & the systemd journal are now paginated
