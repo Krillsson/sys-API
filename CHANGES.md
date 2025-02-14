@@ -1,4 +1,6 @@
 ### Unreleased
+
+### 0.35.1
 - Fix UpdateChecker not being run
 - Application now writes default application.properties and configuration.yml to /config directory if its missing
 
