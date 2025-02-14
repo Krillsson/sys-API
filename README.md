@@ -10,6 +10,8 @@ It publishes and monitors values from [OSHI](https://github.com/oshi/oshi) with 
 >
 ><a href="https://play.google.com/store/apps/details?id=com.krillsson.monitee"><img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" alt="Get it on Play Store" height="80"></a>
 
+# [monitee.app/get-started](https://monitee.app/get-started/)
+
 ## What can it do?
 
 Query for:
@@ -51,14 +53,6 @@ graphQLPlayGround:
   enabled: false
 ```
 
-If the server is protected by Basic Auth, you need to configure GraphQL Playground to send the `authorization` header. Here's an example with the default credentials:
-
-```json
-{
-  "authorization": "Basic dXNlcjpwYXNzd29yZA=="
-}
-```
-
 ## Running
 
 Referr to [monitee.app/get-started](https://monitee.app/get-started/) for how to run it on your system.
@@ -81,14 +75,6 @@ git clone [this repo] sys-api
 ```sh
 ./gradlew run
 ```
-
-Package for distribution in a *.zip*:
-
-```sh
-./gradlew shadowDistZip
-```
-
-And the resulting files should be located in */server/target/*
 
 License
 -------
