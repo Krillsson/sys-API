@@ -1,7 +1,7 @@
 ![header](header.png)
 [![Docker hub](https://badgen.net/badge/icon/docker?icon=docker&label)](https://hub.docker.com/r/krillsson/sys-api)
 
-System API (sys-API) provide a [GraphQL API](https://graphql.org/) to your computers hardware.
+Monitee agent (formerly sys-API) provide a [GraphQL API](https://graphql.org/) to your computers hardware.
 
 It publishes and monitors values from [OSHI](https://github.com/oshi/oshi) with the help of [Spring](https://spring.io/). On Windows the information is supplemented with
 [OpenHardwareMonitor](https://github.com/openhardwaremonitor/openhardwaremonitor) with a bit of help from [OhmJni4Net](https://github.com/Krillsson/ohmjni4net).
@@ -62,15 +62,15 @@ The application expects a user config file (_configuration.yml_) and a spring co
 See the sample files in the [/config](/config) repository directory.
 
 ### Self-signed certificates
-By default, sys-API will generate a self-signed certificate to enable HTTPS. This is to lower the barrier for encrypted traffic between the client and the server.
-Please note that using properly signed certificates is better. Let's Encrypt is a free and good alternative. Refer [wiki page](https://github.com/Krillsson/sys-API/wiki/Let's-Encrypt) on how to set it up.
+By default, the Monitee agent will generate a self-signed certificate to enable HTTPS. This is to lower the barrier for encrypted traffic between the client and the server.
+Please note that using properly signed certificates is better. Let's Encrypt is a free and good alternative.
 
 For convenience, the certificates are persisted using a java keystore. If you wish to re-generate the certificates, delete the _keystorewww.jks_ file. But note that this will require re-adding the server in Monitee.
 
 ## Development
 Setup
 ```sh
-git clone [this repo] sys-api
+git clone [this repo] monitee-agent
 ```
 ```sh
 ./gradlew run
