@@ -28,23 +28,47 @@ class SystemDaemonManager(
     val logger by logger()
 
     private val journalCtl = JournalCtl(mapper, config.linux.journalLogs)
-    private val systemCtl = SystemCtl(mapper, config.linux.systemDaemonServiceManagement)
+    private val systemCtl = SystemCtl(mapper)
 
     private val supportedBySystem = journalCtl.supportedBySystem() && systemCtl.supportedBySystem()
 
     fun status(): Status {
         return when {
             !config.linux.systemDaemonServiceManagement.enabled -> Status.Disabled
-            !supportedBySystem() -> Status.Unavailable(RuntimeException("systemctl or journalctl command was not found"))
+            !supportedBySystem -> Status.Unavailable(RuntimeException("systemctl or journalctl command was not found"))
             else -> Status.Available
         }
     }
 
     override fun openJournal(name: String, limit: Int): List<SystemDaemonJournalEntry> {
-        return if (config.linux.journalLogs.enabled) {
-            journalCtl.lines(name, limit)
-        } else {
-            emptyList()
+        return when {
+            !config.linux.journalLogs.enabled -> emptyList()
+            !supportedBySystem -> emptyList()
+            else -> journalCtl.lines(name, limit)
+        }
+    }
+
+    override fun services(): List<SystemCtl.ListServicesOutput.Item> {
+        return when {
+            !config.linux.journalLogs.enabled -> emptyList()
+            !supportedBySystem -> emptyList()
+            else -> systemCtl.services()
+        }
+    }
+
+    override fun serviceDetails(name: String): SystemCtl.ServiceDetailsOutput? {
+        return when {
+            !config.linux.journalLogs.enabled -> null
+            !supportedBySystem -> null
+            else -> systemCtl.serviceDetails(name)
+        }
+    }
+
+    fun performCommandWithService(serviceName: String, command: SystemDaemonCommand): CommandResult {
+        return when {
+            !config.linux.journalLogs.enabled -> CommandResult.Disabled
+            !supportedBySystem -> CommandResult.Unavailable
+            else -> systemCtl.performCommandWithService(serviceName, command)
         }
     }
 
@@ -151,19 +175,4 @@ class SystemDaemonManager(
             .startWith(Flux.fromIterable(historicalLines))
     }
 
-    override fun services(): List<SystemCtl.ListServicesOutput.Item> {
-        return systemCtl.services()
-    }
-
-    override fun serviceDetails(name: String): SystemCtl.ServiceDetailsOutput? {
-        return systemCtl.serviceDetails(name)
-    }
-
-    fun performCommandWithService(serviceName: String, command: SystemDaemonCommand): CommandResult {
-        return systemCtl.performCommandWithService(serviceName, command)
-    }
-
-    private fun supportedBySystem(): Boolean {
-        return supportedBySystem
-    }
 }

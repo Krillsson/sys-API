@@ -2,11 +2,9 @@ package com.krillsson.sysapi.systemd
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.dockerjava.api.exception.NotFoundException
-import com.krillsson.sysapi.config.SystemDaemonServiceManagementConfiguration
 
 class SystemCtl(
-    private val mapper: ObjectMapper,
-    private val config: SystemDaemonServiceManagementConfiguration
+    private val mapper: ObjectMapper
 ) {
 
     companion object {
@@ -110,8 +108,6 @@ class SystemCtl(
 
     fun performCommandWithService(serviceName: String, command: SystemDaemonCommand): CommandResult {
         return when {
-            !supportedBySystem() -> CommandResult.Unavailable
-            !config.enabled -> CommandResult.Disabled
             !hasUnit(serviceName) -> CommandResult.Failed(NotFoundException("$serviceName does not exist"))
             else -> {
                 performCommand(serviceName, command)
