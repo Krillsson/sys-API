@@ -2,10 +2,13 @@ package com.krillsson.sysapi.systemd
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.dockerjava.api.exception.NotFoundException
+import com.krillsson.sysapi.util.logger
 
 class SystemCtl(
     private val mapper: ObjectMapper
 ) {
+
+    private val logger by logger()
 
     companion object {
         private const val LIST_SERVICES_COMMAND = "systemctl --output=json --type=service --all"
@@ -49,19 +52,24 @@ class SystemCtl(
     }
 
     fun supportedBySystem(): Boolean {
-        return Bash.checkIfCommandExists("systemctl").getOrNull() ?: false
+        return (Bash.checkIfCommandExists("systemctl").getOrNull() ?: false) && services().isNotEmpty()
     }
 
     fun services(): List<ListServicesOutput.Item> {
-        val services = mutableListOf<ListServicesOutput.Item>()
-        val result = Bash.executeToText(LIST_SERVICES_COMMAND)
-        result.map { json ->
-            val data = mapper.readValue(json, ListServicesOutput::class.java)
-            data.forEach {
-                services.add(it)
+        return try {
+            val services = mutableListOf<ListServicesOutput.Item>()
+            val result = Bash.executeToText(LIST_SERVICES_COMMAND)
+            result.map { json ->
+                val data = mapper.readValue(json, ListServicesOutput::class.java)
+                data.forEach {
+                    services.add(it)
+                }
             }
+            return services
+        } catch (e: Exception) {
+            logger.warn("Unable to execute command: ${e.message}")
+            emptyList()
         }
-        return services
     }
 
     private fun service(name: String): ListServicesOutput.Item? {

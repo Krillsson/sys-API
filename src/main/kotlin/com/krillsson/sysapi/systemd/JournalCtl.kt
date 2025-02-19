@@ -113,14 +113,19 @@ class JournalCtl(
     }
 
     private fun String.convertJsonStringToEntries(): List<SystemDaemonJournalEntry> {
-        val messages = mutableListOf<SystemDaemonJournalEntry>()
-        val iterator: MappingIterator<JournalForServiceOutput.Line> =
-            mapper.readerFor(JournalForServiceOutput.Line::class.java).readValues(this)
-        val lines = iterator.readAll()
-        lines.forEach {
-            val instant = Instant.ofEpochSecond(TimeUnit.MICROSECONDS.toSeconds(it.timestamp))
-            messages += SystemDaemonJournalEntry(instant, it.message)
+        return try {
+            val messages = mutableListOf<SystemDaemonJournalEntry>()
+            val iterator: MappingIterator<JournalForServiceOutput.Line> =
+                mapper.readerFor(JournalForServiceOutput.Line::class.java).readValues(this)
+            val lines = iterator.readAll()
+            lines.forEach {
+                val instant = Instant.ofEpochSecond(TimeUnit.MICROSECONDS.toSeconds(it.timestamp))
+                messages += SystemDaemonJournalEntry(instant, it.message)
+            }
+            return messages
+        } catch (e: Exception) {
+            logger.error("Unable to parse json", e)
+            emptyList()
         }
-        return messages
     }
 }
