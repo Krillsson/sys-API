@@ -1,4 +1,5 @@
 ### Unreleased
+- Add more safety checks so systemd is not enabled when it's not supported
 
 ### 0.35.1
 - Fix UpdateChecker not being run
