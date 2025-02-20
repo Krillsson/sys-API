@@ -20,14 +20,14 @@ object Bash {
             val resultHandler = DefaultExecuteResultHandler()
             val stdout = ByteArrayOutputStream()
             val psh = PumpStreamHandler(stdout)
-            logger.debug("Executing ${commandLine.toStrings().joinToString(" ")}")
+            logger.info("Executing ${commandLine.toStrings().joinToString(" ")}")
             val exec = DefaultExecutor()
             exec.streamHandler = psh
             exec.watchdog = watchdog
             exec.execute(commandLine, resultHandler)
             resultHandler.waitFor()
             val result = stdout.toString(Charset.defaultCharset())
-            logger.debug("Result: $result")
+            logger.info("Result: $result")
             Result.success(result)
         } catch (throwable: Throwable) {
             logger.error("Failed to execute ${commandLine.toStrings().joinToString(" ")}", throwable)
@@ -71,7 +71,7 @@ object Bash {
     ): DefaultExecuteResultHandler {
         val watchdog = ExecuteWatchdog(timeoutAmountMillis)
         val resultHandler = DefaultExecuteResultHandler()
-        logger.debug("Executing ${commandLine.toStrings().joinToString(" ")}")
+        logger.info("Executing ${commandLine.toStrings().joinToString(" ")}")
         val exec = DefaultExecutor()
         exec.watchdog = watchdog
         exec.execute(commandLine, resultHandler)
@@ -82,7 +82,7 @@ object Bash {
     fun executeToTextContinuously(command: String): Flux<String> {
         return Flux.create { emitter ->
             val commandLine = createBashCommand(command)
-            logger.debug("Executing ${commandLine.toStrings().joinToString(" ")}")
+            logger.info("Executing ${commandLine.toStrings().joinToString(" ")}")
 
             // Run the command in a separate thread
             val executionThread = Thread {
@@ -94,6 +94,7 @@ object Bash {
                     // Read the process's output stream
                     process.inputStream.bufferedReader().useLines { lines ->
                         lines.forEach { line ->
+                            logger.info("Result: $line")
                             emitter.next(line)
                         }
                     }
