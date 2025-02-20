@@ -72,7 +72,7 @@ class JournalCtl(
     ): List<SystemDaemonJournalEntry> {
         return if (journalLogsConfiguration.enabled) {
             val command = when {
-                limit != null -> {
+                limit != null && limit >= 0 -> {
                     buildString {
                         append(GET_LOG_ENTRIES_COMMAND.format(serviceUnitName))
                         append(" ")
