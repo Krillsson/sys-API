@@ -5,7 +5,8 @@ import java.util.*
 
 data class WebServerCheck(
     val id: UUID,
-    val url: String
+    val url: String,
+    val name: String?
 )
 
 class WebServerCheckHistoryEntry(

@@ -119,11 +119,11 @@ class WebServerCheckService(
         }
     }
 
-    fun addWebServer(url: String): AddWebServerResult {
+    fun addWebServer(url: String, name: String?): AddWebServerResult {
         return when (val validationResult = validateUrl(url)) {
             URLValidationResult.Valid -> {
                 val id = UUID.randomUUID()
-                repository.save(WebServerCheckEntity(id, url))
+                repository.save(WebServerCheckEntity(id, url, name))
                 logger.debug("Added $url webserver check")
                 AddWebServerResult.Success(id)
             }
@@ -271,7 +271,7 @@ class WebServerCheckService(
 
     private fun WebServerCheckEntity.asDomain(): WebServerCheck {
         return with(this) {
-            WebServerCheck(id, url)
+            WebServerCheck(id, url, name)
         }
     }
 

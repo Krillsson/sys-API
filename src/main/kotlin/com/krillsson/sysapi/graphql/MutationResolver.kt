@@ -194,7 +194,7 @@ class MutationResolver(
 
     @MutationMapping
     fun addWebServerCheck(@Argument input: AddWebServerCheckInput): AddWebServerCheckOutput {
-        return when (val result = webServerCheckService.addWebServer(input.url)) {
+        return when (val result = webServerCheckService.addWebServer(input.url, input.name)) {
             is AddWebServerResult.Success -> AddWebServerCheckOutputSuccess(result.id)
             is AddWebServerResult.Fail -> AddWebServerCheckOutputFailed(result.reason)
         }

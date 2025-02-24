@@ -1,3 +1,3 @@
 package com.krillsson.sysapi.graphql.mutations
 
-data class AddWebServerCheckInput(val url: String)
+data class AddWebServerCheckInput(val url: String, val name: String?)
