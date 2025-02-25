@@ -27,6 +27,9 @@ windows:
   serviceManagement:
     enabled: true
 linux:
+# Incorrect CPU temp on Linux? Look for log output of LinuxSensorDiscovery
+# and put the identifier below (default on intel systems is thermal:x86_pkg_temp)
+  # overrideCpuTempSensor: hwmon:coretemp
   journalLogs:
     enabled: true
   systemDaemonServiceManagement:
