@@ -12,6 +12,7 @@ import com.krillsson.sysapi.core.metrics.cache.Cache
 import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetrics
 import com.krillsson.sysapi.core.metrics.defaultimpl.DiskReadWriteRateMeasurementManager
 import com.krillsson.sysapi.core.metrics.defaultimpl.NetworkUploadDownloadRateMeasurementManager
+import com.krillsson.sysapi.core.metrics.linux.LinuxMetrics
 import com.krillsson.sysapi.core.metrics.windows.WindowsMetrics
 import com.krillsson.sysapi.graphql.domain.Meta
 import com.krillsson.sysapi.graphql.scalars.ScalarTypes
@@ -67,7 +68,7 @@ class SysApiConfiguration : AsyncConfigurer {
         yamlParser.findAndRegisterModules()
         val configFile = File(FileSystem.config, USER_CONFIG)
         val fallbackConfigFile = javaClass.getResourceAsStream("/config/$USER_CONFIG")
-        return if(configFile.exists()){
+        return if (configFile.exists()) {
             yamlParser.readValue(configFile, YAMLConfigFile::class.java)
         } else {
             logger.warn("Config file is missing at ${configFile.absoluteFile}. Using default...")
@@ -111,6 +112,7 @@ class SysApiConfiguration : AsyncConfigurer {
     fun metrics(
         configuration: YAMLConfigFile,
         windowsMetricsProvider: ObjectProvider<WindowsMetrics>,
+        linuxMetricsProvider: ObjectProvider<LinuxMetrics>,
         defaultMetrics: DefaultMetrics,
         hal: HardwareAbstractionLayer,
         operatingSystem: OperatingSystem,
@@ -130,6 +132,10 @@ class SysApiConfiguration : AsyncConfigurer {
                     logger.error("Unable to use Windows specific implementation: falling through to default one")
                     defaultMetrics
                 }
+            }
+
+            platform == Platform.LINUX -> {
+                linuxMetricsProvider.getObject()
             }
 
             else -> defaultMetrics
