@@ -106,7 +106,6 @@ class LinuxCpuSensors(hal: HardwareAbstractionLayer, config: YAMLConfigFile) : D
 
         if (result == null) {
             val oshiValue = super.cpuTemperatures()
-            logger.info("No match found: returning value from OSHI: $oshiValue")
             result = oshiValue.firstOrNull()
         }
 
@@ -118,7 +117,6 @@ class LinuxCpuSensors(hal: HardwareAbstractionLayer, config: YAMLConfigFile) : D
         for (possibleSensor in possibleCpuSensors) {
             val readTemperature = sensors.firstOrNull { it.name == possibleSensor }?.readTemperature()
             if (readTemperature != null) {
-                logger.info("Base set match found. Returning $possibleSensor $readTemperature")
                 result = readTemperature
             }
             break
@@ -128,7 +126,6 @@ class LinuxCpuSensors(hal: HardwareAbstractionLayer, config: YAMLConfigFile) : D
 
     private fun readValueFromConfiguredSensor(): Double? {
         return sensors.firstOrNull { it.name == configuredSensor }?.readTemperature()?.let { value ->
-            logger.info("User configured value found. Returning $configuredSensor $value")
             value
         }
     }
