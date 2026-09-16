@@ -1,10 +1,12 @@
 ### Unreleased
 
+### 0.47.0
+
 - Metric history now comes from a tiered min/avg/max series (raw, five-minute, hourly, daily) instead of the wide history table, which is kept for less time now that it's no longer the source of truth.
   - New `metricHistory`, `metricAvailability` and `settings.history` queries expose the series and its retention directly.
   - The existing `history`, `historyBetweenTimestamps`/`historyBetweenDates`, container and UPS history queries, and the filesystem space forecast, now read from the same series.
   - Removed `purgeEvery` and `purgeEveryUnit`, which nothing read.
-- Disk read/write rates are sampled without reading S.M.A.R.T, so the two no longer share an interval.
+- Disk read/write rates are sampled without reading S.M.A.R.T, so the two no longer share an interval. For performance.
 - Fix: Disk read-rate and write-rate monitors no longer return a null `maxValue`, which was breaking `monitorById` for them.
 
 ### 0.46.0
