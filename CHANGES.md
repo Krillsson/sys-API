@@ -1,18 +1,10 @@
 ### Unreleased
 
-- Metrics are sampled into a tiered min/avg/max series kept as raw for 12 hours, five-minute buckets for 72 hours, hourly for 90 days and daily for two years, configured under `metricsConfig.history.series`.
+- Metric history now comes from a tiered min/avg/max series (raw, five-minute, hourly, daily) instead of the wide history table, which is kept for less time now that it's no longer the source of truth.
+  - New `metricHistory`, `metricAvailability` and `settings.history` queries expose the series and its retention directly.
+  - The existing `history`, `historyBetweenTimestamps`/`historyBetweenDates`, container and UPS history queries, and the filesystem space forecast, now read from the same series.
+  - Removed `purgeEvery` and `purgeEveryUnit`, which nothing read.
 - Disk read/write rates are sampled without reading S.M.A.R.T, so the two no longer share an interval.
-- `Monitor.metricHistory` reports min/avg/max over a range at the coarsest resolution that still covers it, alongside the resolution actually served.
-- `Monitor.history` and `historyBetweenTimestamps` read the metric series instead of walking every history row, and are deprecated in favour of `metricHistory`.
-- The process monitors return an empty history instead of a flat line at zero, which was never recorded data.
-- `settings.history` reports the metric sampling cadences and the retention of each series tier.
-- `metricAvailability` reports what each series tier currently holds, so a client can pick a range without knowing the agent's retention.
-- `history`, `historyBetweenTimestamps` and `historyBetweenDates` keep answering beyond the recorded window by synthesizing entries from the metric series.
-- `containerMetricsHistoryBetweenTimestamps` and `upsMetricsHistoryBetweenTimestamps` do the same.
-- `metricHistory` reports any metric's min/avg/max over a range, for a filesystem, disk, interface, GPU, container or UPS device, or host-wide.
-- The filesystem space forecast reads the daily metric series, so its 30 day window is the window it actually gets rather than whatever the purge had left.
-- The wide history table is now kept for 7 days instead of 14, since the metric series answers the history queries beyond it. `metricsConfig.history.purging` governs only that table.
-- Removed `purgeEvery` and `purgeEveryUnit`, which nothing read. Existing configuration files that still set them keep working.
 - Fix: Disk read-rate and write-rate monitors no longer return a null `maxValue`, which was breaking `monitorById` for them.
 
 ### 0.46.0
