@@ -1,5 +1,7 @@
 ### Unreleased
 
+- Lower resident memory: the JIT compiles with C1 only and the docker image caps jemalloc at four arenas.
+
 ### 0.47.0
 
 - Metric history now comes from a tiered min/avg/max series (raw, five-minute, hourly, daily) instead of the wide history table, which is kept for less time now that it's no longer the source of truth.

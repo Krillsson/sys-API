@@ -54,6 +54,7 @@ def jvmArgs = [
         "-XX:MaxHeapFreeRatio=10",
         "-XX:MaxMetaspaceSize=256m",
         "-XX:ReservedCodeCacheSize=96m",
+        "-XX:TieredStopAtLevel=1",
         "-Xmx512m",
         "-Xms128m",
 ]
@@ -107,7 +108,7 @@ task jibJvm(type: com.google.cloud.tools.jib.gradle.BuildImageTask) {
                 jvmFlags = jvmArgs
                 environment = [
                         "LD_PRELOAD": "libjemalloc.so.2",
-                        "MALLOC_CONF": "background_thread:true,dirty_decay_ms:5000,muzzy_decay_ms:5000"
+                        "MALLOC_CONF": "background_thread:true,dirty_decay_ms:5000,muzzy_decay_ms:5000,narenas:4"
                 ]
             }
             from {
