@@ -354,6 +354,7 @@ task packageWindowsInstaller(type: io.github.fvarrui.javapackager.gradle.Package
     generateInstaller = true
     administratorRequired = true
     platform = "windows"
+    assetsDir = file("$rootDir/src/win/assets")
     additionalResources = [
             file("$rootDir/src/dist/lib"),
             file("$rootDir/src/dist/sample-queries"),
