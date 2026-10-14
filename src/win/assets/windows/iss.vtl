@@ -45,7 +45,7 @@ Type: filesandordirs; Name: "{app}\jre"
 
 [Files]
 Source: "${info.appFolder}\*"; DestDir: "{app}"; Excludes: "\config\*"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "${info.appFolder}\config\*"; DestDir: "{app}\config"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "${info.appFolder}\config\*"; DestDir: "{app}\config"; Flags: onlyifdoesntexist
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\{#MyAppExeName}"
@@ -130,6 +130,7 @@ var
   Manager, Service: THandle;
   Status: TServiceStatus;
   Waited: Integer;
+  ResultCode: Integer;
 begin
   Service := OpenAppService(SERVICE_QUERY_STATUS or SERVICE_STOP, Manager);
   if Service = 0 then
@@ -144,6 +145,7 @@ begin
     if Status.dwCurrentState <> SERVICE_STOPPED then
     begin
       Log('Stopping service {#ServiceName}');
+      Exec(ExpandConstant('{sys}\sc.exe'), 'failure {#ServiceName} reset= 0 actions= ""', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
       ControlService(Service, SERVICE_CONTROL_STOP, Status);
     end;
     Waited := 0;

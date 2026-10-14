@@ -342,7 +342,14 @@ task packageDeb(type: Deb) {
     }
 }
 
-task packageWindowsInstaller(type: io.github.fvarrui.javapackager.gradle.PackageTask, dependsOn: shadowJar) {
+def windowsServiceConfig = tasks.register('windowsServiceConfig', Copy) {
+    from "$rootDir/src/win/config/sys-API-servicew.xml"
+    into layout.buildDirectory.dir("win")
+    inputs.property("jvmArgs", jvmArgs)
+    filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [JVM_ARGS: jvmArgs.join(" ")])
+}
+
+task packageWindowsInstaller(type: io.github.fvarrui.javapackager.gradle.PackageTask, dependsOn: [shadowJar, windowsServiceConfig]) {
     displayName = "sys-API"
     organizationName = "Krillsson"
     mainClass = 'com.krillsson.sysapi.SysAPIApplicationKt'
@@ -360,7 +367,7 @@ task packageWindowsInstaller(type: io.github.fvarrui.javapackager.gradle.Package
             file("$rootDir/src/dist/sample-queries"),
             file("$rootDir/config"),
             file("$rootDir/src/win/bin/sys-API-servicew.exe"),
-            file("$rootDir/src/win/config/sys-API-servicew.xml"),
+            layout.buildDirectory.file("win/sys-API-servicew.xml").get().asFile,
             file("$rootDir/src/win/scripts/install-service.bat"),
             file("$rootDir/src/win/scripts/start-service.bat"),
             file("$rootDir/src/win/scripts/stop-service.bat"),
