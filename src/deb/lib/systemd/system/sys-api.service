@@ -9,6 +9,7 @@ Environment=MALLOC_TRIM_THRESHOLD_=131072
 ExecStart=/usr/bin/sys-api-server --spring.config.location=file:/etc/application.properties
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=mixed
+SuccessExitStatus=143
 Restart=always
 
 [Install]
