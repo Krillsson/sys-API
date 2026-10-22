@@ -95,9 +95,11 @@ if native_disabled; then
     run_jvm "$@"
 fi
 
-if ! probe=$("$binary" --native-probe 2>&1); then
-    log "the native binary cannot run on this host: $probe"
-    disable_native platform "$probe"
+probe=$("$binary" --native-probe 2>&1)
+probe_status=$?
+if [ "$probe_status" != 0 ]; then
+    log "the native binary cannot run on this host (exit code $probe_status): $probe"
+    disable_native platform "exit code $probe_status $probe"
     run_jvm "$@"
 fi
 case "$probe" in
