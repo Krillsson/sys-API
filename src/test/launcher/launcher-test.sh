@@ -40,6 +40,7 @@ if [ "\$1" = --native-probe ]; then
         ok) echo "sysapi 1.2.3 native" ;;
         old) echo "sysapi 1.0.0 native" ;;
         cpu) echo "The current machine does not support all of the following CPU features that are required by the image: [AVX2]."; exit 1 ;;
+        crash) kill -SEGV \$\$ ;;
     esac
     exit 0
 fi
@@ -131,6 +132,15 @@ case_probe_failure_disables_native() {
     check "never starts native" '! ran_native'
     check "records the platform reason" 'marker_reason platform'
     check "keeps the probe output" 'grep -q AVX2 "$work/data/native-disabled"'
+}
+
+case_silent_probe_crash_records_the_exit_code() {
+    setup
+    export SYSAPI_RUNTIME=auto FAKE_PROBE=crash
+    launch
+    check "runs the JVM" ran_jvm
+    check "records the platform reason" 'marker_reason platform'
+    check "keeps the exit code" '[ "$(sed -n 3p "$work/data/native-disabled")" = "exit code 139 " ]'
 }
 
 case_probe_version_mismatch_disables_native() {
