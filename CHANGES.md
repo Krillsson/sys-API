@@ -4,6 +4,7 @@
 - Fix: The Windows installer stops the sys-api service before upgrading and starts it again afterwards, instead of failing on files in use.
 - The Windows installer can install and start the sys-api service, removes it on uninstall, and no longer overwrites an existing `config` directory.
 - Fix: Stopping the sys-api Windows service no longer fails.
+- Fix: Stopping the agent no longer waits for UPnP gateway discovery, which made `docker stop` kill the container on networks without a UPnP gateway.
 
 ### 0.47.0
 
