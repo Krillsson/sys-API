@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 0.48.0
+
 - Major changes: native image by default
  - Native image cuts memory footprint by almost half
  - A launcher script will attempt to start the native build and fall back to jvm if it fails  
