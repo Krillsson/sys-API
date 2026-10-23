@@ -14,7 +14,6 @@ import com.krillsson.sysapi.core.metrics.defaultimpl.DefaultMetrics
 import com.krillsson.sysapi.core.metrics.defaultimpl.DiskReadWriteRateMeasurementManager
 import com.krillsson.sysapi.core.metrics.defaultimpl.NetworkUploadDownloadRateMeasurementManager
 import com.krillsson.sysapi.core.metrics.linux.LinuxMetrics
-import com.krillsson.sysapi.core.metrics.windows.WindowsMetrics
 import com.krillsson.sysapi.graphql.scalars.ScalarTypes
 import com.krillsson.sysapi.notifications.ntfy.NtfyApi
 import com.krillsson.sysapi.tls.CertificateNamesCreator
@@ -33,7 +32,6 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.server.WebServerFactoryCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.core.NativeDetector
 import org.springframework.graphql.execution.RuntimeWiringConfigurer
 import org.springframework.scheduling.annotation.AsyncConfigurer
 import org.springframework.scheduling.annotation.EnableAsync
@@ -124,7 +122,6 @@ class SysApiConfiguration : AsyncConfigurer {
     @Bean
     fun metrics(
         configuration: YAMLConfigFile,
-        windowsMetricsProvider: ObjectProvider<WindowsMetrics>,
         linuxMetricsProvider: ObjectProvider<LinuxMetrics>,
         defaultMetrics: DefaultMetrics,
         hal: HardwareAbstractionLayer,
@@ -135,24 +132,8 @@ class SysApiConfiguration : AsyncConfigurer {
         connectivityCheckService: ConnectivityCheckService
     ): Metrics {
 
-        val platformSpecific = when {
-            platform == Platform.WINDOWS && configuration.windows.enableOhmJniWrapper && NativeDetector.inNativeImage() -> {
-                logger.info("OpenHardwareMonitor is not available in the native image, using the default implementation")
-                defaultMetrics
-            }
-
-            platform == Platform.WINDOWS && (configuration.windows.enableOhmJniWrapper) -> {
-                logger.info("Windows detected")
-                val windowsMetrics = windowsMetricsProvider.getObject()
-                if (windowsMetrics.prerequisitesFilled()) {
-                    windowsMetrics
-                } else {
-                    logger.error("Unable to use Windows specific implementation: falling through to default one")
-                    defaultMetrics
-                }
-            }
-
-            platform == Platform.LINUX -> {
+        val platformSpecific = when (platform) {
+            Platform.LINUX -> {
                 linuxMetricsProvider.getObject()
             }
 

@@ -8,8 +8,7 @@ Monitor your servers from your phone. This is the agent you install on the serve
 
 Monitee agent provide a [GraphQL API](https://graphql.org/) to your computers hardware.
 
-It publishes and monitors values from [OSHI](https://github.com/oshi/oshi) with the help of [Spring](https://spring.io/). On Windows the information is supplemented with
-[OpenHardwareMonitor](https://github.com/openhardwaremonitor/openhardwaremonitor) with a bit of help from [OhmJni4Net](https://github.com/Krillsson/ohmjni4net).
+It publishes and monitors values from [OSHI](https://github.com/oshi/oshi) with the help of [Spring](https://spring.io/). On Windows, CPU temperature, fan and voltage come from a running [OpenHardwareMonitor](https://github.com/openhardwaremonitor/openhardwaremonitor) or [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor) 0.9.4.
 
 ## What can it do?
 

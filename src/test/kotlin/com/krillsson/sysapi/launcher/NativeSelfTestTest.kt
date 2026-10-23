@@ -58,7 +58,7 @@ class NativeSelfTestTest {
     @Test
     fun `reports any other failure as an ordinary failure`() {
         // Given
-        val selfTest = NativeSelfTest(listOf(NativeSelfTest.Check("ohm") { check(false) { "did not initialise" } }))
+        val selfTest = NativeSelfTest(listOf(NativeSelfTest.Check("sensors") { check(false) { "did not initialise" } }))
 
         // Then
         selfTest.run(out, inNativeImage = true) shouldBe 1

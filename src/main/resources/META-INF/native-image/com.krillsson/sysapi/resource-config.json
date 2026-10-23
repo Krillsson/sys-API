@@ -893,36 +893,6 @@
         "pattern": "\\Qcom/krillsson/sysapi/core/metrics/linux/LinuxSensorDiscovery.class\\E"
       },
       {
-        "pattern": "\\Qcom/krillsson/sysapi/core/metrics/windows/OHMManager$Companion.class\\E"
-      },
-      {
-        "pattern": "\\Qcom/krillsson/sysapi/core/metrics/windows/OHMManager.class\\E"
-      },
-      {
-        "pattern": "\\Qcom/krillsson/sysapi/core/metrics/windows/WindowsCpuLoadMetrics.class\\E"
-      },
-      {
-        "pattern": "\\Qcom/krillsson/sysapi/core/metrics/windows/WindowsCpuMetrics.class\\E"
-      },
-      {
-        "pattern": "\\Qcom/krillsson/sysapi/core/metrics/windows/WindowsCpuSensors.class\\E"
-      },
-      {
-        "pattern": "\\Qcom/krillsson/sysapi/core/metrics/windows/WindowsDiskMetrics.class\\E"
-      },
-      {
-        "pattern": "\\Qcom/krillsson/sysapi/core/metrics/windows/WindowsDiskSensors.class\\E"
-      },
-      {
-        "pattern": "\\Qcom/krillsson/sysapi/core/metrics/windows/WindowsGpuMetrics.class\\E"
-      },
-      {
-        "pattern": "\\Qcom/krillsson/sysapi/core/metrics/windows/WindowsMetrics.class\\E"
-      },
-      {
-        "pattern": "\\Qcom/krillsson/sysapi/core/metrics/windows/WindowsMotherboardMetrics.class\\E"
-      },
-      {
         "pattern": "\\Qcom/krillsson/sysapi/core/monitoring/Monitor.class\\E"
       },
       {
@@ -1872,12 +1842,6 @@
       },
       {
         "pattern": "\\Qmozilla/public-suffix-list.txt\\E"
-      },
-      {
-        "pattern": "\\Qnet/sf/jni4net/inj/IClrProxy.class\\E"
-      },
-      {
-        "pattern": "\\Qohmwrapper/OHMSensor.class\\E"
       },
       {
         "pattern": "\\Qokhttp3/Callback.class\\E"

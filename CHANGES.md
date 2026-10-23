@@ -1,5 +1,9 @@
 ### Unreleased
 
+- Windows CPU temperature, fan and voltage come from OSHI reading a running OpenHardwareMonitor or LibreHardwareMonitor 0.9.4.
+- The bundled OpenHardwareMonitor and jni4net libraries and the `enableOhmJniWrapper` setting are gone, along with the motherboard and disk temperatures they provided.
+- Update OSHI to 7.7.2.
+- The docker image, the deb, the zip and the Windows installer run the native build by default and fall back to Java on hosts it can't run on.
 - Fix: The native image starts on CPUs without AVX2, such as the Celeron and Atom J-series.
 - The docker image, the deb, the zip and the Windows installer carry the native build next to the Java one, and `SYSAPI_RUNTIME=auto` runs it with a fallback to Java on hosts it can't run on.
 - A `runtime` file in the `config` directory chooses `auto`, `native` or `jvm` when `SYSAPI_RUNTIME` is not set, and survives upgrades.
