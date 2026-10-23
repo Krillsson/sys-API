@@ -58,7 +58,6 @@ processes:
   # disable to release some RAM
   enabled: true
 windows:
-  enableOhmJniWrapper: true
   eventLog:
     enabled: true
   serviceManagement:

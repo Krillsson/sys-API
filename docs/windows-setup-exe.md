@@ -20,22 +20,19 @@ If you need to change the default application ports *8080* and *8443*, you can d
 
 Restart the *sys-api* service in the Services program for the changes to take effect.
 
+CPU temperature, fan and voltage show up when [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor/releases/tag/v0.9.4) 0.9.4 or OpenHardwareMonitor is running next to the agent. Later LibreHardwareMonitor versions no longer publish the WMI data the agent reads.
+
 The agent runs the native build, which uses less memory, and falls back to Java on hosts it can't run on. To choose for yourself, put the word in a file named *runtime* in the *config* directory and restart the service: `jvm` always runs Java, `native` runs the native build without falling back, and `auto` is the default. From an administrator Command Prompt:
 
 ```cmd
 echo jvm> "C:\Program Files\sysapi\config\runtime"
 ```
 
-It reads sensors without OpenHardwareMonitor.
-
 ![](https://raw.githubusercontent.com/Krillsson/monitee-agent/master/docs/images/Screenshot-2024-09-29-092341.png)
 
 ## 3. Checking that it runs
 
-The service writes its output to *sys-API-servicew.out.log* in the installation directory. It will pause for a long time at:  
-**“Initializing OpenHardwareMonitor.”**
-
-This is normal.
+The service writes its output to *sys-API-servicew.out.log* in the installation directory.
 
 When you see:
 

@@ -77,7 +77,7 @@ class StartupFailureTest {
             Arguments.of("charset", ExceptionInInitializerError(UnsupportedCharsetException("Windows-1252"))),
             Arguments.of("class not found", RuntimeException(ClassNotFoundException("org.hibernate.community.dialect.SQLiteDialect"))),
             Arguments.of("jni method", NoSuchMethodError("initDotNet")),
-            Arguments.of("jni library", UnsatisfiedLinkError("no jni4net")),
+            Arguments.of("jni library", UnsatisfiedLinkError("no jnidispatch in java.library.path")),
             Arguments.of(
                 "jackson",
                 IllegalArgumentException(

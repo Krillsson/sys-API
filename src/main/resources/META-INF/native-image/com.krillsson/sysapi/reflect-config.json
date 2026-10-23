@@ -1504,7 +1504,6 @@
       {
         "name": "<init>",
         "parameterTypes": [
-          "boolean",
           "com.krillsson.sysapi.config.WindowsEventLogConfiguration",
           "com.krillsson.sysapi.config.ServiceManagement"
         ]
@@ -1512,7 +1511,6 @@
       {
         "name": "<init>",
         "parameterTypes": [
-          "boolean",
           "com.krillsson.sysapi.config.WindowsEventLogConfiguration",
           "com.krillsson.sysapi.config.ServiceManagement",
           "int",
@@ -1526,12 +1524,6 @@
       {
         "name": "getServiceManagement",
         "parameterTypes": []
-      },
-      {
-        "name": "setEnableOhmJniWrapper",
-        "parameterTypes": [
-          "boolean"
-        ]
       },
       {
         "name": "setEventLog",
@@ -16677,129 +16669,6 @@
     ]
   },
   {
-    "name": "com.krillsson.sysapi.core.metrics.windows.OHMManager",
-    "allDeclaredFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllDeclaredConstructors": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "com.krillsson.sysapi.core.metrics.windows.WindowsCpuLoadMetrics",
-    "queryAllDeclaredMethods": true
-  },
-  {
-    "name": "com.krillsson.sysapi.core.metrics.windows.WindowsCpuMetrics",
-    "queryAllDeclaredMethods": true
-  },
-  {
-    "name": "com.krillsson.sysapi.core.metrics.windows.WindowsCpuSensors",
-    "allDeclaredFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllDeclaredConstructors": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": [
-          "oshi.hardware.HardwareAbstractionLayer",
-          "com.krillsson.sysapi.core.metrics.windows.OHMManager"
-        ]
-      },
-      {
-        "name": "cpuFanPercent",
-        "parameterTypes": []
-      },
-      {
-        "name": "cpuFanRpm",
-        "parameterTypes": []
-      },
-      {
-        "name": "cpuHealth",
-        "parameterTypes": []
-      },
-      {
-        "name": "cpuTemperatures",
-        "parameterTypes": []
-      },
-      {
-        "name": "cpuVoltage",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "com.krillsson.sysapi.core.metrics.windows.WindowsDiskMetrics",
-    "queryAllDeclaredMethods": true
-  },
-  {
-    "name": "com.krillsson.sysapi.core.metrics.windows.WindowsDiskSensors",
-    "queryAllDeclaredMethods": true,
-    "methods": [
-      {
-        "name": "getDiskTemperature",
-        "parameterTypes": [
-          "oshi.hardware.HWDiskStore"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "com.krillsson.sysapi.core.metrics.windows.WindowsGpuMetrics",
-    "allDeclaredFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllDeclaredConstructors": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": [
-          "oshi.hardware.HardwareAbstractionLayer",
-          "com.krillsson.sysapi.core.metrics.windows.OHMManager"
-        ]
-      },
-      {
-        "name": "gpuLoads",
-        "parameterTypes": []
-      },
-      {
-        "name": "gpus",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "com.krillsson.sysapi.core.metrics.windows.WindowsMetrics",
-    "queryAllDeclaredMethods": true,
-    "methods": [
-      {
-        "name": "initialize",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "com.krillsson.sysapi.core.metrics.windows.WindowsMotherboardMetrics",
-    "allDeclaredFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllDeclaredConstructors": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": [
-          "oshi.hardware.HardwareAbstractionLayer",
-          "com.krillsson.sysapi.core.metrics.windows.OHMManager"
-        ]
-      },
-      {
-        "name": "motherboardHealth",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
     "name": "com.krillsson.sysapi.core.monitoring.Monitor"
   },
   {
@@ -23973,41 +23842,6 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "net.sf.jni4net.attributes.ClrMethod",
-    "queryAllDeclaredMethods": true
-  },
-  {
-    "name": "net.sf.jni4net.attributes.ClrType",
-    "queryAllDeclaredMethods": true
-  },
-  {
-    "name": "ohmwrapper.CpuMonitor"
-  },
-  {
-    "name": "ohmwrapper.DriveMonitor"
-  },
-  {
-    "name": "ohmwrapper.GpuMonitor"
-  },
-  {
-    "name": "ohmwrapper.MainboardMonitor"
-  },
-  {
-    "name": "ohmwrapper.MonitorManager"
-  },
-  {
-    "name": "ohmwrapper.NetworkMonitor"
-  },
-  {
-    "name": "ohmwrapper.OHMManagerFactory"
-  },
-  {
-    "name": "ohmwrapper.OHMMonitor"
-  },
-  {
-    "name": "ohmwrapper.RamMonitor"
-  },
-  {
     "name": "oshi.PlatformEnum"
   },
   {
@@ -25782,12 +25616,6 @@
     "allDeclaredMethods": true
   },
   {
-    "name": "oshi.driver.windows.wmi.OhmHardwareJNA",
-    "allDeclaredFields": true,
-    "allDeclaredConstructors": true,
-    "allDeclaredMethods": true
-  },
-  {
     "name": "oshi.driver.windows.wmi.Win32PhysicalMemoryJNA",
     "allDeclaredFields": true,
     "allDeclaredConstructors": true,
@@ -25897,12 +25725,6 @@
   },
   {
     "name": "oshi.driver.windows.wmi.Win32ProcessorJNA",
-    "allDeclaredFields": true,
-    "allDeclaredConstructors": true,
-    "allDeclaredMethods": true
-  },
-  {
-    "name": "oshi.driver.windows.wmi.OhmSensorJNA",
     "allDeclaredFields": true,
     "allDeclaredConstructors": true,
     "allDeclaredMethods": true
