@@ -95,7 +95,7 @@ When you see the following, we know that the server is up and running:
 [...]: Started SysAPIApplicationKt in 6.352 seconds (process running for 7.234)
 ```
 
-To try the native build, which uses less memory, run `sudo systemctl edit sys-api`, add `Environment=SYSAPI_RUNTIME=auto` under `[Service]` and restart the service. The agent falls back to Java on hosts the native build can't run on.
+The agent runs the native build, which uses less memory, and falls back to Java on hosts it can't run on. To choose for yourself, run `sudo systemctl edit sys-api`, add `Environment=SYSAPI_RUNTIME=jvm` under `[Service]` and restart the service: `jvm` always runs Java, `native` runs the native build without falling back, and `auto` is the default.
 
 Now you are ready to proceed to next step
 

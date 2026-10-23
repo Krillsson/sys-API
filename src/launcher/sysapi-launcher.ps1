@@ -3,7 +3,7 @@ $ErrorActionPreference = 'Stop'
 $version = '@VERSION@'
 $jvmArgs = @(@JVM_ARGS@)
 $nativeArgs = @(@NATIVE_ARGS@)
-$defaultRuntime = 'jvm'
+$defaultRuntime = 'auto'
 $nativeLimitationExitCode = 86
 
 $appHome = $PSScriptRoot
@@ -141,8 +141,8 @@ if ($probeExitCode -ne 0) {
     Disable-Native 'platform' "exit code $probeExitCode $probe"
     Invoke-Jvm
 }
-if (-not $probe.Contains("sysapi $version native")) {
-    Disable-Native 'version-mismatch' "expected sysapi $version native, the binary said: $probe"
+if (-not $probe.Contains("monitee-agent $version native")) {
+    Disable-Native 'version-mismatch' "expected monitee-agent $version native, the binary said: $probe"
     Invoke-Jvm
 }
 

@@ -4,7 +4,7 @@ set -u
 version='@VERSION@'
 jvm_args='@JVM_ARGS@'
 native_args='@NATIVE_ARGS@'
-default_runtime='jvm'
+default_runtime='auto'
 native_limitation_exit_code=86
 
 app_home=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)
@@ -103,9 +103,9 @@ if [ "$probe_status" != 0 ]; then
     run_jvm "$@"
 fi
 case "$probe" in
-    *"sysapi $version native"*) ;;
+    *"monitee-agent $version native"*) ;;
     *)
-        disable_native version-mismatch "expected sysapi $version native, the binary said: $probe"
+        disable_native version-mismatch "expected monitee-agent $version native, the binary said: $probe"
         run_jvm "$@"
         ;;
 esac

@@ -57,7 +57,7 @@ Want to monitor a nvidia GPU? Also add this to the command:
 
 or substitute all with the specific gpu index (e.g “0”)
 
-Want to try the native build, which uses less memory? Add `-e SYSAPI_RUNTIME=auto`. The agent falls back to Java on hosts the native build can't run on.
+The agent runs the native build, which uses less memory, and falls back to Java on hosts it can't run on. Want to choose for yourself? Add `-e SYSAPI_RUNTIME=jvm` to always run Java, or `-e SYSAPI_RUNTIME=native` to run the native build without falling back.
 
 ### Browsing files
 

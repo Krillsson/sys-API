@@ -68,7 +68,7 @@ Now we can use `nohup` to run the process disconnected from the terminal
 nohup ./run.sh &
 ```
 
-To try the native build, which uses less memory, start it with `SYSAPI_RUNTIME=auto ./run.sh` instead, or put the word `auto` in a file named `runtime` in the `config` directory. The agent falls back to Java on hosts the native build can't run on.
+The agent runs the native build, which uses less memory, and falls back to Java on hosts it can't run on. To choose for yourself, start it with `SYSAPI_RUNTIME=jvm ./run.sh` or put the word in a file named `runtime` in the `config` directory: `jvm` always runs Java, `native` runs the native build without falling back, and `auto` is the default.
 
 Then press **CTRL+C** on your keyboard to get back to your terminal input
 
