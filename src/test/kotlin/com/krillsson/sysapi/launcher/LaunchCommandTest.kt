@@ -23,8 +23,8 @@ class LaunchCommandTest {
 
     @Test
     fun `names the runtime in the probe line`() {
-        LaunchCommand.probeLine("1.2.3", inNativeImage = true) shouldBe "sysapi 1.2.3 native"
-        LaunchCommand.probeLine("1.2.3", inNativeImage = false) shouldBe "sysapi 1.2.3 jvm"
+        LaunchCommand.probeLine("1.2.3", inNativeImage = true) shouldBe "monitee-agent 1.2.3 native"
+        LaunchCommand.probeLine("1.2.3", inNativeImage = false) shouldBe "monitee-agent 1.2.3 jvm"
     }
 
     @Test
