@@ -1,5 +1,7 @@
 ### Unreleased
 
+- Fix: Warning notifications show the warning threshold that was crossed and the critical threshold, and the title says high/low or critical.
+
 ### 0.48.0
 
 - Major changes: native image by default
