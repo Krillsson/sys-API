@@ -21,7 +21,6 @@ setup() {
     touch "$app/lib/sysapi-all.jar"
     sed -e "s|@VERSION@|1.2.3|" -e "s|@JVM_ARGS@|-Xmx64m|" -e "s|@NATIVE_ARGS@|-Xmx32m|" \
         "$repo/src/launcher/sysapi-launcher" > "$app/sysapi-launcher"
-    sed -i.bak "s|^default_runtime='jvm'|default_runtime='${DEFAULT_RUNTIME:-jvm}'|" "$app/sysapi-launcher"
 
     cat > "$work/bin/uname" <<'FAKE'
 #!/bin/sh
@@ -37,8 +36,8 @@ FAKE
 #!/bin/sh
 if [ "\$1" = --native-probe ]; then
     case "\${FAKE_PROBE:-ok}" in
-        ok) echo "sysapi 1.2.3 native" ;;
-        old) echo "sysapi 1.0.0 native" ;;
+        ok) echo "monitee-agent 1.2.3 native" ;;
+        old) echo "monitee-agent 1.0.0 native" ;;
         cpu) echo "The current machine does not support all of the following CPU features that are required by the image: [AVX2]."; exit 1 ;;
         crash) kill -SEGV \$\$ ;;
     esac
@@ -79,12 +78,22 @@ run_case() {
     current="$1"
     shift
     rm -rf "$work/data" "$work/config"
-    unset FAKE_JAVA_HOME SYSAPI_RUNTIME FAKE_PROBE FAKE_NATIVE FAKE_NATIVE_EXIT FAKE_JVM_EXIT FAKE_ARCH FAKE_OS DEFAULT_RUNTIME
+    unset FAKE_JAVA_HOME SYSAPI_RUNTIME FAKE_PROBE FAKE_NATIVE FAKE_NATIVE_EXIT FAKE_JVM_EXIT FAKE_ARCH FAKE_OS
     "$@"
 }
 
-case_jvm_is_the_default() {
+case_auto_is_the_default() {
     setup
+    export FAKE_NATIVE=ready-then-exit
+    launch --server.port=1
+    check "runs native" ran_native
+    check "does not run the JVM" '! ran_jvm'
+    check "passes the arguments on" 'grep -q -- "-Xmx32m --server.port=1" "$work/calls/native"'
+}
+
+case_configured_jvm_skips_native() {
+    setup
+    export SYSAPI_RUNTIME=jvm
     launch --server.port=1
     check "runs the JVM" ran_jvm
     check "does not touch the native binary" '! ran_native'
@@ -236,11 +245,10 @@ case_forced_native_without_a_binary_fails() {
 case_runtime_file_sets_the_runtime() {
     setup
     mkdir -p "$work/config"
-    printf '  auto \r\n' > "$work/config/runtime"
-    export FAKE_NATIVE=ready-then-exit
+    printf '  jvm \r\n' > "$work/config/runtime"
     launch
-    check "runs native" ran_native
-    check "does not run the JVM" '! ran_jvm'
+    check "runs the JVM" ran_jvm
+    check "does not touch the native binary" '! ran_native'
 }
 
 case_environment_overrides_the_runtime_file() {
@@ -257,9 +265,10 @@ case_empty_runtime_file_uses_the_default() {
     setup
     mkdir -p "$work/config"
     : > "$work/config/runtime"
+    export FAKE_NATIVE=ready-then-exit
     launch
-    check "runs the JVM" ran_jvm
-    check "does not touch the native binary" '! ran_native'
+    check "runs native" ran_native
+    check "does not run the JVM" '! ran_jvm'
 }
 
 case_rejects_an_unknown_runtime_in_the_file() {
@@ -290,7 +299,7 @@ case_java_home_picks_the_jvm() {
     setup
     mkdir -p "$work/jdk/bin"
     mv "$work/bin/java" "$work/jdk/bin/java"
-    export FAKE_JAVA_HOME="$work/jdk"
+    export FAKE_JAVA_HOME="$work/jdk" SYSAPI_RUNTIME=jvm
     launch
     check "runs java from JAVA_HOME" ran_jvm
 }
@@ -299,6 +308,7 @@ case_jib_image_runs_the_main_class() {
     setup
     rm "$app/lib/sysapi-all.jar"
     echo "com.example.Main" > "$app/jib-main-class-file"
+    export SYSAPI_RUNTIME=jvm
     launch
     check "uses the jib classpath file" 'grep -q -- "-cp @$app/jib-classpath-file com.example.Main" "$work/calls/jvm"'
 }

@@ -20,10 +20,10 @@ If you need to change the default application ports *8080* and *8443*, you can d
 
 Restart the *sys-api* service in the Services program for the changes to take effect.
 
-To try the native build, which uses less memory, put the word `auto` in a file named *runtime* in the *config* directory and restart the service. From an administrator Command Prompt:
+The agent runs the native build, which uses less memory, and falls back to Java on hosts it can't run on. To choose for yourself, put the word in a file named *runtime* in the *config* directory and restart the service: `jvm` always runs Java, `native` runs the native build without falling back, and `auto` is the default. From an administrator Command Prompt:
 
 ```cmd
-echo auto> "C:\Program Files\sysapi\config\runtime"
+echo jvm> "C:\Program Files\sysapi\config\runtime"
 ```
 
 It reads sensors without OpenHardwareMonitor.
