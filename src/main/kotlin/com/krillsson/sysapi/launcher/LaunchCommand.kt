@@ -23,5 +23,5 @@ object LaunchCommand {
     }
 
     fun probeLine(version: String, inNativeImage: Boolean): String =
-        "sysapi $version ${if (inNativeImage) "native" else "jvm"}"
+        "monitee-agent $version ${if (inNativeImage) "native" else "jvm"}"
 }
